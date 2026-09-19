@@ -555,9 +555,8 @@ Phong cách tham khảo: **"Soft SaaS Dashboard"** (xem file `tham khao theme.jp
 **Sidebar (trái, cố định, ~240px):**
 - Logo + tên app trên cùng
 - Menu chia nhóm có nhãn nhỏ phía trên (đúng mẫu "MENU" / "ORDER" trong ảnh). **Thứ tự hiển thị trên UI** (khác thứ tự số mục trong tài liệu này — số mục chỉ để tham chiếu nội dung):
-  1. **TỔNG QUAN** (4.7b) — đứng riêng đầu tiên, không thuộc nhóm nào, giống vị trí "Overview" trong ảnh tham khảo
-  2. Nhóm **"QUẢN LÝ"**: Lớp học (4.2) → Đăng ký giảng dạy (4.3) → Nhân sự (4.1) → Đánh giá chất lượng (4.4) → Báo cáo (4.7)
-  3. Nhóm **"HỆ THỐNG"**: Thông báo (4.5, hiện cho mọi người) → Nhật ký hệ thống (4.6) → Cấu hình hệ thống (4.8) — 2 mục cuối chỉ hiện với người có Quyền Quản lý lớp
+  1. Nhóm **"MENU"** (tương ứng "MENU" trong ảnh tham khảo): **Tổng quan** (4.7b, đứng đầu, giống "Overview" trong ảnh) → Lớp học (4.2) → Đăng ký giảng dạy (4.3) → Nhân sự (4.1) → Đánh giá chất lượng (4.4) → Báo cáo (4.7)
+  2. Nhóm **"HỆ THỐNG"** (tương ứng "ORDER" trong ảnh): Thông báo (4.5, hiện cho mọi người) → Nhật ký hệ thống (4.6) → Cấu hình hệ thống (4.8) — 2 mục cuối chỉ hiện với người có Quyền Quản lý lớp
 - Nền sidebar **hòa cùng nền trang, không viền, không panel trắng riêng** (đúng ảnh mẫu); chữ menu xám đậm, icon outline 1.75px
 - Active item: pill nền gradient `brand` ngang, chữ trắng, icon trắng (đúng mẫu ảnh)
 - **Ô thẻ dưới cùng sidebar** (vị trí "Upgrade plans" trong ảnh — app này không có gói nâng cấp nên tái sử dụng vị trí này): hiển thị **"Kỳ đánh giá hiện tại"** dạng **card gọn** (nền tint lime nhạt, tiêu đề + 1 dòng "tên kỳ · còn X ngày" + nút "Xem KPI của tôi") — cố tình thấp để sidebar không phải scroll; tự ẩn khi chiều cao màn hình < 600px

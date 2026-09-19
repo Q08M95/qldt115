@@ -27,12 +27,12 @@ export interface NavGroup {
 }
 
 // Thứ tự hiển thị theo CLAUDE.md mục 8.5b (khác thứ tự số mục 4.x):
-// TỔNG QUAN đứng riêng đầu tiên → QUẢN LÝ → HỆ THỐNG.
+// 2 nhãn như ảnh mẫu (MENU / ORDER): MENU (Tổng quan đứng đầu + 5 mục quản lý) → HỆ THỐNG.
 export const NAV_GROUPS: NavGroup[] = [
-  { items: [{ href: "/", label: "Tổng quan", icon: LayoutDashboard }] },
   {
-    label: "Quản lý",
+    label: "Menu",
     items: [
+      { href: "/", label: "Tổng quan", icon: LayoutDashboard },
       { href: "/lop-hoc", label: "Lớp học", icon: GraduationCap },
       { href: "/dang-ky", label: "Đăng ký giảng dạy", icon: ClipboardCheck },
       { href: "/nhan-su", label: "Nhân sự", icon: Users },
