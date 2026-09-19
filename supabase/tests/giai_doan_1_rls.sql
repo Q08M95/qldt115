@@ -4,7 +4,12 @@
 -- Kết quả: bảng cuối cùng, cột "dat" phải là true hết.
 --   a1 = Admin, a2 = Giảng viên, a3 = Trợ giảng, a4 = GV được gán Quyền Quản lý lớp
 
--- Dọn (nếu lần chạy trước bị dừng giữa chừng)
+-- Dọn (nếu lần chạy trước bị dừng giữa chừng). Xóa nhan_su_nhom trước để tránh
+-- lỗi kiểm tra khóa ngoại khi cascade trong cùng 1 transaction.
+delete from public.nhan_su_nhom where user_id in (
+  '00000000-0000-0000-0000-0000000000a1', '00000000-0000-0000-0000-0000000000a2',
+  '00000000-0000-0000-0000-0000000000a3', '00000000-0000-0000-0000-0000000000a4'
+);
 delete from auth.users where id in (
   '00000000-0000-0000-0000-0000000000a1', '00000000-0000-0000-0000-0000000000a2',
   '00000000-0000-0000-0000-0000000000a3', '00000000-0000-0000-0000-0000000000a4'
@@ -153,7 +158,11 @@ begin
 end;
 $$;
 
--- Dọn user giả (cascade xóa profiles + nhan_su_nhom)
+-- Dọn user giả (xóa nhan_su_nhom trước, rồi cascade xóa profiles)
+delete from public.nhan_su_nhom where user_id in (
+  '00000000-0000-0000-0000-0000000000a1', '00000000-0000-0000-0000-0000000000a2',
+  '00000000-0000-0000-0000-0000000000a3', '00000000-0000-0000-0000-0000000000a4'
+);
 delete from auth.users where id in (
   '00000000-0000-0000-0000-0000000000a1', '00000000-0000-0000-0000-0000000000a2',
   '00000000-0000-0000-0000-0000000000a3', '00000000-0000-0000-0000-0000000000a4'
