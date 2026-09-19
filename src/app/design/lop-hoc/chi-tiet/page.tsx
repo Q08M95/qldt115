@@ -3,7 +3,7 @@ import { AppShell } from "@/components/app-shell/app-shell";
 import { LopChiTietView } from "@/components/lop-hoc/lop-chi-tiet-view";
 import { LopFormDrawer } from "@/components/lop-hoc/lop-form-drawer";
 import { LopHanhDong } from "@/components/lop-hoc/lop-hanh-dong";
-import { NHOM_LOP, chiTiet } from "../demo-data";
+import { DANG_KY, NHOM_LOP, chiTiet } from "../demo-data";
 
 // Trang demo chi tiết lớp — chỉ chạy khi dev. ?tt=hoan-thanh xem lớp đã hoàn thành (kết quả C1/C3), ?gv=1 xem góc nhìn GV/TG.
 export default async function DesignLopChiTietPage(props: { searchParams: Promise<{ tt?: string; gv?: string }> }) {
@@ -24,6 +24,8 @@ export default async function DesignLopChiTietPage(props: { searchParams: Promis
       <LopChiTietView
         data={isQuanTri ? data : { ...data, nhom_du_dieu_kien: [] }}
         isQuanTri={isQuanTri}
+        viewer={isQuanTri ? { id: "u1", vaiTro: "giang_vien", isQuanTri: true } : { id: "u2", vaiTro: "tro_giang", isQuanTri: false }}
+        dangKy={isQuanTri ? DANG_KY : { ...DANG_KY, dang_ky_cho: [] }}
         headerActions={
           isQuanTri && !hoanThanh ? (
             <>

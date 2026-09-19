@@ -1,5 +1,6 @@
+import type { DangKyLop } from "@/lib/dang-ky/queries";
 import type { LopChiTiet } from "@/lib/lop-hoc/queries";
-import type { BaiHoc, LopHocTongHop, NhomLop, SlotGiangDay } from "@/types/database";
+import type { BaiHoc, LopHocTongHop, NhomLop, SlotGiangDay, UngVien } from "@/types/database";
 
 // Dữ liệu giả cho trang demo Lớp học — chỉ dùng khi dev
 export const NHOM_LOP: NhomLop[] = [
@@ -99,3 +100,34 @@ export function chiTiet(o: Partial<LopHocTongHop> = {}): LopChiTiet {
     khao_sat: null,
   };
 }
+
+// ---------- Đăng ký giảng dạy (Giai đoạn 5) ----------
+const uv = (bai_id: string, vai_tro: UngVien["vai_tro"], hang: number, user_id: string, ho_ten: string, diem: number, gio_ky: number, extra: Partial<UngVien> = {}): UngVien => ({
+  bai_id, vai_tro, hang, user_id, ho_ten, avatar_url: null, diem, gio_ky, so_lop_khong_kinh_phi: 0, cung_lop: 0, trang_thai_hien_co: null, dang_ky_id: null, ...extra,
+});
+
+// b1: TG còn 1 slot, chỉ 2 ứng viên (cảnh báo pool nhỏ); b2: TG vị trí 3 không có ứng viên (cảnh báo mạnh);
+// b3: GV còn trống, 7 ứng viên, có người đã đăng ký / đã được mời
+export const DANG_KY: DangKyLop = {
+  nguong_pool: 3,
+  goi_y: [
+    uv("b1", "tro_giang", 1, "u2", "Trần Thị Bình", 0.62, 4),
+    uv("b1", "tro_giang", 2, "u5", "Hoàng Thu Em", 0.48, 9),
+    uv("b3", "giang_vien", 1, "u6", "Phạm Quốc Dũng", 0.6, 0),
+    uv("b3", "giang_vien", 2, "u3", "Lê Minh Châu", 0.55, 2, { trang_thai_hien_co: "dang_ky", dang_ky_id: "d1" }),
+    uv("b3", "giang_vien", 3, "u7", "Đỗ Khánh Linh", 0.5, 3, { trang_thai_hien_co: "duoc_moi", dang_ky_id: "d2" }),
+    uv("b3", "giang_vien", 4, "u1", "Nguyễn Văn An", 0.42, 6, { cung_lop: 2 }),
+    uv("b3", "giang_vien", 5, "u8", "Vũ Hải Nam", 0.4, 7),
+    uv("b3", "giang_vien", 6, "u9", "Bùi Thanh Tâm", 0.31, 11),
+    uv("b3", "giang_vien", 7, "u10", "Ngô Bảo Ngọc", 0.22, 14),
+  ],
+  dang_ky_cho: [
+    { id: "d1", bai_id: "b3", vai_tro: "giang_vien", user_id: "u3", ho_ten: "Lê Minh Châu", avatar_url: null, loai: "tu_dang_ky", created_at: "" },
+    { id: "d2", bai_id: "b3", vai_tro: "giang_vien", user_id: "u7", ho_ten: "Đỗ Khánh Linh", avatar_url: null, loai: "duoc_moi", created_at: "" },
+  ],
+  kha_nang: [
+    { bai_id: "b1", ly_do: null, da_dang_ky: false },
+    { bai_id: "b2", ly_do: 'Trùng lịch với Bài "Huấn luyện sơ cứu" (lớp BLS khóa 05)', da_dang_ky: false },
+    { bai_id: "b3", ly_do: null, da_dang_ky: true },
+  ],
+};

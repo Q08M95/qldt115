@@ -4,6 +4,7 @@ import { LopChiTietView } from "@/components/lop-hoc/lop-chi-tiet-view";
 import { LopFormDrawer } from "@/components/lop-hoc/lop-form-drawer";
 import { LopHanhDong } from "@/components/lop-hoc/lop-hanh-dong";
 import { requireSession } from "@/lib/auth/session";
+import { getDangKyLop } from "@/lib/dang-ky/queries";
 import { getLopChiTiet, getNhomLop } from "@/lib/lop-hoc/queries";
 import { getDanhMuc } from "@/lib/nhan-su/queries";
 
@@ -13,11 +14,12 @@ export default async function LopHocChiTietPage(props: PageProps<"/lop-hoc/[id]"
   const { id } = await props.params;
   if (!UUID.test(id)) notFound();
 
-  const [{ isQuanTri }, data, nhomLop, loaiChungChi] = await Promise.all([
+  const [{ isQuanTri, profile }, data, nhomLop, loaiChungChi, dangKy] = await Promise.all([
     requireSession(),
     getLopChiTiet(id),
     getNhomLop(),
     getDanhMuc("danh_muc_loai_chung_chi"),
+    getDangKyLop(id), // gợi ý + đăng ký + khả năng đăng ký; RLS/hàm SQL tự lọc theo người xem
   ]);
   // RLS: GV/TG không thấy lớp Nháp (chưa công khai sớm) -> trả null -> 404
   if (!data) notFound();
@@ -31,6 +33,8 @@ export default async function LopHocChiTietPage(props: PageProps<"/lop-hoc/[id]"
       <LopChiTietView
         data={data}
         isQuanTri={isQuanTri}
+        viewer={{ id: profile.id, vaiTro: profile.vai_tro_giang_day, isQuanTri }}
+        dangKy={dangKy}
         headerActions={
           // Lớp đã hoàn thành/hủy không còn thao tác sửa hay chuyển trạng thái -> không dựng khung nút
           isQuanTri && conSua ? (

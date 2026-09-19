@@ -133,6 +133,45 @@ export interface BaiHoc {
   slots: SlotGiangDay[];
 }
 
+// ---------- Đăng ký giảng dạy (Giai đoạn 5) ----------
+export type LoaiDangKy = "tu_dang_ky" | "duoc_moi";
+export type TrangThaiDangKy = "cho_xu_ly" | "da_duyet" | "tu_choi" | "da_huy";
+
+// 1 dòng gợi ý (matching-score) cho 1 Bài + vai trò. Không chứa nhãn nhóm.
+export interface UngVien {
+  bai_id: string;
+  vai_tro: VaiTroGiangDay;
+  user_id: string;
+  ho_ten: string;
+  avatar_url: string | null;
+  diem: number;
+  hang: number;
+  gio_ky: number;
+  so_lop_khong_kinh_phi: number;
+  cung_lop: number;
+  // Chỉ có với người quản trị hoặc chính chủ
+  trang_thai_hien_co: "dang_ky" | "duoc_moi" | null;
+  dang_ky_id: string | null;
+}
+
+export interface DangKyCho {
+  id: string;
+  bai_id: string;
+  vai_tro: VaiTroGiangDay;
+  user_id: string;
+  ho_ten: string;
+  avatar_url: string | null;
+  loai: LoaiDangKy;
+  created_at: string;
+}
+
+// Khả năng đăng ký của chính người xem cho 1 Bài: ly_do = null nghĩa là đăng ký được
+export interface KhaNangBai {
+  bai_id: string;
+  ly_do: string | null;
+  da_dang_ky: boolean;
+}
+
 export interface KhaoSatLop {
   token: string;
   mo: boolean;

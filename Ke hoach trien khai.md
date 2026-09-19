@@ -21,7 +21,7 @@
 | 2 | Design System nền tảng (token + App Shell) | ✅ Xong | 100% |
 | 3 | Module Nhân sự (4.1) | ✅ Xong | 100% |
 | 4 | Module Lớp học (4.2) | ✅ Xong | 100% |
-| 5 | Module Đăng ký giảng dạy (4.3) | ⬜ Chưa bắt đầu | 0% |
+| 5 | Module Đăng ký giảng dạy (4.3) | 🟡 Đang làm — code xong, chờ chạy SQL + test | 90% |
 | 6 | Hệ thống KPI — engine + cấu hình (5/6/7) | ⬜ Chưa bắt đầu | 0% |
 | 7 | Module Đánh giá chất lượng (4.4) | ⬜ Chưa bắt đầu | 0% |
 | 8 | Module Thông báo (4.5) | ⬜ Chưa bắt đầu | 0% |
@@ -133,17 +133,19 @@ Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / 
 
 *Tham chiếu: mục 4.3*
 
-- [ ] Luồng A (chủ động đăng ký): GV/TG xem slot trống → đăng ký (hỗ trợ chọn nhiều Bài 1 lượt, lọc trước Bài trùng lịch) → Admin duyệt
-- [ ] Luồng B (được mời): khi tạo Bài, chạy matching-score ngay, hiển thị danh sách xếp hạng, Admin gửi lời mời trực tiếp; GV/TG xác nhận độc lập theo từng Bài
-- [ ] Giai đoạn 1 matching-score — lọc cứng: đúng nhóm đủ điều kiện, đủ chứng chỉ, đang tham gia giảng dạy, không trùng lịch
-- [ ] Giai đoạn 2 matching-score — xếp hạng công bằng: percentile khối lượng giảng dạy live theo nhóm (tái dùng logic A1 percentile, tính live không dùng snapshot khóa), tie-break KPI kỳ gần nhất, nhánh riêng A4 thấp cho lớp không kinh phí, tỷ trọng 80/20 lấy từ cấu hình
-- [ ] Cảnh báo pool ứng viên nhỏ khi tạo Bài (ngưỡng cấu hình)
-- [ ] Cảnh báo dồn tải khi duyệt vượt ngưỡng tỷ lệ đảm nhiệm (ngưỡng cấu hình), không chặn cứng
-- [ ] Kiểm tra trùng lịch (không phân biệt cùng/khác lớp)
-- [ ] Ràng buộc 1 người không duyệt trùng đúng 1 slot, nhưng hợp lệ nếu khác Bài
-- [ ] Sửa/hủy lớp đã có người được phân công → bắt buộc trigger thông báo (liên kết giai đoạn 8)
-- [ ] Log lời mời bị từ chối (không chỉ lời mời được duyệt)
-- [ ] Hiển thị công khai matching-score + progress bar cho mọi GV/TG, áp dụng cả lớp cùng nhóm lớp sắp mở tiếp theo
+- [x] Luồng A (chủ động đăng ký): GV/TG xem slot trống → đăng ký (hỗ trợ chọn nhiều Bài 1 lượt, lọc trước Bài trùng lịch) → Admin duyệt
+- [x] Luồng B (được mời): khi tạo Bài, chạy matching-score ngay, hiển thị danh sách xếp hạng, Admin gửi lời mời trực tiếp; GV/TG xác nhận độc lập theo từng Bài
+- [x] Giai đoạn 1 matching-score — lọc cứng: đúng nhóm đủ điều kiện, đủ chứng chỉ, đang tham gia giảng dạy, không trùng lịch
+- [x] Giai đoạn 2 matching-score — xếp hạng công bằng: percentile khối lượng giảng dạy live theo nhóm (tái dùng logic A1 percentile, tính live không dùng snapshot khóa), tie-break KPI kỳ gần nhất, nhánh riêng A4 thấp cho lớp không kinh phí, tỷ trọng 80/20 lấy từ cấu hình
+- [x] Cảnh báo pool ứng viên nhỏ khi tạo Bài (ngưỡng cấu hình)
+- [x] Cảnh báo dồn tải khi duyệt vượt ngưỡng tỷ lệ đảm nhiệm (ngưỡng cấu hình), không chặn cứng
+- [x] Kiểm tra trùng lịch (không phân biệt cùng/khác lớp)
+- [x] Ràng buộc 1 người không duyệt trùng đúng 1 slot, nhưng hợp lệ nếu khác Bài
+- [ ] Sửa/hủy lớp đã có người được phân công → bắt buộc trigger thông báo (liên kết giai đoạn 8) — chưa làm được vì chưa có module Thông báo; các hàm SQL đã để sẵn dòng TODO tại đúng vị trí cần gọi
+- [x] Log lời mời bị từ chối (không chỉ lời mời được duyệt)
+- [x] Hiển thị công khai matching-score + progress bar cho mọi GV/TG, áp dụng cả lớp cùng nhóm lớp sắp mở tiếp theo
+- [ ] **Chờ:** chạy migration `20260921100000_giai_doan_5_dang_ky_giang_day.sql` + test `supabase/tests/giai_doan_5_rls.sql` (61 kiểm tra), rồi push
+- Ghi chú thiết kế: đăng ký/lời mời gắn ở cấp (Bài + vai trò), duyệt thì gán vào slot trống đầu tiên; kỳ hiện tại tạm = quý dương lịch và KPI tie-break tạm trung lập (thay ở Giai đoạn 6); tỷ trọng/ngưỡng lưu ở bảng `cau_hinh_he_thong` (màn hình sửa ở Giai đoạn 11)
 
 **Điều kiện hoàn thành:** đăng ký/duyệt/mời/từ chối chạy hết vòng đời 1 slot (Trống → Đang chờ duyệt → Đã phân công, và quay lại Trống khi bị từ chối/hủy), matching-score trả kết quả đúng thứ tự công bằng.
 

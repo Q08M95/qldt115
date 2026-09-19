@@ -1,9 +1,10 @@
 import { Award, CalendarDays, MapPin, ShieldCheck, Users } from "lucide-react";
-import { BaiList } from "@/components/lop-hoc/bai-list";
+import { BaiList, type NguoiXem } from "@/components/lop-hoc/bai-list";
 import { KetQuaCard } from "@/components/lop-hoc/ket-qua-card";
 import { TienDoLop } from "@/components/lop-hoc/tien-do-vai-tro";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import type { DangKyLop } from "@/lib/dang-ky/queries";
 import { fmtDate } from "@/lib/format";
 import {
   DOI_TUONG_LABEL,
@@ -31,9 +32,14 @@ export function LopChiTietView({
   data,
   isQuanTri,
   headerActions,
+  viewer,
+  dangKy,
 }: {
   data: LopChiTiet;
   isQuanTri: boolean;
+  // Người đang xem + dữ liệu đăng ký/gợi ý (Giai đoạn 5); bỏ trống thì chỉ xem thông tin lớp
+  viewer?: NguoiXem;
+  dangKy?: DangKyLop;
   // Nút sửa lớp / chuyển trạng thái (chỉ truyền cho người quản trị)
   headerActions?: React.ReactNode;
 }) {
@@ -87,7 +93,16 @@ export function LopChiTietView({
       </Card>
 
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
-        <BaiList lopId={lop.id} ngayBatDau={lop.ngay_bat_dau} bai={bai} coTheSua={coTheSua} />
+        <BaiList
+          lopId={lop.id}
+          ngayBatDau={lop.ngay_bat_dau}
+          bai={bai}
+          coTheSua={coTheSua}
+          lopTrangThai={lop.trang_thai}
+          khongKinhPhi={lop.loai_kinh_phi === "khong_kinh_phi"}
+          viewer={viewer}
+          dangKy={dangKy}
+        />
 
         <div className="flex min-w-0 flex-col gap-5">
           {(isQuanTri || chung_chi_yeu_cau.length > 0) && (
