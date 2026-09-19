@@ -19,7 +19,7 @@
 | 0 | Khởi tạo hạ tầng | ✅ Xong | 100% |
 | 1 | Schema nền tảng & Auth & Phân quyền | ✅ Xong | 100% |
 | 2 | Design System nền tảng (token + App Shell) | ✅ Xong | 100% |
-| 3 | Module Nhân sự (4.1) | ⬜ Chưa bắt đầu | 0% |
+| 3 | Module Nhân sự (4.1) | ✅ Xong | 100% |
 | 4 | Module Lớp học (4.2) | ⬜ Chưa bắt đầu | 0% |
 | 5 | Module Đăng ký giảng dạy (4.3) | ⬜ Chưa bắt đầu | 0% |
 | 6 | Hệ thống KPI — engine + cấu hình (5/6/7) | ⬜ Chưa bắt đầu | 0% |
@@ -93,16 +93,18 @@ Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / 
 
 *Tham chiếu: mục 4.1, danh mục liên quan ở 4.8*
 
-- [ ] Danh mục cấu hình trước (phục vụ module này): chuyên môn, loại chứng chỉ
-- [ ] Bảng hồ sơ nhân sự đầy đủ: chuyên môn/bằng cấp, kinh nghiệm, danh mục chứng chỉ (số, nội dung, ngày cấp, nơi cấp, hình ảnh minh chứng)
-- [ ] Trạng thái tham gia giảng dạy (Đang tham gia/Tạm ngừng/Không còn tham gia) + logic ẩn khỏi đăng ký slot/matching khi không "Đang tham gia"
-- [ ] Màn hình danh sách Nhân sự (data table, filter nhóm chỉ Admin thấy)
-- [ ] Màn hình chi tiết hồ sơ (2 cột: thông tin cá nhân | Bảng KPI — cột KPI để trống/placeholder, hoàn thiện ở giai đoạn 7)
-- [ ] Lịch sử giảng dạy (khung dữ liệu — nội dung thật đổ vào khi có giai đoạn 5/6)
-- [ ] Lịch sử thay đổi nhóm (khung dữ liệu, dùng ở giai đoạn 6 khi có cơ chế đổi nhóm)
-- [ ] Đề xuất nhân sự — màn hình danh sách đề xuất cần duyệt (khung, nội dung đổ dần ở các giai đoạn sau)
+- [x] Danh mục cấu hình trước (phục vụ module này): chuyên môn, loại chứng chỉ
+- [x] Bảng hồ sơ nhân sự đầy đủ: chuyên môn/bằng cấp, kinh nghiệm, danh mục chứng chỉ (số, nội dung, ngày cấp, nơi cấp, hình ảnh minh chứng)
+- [x] Trạng thái tham gia giảng dạy (Đang tham gia/Tạm ngừng/Không còn tham gia) + logic ẩn khỏi đăng ký slot/matching khi không "Đang tham gia" *(đã có cột `trang_thai_tham_gia` + hàm SQL đổi trạng thái + hiển thị; phần ẩn khỏi đăng ký slot/matching áp dụng ở Giai đoạn 5 khi có các bảng đó)*
+- [x] Màn hình danh sách Nhân sự (data table, filter nhóm chỉ Admin thấy)
+- [x] Màn hình chi tiết hồ sơ (2 cột: thông tin cá nhân | Bảng KPI — cột KPI để trống/placeholder, hoàn thiện ở giai đoạn 7)
+- [x] Lịch sử giảng dạy (khung dữ liệu — nội dung thật đổ vào khi có giai đoạn 5/6)
+- [x] Lịch sử thay đổi nhóm (khung dữ liệu, dùng ở giai đoạn 6 khi có cơ chế đổi nhóm) *(bảng `lich_su_doi_nhom` do `dat_nhom` tự ghi; chỉ Admin/Quản lý lớp đọc)*
+- [x] Đề xuất nhân sự — màn hình danh sách đề xuất cần duyệt (khung, nội dung đổ dần ở các giai đoạn sau)
 
 **Điều kiện hoàn thành:** CRUD hồ sơ nhân sự hoạt động đầy đủ, đúng phân quyền xem/sửa, đúng nguyên tắc ẩn nhãn nhóm với GV/TG.
+
+> Đã đạt: 23/23 kiểm tra RLS pass (`supabase/tests/giai_doan_3_rls.sql`). Ghi chú: (1) không có chức năng tạo tài khoản trong app (cần service_role key) — Admin tạo user trong Supabase Dashboard, profile tự sinh; (2) không xóa hồ sơ, chỉ đổi trạng thái sang "Không còn tham gia"; (3) danh mục chuyên môn/loại chứng chỉ là dữ liệu mẫu, sửa tại `/cau-hinh/danh-muc`; (4) trang demo giao diện `/design/nhan-su` (chỉ chạy khi dev).
 
 ---
 
