@@ -36,7 +36,7 @@ export function QuanTriDrawer({
       <Field
         label="Trạng thái tham gia giảng dạy"
         htmlFor="trang_thai"
-        hint="Không phải trạng thái lao động. Khi không “Đang tham gia”, người này bị ẩn khỏi đăng ký slot mới và gợi ý phân công, nhưng vẫn giữ lịch sử KPI và hồ sơ."
+        hint="Khi không “Đang tham gia”, người này bị ẩn khỏi đăng ký slot mới và gợi ý phân công, nhưng vẫn giữ lịch sử KPI và hồ sơ."
       >
         <NativeSelect id="trang_thai" name="trang_thai" defaultValue={profile.trang_thai_tham_gia}>
           {TRANG_THAI_OPTIONS.map(([v, label]) => (
