@@ -310,6 +310,7 @@ Module này từng bị thiếu trong danh sách 4.1-4.8 ở bản nháp đầu,
 
 **"Rút gọn" nghĩa là ít mục hơn, KHÔNG phải trình bày sơ sài** — mỗi mục vẫn phải trực quan bằng biểu đồ/bảng biểu phù hợp, không phải chỉ liệt kê số/chữ khô khan. **Người giữ Quyền Quản lý lớp (mục 3) thấy CẢ 2 bộ widget dưới đây cùng lúc** (không phải chọn 1 trong 2), vì họ vừa quản lý vừa có hồ sơ GV/TG song song:
 
+- **Bố cục Tổng quan (đúng ảnh mẫu):** 2 cột — cột chính (~64%) chứa hàng **3 thẻ stat nhỏ** rồi các khối lớn (bảng, chart lớn); cột phụ (~36%) chứa các chart nhỏ xếp dọc và chạy từ trên cùng. Không để thẻ stat trải hết chiều ngang (làm lệch bố cục các chart bên dưới). Dùng component `DashboardLayout` + `StatRow` (`src/components/dashboard-layout.tsx`); dưới `lg` xếp 1 cột
 - **Admin/Quản lý lớp** — đa dạng loại biểu đồ, không chỉ area+bar, để 1 màn hình phản ánh nhiều góc độ như mẫu tham khảo (mục 8):
   - Hàng KPI stat card đầu trang (icon outline xám-xanh + nhãn + chevron ở hàng trên; số bên trái, trend pill không nền bên phải — đúng ảnh mẫu, không dùng icon badge nền màu): tổng nhân sự, lớp đang mở, slot còn trống, số cảnh báo pool nhỏ đang mở — mỗi stat tile kèm **sparkline nhỏ** phía dưới số (xu hướng 7-30 ngày gần nhất), giống style "Sales $94,127 ↑12%" trong ảnh tham khảo
   - **Bảng việc cần duyệt** (data table): đăng ký chờ, đề xuất nhân sự chờ — nút hành động nhanh ngay trong bảng, click dẫn thẳng tới màn hình xử lý
@@ -463,12 +464,12 @@ Phong cách tham khảo: **"Soft SaaS Dashboard"** (xem file `tham khao theme.jp
 
 **4 màu gốc (base hue) — lấy trực tiếp từ ảnh, mỗi màu có 1 công thức gradient riêng:**
 
-| Màu gốc | Gradient nền badge | Solid (icon/chữ) |
+| Màu gốc | Gradient nền (lấy mẫu từ ảnh) | Chữ đặt trên gradient | Solid (icon/chữ trên nền trắng) |
 |---|---|---|
-| Xanh dương (Blue) | `linear-gradient(135deg, #DBEAFE, #BFDBFE)` | `#2563EB` |
-| Navy (đậm hơn Blue, dùng làm brand chính) | `linear-gradient(135deg, #E2E8F0, #CBD5E1)` | `#1E3A5F` |
-| Xanh ngọc (Teal) | `linear-gradient(135deg, #CCFBF1, #99F6E4)` | `#0D9488` |
-| Xanh lá (Green) | `linear-gradient(135deg, #DCFCE7, #BBF7D0)` | `#16A34A` |
+| Xanh dương (Blue nhạt) | `linear-gradient(135deg, #C6DCFA, #A9C4F2)` | `#1E3A8A` | `#2563EB` |
+| Navy (Navy-lam, cũng là brand) | `linear-gradient(135deg, #166A8C, #14468A)` | `#FFFFFF` | `#14468A` |
+| Xanh ngọc (Mint) | `linear-gradient(135deg, #A2EFC3, #9FDBE3)` | `#0F5A55` | `#0D9488` |
+| Xanh lá (Lime) | `linear-gradient(135deg, #D1F591, #B1E9A2)` | `#365314` | `#16A34A` |
 
 | Token | Giá trị | Dùng cho |
 |---|---|---|
@@ -541,7 +542,7 @@ Phong cách tham khảo: **"Soft SaaS Dashboard"** (xem file `tham khao theme.jp
 
 **Modal/Drawer:** **Drawer trượt từ phải** (480-560px) cho xem/sửa chi tiết nhanh (giữ ngữ cảnh danh sách) — dùng cho hầu hết thao tác; **Modal giữa màn hình** chỉ cho xác nhận ngắn (confirm hủy/xóa), không dùng cho form dài. Overlay đen mờ 40%.
 
-**Avatar:** ảnh vuông bo 8px (không tròn, đồng bộ bo góc chung của hệ thống) 32px trong bảng, 64px trong hồ sơ chi tiết. **Fallback khi chưa có ảnh:** hình vuông nền gradient (1 trong 4 màu gốc 8.1, chọn theo hash tên) + chữ cái đầu tên viết hoa màu trắng — không dùng ảnh mặc định chung chung.
+**Avatar:** ảnh **hình tròn** (đã đổi từ vuông theo phản hồi) 32px trong bảng, 40px topbar, 64px trong hồ sơ chi tiết. **Fallback khi chưa có ảnh:** hình tròn nền 1 trong 4 gradient của bảng màu chung (bảng trên, chọn theo hash tên) + chữ cái đầu tên, dùng màu chữ "đặt trên gradient" tương ứng (navy → chữ trắng, 3 gradient nhạt → chữ đậm cùng tông) — không dùng ảnh mặc định chung chung.
 
 **Empty state:** khi 1 bảng/danh sách rỗng (không có lớp trống, không có thông báo...) — icon outline lớn xám nhạt ở giữa + 1 dòng text mô tả ngắn + (nếu có) 1 nút hành động gợi ý (vd "Tạo lớp mới") — không để trống trơn hoặc chỉ hiện chữ "No data".
 
@@ -557,7 +558,8 @@ Phong cách tham khảo: **"Soft SaaS Dashboard"** (xem file `tham khao theme.jp
   3. Nhóm **"HỆ THỐNG"**: Thông báo (4.5, hiện cho mọi người) → Nhật ký hệ thống (4.6) → Cấu hình hệ thống (4.8) — 2 mục cuối chỉ hiện với người có Quyền Quản lý lớp
 - Nền sidebar **hòa cùng nền trang, không viền, không panel trắng riêng** (đúng ảnh mẫu); chữ menu xám đậm, icon outline 1.75px
 - Active item: pill nền gradient `brand` ngang, chữ trắng, icon trắng (đúng mẫu ảnh)
-- **Ô thẻ dưới cùng sidebar** (vị trí "Upgrade plans" trong ảnh — app này không có gói nâng cấp nên **tái sử dụng vị trí này** cho nội dung hữu ích hơn): đề xuất hiển thị **"Kỳ đánh giá hiện tại"** (tên kỳ + ngày còn lại tới khi đóng kỳ) dạng card nền gradient nhạt (1 trong 4 màu gốc) + nút "Xem KPI của tôi" — giữ đúng vị trí/kiểu dáng trực quan nhưng đổi nội dung phù hợp
+- **Ô thẻ dưới cùng sidebar** (vị trí "Upgrade plans" trong ảnh — app này không có gói nâng cấp nên tái sử dụng vị trí này): hiển thị **"Kỳ đánh giá hiện tại"** dạng **card gọn** (nền tint lime nhạt, tiêu đề + 1 dòng "tên kỳ · còn X ngày" + nút "Xem KPI của tôi") — cố tình thấp để sidebar không phải scroll; tự ẩn khi chiều cao màn hình < 600px
+- **Sidebar KHÔNG scroll** (ảnh mẫu không có scroll): chiều cao mục menu và khoảng cách co giãn theo chiều cao màn hình (`clamp` theo vh), luôn vừa khung từ ~650px trở lên
 
 **Topbar (trên cùng, cố định):**
 - Trái: tiêu đề trang hiện tại + **breadcrumb** khi vào trang con (vd `Lớp học › Lớp ACLS-08 › Bài 3`) — chưa được đặc tả ở đâu trước đó, cần thêm vì hệ thống có nhiều cấp lồng nhau (Lớp → Bài → Slot)

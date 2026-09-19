@@ -38,14 +38,14 @@ export function NavList({
   const current = activeHref ?? pathname;
 
   return (
-    <nav className="flex flex-col gap-4" aria-label="Điều hướng chính">
+    <nav className="flex flex-col gap-[clamp(0.5rem,2vh,1.5rem)]" aria-label="Điều hướng chính">
       {NAV_GROUPS.map((group, i) => {
         const items = group.items.filter((it) => !it.quanTriOnly || isQuanTri);
         if (items.length === 0) return null;
         return (
-          <div key={group.label ?? i} className="flex flex-col gap-1.5 [@media(min-height:900px)]:gap-3">
+          <div key={group.label ?? i} className="flex flex-col gap-[clamp(0.125rem,0.8vh,0.5rem)]">
             {group.label && (
-              <p className="px-3 pb-1 text-xs font-medium tracking-wider text-muted-foreground/80 uppercase">
+              <p className="px-3 text-[11px] font-medium tracking-wider text-muted-foreground/80 uppercase">
                 {group.label}
               </p>
             )}
@@ -58,7 +58,7 @@ export function NavList({
                   onClick={onNavigate}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "flex h-10 items-center gap-3 rounded-lg px-3 text-sm font-medium transition-colors duration-150 ease-out max-md:h-11",
+                    "flex h-[clamp(2rem,4.8vh,2.5rem)] items-center gap-3 rounded-lg px-3 text-sm font-medium transition-colors duration-150 ease-out max-md:h-11",
                     active
                       ? "bg-brand-gradient text-primary-foreground shadow-card"
                       : "text-foreground/80 hover:bg-card hover:text-foreground",
@@ -76,37 +76,36 @@ export function NavList({
   );
 }
 
-// Ô dưới cùng sidebar (vị trí "Upgrade plans" trong ảnh mẫu): card trắng nổi nhẹ,
-// bên trong là khối gradient nhạt + tiêu đề + mô tả, nút gradient brand bên dưới.
+// Ô dưới cùng sidebar (vị trí "Upgrade plans" trong ảnh mẫu) — bản gọn: 1 card nền tint nhạt,
+// tiêu đề + 1 dòng kỳ/ngày còn lại + nút. Cố tình thấp để sidebar không phải scroll.
 export function PeriodCard({ period }: { period: PeriodInfo | null }) {
   return (
-    <div className="rounded-2xl border border-transparent bg-card p-2.5 shadow-card dark:border-border">
-      <div
-        className="rounded-xl p-3"
-        style={{ backgroundImage: "linear-gradient(135deg, var(--tint-lime), transparent 85%)" }}
-      >
-        <div className="flex items-center gap-2">
-          <CalendarClock className="size-5 text-hue-blue" strokeWidth={1.75} aria-hidden />
-          <p className="text-sm font-semibold">Kỳ đánh giá hiện tại</p>
-        </div>
-        {period ? (
-          <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-            <span className="font-medium text-foreground">{period.name}</span>
-            <br />
-            <span className="tabular-nums">Còn {period.daysLeft} ngày đến khi đóng kỳ</span>
-          </p>
-        ) : (
-          <p className="mt-2 text-xs text-muted-foreground">Chưa có kỳ đang mở</p>
-        )}
+    <div
+      className="rounded-2xl border border-transparent bg-card p-3 shadow-card dark:border-border"
+      style={{ backgroundImage: "linear-gradient(135deg, var(--tint-lime), transparent 80%)" }}
+    >
+      <div className="flex items-center gap-2">
+        <CalendarClock className="size-4 shrink-0 text-hue-blue" strokeWidth={1.75} aria-hidden />
+        <p className="text-[13px] font-semibold">Kỳ đánh giá hiện tại</p>
       </div>
-      <Button asChild className="mt-2.5 w-full">
+      <p className="mt-1 text-[11px] text-muted-foreground tabular-nums">
+        {period ? (
+          <>
+            <span className="font-medium text-foreground">{period.name}</span> · còn {period.daysLeft} ngày
+          </>
+        ) : (
+          "Chưa có kỳ đang mở"
+        )}
+      </p>
+      <Button asChild size="sm" className="mt-2.5 h-9 w-full text-xs">
         <Link href="/danh-gia">Xem KPI của tôi</Link>
       </Button>
     </div>
   );
 }
 
-// Sidebar desktop cố định ~240px (mục 8.5b). Nền hòa cùng nền trang, không viền (ảnh mẫu). Ẩn dưới md — mobile dùng MobileNav.
+// Sidebar desktop cố định ~240px (mục 8.5b). Nền hòa cùng nền trang, không viền, KHÔNG scroll (ảnh mẫu):
+// menu co giãn theo chiều cao màn hình; ô kỳ đánh giá ẩn khi màn hình quá thấp (<600px).
 export function Sidebar({
   isQuanTri,
   period,
@@ -117,12 +116,14 @@ export function Sidebar({
   activeHref?: string;
 }) {
   return (
-    <aside className="fixed inset-y-0 left-0 z-30 hidden w-60 flex-col gap-6 bg-sidebar p-4 md:flex dark:border-r">
+    <aside className="fixed inset-y-0 left-0 z-30 hidden w-60 flex-col gap-4 overflow-hidden bg-sidebar p-4 md:flex dark:border-r">
       <BrandLogo />
-      <div className="flex-1 overflow-y-auto">
+      <div className="min-h-0 flex-1">
         <NavList isQuanTri={isQuanTri} activeHref={activeHref} />
       </div>
-      <PeriodCard period={period} />
+      <div className="shrink-0 [@media(max-height:600px)]:hidden">
+        <PeriodCard period={period} />
+      </div>
     </aside>
   );
 }

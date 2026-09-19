@@ -62,6 +62,10 @@
   --color-hue-navy: var(--hue-navy);
   --color-hue-teal: var(--hue-teal);
   --color-hue-green: var(--hue-green);
+  --color-hue-blue-on: var(--hue-blue-on);
+  --color-hue-navy-on: var(--hue-navy-on);
+  --color-hue-teal-on: var(--hue-teal-on);
+  --color-hue-green-on: var(--hue-green-on);
 
   /* Bo góc: button/input 8px, card 16px, pill full */
   --radius-sm: 4px;
@@ -112,18 +116,24 @@
   --neutral-fg: #71717a;
 
   /* 4 màu gốc: gradient nền badge + solid cho icon/chữ */
+  /* 4 gradient nền lấy mẫu trực tiếp từ ảnh: Blue nhạt, Navy-lam, Mint, Lime.
+     --hue-X = màu solid cho icon/chữ trên nền trắng; --hue-X-on = màu chữ đặt TRÊN gradient đó. */
   --hue-blue: #2563eb;
-  --hue-blue-from: #dbeafe;
-  --hue-blue-to: #bfdbfe;
-  --hue-navy: #1e3a5f;
-  --hue-navy-from: #e2e8f0;
-  --hue-navy-to: #cbd5e1;
+  --hue-blue-from: #c6dcfa;
+  --hue-blue-to: #a9c4f2;
+  --hue-blue-on: #1e3a8a;
+  --hue-navy: #14468a;
+  --hue-navy-from: #166a8c;
+  --hue-navy-to: #14468a;
+  --hue-navy-on: #ffffff;
   --hue-teal: #0d9488;
-  --hue-teal-from: #e6faf6;
-  --hue-teal-to: #cdf4ec;
+  --hue-teal-from: #a2efc3;
+  --hue-teal-to: #9fdbe3;
+  --hue-teal-on: #0f5a55;
   --hue-green: #16a34a;
-  --hue-green-from: #e6f9ec;
-  --hue-green-to: #d0f4dc;
+  --hue-green-from: #d1f591;
+  --hue-green-to: #b1e9a2;
+  --hue-green-on: #365314;
   --tint-lime: #e4f0cc;
 
   /* Chart: chỉ sắc độ của 4 màu gốc */
@@ -181,15 +191,19 @@
   --hue-blue: #60a5fa;
   --hue-blue-from: #172554;
   --hue-blue-to: #1e3a8a;
-  --hue-navy: #94a3b8;
-  --hue-navy-from: #1e293b;
-  --hue-navy-to: #334155;
+  --hue-blue-on: #bfdbfe;
+  --hue-navy: #7cc3e0;
+  --hue-navy-from: #0e4a63;
+  --hue-navy-to: #10306b;
+  --hue-navy-on: #d6eaf5;
   --hue-teal: #2dd4bf;
-  --hue-teal-from: #042f2e;
+  --hue-teal-from: #063b38;
   --hue-teal-to: #115e59;
+  --hue-teal-on: #99f6e4;
   --hue-green: #4ade80;
-  --hue-green-from: #052e16;
-  --hue-green-to: #14532d;
+  --hue-green-from: #1d3a0c;
+  --hue-green-to: #365314;
+  --hue-green-on: #d9f99d;
   --tint-lime: #14311f;
 
   --chart-1: #60a5fa;

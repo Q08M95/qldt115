@@ -1,13 +1,13 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 
-// Fallback avatar (mục 8.5): hình vuông bo góc, nền gradient 1 trong 4 màu gốc chọn theo hash tên,
-// chữ cái đầu màu trắng. Gradient đậm (khác gradient nhạt của badge) để chữ trắng đọc được ở cả light/dark.
-const FALLBACK_GRADIENTS = [
-  "linear-gradient(135deg, #3b82f6, #2563eb)", // Blue
-  "linear-gradient(135deg, #1e3a5f, #14283f)", // Navy
-  "linear-gradient(135deg, #14b8a6, #0d9488)", // Teal
-  "linear-gradient(135deg, #22c55e, #16a34a)", // Green
+// Fallback avatar (mục 8.5): hình tròn, nền là 1 trong 4 gradient của bảng màu chung (lấy mẫu từ ảnh mẫu),
+// chọn theo hash tên; chữ cái đầu dùng màu "-on" tương ứng để đọc được trên từng gradient.
+const FALLBACKS = [
+  "bg-grad-blue text-hue-blue-on",
+  "bg-grad-navy text-hue-navy-on",
+  "bg-grad-teal text-hue-teal-on",
+  "bg-grad-green text-hue-green-on",
 ];
 
 function hash(s: string) {
@@ -34,10 +34,7 @@ export function UserAvatar({
   return (
     <Avatar className={cn("size-8", className)}>
       {src && <AvatarImage src={src} alt={name} />}
-      <AvatarFallback
-        className="font-medium text-white"
-        style={{ backgroundImage: FALLBACK_GRADIENTS[hash(name) % FALLBACK_GRADIENTS.length] }}
-      >
+      <AvatarFallback className={cn("font-semibold", FALLBACKS[hash(name) % FALLBACKS.length])}>
         {initial(name)}
       </AvatarFallback>
     </Avatar>
