@@ -16,8 +16,8 @@
 
 | # | Giai đoạn | Trạng thái | % |
 |---|---|---|---|
-| 0 | Khởi tạo hạ tầng | 🟡 Đang làm | 95% (chỉ còn thử đăng nhập tài khoản test) |
-| 1 | Schema nền tảng & Auth & Phân quyền | ⬜ Chưa bắt đầu | 0% |
+| 0 | Khởi tạo hạ tầng | ✅ Xong | 100% |
+| 1 | Schema nền tảng & Auth & Phân quyền | 🟡 Đang làm | 0% |
 | 2 | Design System nền tảng (token + App Shell) | ⬜ Chưa bắt đầu | 0% |
 | 3 | Module Nhân sự (4.1) | ⬜ Chưa bắt đầu | 0% |
 | 4 | Module Lớp học (4.2) | ⬜ Chưa bắt đầu | 0% |
@@ -44,7 +44,7 @@ Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / 
 - [x] Cài Tailwind CSS + shadcn/ui + Lucide icon
 - [x] Cài font Geist (fallback Inter)
 - [x] Tạo project Supabase (môi trường dev, free tier)
-- [x] Kết nối Supabase Auth (email/mật khẩu) vào Next.js *(proxy + trang /login + đăng xuất; chưa thử đăng nhập với tài khoản thật)*
+- [x] Kết nối Supabase Auth (email/mật khẩu) vào Next.js *(proxy + trang /login + đăng xuất; đã đăng nhập thử thành công)*
 - [x] Kết nối Vercel với GitHub repo (Vercel Git Integration) → Preview/Production tự sinh khi push (https://qldt115.vercel.app)
 - [x] Cấu hình biến môi trường (`.env.local` cho dev, biến môi trường Vercel cho preview/production) — không commit secret
 - [x] Cấu trúc thư mục dự án cơ bản (`app/`, `components/`, `lib/`, `types/`...)
