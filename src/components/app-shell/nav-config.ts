@@ -70,6 +70,8 @@ export const SEGMENT_LABELS: Record<string, string> = {
   "cau-hinh": "Cấu hình hệ thống",
   "ho-so": "Hồ sơ của tôi",
   "quan-tri": "Khu vực quản trị",
+  "de-xuat": "Đề xuất nhân sự",
+  "danh-muc": "Danh mục",
   design: "Design System",
 };
 
