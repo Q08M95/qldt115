@@ -1,13 +1,16 @@
 import { DanhMucEditor } from "@/components/cau-hinh/danh-muc-editor";
+import { NhomLopEditor } from "@/components/cau-hinh/nhom-lop-editor";
 import { requireQuanTri } from "@/lib/auth/session";
+import { getNhomLop } from "@/lib/lop-hoc/queries";
 import { getDanhMuc } from "@/lib/nhan-su/queries";
 
-// Danh mục cấu hình phục vụ module Nhân sự (mục 4.8). Giai đoạn 11 sẽ gom chung vào màn hình Cấu hình hệ thống.
+// Danh mục cấu hình phục vụ module Nhân sự và Lớp học (mục 4.8). Giai đoạn 11 sẽ gom chung vào màn hình Cấu hình hệ thống.
 export default async function DanhMucPage() {
-  const [, chuyenMon, loaiChungChi] = await Promise.all([
+  const [, chuyenMon, loaiChungChi, nhomLop] = await Promise.all([
     requireQuanTri(),
     getDanhMuc("danh_muc_chuyen_mon"),
     getDanhMuc("danh_muc_loai_chung_chi"),
+    getNhomLop(),
   ]);
 
   return (
@@ -24,6 +27,7 @@ export default async function DanhMucPage() {
         moTa="Dùng khi nhân sự khai báo chứng chỉ và làm điều kiện đăng ký lớp có yêu cầu chứng chỉ."
         items={loaiChungChi}
       />
+      <NhomLopEditor items={nhomLop} />
     </div>
   );
 }

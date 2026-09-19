@@ -20,7 +20,7 @@
 | 1 | Schema nền tảng & Auth & Phân quyền | ✅ Xong | 100% |
 | 2 | Design System nền tảng (token + App Shell) | ✅ Xong | 100% |
 | 3 | Module Nhân sự (4.1) | ✅ Xong | 100% |
-| 4 | Module Lớp học (4.2) | ⬜ Chưa bắt đầu | 0% |
+| 4 | Module Lớp học (4.2) | ✅ Xong | 100% |
 | 5 | Module Đăng ký giảng dạy (4.3) | ⬜ Chưa bắt đầu | 0% |
 | 6 | Hệ thống KPI — engine + cấu hình (5/6/7) | ⬜ Chưa bắt đầu | 0% |
 | 7 | Module Đánh giá chất lượng (4.4) | ⬜ Chưa bắt đầu | 0% |
@@ -113,16 +113,17 @@ Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / 
 
 *Tham chiếu: mục 4.2, danh mục nhóm lớp ở 4.8*
 
-- [ ] Danh mục nhóm lớp (kèm hệ số D1 gắn sẵn từng nhóm), danh mục loại kinh phí
-- [ ] Bảng `classes` (Lớp): tên, nhóm lớp, đối tượng, loại kinh phí, nhóm đủ điều kiện đăng ký, chứng chỉ yêu cầu thêm, ngày bắt đầu-kết thúc, địa điểm, trạng thái lớp
-- [ ] Bảng `lessons` (Bài): thuộc lớp, nội dung/tên bài, ngày-giờ cụ thể
-- [ ] Bảng `slots` (slot nhân sự theo Bài): vai trò, số lượng, trạng thái slot (Trống/Đang chờ duyệt/Đã phân công)
-- [ ] Logic trạng thái lớp "Đã đủ đăng ký" — derived, không nhập tay
-- [ ] Màn hình danh sách Lớp (card grid, badge nhóm lớp + trạng thái, progress bar mini theo vai trò)
-- [ ] Màn hình chi tiết Lớp: progress bar đầy đủ + danh sách Bài dạng accordion/timeline, auto-collapse khi 1 người đảm nhiệm toàn bộ vai trò
-- [ ] Cơ chế nhập C1 sau khi lớp "Đã hoàn thành": link khảo sát tự động (URL công khai ẩn danh, bảng phản hồi riêng, tự tính trung bình) + nhập tay % — cùng ghi đè 1 trường C1
-- [ ] Nhập C3 (% đạt chuẩn đầu ra, tay) sau khi lớp hoàn thành
-- [ ] Lọc danh sách lớp theo nhóm lớp
+- [x] Danh mục nhóm lớp (kèm hệ số D1 gắn sẵn từng nhóm; sửa tại Cấu hình > Danh mục). Loại kinh phí là enum có/không (A4, D2 rẽ nhánh theo giá trị này) nên không làm danh mục sửa được
+- [x] Bảng `classes` (Lớp): tên, nhóm lớp, đối tượng, loại kinh phí, nhóm đủ điều kiện đăng ký, chứng chỉ yêu cầu thêm, ngày bắt đầu-kết thúc, địa điểm, trạng thái lớp
+- [x] Bảng `lessons` (Bài): thuộc lớp, nội dung/tên bài, ngày-giờ cụ thể
+- [x] Bảng `slots` (slot nhân sự theo Bài): vai trò, số lượng, trạng thái slot (Trống/Đang chờ duyệt/Đã phân công)
+- [x] Logic trạng thái lớp "Đã đủ đăng ký" — derived, không nhập tay
+- [x] Màn hình danh sách Lớp (card grid, badge nhóm lớp + trạng thái, progress bar mini theo vai trò)
+- [x] Màn hình chi tiết Lớp: progress bar đầy đủ + danh sách Bài dạng accordion/timeline, auto-collapse khi 1 người đảm nhiệm toàn bộ vai trò
+- [x] Cơ chế nhập C1 sau khi lớp "Đã hoàn thành": link khảo sát tự động (URL công khai ẩn danh, bảng phản hồi riêng, tự tính trung bình) + nhập tay % — cùng ghi đè 1 trường C1
+- [x] Nhập C3 (% đạt chuẩn đầu ra, tay) sau khi lớp hoàn thành
+- [x] Lọc danh sách lớp theo nhóm lớp
+- [x] Đã chạy migration `20260920100000_giai_doan_4_lop_hoc.sql` + test `supabase/tests/giai_doan_4_rls.sql`: 65/65 kiểm tra đạt
 
 **Điều kiện hoàn thành:** tạo được 1 lớp với nhiều Bài, mỗi Bài có slot theo vai trò đúng cấu trúc, progress bar hiển thị đúng label "X/Y lượt phân công" + "Z nhân sự khác nhau".
 

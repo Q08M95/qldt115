@@ -17,7 +17,7 @@ export default async function CauHinhPage() {
             </span>
             <span className="min-w-0 flex-1">
               <span className="block font-semibold">Danh mục</span>
-              <span className="block text-sm text-muted-foreground">Chuyên môn, loại chứng chỉ</span>
+              <span className="block text-sm text-muted-foreground">Chuyên môn, loại chứng chỉ, nhóm lớp (hệ số D1)</span>
             </span>
             <ChevronRight className="size-4 text-muted-foreground" aria-hidden />
           </CardContent>

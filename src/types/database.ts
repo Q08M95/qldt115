@@ -70,6 +70,75 @@ export interface LichSuDoiNhom {
   created_at: string;
 }
 
+// ---------- Lớp học (Giai đoạn 4) ----------
+export type DoiTuongLop = "nhan_vien_y_te" | "cong_dong";
+export type LoaiKinhPhi = "co_kinh_phi" | "khong_kinh_phi";
+export type TrangThaiLop = "nhap" | "dang_mo" | "da_hoan_thanh" | "da_huy";
+// Trạng thái hiển thị: thêm 2 trạng thái SUY RA (không lưu) — xem view lop_hoc_tong_hop
+export type TrangThaiLopHienThi = TrangThaiLop | "da_du_dang_ky" | "dang_dien_ra";
+export type TrangThaiSlot = "trong" | "cho_duyet" | "da_phan_cong";
+export type NguonC1 = "khao_sat" | "nhap_tay";
+
+export interface NhomLop {
+  id: string;
+  ten: string;
+  he_so_d1: number;
+  thu_tu: number;
+  dang_dung: boolean;
+}
+
+export interface LopHocTongHop {
+  id: string;
+  ten: string;
+  nhom_lop_id: string;
+  nhom_lop_ten: string;
+  he_so_d1: number;
+  doi_tuong: DoiTuongLop;
+  loai_kinh_phi: LoaiKinhPhi;
+  ngay_bat_dau: string;
+  ngay_ket_thuc: string;
+  dia_diem: string | null;
+  trang_thai: TrangThaiLop;
+  trang_thai_hien_thi: TrangThaiLopHienThi;
+  cong_khai_som: boolean;
+  c1_phan_tram: number | null;
+  c1_nguon: NguonC1 | null;
+  c3_phan_tram: number | null;
+  so_bai: number;
+  gv_tong: number;
+  gv_da_phan_cong: number;
+  gv_nhan_su: number;
+  gv_ten_duy_nhat: string | null;
+  tg_tong: number;
+  tg_da_phan_cong: number;
+  tg_nhan_su: number;
+  tg_ten_duy_nhat: string | null;
+}
+
+export interface SlotGiangDay {
+  id: string;
+  vai_tro: VaiTroGiangDay;
+  vi_tri: number;
+  trang_thai: TrangThaiSlot;
+  nguoi: { id: string; ho_ten: string; avatar_url: string | null } | null;
+}
+
+export interface BaiHoc {
+  id: string;
+  lop_id: string;
+  thu_tu: number;
+  ten: string;
+  bat_dau: string;
+  ket_thuc: string;
+  slots: SlotGiangDay[];
+}
+
+export interface KhaoSatLop {
+  token: string;
+  mo: boolean;
+  so_phan_hoi: number;
+}
+
 export interface DeXuatNhanSu {
   id: string;
   loai: LoaiDeXuat;

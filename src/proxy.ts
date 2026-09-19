@@ -1,9 +1,10 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-// Các route không cần đăng nhập (khảo sát C1 công khai sẽ bổ sung ở Giai đoạn 4)
+// Các route không cần đăng nhập: /login và /khao-sat (khảo sát hài lòng C1 công khai, ẩn danh — mục 4.2)
 // /design (trang demo Design System) chỉ public khi chạy dev, không bao giờ public ở production
-const PUBLIC_PATHS = process.env.NODE_ENV === "production" ? ["/login"] : ["/login", "/design"];
+const PUBLIC_PATHS =
+  process.env.NODE_ENV === "production" ? ["/login", "/khao-sat"] : ["/login", "/khao-sat", "/design"];
 
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });
