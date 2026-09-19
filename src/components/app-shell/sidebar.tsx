@@ -43,7 +43,7 @@ export function NavList({
         const items = group.items.filter((it) => !it.quanTriOnly || isQuanTri);
         if (items.length === 0) return null;
         return (
-          <div key={group.label ?? i} className="flex flex-col gap-[clamp(0.125rem,calc((100vh-520px)/12),1.1rem)]">
+          <div key={group.label ?? i} className="flex flex-col gap-[clamp(0.125rem,calc((100vh-560px)/12),1rem)]">
             {group.label && (
               <p className="px-3 text-xs font-medium tracking-wider text-muted-foreground/80 uppercase">
                 {group.label}
@@ -116,12 +116,15 @@ export function Sidebar({
   activeHref?: string;
 }) {
   return (
-    <aside className="fixed inset-y-0 left-0 z-30 hidden w-60 flex-col gap-4 overflow-hidden bg-sidebar p-4 md:flex dark:border-r">
-      <BrandLogo />
+    <aside className="fixed inset-y-0 left-0 z-30 hidden w-60 flex-col overflow-hidden bg-sidebar px-4 pb-4 md:flex dark:border-r">
+      {/* Hàng logo cao bằng topbar (88px) để logo và tiêu đề trang nằm cùng 1 đường ngang như ảnh mẫu */}
+      <div className="flex h-[88px] shrink-0 items-center">
+        <BrandLogo />
+      </div>
       <div className="min-h-0 flex-1">
         <NavList isQuanTri={isQuanTri} activeHref={activeHref} />
       </div>
-      <div className="shrink-0 [@media(max-height:600px)]:hidden">
+      <div className="mt-4 shrink-0 [@media(max-height:600px)]:hidden">
         <PeriodCard period={period} />
       </div>
     </aside>
