@@ -1,0 +1,30 @@
+import { MobileTabBar } from "./mobile-tab-bar";
+import { Sidebar, type PeriodInfo } from "./sidebar";
+import { Topbar, type ShellUser } from "./topbar";
+
+// Khung ứng dụng (mục 8.5b): sidebar cố định trái (desktop) + topbar cố định + bottom tab bar (mobile).
+// Thuần trình bày — dữ liệu người dùng/kỳ đánh giá do layout truyền vào.
+export function AppShell({
+  user,
+  isQuanTri,
+  period = null,
+  unreadCount = 0,
+  children,
+}: {
+  user: ShellUser;
+  isQuanTri: boolean;
+  period?: PeriodInfo | null;
+  unreadCount?: number;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="min-h-screen bg-background">
+      <Sidebar isQuanTri={isQuanTri} period={period} />
+      <div className="md:pl-60">
+        <Topbar user={user} isQuanTri={isQuanTri} unreadCount={unreadCount} />
+        <main className="p-4 pb-24 md:p-6 md:pb-6">{children}</main>
+      </div>
+      <MobileTabBar />
+    </div>
+  );
+}

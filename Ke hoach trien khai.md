@@ -18,7 +18,7 @@
 |---|---|---|---|
 | 0 | Khởi tạo hạ tầng | ✅ Xong | 100% |
 | 1 | Schema nền tảng & Auth & Phân quyền | ✅ Xong | 100% |
-| 2 | Design System nền tảng (token + App Shell) | ⬜ Chưa bắt đầu | 0% |
+| 2 | Design System nền tảng (token + App Shell) | ✅ Xong | 100% |
 | 3 | Module Nhân sự (4.1) | ⬜ Chưa bắt đầu | 0% |
 | 4 | Module Lớp học (4.2) | ⬜ Chưa bắt đầu | 0% |
 | 5 | Module Đăng ký giảng dạy (4.3) | ⬜ Chưa bắt đầu | 0% |
@@ -72,14 +72,16 @@ Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / 
 
 *Tham chiếu: mục 8.1 → 8.5b*
 
-- [ ] Khai báo design token Tailwind (màu 4 màu gốc + semantic token) theo bảng 8.1
-- [ ] Dark mode: cấu hình `next-themes` hoặc tương đương, token dark theo bảng 8.1b, toggle lưu localStorage + theo `prefers-color-scheme`
-- [ ] Typography scale (8.2), spacing/bo góc/shadow (8.3)
-- [ ] Component chuẩn dựng bằng shadcn/ui, tùy biến theo 8.5: Button (4 biến thể), Badge/Pill, Card (kèm dropdown menu "..." dùng chung), Data table, Form/Input, Modal/Drawer, Avatar (bo góc + fallback gradient theo hash tên), Empty state
-- [ ] App Shell (8.5b): Sidebar desktop (menu nhóm TỔNG QUAN/QUẢN LÝ/HỆ THỐNG theo đúng thứ tự UI), Topbar (breadcrumb, tìm kiếm toàn cục, icon lịch, bell, avatar menu)
-- [ ] Responsive App Shell (8.9): bottom tab bar + hamburger menu cho mobile, breakpoint `md`
+- [x] Khai báo design token Tailwind (màu 4 màu gốc + semantic token) theo bảng 8.1 *(trong `src/app/globals.css`; gradient dùng class `bg-grad-*`, `bg-brand-gradient`)*
+- [x] Dark mode: cấu hình `next-themes` hoặc tương đương, token dark theo bảng 8.1b, toggle lưu localStorage + theo `prefers-color-scheme`
+- [x] Typography scale (8.2), spacing/bo góc/shadow (8.3)
+- [x] Component chuẩn dựng bằng shadcn/ui, tùy biến theo 8.5: Button (4 biến thể), Badge/Pill, Card (kèm dropdown menu "..." dùng chung), Data table, Form/Input, Modal/Drawer, Avatar (bo góc + fallback gradient theo hash tên), Empty state
+- [x] App Shell (8.5b): Sidebar desktop (menu nhóm TỔNG QUAN/QUẢN LÝ/HỆ THỐNG theo đúng thứ tự UI), Topbar (breadcrumb, tìm kiếm toàn cục, icon lịch, bell, avatar menu)
+- [x] Responsive App Shell (8.9): bottom tab bar + hamburger menu cho mobile, breakpoint `md`
 
 **Điều kiện hoàn thành:** có 1 trang demo trống dựng đủ App Shell + bộ component mẫu, chạy đúng cả desktop/mobile/dark mode, chưa cần dữ liệu thật.
+
+> Đã đạt: trang `/design` (chỉ mở được khi chạy dev, production trả 404) — đã chụp và đối chiếu với `tham khao theme.jpeg` ở desktop light/dark và mobile 390px bằng Edge. **Chưa thử trên điện thoại thật** (làm ở Giai đoạn 12). Ngoài phạm vi giai đoạn này, để dành Giai đoạn 12: bảng → card list và stat card → carousel trên mobile; và Giai đoạn 8: dropdown thông báo của bell (hiện chỉ là link + badge).
 
 ---
 
