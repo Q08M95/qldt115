@@ -52,7 +52,7 @@ export async function themNhanSu(_prev: ActionState, fd: FormData): Promise<Acti
   if (matKhau.length < MIN_PASSWORD) return { error: `Mật khẩu tạm tối thiểu ${MIN_PASSWORD} ký tự.` };
   if (nhom === null) return { error: "Nhóm không hợp lệ." };
 
-  let admin;
+  let admin: ReturnType<typeof createAdminClient>;
   try {
     admin = createAdminClient();
   } catch (e) {
@@ -98,7 +98,7 @@ export async function nhapNhieuNhanSu(_prev: NhapNhieuState, fd: FormData): Prom
   if (rows.length === 0) return { error: "Chưa có dòng dữ liệu nào." };
   if (rows.length > MAX_CSV_ROWS) return { error: `Tối đa ${MAX_CSV_ROWS} dòng mỗi lần (hiện ${rows.length}). Hãy chia nhỏ danh sách.` };
 
-  let admin;
+  let admin: ReturnType<typeof createAdminClient>;
   try {
     admin = createAdminClient();
   } catch (e) {
@@ -204,7 +204,7 @@ export async function datLaiMatKhau(_prev: ActionState, fd: FormData): Promise<A
   if (!UUID.test(userId)) return { error: "Mã người dùng không hợp lệ." };
   if (matKhau.length < MIN_PASSWORD) return { error: `Mật khẩu tối thiểu ${MIN_PASSWORD} ký tự.` };
 
-  let admin;
+  let admin: ReturnType<typeof createAdminClient>;
   try {
     admin = createAdminClient();
   } catch (e) {
