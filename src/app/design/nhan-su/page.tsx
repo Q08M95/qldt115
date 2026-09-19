@@ -3,6 +3,8 @@ import Link from "next/link";
 import { Lightbulb } from "lucide-react";
 import { AppShell } from "@/components/app-shell/app-shell";
 import { NhanSuFilters } from "@/components/nhan-su/nhan-su-filters";
+import { NhapCsvDrawer } from "@/components/nhan-su/nhap-csv-drawer";
+import { DoiMatKhauDrawer, ThemNhanSuDrawer } from "@/components/nhan-su/tai-khoan-drawers";
 import { NhanSuList } from "@/components/nhan-su/nhan-su-list";
 import {
   ChungChiCard,
@@ -57,13 +59,18 @@ export default function DesignNhanSuPage() {
               </Button>
             </CardAction>
           </CardHeader>
+          <div className="flex flex-wrap gap-2 px-5">
+            <ThemNhanSuDrawer />
+            <NhapCsvDrawer />
+            <DoiMatKhauDrawer />
+          </div>
           <NhanSuFilters values={{ q: "", trang_thai: "", vai_tro: "", chuyen_mon: "", nhom: "" }} chuyenMon={DM.map((d) => ({ id: d.id, ten: d.ten }))} isQuanTri />
           <NhanSuList rows={ROWS} isQuanTri />
         </Card>
 
         <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)]">
           <div className="flex min-w-0 flex-col gap-5">
-            <ProfileInfoCard profile={PROFILE} nhom="gv_bac_si" chuyenMon={[{ chuyen_mon_id: "a", chi_tiet: "Nội khoa", ten: "Bác sĩ" }, { chuyen_mon_id: "b", chi_tiet: null, ten: "Thạc sĩ" }]} danhMucChuyenMon={DM} canEdit isQuanTri laAdmin />
+            <ProfileInfoCard profile={PROFILE} nhom="gv_bac_si" chuyenMon={[{ chuyen_mon_id: "a", chi_tiet: "Nội khoa", ten: "Bác sĩ" }, { chuyen_mon_id: "b", chi_tiet: null, ten: "Thạc sĩ" }]} danhMucChuyenMon={DM} canEdit isQuanTri laAdmin laChuHoSo={false} />
             <ChuyenMonCard chuyenMon={[{ chuyen_mon_id: "a", chi_tiet: "Nội khoa", ten: "Bác sĩ" }, { chuyen_mon_id: "b", chi_tiet: null, ten: "Thạc sĩ" }]} />
             <ChungChiCard userId="1" chungChi={CC} loai={DM} canEdit />
           </div>

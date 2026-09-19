@@ -101,6 +101,7 @@ Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / 
 - [x] Lịch sử giảng dạy (khung dữ liệu — nội dung thật đổ vào khi có giai đoạn 5/6)
 - [x] Lịch sử thay đổi nhóm (khung dữ liệu, dùng ở giai đoạn 6 khi có cơ chế đổi nhóm) *(bảng `lich_su_doi_nhom` do `dat_nhom` tự ghi; chỉ Admin/Quản lý lớp đọc)*
 - [x] Đề xuất nhân sự — màn hình danh sách đề xuất cần duyệt (khung, nội dung đổ dần ở các giai đoạn sau)
+- [x] *(bổ sung)* Quản lý tài khoản trong app: **Thêm nhân sự** (1 người + nhập nhiều từ CSV/Excel, mật khẩu tự sinh), **Đổi mật khẩu** (tự đổi, xác minh mật khẩu cũ), **Đặt lại mật khẩu** cho người khác — chỉ Admin gốc, dùng `SUPABASE_SERVICE_ROLE_KEY` (biến môi trường, chỉ ở server)
 
 **Điều kiện hoàn thành:** CRUD hồ sơ nhân sự hoạt động đầy đủ, đúng phân quyền xem/sửa, đúng nguyên tắc ẩn nhãn nhóm với GV/TG.
 

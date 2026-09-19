@@ -117,6 +117,8 @@ Phạm vi: hồ sơ nhân sự, trạng thái tham gia giảng dạy, lịch s�
 
 - **Điều kiện đăng ký lớp theo nhóm (liên kết module Lớp học, mục 4.2):** thay vì lưu "môn/lớp được phép dạy" như danh sách tự do trên từng hồ sơ cá nhân, điều kiện này gắn ở **cấp lớp học** — khi tạo 1 lớp mới, Admin/Quản lý lớp chọn **nhóm nào (trong 5 nhóm) đủ điều kiện đăng ký** cho lớp đó (vd lớp ALS chỉ mở cho "Giảng viên là bác sĩ" + "Trợ giảng là bác sĩ"), chứng chỉ yêu cầu thêm (nếu lớp cần) là điều kiện lọc thêm bên trong nhóm đã đủ điều kiện
 
+- **Quản lý tài khoản (Admin gốc):** thêm nhân sự trong app (1 người hoặc nhập nhiều từ CSV/Excel, mật khẩu tạm tự sinh hoặc do Admin đặt), đặt lại mật khẩu cho người khác; mọi người dùng tự **đổi mật khẩu** ở hồ sơ của mình (xác minh mật khẩu hiện tại). Cần `SUPABASE_SERVICE_ROLE_KEY` (chỉ ở server, không bao giờ vào bundle trình duyệt/không commit). Người giữ Quyền Quản lý lớp KHÔNG có các quyền này. Chưa có luồng "quên mật khẩu" qua email (cần cấu hình SMTP) — Admin đặt lại mật khẩu thay thế.
+
 - **Trạng thái tham gia giảng dạy:** Đang tham gia / Tạm ngừng tham gia / Không còn tham gia — phản ánh việc có đang hoạt động trong hệ thống đăng ký/giảng dạy này hay không, **không phải trạng thái lao động/hợp đồng** (do hệ thống nhân sự khác quản lý, mục 1). Khi không "Đang tham gia": ẩn khỏi danh sách đăng ký slot mới và matching-score, nhưng **giữ nguyên lịch sử KPI/hồ sơ** để tra cứu sau này
 
 - **Lịch sử giảng dạy:** các lớp đã dạy, số tiết, số giờ/buổi, thời gian, tần suất — ghi chi tiết hoạt động giảng dạy của từng người; lịch sử thay đổi nhóm (nhóm cũ/mới, ngày hiệu lực, người duyệt — mục 3); A4 lũy kế (số lớp không kinh phí đã nhận, theo kỳ và toàn thời gian — mục 6, dùng cho tie-break khen thưởng/vinh danh/matching-score)

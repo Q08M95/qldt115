@@ -66,3 +66,15 @@ export function boDau(s: string) {
     .replace(/Đ/g, "D")
     .toLowerCase();
 }
+
+// Đổi chữ người dùng nhập (mã như "gv_bac_si" hoặc tên như "Giảng viên là bác sĩ", có/không dấu) về mã nhóm.
+// Trả "" nếu để trống, null nếu không nhận ra.
+export function resolveNhom(raw: string): NhomNhanSu | "" | null {
+  const norm = (s: string) => boDau(s).replace(/_/g, " ").replace(/\s+/g, " ").trim();
+  const t = norm(raw);
+  if (!t) return "";
+  for (const [code, label] of NHOM_OPTIONS) {
+    if (t === norm(code) || t === norm(label)) return code;
+  }
+  return null;
+}

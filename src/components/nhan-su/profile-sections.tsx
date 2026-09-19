@@ -6,6 +6,7 @@ import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/componen
 import { ChungChiDrawer } from "@/components/nhan-su/chung-chi-drawer";
 import { EditProfileDrawer } from "@/components/nhan-su/edit-profile-drawer";
 import { QuanTriDrawer } from "@/components/nhan-su/quan-tri-drawer";
+import { DatLaiMatKhauDrawer, DoiMatKhauDrawer } from "@/components/nhan-su/tai-khoan-drawers";
 import { XoaChungChiButton } from "@/components/nhan-su/xoa-chung-chi-button";
 import { fmtDate } from "@/lib/format";
 import {
@@ -32,6 +33,7 @@ export function ProfileInfoCard({
   canEdit,
   isQuanTri,
   laAdmin,
+  laChuHoSo,
 }: {
   profile: Profile;
   // null với GV/TG (ẩn nhãn nhóm) hoặc chưa xếp nhóm
@@ -41,6 +43,7 @@ export function ProfileInfoCard({
   canEdit: boolean;
   isQuanTri: boolean;
   laAdmin: boolean;
+  laChuHoSo: boolean;
 }) {
   return (
     <Card>
@@ -83,12 +86,15 @@ export function ProfileInfoCard({
           </div>
         </dl>
 
-        {(canEdit || isQuanTri) && (
+        {(canEdit || isQuanTri || laChuHoSo) && (
           <div className="flex flex-wrap gap-2">
             {canEdit && (
               <EditProfileDrawer profile={profile} chuyenMon={chuyenMon} danhMucChuyenMon={danhMucChuyenMon} />
             )}
             {isQuanTri && <QuanTriDrawer profile={profile} nhom={nhom} laAdmin={laAdmin} />}
+            {/* Đổi mật khẩu: chỉ chủ tài khoản. Đặt lại mật khẩu cho người khác: chỉ Admin gốc. */}
+            {laChuHoSo && <DoiMatKhauDrawer />}
+            {laAdmin && !laChuHoSo && <DatLaiMatKhauDrawer userId={profile.id} hoTen={profile.ho_ten} />}
           </div>
         )}
       </CardContent>

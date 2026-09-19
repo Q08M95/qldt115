@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { Lightbulb } from "lucide-react";
 import { NhanSuFilters } from "@/components/nhan-su/nhan-su-filters";
+import { NhapCsvDrawer } from "@/components/nhan-su/nhap-csv-drawer";
+import { ThemNhanSuDrawer } from "@/components/nhan-su/tai-khoan-drawers";
 import { NhanSuList } from "@/components/nhan-su/nhan-su-list";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -8,6 +10,9 @@ import { Card, CardAction, CardHeader, CardTitle } from "@/components/ui/card";
 import { requireSession } from "@/lib/auth/session";
 import { boDau } from "@/lib/nhan-su/labels";
 import { countDeXuatChoDuyet, getDanhMuc, getNhanSuList } from "@/lib/nhan-su/queries";
+
+// Nhập CSV tạo tối đa 200 tài khoản trong 1 lần gọi — cần thời gian chạy dài hơn mặc định
+export const maxDuration = 60;
 
 function first(v: string | string[] | undefined) {
   return (Array.isArray(v) ? v[0] : v) ?? "";
@@ -17,7 +22,7 @@ export default async function NhanSuPage(props: PageProps<"/nhan-su">) {
   const sp = await props.searchParams;
 
   // Xác thực và đọc dữ liệu chạy SONG SONG (dữ liệu không phụ thuộc kết quả xác thực; RLS vẫn lọc theo người dùng).
-  const [{ isQuanTri }, all, chuyenMon, choDuyetTho] = await Promise.all([
+  const [{ isQuanTri, isAdmin }, all, chuyenMon, choDuyetTho] = await Promise.all([
     requireSession(),
     getNhanSuList(),
     getDanhMuc("danh_muc_chuyen_mon"),
@@ -62,6 +67,13 @@ export default async function NhanSuPage(props: PageProps<"/nhan-su">) {
           </CardAction>
         )}
       </CardHeader>
+      {/* Thêm tài khoản cần service_role nên chỉ Admin gốc thấy các nút này */}
+      {isAdmin && (
+        <div className="flex flex-wrap gap-2 px-5">
+          <ThemNhanSuDrawer />
+          <NhapCsvDrawer />
+        </div>
+      )}
       <NhanSuFilters
         values={values}
         chuyenMon={chuyenMon.filter((c) => c.dang_dung).map((c) => ({ id: c.id, ten: c.ten }))}

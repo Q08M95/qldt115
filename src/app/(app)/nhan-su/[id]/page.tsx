@@ -42,6 +42,7 @@ export default async function NhanSuChiTietPage(props: PageProps<"/nhan-su/[id]"
           canEdit={canEdit}
           isQuanTri={session.isQuanTri}
           laAdmin={session.isAdmin}
+          laChuHoSo={laChuHoSo}
         />
         <ChuyenMonCard chuyenMon={chiTiet.chuyen_mon} />
         <ChungChiCard userId={id} chungChi={chiTiet.chung_chi} loai={dmLoaiChungChi} canEdit={canEdit} />
