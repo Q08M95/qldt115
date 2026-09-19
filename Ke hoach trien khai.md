@@ -17,7 +17,7 @@
 | # | Giai đoạn | Trạng thái | % |
 |---|---|---|---|
 | 0 | Khởi tạo hạ tầng | ✅ Xong | 100% |
-| 1 | Schema nền tảng & Auth & Phân quyền | 🟡 Đang làm | 0% |
+| 1 | Schema nền tảng & Auth & Phân quyền | ✅ Xong | 100% |
 | 2 | Design System nền tảng (token + App Shell) | ⬜ Chưa bắt đầu | 0% |
 | 3 | Module Nhân sự (4.1) | ⬜ Chưa bắt đầu | 0% |
 | 4 | Module Lớp học (4.2) | ⬜ Chưa bắt đầu | 0% |
@@ -57,12 +57,12 @@ Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / 
 
 *Tham chiếu: mục 3 (Người dùng & vai trò)*
 
-- [ ] Bảng `profiles` (liên kết `auth.users`): thông tin cá nhân cơ bản
-- [ ] Bảng/enum **Phân quyền**: Admin/Quản lý đào tạo, Giảng viên & Trợ giảng, cờ `co_quyen_quan_ly_lop` (permission gán thêm, gán được nhiều người)
-- [ ] Bảng/enum **Phân nhóm** (5 nhóm cố định): Ban giám đốc, GV là/không là bác sĩ, TG là/không là bác sĩ — trường `nhom_hien_tai` trên `profiles`
-- [ ] Thiết lập Row Level Security (RLS) Supabase theo nguyên tắc: hồ sơ/KPI công khai nội bộ, riêng nhãn "nhóm" chỉ Admin/Quản lý lớp đọc được (ẩn với GV/TG ở tầng query, không chỉ ẩn ở UI)
-- [ ] Middleware/guard phân quyền route (Next.js) theo 3 vai trò
-- [ ] Cơ chế tự duyệt (self-approval flag) — chuẩn bị field/logic đánh dấu khi người giữ Quyền Quản lý lớp tự duyệt chính mình (dùng ở giai đoạn 5)
+- [x] Bảng `profiles` (liên kết `auth.users`): thông tin cá nhân cơ bản (trigger tự tạo profile khi có user mới)
+- [x] Bảng/enum **Phân quyền**: Admin/Quản lý đào tạo, Giảng viên & Trợ giảng, cờ `co_quyen_quan_ly_lop` (permission gán thêm, gán được nhiều người)
+- [x] Bảng/enum **Phân nhóm** (5 nhóm cố định): Ban giám đốc, GV là/không là bác sĩ, TG là/không là bác sĩ — *lưu ở bảng riêng `nhan_su_nhom` (không phải cột trên `profiles`) vì RLS chỉ lọc theo hàng; `profiles.vai_tro_giang_day` đồng bộ bằng trigger*
+- [x] Thiết lập Row Level Security (RLS) Supabase theo nguyên tắc: hồ sơ/KPI công khai nội bộ, riêng nhãn "nhóm" chỉ Admin/Quản lý lớp đọc được (ẩn với GV/TG ở tầng query, không chỉ ẩn ở UI)
+- [x] Middleware/guard phân quyền route (Next.js) theo 3 vai trò *(proxy.ts lọc đăng nhập; guard chính thức `requireSession`/`requireQuanTri` trong `src/lib/auth/session.ts`)*
+- [x] Cơ chế tự duyệt (self-approval flag) — chuẩn bị field/logic đánh dấu khi người giữ Quyền Quản lý lớp tự duyệt chính mình (dùng ở giai đoạn 5) *(hàm `la_tu_duyet()`; cột lưu cờ nằm ở bảng đăng ký, Giai đoạn 5)*
 
 **Điều kiện hoàn thành:** tạo được user với đủ 3 loại phân quyền, RLS chặn đúng — GV/TG query không lấy được cột nhóm của người khác.
 
