@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { requireQuanTri } from "@/lib/auth/session";
 import { localInputToIso } from "@/lib/format";
 import type { ActionState } from "@/lib/nhan-su/actions";
@@ -67,7 +68,12 @@ export async function luuLopHoc(_prev: ActionState, fd: FormData): Promise<Actio
   });
   if (error) return fail(error);
 
-  revalidateLop(id || (data as string));
+  // Tạo mới xong chuyển thẳng vào trang chi tiết lớp để thêm Bài; sửa lớp thì ở lại và đóng drawer
+  if (!id) {
+    revalidateLop(data as string);
+    redirect(`/lop-hoc/${data as string}`);
+  }
+  revalidateLop(id);
   return { ok: true };
 }
 
