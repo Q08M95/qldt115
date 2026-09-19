@@ -38,14 +38,14 @@ export function NavList({
   const current = activeHref ?? pathname;
 
   return (
-    <nav className="flex flex-col gap-[clamp(0.5rem,2vh,1.5rem)]" aria-label="Điều hướng chính">
+    <nav className="flex flex-col gap-[clamp(0.5rem,2.4vh,1.75rem)]" aria-label="Điều hướng chính">
       {NAV_GROUPS.map((group, i) => {
         const items = group.items.filter((it) => !it.quanTriOnly || isQuanTri);
         if (items.length === 0) return null;
         return (
-          <div key={group.label ?? i} className="flex flex-col gap-[clamp(0.125rem,0.8vh,0.5rem)]">
+          <div key={group.label ?? i} className="flex flex-col gap-[clamp(0.125rem,calc((100vh-520px)/12),1.1rem)]">
             {group.label && (
-              <p className="px-3 text-[11px] font-medium tracking-wider text-muted-foreground/80 uppercase">
+              <p className="px-3 text-xs font-medium tracking-wider text-muted-foreground/80 uppercase">
                 {group.label}
               </p>
             )}
@@ -58,7 +58,7 @@ export function NavList({
                   onClick={onNavigate}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "flex h-[clamp(2rem,4.8vh,2.5rem)] items-center gap-3 rounded-lg px-3 text-sm font-medium transition-colors duration-150 ease-out max-md:h-11",
+                    "flex h-[clamp(2rem,4.8vh,2.6rem)] items-center gap-3 rounded-xl px-3 text-[15px] font-medium transition-colors duration-150 ease-out max-md:h-11",
                     active
                       ? "bg-brand-gradient text-primary-foreground shadow-card"
                       : "text-foreground/80 hover:bg-card hover:text-foreground",
@@ -81,7 +81,7 @@ export function NavList({
 export function PeriodCard({ period }: { period: PeriodInfo | null }) {
   return (
     <div
-      className="rounded-2xl border border-transparent bg-card p-3 shadow-card dark:border-border"
+      className="rounded-2xl border border-transparent bg-card p-3 shadow-[0_8px_24px_rgba(16,24,40,0.10)] dark:border-border"
       style={{ backgroundImage: "linear-gradient(135deg, var(--tint-lime), transparent 80%)" }}
     >
       <div className="flex items-center gap-2">

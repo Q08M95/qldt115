@@ -21,14 +21,14 @@ export function StatTile({
   className?: string;
 }) {
   return (
-    <div className={cn("rounded-2xl border border-transparent bg-card px-4 py-3.5 shadow-card dark:border-border", className)}>
+    <div className={cn("rounded-2xl border border-transparent bg-card px-5 py-4 shadow-card dark:border-border", className)}>
       <div className="flex items-center gap-2">
-        <Icon className="size-4 shrink-0 text-slate-500 dark:text-slate-400" strokeWidth={1.75} aria-hidden />
-        <span className="flex-1 text-[13px] font-medium text-foreground/70">{label}</span>
+        <Icon className="size-[18px] shrink-0 text-slate-500 dark:text-slate-400" strokeWidth={1.75} aria-hidden />
+        <span className="flex-1 text-sm font-medium text-foreground/70">{label}</span>
         <ChevronRight className="size-4 text-muted-foreground/70" aria-hidden />
       </div>
-      <div className="mt-2.5 flex items-center justify-between gap-2">
-        <span className="text-[22px] leading-none font-medium tabular-nums">{value}</span>
+      <div className="mt-3 flex items-center justify-between gap-2">
+        <span className="text-[26px] leading-none font-medium tabular-nums">{value}</span>
         {trend !== undefined && <TrendPill value={trend} plain />}
       </div>
       {children}

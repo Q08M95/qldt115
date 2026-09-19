@@ -509,11 +509,13 @@ Phong cách tham khảo: **"Soft SaaS Dashboard"** (xem file `tham khao theme.jp
 - Font: **Plus Jakarta Sans** (giống ảnh mẫu, có subset tiếng Việt) — đã đổi từ Geist sau khi đối chiếu ảnh; load qua `next/font/google`
 - Scale: 12 / 14 / 16 / 20 / 24 / 32px — heading dùng 20-32px semibold, body 14px regular, label/caption 12px medium
 - Số liệu (KPI, bảng) dùng **tabular-nums** để căn cột thẳng hàng
+- **Kích thước chữ đo từ ảnh mẫu ở khung 1440px (tỷ lệ 1.4:1)** — không được thu nhỏ hơn các mốc này (đã từng thu nhỏ quá tay làm giao diện trông "dẹt"): tiêu đề trang 28px; tiêu đề card 17px; menu sidebar 15px; nhãn thẻ stat 14px; số thẻ stat 26px; tên người dùng topbar 15-16px; chữ ô bảng 14px, header bảng 13px; phụ đề (mã, email) 12px
 - Số lớn trong Stat Card: 28-32px, bold, `text-primary`
 
 ### 8.3 Spacing, bo góc, shadow
 
-- Bo góc: button/input/badge nhỏ = 8px, card = 16px, pill/badge trạng thái = full-round
+- Bo góc: button/input/badge nhỏ = 8px, card/thẻ stat = **20px** (đo từ ảnh), pill/badge trạng thái = full-round. Khoảng cách giữa các card 20px, giữa 3 thẻ stat 16px. Nội dung trang giới hạn `max-w-1400px` để không bị kéo giãn ngang trên màn hình rộng
+- **Shadow đo từ ảnh mẫu:** card/pill/nút trong ảnh chỉ có shadow rất nhạt (độ sáng giảm ~1-3/255); nổi bật hơn hẳn chỉ có ô "Upgrade plans" ở đáy sidebar (`0 8px 24px rgba(16,24,40,.10)`) và nút primary (shadow màu brand nhẹ)
 - Shadow card: mềm, lan rộng `0 1px 2px rgba(16,24,40,.04), 0 4px 14px rgba(16,24,40,.05)`. **Light mode: không viền** (ảnh mẫu chỉ có shadow mềm); **dark mode: thêm viền `border`** để card tách khỏi nền tối
 - Spacing scale (Tailwind mặc định): 4/8/12/16/24/32/48px; gutter giữa các card 16-24px
 - Card padding: 20-24px

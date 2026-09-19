@@ -24,7 +24,7 @@ export function AppShell({
       <Sidebar isQuanTri={isQuanTri} period={period} activeHref={activeHref} />
       <div className="md:pl-60">
         <Topbar user={user} isQuanTri={isQuanTri} unreadCount={unreadCount} />
-        <main className="p-4 pb-24 md:p-6 md:pb-6">{children}</main>
+        <main className="max-w-[1400px] p-4 pb-24 md:px-7 md:pt-2 md:pb-7">{children}</main>
       </div>
       <MobileTabBar />
     </div>

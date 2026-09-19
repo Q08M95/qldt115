@@ -78,7 +78,7 @@ function UserMenu({ user }: { user: ShellUser }) {
         >
           <UserAvatar name={user.name} src={user.avatarUrl} className="size-10" />
           <span className="hidden text-left leading-tight lg:block">
-            <span className="block text-sm font-semibold">{user.name}</span>
+            <span className="block text-[15px] font-semibold">{user.name}</span>
             <span className="block text-xs text-muted-foreground">{user.email}</span>
           </span>
           <ChevronDown className="hidden size-4 text-muted-foreground lg:block" aria-hidden />
@@ -126,7 +126,7 @@ export function Topbar({
 
   return (
     <>
-      <header className="sticky top-0 z-20 flex h-16 items-center gap-2 bg-background/85 px-4 backdrop-blur md:gap-4 md:px-6">
+      <header className="sticky top-0 z-20 flex h-16 items-center gap-2 bg-background/85 px-4 backdrop-blur md:h-[88px] md:gap-4 md:px-7">
         {/* Mobile: hamburger (trái) — nút back nếu ở trang con + tên trang (giữa) */}
         <Button variant="ghost" size="icon" className="md:hidden" aria-label="Mở menu" onClick={() => setMenuOpen(true)}>
           <Menu />
@@ -139,7 +139,7 @@ export function Topbar({
 
         <div className="min-w-0 flex-1">
           <Breadcrumb crumbs={crumbs} />
-          <h1 className="truncate text-lg font-semibold md:text-2xl">{title}</h1>
+          <h1 className="truncate text-lg font-semibold md:text-[28px]">{title}</h1>
         </div>
 
         {/* Ô tìm kiếm toàn cục — desktop; mobile thu về icon kính lúp */}

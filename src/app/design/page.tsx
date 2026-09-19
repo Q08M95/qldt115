@@ -74,7 +74,7 @@ export default function DesignPage() {
                             <UserAvatar name={r.name} />
                             <div className="leading-tight">
                               <p className="font-semibold">{r.name}</p>
-                              <p className="text-[11px] text-muted-foreground">{r.code}</p>
+                              <p className="text-xs text-muted-foreground">{r.code}</p>
                             </div>
                           </div>
                         </TableCell>

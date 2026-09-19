@@ -13,14 +13,14 @@ export function DashboardLayout({
   className?: string;
 }) {
   return (
-    <div className={cn("grid gap-4 lg:grid-cols-[minmax(0,1.75fr)_minmax(0,1fr)]", className)}>
-      <div className="flex min-w-0 flex-col gap-4">{main}</div>
-      <div className="flex min-w-0 flex-col gap-4">{aside}</div>
+    <div className={cn("grid gap-5 lg:grid-cols-[minmax(0,1.75fr)_minmax(0,1fr)]", className)}>
+      <div className="flex min-w-0 flex-col gap-5">{main}</div>
+      <div className="flex min-w-0 flex-col gap-5">{aside}</div>
     </div>
   );
 }
 
 // Hàng thẻ stat: 3 thẻ nhỏ bằng nhau nằm trong cột chính
 export function StatRow({ children }: { children: React.ReactNode }) {
-  return <div className="grid gap-3 sm:grid-cols-3">{children}</div>;
+  return <div className="grid gap-4 sm:grid-cols-3">{children}</div>;
 }
