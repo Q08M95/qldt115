@@ -69,7 +69,6 @@ export const SEGMENT_LABELS: Record<string, string> = {
   "nhat-ky": "Nhật ký hệ thống",
   "cau-hinh": "Cấu hình hệ thống",
   "ho-so": "Hồ sơ của tôi",
-  "quan-tri": "Khu vực quản trị",
   "de-xuat": "Đề xuất nhân sự",
   "danh-muc": "Danh mục",
   design: "Design System",

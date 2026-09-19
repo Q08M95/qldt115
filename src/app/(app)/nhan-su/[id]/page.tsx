@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { BreadcrumbLabel } from "@/components/app-shell/page-labels";
 import {
   ChuyenMonCard,
   ChungChiCard,
@@ -31,6 +32,7 @@ export default async function NhanSuChiTietPage(props: PageProps<"/nhan-su/[id]"
 
   return (
     <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)]">
+      <BreadcrumbLabel label={chiTiet.profile.ho_ten} />
       <div className="flex min-w-0 flex-col gap-5">
         <ProfileInfoCard
           profile={chiTiet.profile}

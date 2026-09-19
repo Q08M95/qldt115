@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { UserAvatar } from "@/components/user-avatar";
+import { usePageLabels } from "./page-labels";
 import { BrandLogo, NavList } from "./sidebar";
 import { SEGMENT_LABELS } from "./nav-config";
 
@@ -26,13 +27,18 @@ export interface ShellUser {
   avatarUrl?: string | null;
 }
 
+const ID_SEGMENT = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 function useBreadcrumb() {
   const pathname = usePathname();
+  const dynamicLabels = usePageLabels();
   const segments = pathname.split("/").filter(Boolean);
-  const crumbs = segments.map((seg, i) => ({
-    label: SEGMENT_LABELS[seg] ?? decodeURIComponent(seg),
-    href: "/" + segments.slice(0, i + 1).join("/"),
-  }));
+  const crumbs = segments.map((seg, i) => {
+    const href = "/" + segments.slice(0, i + 1).join("/");
+    // Đoạn URL là mã (uuid): dùng tên trang tự khai báo; chưa có thì để trống (không bao giờ hiện mã thô)
+    const label = dynamicLabels[href] ?? SEGMENT_LABELS[seg] ?? (ID_SEGMENT.test(seg) ? "" : decodeURIComponent(seg));
+    return { label, href };
+  });
   const title = crumbs.length === 0 ? "Tổng quan" : crumbs[crumbs.length - 1].label;
   return { crumbs, title };
 }
@@ -139,7 +145,7 @@ export function Topbar({
 
         <div className="min-w-0 flex-1">
           <Breadcrumb crumbs={crumbs} />
-          <h1 className="truncate text-lg font-semibold md:text-[28px]">{title}</h1>
+          <h1 className="min-h-7 truncate text-lg font-semibold md:min-h-9 md:text-[28px]">{title}</h1>
         </div>
 
         {/* Ô tìm kiếm toàn cục — desktop; mobile thu về icon kính lúp */}

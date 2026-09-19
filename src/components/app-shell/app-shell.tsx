@@ -1,3 +1,4 @@
+import { PageLabelsProvider } from "./page-labels";
 import { MobileTabBar } from "./mobile-tab-bar";
 import { Sidebar, type PeriodInfo } from "./sidebar";
 import { Topbar, type ShellUser } from "./topbar";
@@ -20,13 +21,15 @@ export function AppShell({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-background">
-      <Sidebar isQuanTri={isQuanTri} period={period} activeHref={activeHref} />
-      <div className="md:pl-60">
-        <Topbar user={user} isQuanTri={isQuanTri} unreadCount={unreadCount} />
-        <main className="max-w-[1400px] p-4 pb-24 md:px-7 md:pt-2 md:pb-7">{children}</main>
+    <PageLabelsProvider>
+      <div className="min-h-screen bg-background">
+        <Sidebar isQuanTri={isQuanTri} period={period} activeHref={activeHref} />
+        <div className="md:pl-60">
+          <Topbar user={user} isQuanTri={isQuanTri} unreadCount={unreadCount} />
+          <main className="max-w-[1400px] p-4 pb-24 md:px-7 md:pt-2 md:pb-7">{children}</main>
+        </div>
+        <MobileTabBar />
       </div>
-      <MobileTabBar />
-    </div>
+    </PageLabelsProvider>
   );
 }
