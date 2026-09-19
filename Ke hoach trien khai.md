@@ -16,7 +16,7 @@
 
 | # | Giai đoạn | Trạng thái | % |
 |---|---|---|---|
-| 0 | Khởi tạo hạ tầng | 🟡 Đang làm | 80% |
+| 0 | Khởi tạo hạ tầng | 🟡 Đang làm | 95% (chỉ còn thử đăng nhập tài khoản test) |
 | 1 | Schema nền tảng & Auth & Phân quyền | ⬜ Chưa bắt đầu | 0% |
 | 2 | Design System nền tảng (token + App Shell) | ⬜ Chưa bắt đầu | 0% |
 | 3 | Module Nhân sự (4.1) | ⬜ Chưa bắt đầu | 0% |
@@ -45,8 +45,8 @@ Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / 
 - [x] Cài font Geist (fallback Inter)
 - [x] Tạo project Supabase (môi trường dev, free tier)
 - [x] Kết nối Supabase Auth (email/mật khẩu) vào Next.js *(proxy + trang /login + đăng xuất; chưa thử đăng nhập với tài khoản thật)*
-- [ ] Kết nối Vercel với GitHub repo (Vercel Git Integration) → xác nhận Preview Deployment tự sinh khi push
-- [ ] Cấu hình biến môi trường (`.env.local` cho dev — đã xong; còn biến Vercel, biến môi trường Vercel cho preview/production) — không commit secret
+- [x] Kết nối Vercel với GitHub repo (Vercel Git Integration) → Preview/Production tự sinh khi push (https://qldt115.vercel.app)
+- [x] Cấu hình biến môi trường (`.env.local` cho dev, biến môi trường Vercel cho preview/production) — không commit secret
 - [x] Cấu trúc thư mục dự án cơ bản (`app/`, `components/`, `lib/`, `types/`...)
 
 **Điều kiện hoàn thành:** push code lên `main`, có 1 URL Preview Deployment truy cập được, đăng nhập thử bằng 1 tài khoản test tạo qua Supabase Auth thành công.
@@ -264,7 +264,7 @@ Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / 
 - [ ] Kiểm tra dark mode toàn bộ màn hình
 - [ ] Tạo project Supabase production riêng (tách khỏi dev/staging)
 - [ ] Merge vào `main`, xác nhận Vercel tự deploy bản production
-- [ ] Cấu hình biến môi trường production (trỏ đúng Supabase production)
+- [x] Cấu hình biến môi trường (`.env.local` cho dev, biến môi trường Vercel cho preview/production) — không commit secret
 - [ ] Migrate/seed dữ liệu danh mục khởi điểm (nhóm lớp, chuyên môn, chứng chỉ...) cho môi trường production
 - [ ] Tạo tài khoản Admin đầu tiên trên production
 
