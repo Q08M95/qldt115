@@ -16,7 +16,7 @@
 
 | # | Giai đoạn | Trạng thái | % |
 |---|---|---|---|
-| 0 | Khởi tạo hạ tầng | ⬜ Chưa bắt đầu | 0% |
+| 0 | Khởi tạo hạ tầng | 🟡 Đang làm | 45% |
 | 1 | Schema nền tảng & Auth & Phân quyền | ⬜ Chưa bắt đầu | 0% |
 | 2 | Design System nền tảng (token + App Shell) | ⬜ Chưa bắt đầu | 0% |
 | 3 | Module Nhân sự (4.1) | ⬜ Chưa bắt đầu | 0% |
@@ -39,15 +39,15 @@ Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / 
 
 *Tham chiếu: mục 2 (Stack kỹ thuật + Quy trình phát triển & triển khai)*
 
-- [ ] Tạo GitHub repo, push commit đầu tiên
-- [ ] Khởi tạo Next.js project (App Router)
-- [ ] Cài Tailwind CSS + shadcn/ui + Lucide icon
-- [ ] Cài font Geist (fallback Inter)
+- [ ] Tạo GitHub repo, push commit đầu tiên *(đã có commit local; chờ tạo repo GitHub để push)*
+- [x] Khởi tạo Next.js project (App Router)
+- [x] Cài Tailwind CSS + shadcn/ui + Lucide icon
+- [x] Cài font Geist (fallback Inter)
 - [ ] Tạo project Supabase (môi trường dev, free tier)
 - [ ] Kết nối Supabase Auth (email/mật khẩu) vào Next.js
 - [ ] Kết nối Vercel với GitHub repo (Vercel Git Integration) → xác nhận Preview Deployment tự sinh khi push
 - [ ] Cấu hình biến môi trường (`.env.local` cho dev, biến môi trường Vercel cho preview/production) — không commit secret
-- [ ] Cấu trúc thư mục dự án cơ bản (`app/`, `components/`, `lib/`, `types/`...)
+- [x] Cấu trúc thư mục dự án cơ bản (`app/`, `components/`, `lib/`, `types/`...)
 
 **Điều kiện hoàn thành:** push code lên `main`, có 1 URL Preview Deployment truy cập được, đăng nhập thử bằng 1 tài khoản test tạo qua Supabase Auth thành công.
 
