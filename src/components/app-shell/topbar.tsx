@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { useTheme } from "next-themes";
-import { Bell, CalendarDays, ChevronLeft, ChevronRight, LogOut, Menu, Moon, Search, Sun, User, X } from "lucide-react";
+import { Bell, CalendarDays, ChevronDown, ChevronLeft, ChevronRight, LogOut, Menu, Moon, Search, Sun, User, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -73,14 +73,15 @@ function UserMenu({ user }: { user: ShellUser }) {
       <DropdownMenuTrigger asChild>
         <button
           type="button"
-          className="flex items-center gap-2 rounded-lg p-1 outline-none transition-colors hover:bg-card focus-visible:ring-2 focus-visible:ring-ring/40"
+          className="flex items-center gap-2 rounded-lg p-1 outline-none transition-colors hover:bg-card focus-visible:ring-2 focus-visible:ring-ring/40 md:ml-1 md:border-l md:border-border md:pl-4"
           aria-label="Menu tài khoản"
         >
-          <UserAvatar name={user.name} src={user.avatarUrl} className="size-9" />
+          <UserAvatar name={user.name} src={user.avatarUrl} className="size-10" />
           <span className="hidden text-left leading-tight lg:block">
-            <span className="block text-sm font-medium">{user.name}</span>
+            <span className="block text-sm font-semibold">{user.name}</span>
             <span className="block text-xs text-muted-foreground">{user.email}</span>
           </span>
+          <ChevronDown className="hidden size-4 text-muted-foreground lg:block" aria-hidden />
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
@@ -144,19 +145,19 @@ export function Topbar({
         {/* Ô tìm kiếm toàn cục — desktop; mobile thu về icon kính lúp */}
         <div className="relative hidden w-64 md:block">
           <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
-          <Input type="search" placeholder="Tìm lớp, nhân sự, mã lớp..." className="pl-9" aria-label="Tìm kiếm" />
+          <Input type="search" placeholder="Tìm lớp, nhân sự, mã lớp..." className="border-transparent pl-9 shadow-card" aria-label="Tìm kiếm" />
         </div>
         <Button variant="ghost" size="icon" className="md:hidden" aria-label="Tìm kiếm" onClick={() => setSearchOpen(true)}>
           <Search />
         </Button>
 
-        <Button asChild variant="outline" size="icon" className="hidden md:inline-flex">
+        <Button asChild variant="outline" size="icon" className="hidden rounded-full border-transparent shadow-card md:inline-flex">
           <Link href="/lop-hoc" aria-label="Lịch dạy của tôi">
             <CalendarDays />
           </Link>
         </Button>
 
-        <Button asChild variant="outline" size="icon" className="relative">
+        <Button asChild variant="outline" size="icon" className="relative rounded-full border-transparent shadow-card">
           <Link href="/thong-bao" aria-label={`Thông báo${unreadCount ? `, ${unreadCount} chưa đọc` : ""}`}>
             <Bell />
             {unreadCount > 0 && (

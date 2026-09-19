@@ -20,7 +20,7 @@ const badgeVariants = cva(
         navy: "bg-grad-navy text-hue-navy",
         teal: "bg-grad-teal text-hue-teal",
         green: "bg-grad-green text-hue-green",
-        outline: "border-border text-foreground",
+        outline: "border-border bg-card text-muted-foreground",
       },
     },
     defaultVariants: {

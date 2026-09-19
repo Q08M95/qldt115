@@ -81,6 +81,8 @@ Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / 
 
 **Điều kiện hoàn thành:** có 1 trang demo trống dựng đủ App Shell + bộ component mẫu, chạy đúng cả desktop/mobile/dark mode, chưa cần dữ liệu thật.
 
+> **Đối chiếu lại ảnh mẫu (vòng 2):** đã phóng to ảnh 4x và lấy mẫu màu trực tiếp; sửa font (Plus Jakarta Sans), gradient brand ngang `#166A8C → #14468A`, sidebar không panel/viền, card không viền ở light mode, bảng header không nền + mũi tên sort, thẻ stat đúng bố cục, nút topbar tròn, ô "Kỳ đánh giá" kiểu card nổi. `CLAUDE.md` mục 8 đã cập nhật khớp. Chi tiết biểu đồ (tooltip trắng, cột xám nhạt + 1 cột nổi bật, phễu 4 khối gradient, segment control viền) đã ghi ở mục 8.6 để làm ở Giai đoạn 10.
+
 > Đã đạt: trang `/design` (chỉ mở được khi chạy dev, production trả 404) — đã chụp và đối chiếu với `tham khao theme.jpeg` ở desktop light/dark và mobile 390px bằng Edge. **Chưa thử trên điện thoại thật** (làm ở Giai đoạn 12). Ngoài phạm vi giai đoạn này, để dành Giai đoạn 12: bảng → card list và stat card → carousel trên mobile; và Giai đoạn 8: dropdown thông báo của bell (hiện chỉ là link + badge).
 
 ---

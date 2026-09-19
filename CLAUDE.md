@@ -477,7 +477,7 @@ Phong cách tham khảo: **"Soft SaaS Dashboard"** (xem file `tham khao theme.jp
 | `border` | `#E4E4E7` | Viền hairline 1px quanh card/input |
 | `text-primary` | `#18181B` | Chữ chính, số liệu lớn |
 | `text-secondary` | `#71717A` | Label, chú thích |
-| `brand` | Navy `#1E3A5F`, gradient nút primary `linear-gradient(135deg, #1E3A5F, #14283F)` | Active nav pill, nút primary, tooltip chart, focus ring |
+| `brand` | Solid `#14468A`; gradient **ngang** `linear-gradient(90deg, #166A8C, #14468A)` (xanh ngọc-lam → navy, lấy mẫu trực tiếp từ pill "Overview", nút "See More", "Upgrade now" trong ảnh) | Active nav pill, nút primary, focus ring |
 | `success` | bg Green gradient / text Green solid | Đã duyệt, đạt, tăng |
 | `danger` | bg `#FEE2E2` / text `#DC2626` (đỏ — chỉ riêng cho trend giảm/từ chối, đúng như ảnh, không gradient) | Từ chối, vi phạm, giảm |
 | `warning` | bg `#FEF2F2` (đỏ pastel rất nhạt) / text `#F87171` (đỏ nhạt hơn danger) — cùng hue đỏ với `danger` nhưng **nhạt/nhẹ hơn hẳn về cường độ**, phân biệt bằng độ đậm chứ không phải đổi màu | Chờ duyệt, cảnh báo (pool nhỏ, dồn tải) |
@@ -495,7 +495,7 @@ Phong cách tham khảo: **"Soft SaaS Dashboard"** (xem file `tham khao theme.jp
 | `border` | `#E4E4E7` | `#27272A` |
 | `text-primary` | `#18181B` | `#F4F4F5` |
 | `text-secondary` | `#71717A` | `#A1A1AA` |
-| `brand` | `#1E3A5F` | `#3B82F6` (sáng hơn để đủ tương phản trên nền tối) |
+| `brand` | `#14468A` (gradient `#166A8C → #14468A`) | `#3B82F6` (gradient `#1F8DB3 → #2F6FDC`, sáng hơn để đủ tương phản trên nền tối) |
 | `success` bg/text | `#DCFCE7`/`#16A34A` | `#052E16`/`#4ADE80` |
 | `danger` bg/text | `#FEE2E2`/`#DC2626` | `#450A0A`/`#F87171` |
 | `warning` bg/text | `#FEF2F2`/`#F87171` | `#3F2D2D`/`#FCA5A5` (nền khử bão hòa hơn `danger` dark — đỏ "xỉn" thay vì đỏ "rực", phân biệt bằng độ bão hòa) |
@@ -505,7 +505,7 @@ Phong cách tham khảo: **"Soft SaaS Dashboard"** (xem file `tham khao theme.jp
 
 ### 8.2 Typography
 
-- Font: **Geist** (font của Vercel, đồng bộ với stack Next.js/Vercel), fallback Inter
+- Font: **Plus Jakarta Sans** (giống ảnh mẫu, có subset tiếng Việt) — đã đổi từ Geist sau khi đối chiếu ảnh; load qua `next/font/google`
 - Scale: 12 / 14 / 16 / 20 / 24 / 32px — heading dùng 20-32px semibold, body 14px regular, label/caption 12px medium
 - Số liệu (KPI, bảng) dùng **tabular-nums** để căn cột thẳng hàng
 - Số lớn trong Stat Card: 28-32px, bold, `text-primary`
@@ -513,7 +513,7 @@ Phong cách tham khảo: **"Soft SaaS Dashboard"** (xem file `tham khao theme.jp
 ### 8.3 Spacing, bo góc, shadow
 
 - Bo góc: button/input/badge nhỏ = 8px, card = 16px, pill/badge trạng thái = full-round
-- Shadow card: rất nhẹ `0 1px 2px rgba(0,0,0,.04), 0 1px 3px rgba(0,0,0,.06)` — kết hợp với border hairline, không dùng shadow đậm
+- Shadow card: mềm, lan rộng `0 1px 2px rgba(16,24,40,.04), 0 4px 14px rgba(16,24,40,.05)`. **Light mode: không viền** (ảnh mẫu chỉ có shadow mềm); **dark mode: thêm viền `border`** để card tách khỏi nền tối
 - Spacing scale (Tailwind mặc định): 4/8/12/16/24/32/48px; gutter giữa các card 16-24px
 - Card padding: 20-24px
 
@@ -524,7 +524,7 @@ Phong cách tham khảo: **"Soft SaaS Dashboard"** (xem file `tham khao theme.jp
 ### 8.5 Component chuẩn
 
 **Button:**
-- Primary: nền `brand` navy, chữ trắng, cao 40px, bo 8px, hover tối thêm 10%
+- Primary: nền gradient `brand` (ngang, xanh ngọc-lam → navy), chữ trắng semibold, cao 40px, bo 8px, hover tối thêm 10%
 - Outline: viền `border`, nền trắng, hover nền `background`
 - Ghost: không viền/nền, chỉ chữ, hover nền `background`
 - Danger: nền `danger`-solid, dùng cho hành động phá hủy (hủy lớp, xóa)
@@ -533,9 +533,9 @@ Phong cách tham khảo: **"Soft SaaS Dashboard"** (xem file `tham khao theme.jp
 
 **Badge/Pill:** nền nhạt + chữ đậm cùng tông theo semantic token, bo full-round, padding `4px 10px`, chữ 12px medium. Trend pill thêm icon mũi tên nhỏ trước %.
 
-**Card:** nền `surface`, bo 16px, viền `border` 1px + shadow nhẹ (dùng cả 2 nhưng đều rất mờ, không nặng nề). Header card: title 16px semibold trái; **icon "..." (menu) phải, chuẩn hóa dùng chung 1 component dropdown menu** cho mọi card có hành động phụ (Xem chi tiết / Xuất / Chỉnh sửa / Ẩn khỏi Tổng quan...) — đúng mẫu 3 icon nhỏ trên card "Sales" trong ảnh tham khảo (phóng to, sửa, thêm) — không để mỗi card tự chế 1 kiểu menu khác nhau.
+**Card:** nền `surface`, bo 16px, shadow mềm (light: không viền; dark: thêm viền `border` 1px). Header card: title 16px semibold trái; **icon "..." (menu) phải, chuẩn hóa dùng chung 1 component dropdown menu** cho mọi card có hành động phụ (Xem chi tiết / Xuất / Chỉnh sửa / Ẩn khỏi Tổng quan...) — đúng mẫu 3 icon nhỏ trên card "Sales" trong ảnh tham khảo (phóng to, sửa, thêm) — không để mỗi card tự chế 1 kiểu menu khác nhau.
 
-**Data table:** header nền `#FAFAFA`, chữ 12px uppercase medium xám, có icon sort khi hover cột; hàng cao 56px, hover nền `background`, border-bottom hairline; cột đầu có avatar/thumbnail 32px bo 8px nếu cần; cột trạng thái dùng Badge; phân trang dạng `‹ 1 2 3 … ›` đơn giản dưới cùng.
+**Data table:** header **không tô nền**, chữ 12px medium xám, viết thường bình thường (không uppercase), mỗi cột sort được có mũi tên ▾ nhỏ cạnh tên cột (đúng ảnh mẫu); ở header card chứa bảng: tiêu đề + pill đếm nhỏ (vd "15 Product") bên trái, nút Filters (outline) + nút "Xem thêm" (gradient brand, nhỏ) bên phải; trạng thái dùng pill viền mảnh (trung tính) hoặc pill nền nhạt (đã duyệt...); hàng cao 56px, hover nền `background`, border-bottom hairline; cột đầu có avatar/thumbnail 32px bo 8px nếu cần; cột trạng thái dùng Badge; phân trang dạng `‹ 1 2 3 … ›` đơn giản dưới cùng.
 
 **Form/Input:** cao 40px, bo 8px, viền `border`, focus ring `brand` 2px; label 14px medium phía trên; lỗi: viền đỏ + text lỗi nhỏ bên dưới.
 
@@ -555,7 +555,8 @@ Phong cách tham khảo: **"Soft SaaS Dashboard"** (xem file `tham khao theme.jp
   1. **TỔNG QUAN** (4.7b) — đứng riêng đầu tiên, không thuộc nhóm nào, giống vị trí "Overview" trong ảnh tham khảo
   2. Nhóm **"QUẢN LÝ"**: Lớp học (4.2) → Đăng ký giảng dạy (4.3) → Nhân sự (4.1) → Đánh giá chất lượng (4.4) → Báo cáo (4.7)
   3. Nhóm **"HỆ THỐNG"**: Thông báo (4.5, hiện cho mọi người) → Nhật ký hệ thống (4.6) → Cấu hình hệ thống (4.8) — 2 mục cuối chỉ hiện với người có Quyền Quản lý lớp
-- Active item: pill nền `brand` navy, chữ trắng, icon trắng (đúng mẫu ảnh)
+- Nền sidebar **hòa cùng nền trang, không viền, không panel trắng riêng** (đúng ảnh mẫu); chữ menu xám đậm, icon outline 1.75px
+- Active item: pill nền gradient `brand` ngang, chữ trắng, icon trắng (đúng mẫu ảnh)
 - **Ô thẻ dưới cùng sidebar** (vị trí "Upgrade plans" trong ảnh — app này không có gói nâng cấp nên **tái sử dụng vị trí này** cho nội dung hữu ích hơn): đề xuất hiển thị **"Kỳ đánh giá hiện tại"** (tên kỳ + ngày còn lại tới khi đóng kỳ) dạng card nền gradient nhạt (1 trong 4 màu gốc) + nút "Xem KPI của tôi" — giữ đúng vị trí/kiểu dáng trực quan nhưng đổi nội dung phù hợp
 
 **Topbar (trên cùng, cố định):**
@@ -567,12 +568,13 @@ Phong cách tham khảo: **"Soft SaaS Dashboard"** (xem file `tham khao theme.jp
 
 ### 8.6 Biểu đồ (chart)
 
-- **Area/Line chart:** gradient fill nhạt dần xuống đáy, đường 2px, tooltip bong bóng nền `brand` navy/chữ trắng có đuôi trỏ vào điểm — đúng mẫu tham khảo
-- **Bar chart:** bo nhẹ đầu cột (4px), màu theo semantic hoặc pastel palette ở 8.1
+- **Area/Line chart:** gradient fill nhạt dần xuống đáy, đường 2px, tooltip bong bóng **nền trắng, shadow mềm, chữ màu brand/xanh lá đậm** (không phải nền navy — đã kiểm tra lại ảnh mẫu) có đuôi trỏ vào điểm
+- **Bar chart:** bo đầu cột lớn (~8px); cột thường **xám rất nhạt `#F7F7F7`**, chỉ cột được chọn/nổi bật dùng gradient xanh lá nhạt (`#C4F099`) kèm tooltip trắng (đúng mẫu "Weekly Revenue")
+- **Chart dạng phễu/sóng nhiều khối** (mẫu "Sales"): mỗi khối 1 gradient ngang theo đúng 4 màu gốc, màu lấy mẫu từ ảnh — Blue nhạt `#B9D6F8`, Navy-lam `#116A8C → #11488B`, Mint `#A2EFC3 → #9FDBE3`, Lime `#D1F591 → #B1E9A2`; ngăn cách giữa các khối bằng đường trắng mảnh
 - **Donut/Pie:** dùng cho phân bố trạng thái (vd báo cáo #8 vận hành lớp học), legend đặt cạnh không đè lên chart
 - **Sparkline:** line mảnh 1px, không trục, dùng trong Stat Tile nhỏ
 - **Radar chart:** riêng cho breakdown A/B/C ở Bảng KPI cá nhân (mục 4.4)
-- **Segment control chọn khoảng thời gian** (giống mẫu tham khảo "03-07 | 10-14 | 17-21 | 24-28"): dùng cho bộ lọc tuần/tháng/quý/năm ở báo cáo (mục 4.7) — pill active nền `brand`, các pill còn lại chữ thường
+- **Segment control chọn khoảng thời gian** (giống mẫu tham khảo "03-07 | 10-14 | 17-21 | 24-28"): dùng cho bộ lọc tuần/tháng/quý/năm ở báo cáo (mục 4.7) — pill active **nền trắng, viền `brand` mảnh, chữ `brand`** (không tô đặc), các pill còn lại chữ xám thường (đúng mẫu)
 
 ### 8.7 Thông báo & hiệu ứng
 

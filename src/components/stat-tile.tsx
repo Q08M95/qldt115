@@ -5,26 +5,18 @@ import { cn } from "@/lib/utils";
 
 export type Hue = "blue" | "navy" | "teal" | "green";
 
-const HUE_BADGE: Record<Hue, string> = {
-  blue: "bg-grad-blue text-hue-blue",
-  navy: "bg-grad-navy text-hue-navy",
-  teal: "bg-grad-teal text-hue-teal",
-  green: "bg-grad-green text-hue-green",
+const HUE_ICON: Record<Hue, string> = {
+  blue: "text-hue-blue",
+  navy: "text-hue-navy",
+  teal: "text-hue-teal",
+  green: "text-hue-green",
 };
 
-// Icon badge vuông bo góc, nền gradient của 1 trong 4 màu gốc (mục 8.1) — như icon cạnh "Products/Customers/Orders" trong ảnh mẫu.
-export function IconBadge({ icon: Icon, hue = "blue", className }: { icon: LucideIcon; hue?: Hue; className?: string }) {
-  return (
-    <span className={cn("flex size-7 shrink-0 items-center justify-center rounded-lg", HUE_BADGE[hue], className)}>
-      <Icon className="size-4" aria-hidden />
-    </span>
-  );
-}
-
-// KPI Stat Tile (mục 8.5 / 4.7b): icon badge + nhãn, số lớn tabular-nums, trend pill; children = sparkline (nếu có).
+// KPI Stat Tile (mục 8.5 / 4.7b) theo ảnh mẫu: hàng 1 = icon outline màu + nhãn + chevron;
+// hàng 2 = số lớn bên trái, trend pill bên phải. children = sparkline (nếu có).
 export function StatTile({
-  icon,
-  hue,
+  icon: Icon,
+  hue = "blue",
   label,
   value,
   trend,
@@ -40,14 +32,14 @@ export function StatTile({
   className?: string;
 }) {
   return (
-    <div className={cn("rounded-2xl border bg-card p-4 shadow-card", className)}>
+    <div className={cn("rounded-2xl border border-transparent bg-card px-5 py-4 shadow-card dark:border-border", className)}>
       <div className="flex items-center gap-2">
-        <IconBadge icon={icon} hue={hue} />
+        <Icon className={cn("size-5 shrink-0", HUE_ICON[hue])} strokeWidth={1.75} aria-hidden />
         <span className="flex-1 text-sm text-muted-foreground">{label}</span>
-        <ChevronRight className="size-4 text-muted-foreground/60" aria-hidden />
+        <ChevronRight className="size-4 text-muted-foreground/70" aria-hidden />
       </div>
-      <div className="mt-3 flex items-center gap-2">
-        <span className="text-3xl leading-none font-bold tabular-nums">{value}</span>
+      <div className="mt-3 flex items-center justify-between gap-2">
+        <span className="text-2xl leading-none font-semibold tabular-nums">{value}</span>
         {trend !== undefined && <TrendPill value={trend} />}
       </div>
       {children}

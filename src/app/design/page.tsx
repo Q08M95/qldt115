@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { BookOpen, ClipboardCheck, GraduationCap, Users } from "lucide-react";
+import { BookOpen, ClipboardCheck, GraduationCap, SlidersHorizontal, Users } from "lucide-react";
 import { AppShell } from "@/components/app-shell/app-shell";
 import { CardMenu } from "@/components/card-menu";
 import { EmptyState } from "@/components/empty-state";
@@ -42,19 +42,24 @@ export default function DesignPage() {
       <div className="mt-4 grid gap-4 lg:grid-cols-3">
         <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle>Việc cần duyệt</CardTitle>
-            <CardAction>
-              <CardMenu items={[{ label: "Xem chi tiết" }, { label: "Xuất Excel" }, { label: "Ẩn khỏi Tổng quan" }]} />
+            <CardTitle className="flex items-center gap-2 whitespace-nowrap">
+              Việc cần duyệt <Badge variant="teal">4 việc</Badge>
+            </CardTitle>
+            <CardAction className="flex items-center gap-2">
+              <Button variant="outline" size="sm">
+                <SlidersHorizontal /> Lọc
+              </Button>
+              <Button size="sm">Xem thêm</Button>
             </CardAction>
           </CardHeader>
           <CardContent className="px-0">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Nhân sự</TableHead>
-                  <TableHead>Lớp</TableHead>
-                  <TableHead className="text-right">Số giờ</TableHead>
-                  <TableHead>Trạng thái</TableHead>
+                  <TableHead sortable>Nhân sự</TableHead>
+                  <TableHead sortable>Lớp</TableHead>
+                  <TableHead sortable className="text-right">Số giờ</TableHead>
+                  <TableHead sortable>Trạng thái</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -70,7 +75,7 @@ export default function DesignPage() {
                       </div>
                     </TableCell>
                     <TableCell>{r.lop}</TableCell>
-                    <TableCell className="text-right tabular-nums">{r.so}</TableCell>
+                    <TableCell className="text-right font-semibold tabular-nums">{r.so}</TableCell>
                     <TableCell>
                       <Badge variant={r.variant}>{r.status}</Badge>
                     </TableCell>

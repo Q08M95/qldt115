@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { GraduationCap } from "lucide-react";
+import { CalendarClock, GraduationCap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { NAV_GROUPS, isActive } from "./nav-config";
@@ -28,14 +28,14 @@ export function NavList({ isQuanTri, onNavigate }: { isQuanTri: boolean; onNavig
   const pathname = usePathname();
 
   return (
-    <nav className="flex flex-col gap-5" aria-label="Điều hướng chính">
+    <nav className="flex flex-col gap-4" aria-label="Điều hướng chính">
       {NAV_GROUPS.map((group, i) => {
         const items = group.items.filter((it) => !it.quanTriOnly || isQuanTri);
         if (items.length === 0) return null;
         return (
-          <div key={group.label ?? i} className="flex flex-col gap-1">
+          <div key={group.label ?? i} className="flex flex-col gap-1.5">
             {group.label && (
-              <p className="px-3 pb-1 text-xs font-medium tracking-wider text-muted-foreground uppercase">
+              <p className="px-3 pb-1 text-xs font-medium tracking-wider text-muted-foreground/80 uppercase">
                 {group.label}
               </p>
             )}
@@ -51,10 +51,10 @@ export function NavList({ isQuanTri, onNavigate }: { isQuanTri: boolean; onNavig
                     "flex h-10 items-center gap-3 rounded-lg px-3 text-sm font-medium transition-colors duration-150 ease-out max-md:h-11",
                     active
                       ? "bg-brand-gradient text-primary-foreground shadow-card"
-                      : "text-foreground/80 hover:bg-background hover:text-foreground",
+                      : "text-foreground/70 hover:bg-card hover:text-foreground",
                   )}
                 >
-                  <Icon className="size-5 shrink-0" aria-hidden />
+                  <Icon className="size-5 shrink-0" strokeWidth={1.75} aria-hidden />
                   {label}
                 </Link>
               );
@@ -66,30 +66,40 @@ export function NavList({ isQuanTri, onNavigate }: { isQuanTri: boolean; onNavig
   );
 }
 
-// Ô dưới cùng sidebar (vị trí "Upgrade plans" trong ảnh mẫu) — hiển thị Kỳ đánh giá hiện tại
+// Ô dưới cùng sidebar (vị trí "Upgrade plans" trong ảnh mẫu): card trắng nổi nhẹ,
+// bên trong là khối gradient nhạt + tiêu đề + mô tả, nút gradient brand bên dưới.
 export function PeriodCard({ period }: { period: PeriodInfo | null }) {
   return (
-    <div className="rounded-2xl border bg-grad-blue p-4">
-      <p className="text-xs font-medium text-hue-blue">Kỳ đánh giá hiện tại</p>
-      {period ? (
-        <>
-          <p className="mt-1 text-sm font-semibold">{period.name}</p>
-          <p className="text-xs text-muted-foreground tabular-nums">Còn {period.daysLeft} ngày đến khi đóng kỳ</p>
-        </>
-      ) : (
-        <p className="mt-1 text-xs text-muted-foreground">Chưa có kỳ đang mở</p>
-      )}
-      <Button asChild size="sm" className="mt-3 w-full">
+    <div className="rounded-2xl border border-transparent bg-card p-2.5 shadow-card dark:border-border">
+      <div
+        className="rounded-xl p-3"
+        style={{ backgroundImage: "linear-gradient(135deg, var(--hue-green-from), transparent 85%)" }}
+      >
+        <div className="flex items-center gap-2">
+          <CalendarClock className="size-5 text-hue-blue" strokeWidth={1.75} aria-hidden />
+          <p className="text-sm font-semibold">Kỳ đánh giá hiện tại</p>
+        </div>
+        {period ? (
+          <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+            <span className="font-medium text-foreground">{period.name}</span>
+            <br />
+            <span className="tabular-nums">Còn {period.daysLeft} ngày đến khi đóng kỳ</span>
+          </p>
+        ) : (
+          <p className="mt-2 text-xs text-muted-foreground">Chưa có kỳ đang mở</p>
+        )}
+      </div>
+      <Button asChild className="mt-2.5 w-full">
         <Link href="/danh-gia">Xem KPI của tôi</Link>
       </Button>
     </div>
   );
 }
 
-// Sidebar desktop cố định ~240px (mục 8.5b). Ẩn dưới md — mobile dùng MobileNav.
+// Sidebar desktop cố định ~240px (mục 8.5b). Nền hòa cùng nền trang, không viền (ảnh mẫu). Ẩn dưới md — mobile dùng MobileNav.
 export function Sidebar({ isQuanTri, period }: { isQuanTri: boolean; period: PeriodInfo | null }) {
   return (
-    <aside className="fixed inset-y-0 left-0 z-30 hidden w-60 flex-col gap-6 border-r bg-sidebar p-4 md:flex">
+    <aside className="fixed inset-y-0 left-0 z-30 hidden w-60 flex-col gap-6 bg-sidebar p-4 md:flex dark:border-r">
       <BrandLogo />
       <div className="flex-1 overflow-y-auto">
         <NavList isQuanTri={isQuanTri} />
