@@ -16,15 +16,16 @@ export interface Session {
 // thì ném lỗi rõ ràng — không redirect về /login vì sẽ bị proxy đẩy ngược lại gây vòng lặp.
 export const getSession = cache(async (): Promise<Session | null> => {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return null;
+  // getClaims(): xác thực JWT tại chỗ (không gọi mạng). Đổi lại, phiên đã bị thu hồi phía Supabase vẫn hợp lệ
+  // tới khi token hết hạn (mặc định 1 giờ) — chấp nhận được cho app nội bộ; RLS ở database vẫn áp dụng theo JWT.
+  const { data: claimsData } = await supabase.auth.getClaims();
+  const userId = claimsData?.claims?.sub;
+  if (!userId) return null;
 
   const { data: profile, error } = await supabase
     .from("profiles")
     .select("*")
-    .eq("id", user.id)
+    .eq("id", userId)
     .single<Profile>();
   if (error || !profile) {
     throw new Error(

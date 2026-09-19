@@ -29,10 +29,11 @@ export async function proxy(request: NextRequest) {
     },
   );
 
-  // Làm mới session; guard phân quyền chi tiết theo vai trò làm ở Giai đoạn 1
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // Xác thực bằng getClaims(): kiểm tra chữ ký JWT ngay tại server (khóa ES256 của project) nên KHÔNG gọi mạng
+  // tới Supabase Auth mỗi request như getUser(); vẫn tự làm mới session khi token sắp hết hạn.
+  // Guard phân quyền theo vai trò nằm ở requireSession/requireQuanTri (src/lib/auth/session.ts).
+  const { data } = await supabase.auth.getClaims();
+  const user = data?.claims ?? null;
 
   const isPublic = PUBLIC_PATHS.some((p) => request.nextUrl.pathname.startsWith(p));
 

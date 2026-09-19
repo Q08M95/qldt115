@@ -86,11 +86,8 @@ export interface NhanSuChiTiet {
 export async function getNhanSuChiTiet(id: string): Promise<NhanSuChiTiet | null> {
   const supabase = await createClient();
 
-  const { data: profile, error } = await supabase.from("profiles").select("*").eq("id", id).maybeSingle();
-  if (error) throw new Error(`Không đọc được hồ sơ: ${error.message}`);
-  if (!profile) return null;
-
-  const [pcmRes, ccRes, nhomRes, lsRes] = await Promise.all([
+  const [profileRes, pcmRes, ccRes, nhomRes, lsRes] = await Promise.all([
+    supabase.from("profiles").select("*").eq("id", id).maybeSingle(),
     supabase
       .from("profile_chuyen_mon")
       .select("chuyen_mon_id, chi_tiet, danh_muc_chuyen_mon(ten)")
@@ -107,9 +104,11 @@ export async function getNhanSuChiTiet(id: string): Promise<NhanSuChiTiet | null
       .eq("user_id", id)
       .order("created_at", { ascending: false }),
   ]);
-  for (const r of [pcmRes, ccRes, nhomRes, lsRes]) {
+  for (const r of [profileRes, pcmRes, ccRes, nhomRes, lsRes]) {
     if (r.error) throw new Error(`Không đọc được dữ liệu hồ sơ: ${r.error.message}`);
   }
+  const profile = profileRes.data;
+  if (!profile) return null;
 
   const chuyen_mon = ((pcmRes.data ?? []) as unknown as {
     chuyen_mon_id: string;

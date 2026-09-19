@@ -8,11 +8,12 @@ import { cn } from "@/lib/utils";
 
 // Đề xuất nhân sự: tổng hợp đề xuất cần Admin/Quản lý lớp duyệt (mục 4.1). Chỉ người quản trị truy cập.
 export default async function DeXuatNhanSuPage(props: PageProps<"/nhan-su/de-xuat">) {
-  await requireQuanTri();
   const sp = await props.searchParams;
   const tab = (Array.isArray(sp.tab) ? sp.tab[0] : sp.tab) === "da-xu-ly" ? "da-xu-ly" : "cho-duyet";
 
-  const [rows, nguoi] = await Promise.all([
+  // Kiểm tra quyền chạy song song với đọc dữ liệu; RLS vốn đã chặn người không phải quản trị (kết quả rỗng)
+  const [, rows, nguoi] = await Promise.all([
+    requireQuanTri(),
     getDeXuatList(tab === "cho-duyet" ? "cho_duyet" : "da_xu_ly"),
     getNhanSuList(),
   ]);

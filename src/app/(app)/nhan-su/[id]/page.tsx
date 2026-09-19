@@ -15,11 +15,11 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 // Hồ sơ nhân sự: 2 cột — trái = thông tin cá nhân/chuyên môn/chứng chỉ, phải = KPI + lịch sử (mục 8.8)
 export default async function NhanSuChiTietPage(props: PageProps<"/nhan-su/[id]">) {
-  const session = await requireSession();
   const { id } = await props.params;
   if (!UUID.test(id)) notFound();
 
-  const [chiTiet, dmChuyenMon, dmLoaiChungChi] = await Promise.all([
+  const [session, chiTiet, dmChuyenMon, dmLoaiChungChi] = await Promise.all([
+    requireSession(),
     getNhanSuChiTiet(id),
     getDanhMuc("danh_muc_chuyen_mon"),
     getDanhMuc("danh_muc_loai_chung_chi"),

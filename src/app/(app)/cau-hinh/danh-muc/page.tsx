@@ -4,8 +4,8 @@ import { getDanhMuc } from "@/lib/nhan-su/queries";
 
 // Danh mục cấu hình phục vụ module Nhân sự (mục 4.8). Giai đoạn 11 sẽ gom chung vào màn hình Cấu hình hệ thống.
 export default async function DanhMucPage() {
-  await requireQuanTri();
-  const [chuyenMon, loaiChungChi] = await Promise.all([
+  const [, chuyenMon, loaiChungChi] = await Promise.all([
+    requireQuanTri(),
     getDanhMuc("danh_muc_chuyen_mon"),
     getDanhMuc("danh_muc_loai_chung_chi"),
   ]);

@@ -14,8 +14,15 @@ function first(v: string | string[] | undefined) {
 }
 
 export default async function NhanSuPage(props: PageProps<"/nhan-su">) {
-  const { isQuanTri } = await requireSession();
   const sp = await props.searchParams;
+
+  // Xác thực và đọc dữ liệu chạy SONG SONG (dữ liệu không phụ thuộc kết quả xác thực; RLS vẫn lọc theo người dùng).
+  const [{ isQuanTri }, all, chuyenMon, choDuyetTho] = await Promise.all([
+    requireSession(),
+    getNhanSuList(),
+    getDanhMuc("danh_muc_chuyen_mon"),
+    countDeXuatChoDuyet(), // RLS trả 0 với GV/TG
+  ]);
 
   const values = {
     q: first(sp.q).trim(),
@@ -26,11 +33,7 @@ export default async function NhanSuPage(props: PageProps<"/nhan-su">) {
     nhom: isQuanTri ? first(sp.nhom) : "",
   };
 
-  const [all, chuyenMon, choDuyet] = await Promise.all([
-    getNhanSuList(),
-    getDanhMuc("danh_muc_chuyen_mon"),
-    isQuanTri ? countDeXuatChoDuyet() : Promise.resolve(0),
-  ]);
+  const choDuyet = isQuanTri ? choDuyetTho : 0;
 
   const q = boDau(values.q);
   const rows = all.filter((r) => {
