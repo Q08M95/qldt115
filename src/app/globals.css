@@ -119,11 +119,12 @@
   --hue-navy-from: #e2e8f0;
   --hue-navy-to: #cbd5e1;
   --hue-teal: #0d9488;
-  --hue-teal-from: #ccfbf1;
-  --hue-teal-to: #99f6e4;
+  --hue-teal-from: #e6faf6;
+  --hue-teal-to: #cdf4ec;
   --hue-green: #16a34a;
-  --hue-green-from: #dcfce7;
-  --hue-green-to: #bbf7d0;
+  --hue-green-from: #e6f9ec;
+  --hue-green-to: #d0f4dc;
+  --tint-lime: #e4f0cc;
 
   /* Chart: chỉ sắc độ của 4 màu gốc */
   --chart-1: #2563eb;
@@ -189,6 +190,7 @@
   --hue-green: #4ade80;
   --hue-green-from: #052e16;
   --hue-green-to: #14532d;
+  --tint-lime: #14311f;
 
   --chart-1: #60a5fa;
   --chart-2: #94a3b8;

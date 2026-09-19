@@ -11,11 +11,11 @@ const buttonVariants = cva(
         default:
           "bg-brand-gradient text-primary-foreground hover:brightness-90",
         outline:
-          "border-border bg-card hover:bg-background hover:text-foreground aria-expanded:bg-background aria-expanded:text-foreground",
+          "border-border bg-card font-medium text-foreground/70 hover:bg-background hover:text-foreground aria-expanded:bg-background aria-expanded:text-foreground",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)] aria-expanded:bg-secondary aria-expanded:text-secondary-foreground",
         ghost:
-          "hover:bg-background hover:text-foreground aria-expanded:bg-background aria-expanded:text-foreground",
+          "font-medium text-foreground/70 hover:bg-background hover:text-foreground aria-expanded:bg-background aria-expanded:text-foreground",
         destructive:
           "bg-[#dc2626] text-white hover:brightness-90 focus-visible:border-destructive/40 focus-visible:ring-destructive/30",
         link: "text-primary underline-offset-4 hover:underline",

@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-import { ChevronDown } from "lucide-react"
 import { cn } from "cn"
 
 function Table({ className, ...props }: React.ComponentProps<"table">) {
@@ -83,7 +82,9 @@ function TableHead({
       {sortable ? (
         <span className="inline-flex items-center gap-1">
           {children}
-          <ChevronDown className="size-3.5 opacity-70" aria-hidden />
+          <svg viewBox="0 0 8 5" className="h-1.5 w-2 fill-current opacity-60" aria-hidden>
+            <path d="M0.5 0.5h7L4 4.5z" />
+          </svg>
         </span>
       ) : (
         children
@@ -97,7 +98,7 @@ function TableCell({ className, ...props }: React.ComponentProps<"td">) {
     <td
       data-slot="table-cell"
       className={cn(
-        "px-4 py-2 align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0",
+        "px-4 py-2 align-middle text-[13px] whitespace-nowrap [&:has([role=checkbox])]:pr-0",
         className
       )}
       {...props}

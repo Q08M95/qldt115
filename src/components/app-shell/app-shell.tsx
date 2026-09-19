@@ -9,17 +9,19 @@ export function AppShell({
   isQuanTri,
   period = null,
   unreadCount = 0,
+  activeHref,
   children,
 }: {
   user: ShellUser;
   isQuanTri: boolean;
   period?: PeriodInfo | null;
   unreadCount?: number;
+  activeHref?: string;
   children: React.ReactNode;
 }) {
   return (
     <div className="min-h-screen bg-background">
-      <Sidebar isQuanTri={isQuanTri} period={period} />
+      <Sidebar isQuanTri={isQuanTri} period={period} activeHref={activeHref} />
       <div className="md:pl-60">
         <Topbar user={user} isQuanTri={isQuanTri} unreadCount={unreadCount} />
         <main className="p-4 pb-24 md:p-6 md:pb-6">{children}</main>

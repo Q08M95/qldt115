@@ -32,11 +32,12 @@ export default function DesignPage() {
       isQuanTri
       period={{ name: "Quý 3/2026", daysLeft: 11 }}
       unreadCount={3}
+      activeHref="/"
     >
       <div className="grid gap-4 lg:grid-cols-3">
-        <StatTile icon={Users} hue="blue" label="Nhân sự" value={62} trend={10} />
-        <StatTile icon={GraduationCap} hue="navy" label="Lớp đang mở" value={14} trend={-5} />
-        <StatTile icon={ClipboardCheck} hue="teal" label="Slot còn trống" value={37} trend={8} />
+        <StatTile icon={Users} label="Nhân sự" value={62} trend={10} />
+        <StatTile icon={GraduationCap} label="Lớp đang mở" value={14} trend={-5} />
+        <StatTile icon={ClipboardCheck} label="Slot còn trống" value={37} trend={8} />
       </div>
 
       <div className="mt-4 grid gap-4 lg:grid-cols-3">
@@ -69,8 +70,8 @@ export default function DesignPage() {
                       <div className="flex items-center gap-3">
                         <UserAvatar name={r.name} />
                         <div className="leading-tight">
-                          <p className="font-medium">{r.name}</p>
-                          <p className="text-xs text-muted-foreground">{r.code}</p>
+                          <p className="font-semibold">{r.name}</p>
+                          <p className="text-[11px] text-muted-foreground">{r.code}</p>
                         </div>
                       </div>
                     </TableCell>

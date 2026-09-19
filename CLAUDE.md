@@ -311,7 +311,7 @@ Module này từng bị thiếu trong danh sách 4.1-4.8 ở bản nháp đầu,
 **"Rút gọn" nghĩa là ít mục hơn, KHÔNG phải trình bày sơ sài** — mỗi mục vẫn phải trực quan bằng biểu đồ/bảng biểu phù hợp, không phải chỉ liệt kê số/chữ khô khan. **Người giữ Quyền Quản lý lớp (mục 3) thấy CẢ 2 bộ widget dưới đây cùng lúc** (không phải chọn 1 trong 2), vì họ vừa quản lý vừa có hồ sơ GV/TG song song:
 
 - **Admin/Quản lý lớp** — đa dạng loại biểu đồ, không chỉ area+bar, để 1 màn hình phản ánh nhiều góc độ như mẫu tham khảo (mục 8):
-  - Hàng KPI stat card đầu trang (icon badge màu, số lớn + trend pill): tổng nhân sự, lớp đang mở, slot còn trống, số cảnh báo pool nhỏ đang mở — mỗi stat tile kèm **sparkline nhỏ** phía dưới số (xu hướng 7-30 ngày gần nhất), giống style "Sales $94,127 ↑12%" trong ảnh tham khảo
+  - Hàng KPI stat card đầu trang (icon outline xám-xanh + nhãn + chevron ở hàng trên; số bên trái, trend pill không nền bên phải — đúng ảnh mẫu, không dùng icon badge nền màu): tổng nhân sự, lớp đang mở, slot còn trống, số cảnh báo pool nhỏ đang mở — mỗi stat tile kèm **sparkline nhỏ** phía dưới số (xu hướng 7-30 ngày gần nhất), giống style "Sales $94,127 ↑12%" trong ảnh tham khảo
   - **Bảng việc cần duyệt** (data table): đăng ký chờ, đề xuất nhân sự chờ — nút hành động nhanh ngay trong bảng, click dẫn thẳng tới màn hình xử lý
   - **Area chart** xu hướng KPI toàn đơn vị rút gọn (vài kỳ gần nhất, link báo cáo #2)
   - **Bar chart** tỷ lệ lấp đầy slot theo lớp đang mở (rút gọn từ báo cáo #5)
@@ -483,7 +483,7 @@ Phong cách tham khảo: **"Soft SaaS Dashboard"** (xem file `tham khao theme.jp
 | `warning` | bg `#FEF2F2` (đỏ pastel rất nhạt) / text `#F87171` (đỏ nhạt hơn danger) — cùng hue đỏ với `danger` nhưng **nhạt/nhẹ hơn hẳn về cường độ**, phân biệt bằng độ đậm chứ không phải đổi màu | Chờ duyệt, cảnh báo (pool nhỏ, dồn tải) |
 | `neutral` | bg `#F4F4F5` / text `#71717A` (xám trung tính, không thuộc 4 màu gốc — dùng cho trạng thái "không màu" như Nháp/Vô hiệu hóa) | Nháp, vô hiệu hóa, không còn tham gia |
 
-**Icon badge cho KPI/thống kê:** luân phiên qua đúng 4 màu gốc ở trên (Blue → Navy → Teal → Green), nền dùng gradient tương ứng — nếu 1 màn hình cần nhiều hơn 4 badge, lặp lại chu kỳ hoặc đổi độ đậm/nhạt của gradient (vd Blue gradient sáng hơn/tối hơn) thay vì thêm hue thứ 5.
+**Icon badge nền gradient (dùng cho phân loại/nhấn mạnh, KHÔNG dùng trên thẻ KPI stat — thẻ stat dùng icon outline xám-xanh theo ảnh mẫu):** luân phiên qua đúng 4 màu gốc ở trên (Blue → Navy → Teal → Green), nền dùng gradient tương ứng — nếu 1 màn hình cần nhiều hơn 4 badge, lặp lại chu kỳ hoặc đổi độ đậm/nhạt của gradient (vd Blue gradient sáng hơn/tối hơn) thay vì thêm hue thứ 5.
 
 
 ### 8.1b Dark mode (bắt buộc, làm song song ngay từ đầu — không thêm sau)

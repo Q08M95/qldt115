@@ -15,8 +15,8 @@ export interface PeriodInfo {
 export function BrandLogo() {
   return (
     <Link href="/" className="flex items-center gap-2.5 px-2">
-      <span className="flex size-9 items-center justify-center rounded-xl bg-brand-gradient text-primary-foreground">
-        <GraduationCap className="size-5" aria-hidden />
+      <span className="flex size-8 items-center justify-center rounded-lg bg-brand-gradient text-primary-foreground">
+        <GraduationCap className="size-[18px]" aria-hidden />
       </span>
       <span className="text-lg font-semibold tracking-tight">QLĐT</span>
     </Link>
@@ -24,8 +24,18 @@ export function BrandLogo() {
 }
 
 // Danh sách menu — dùng chung cho sidebar desktop và drawer hamburger mobile
-export function NavList({ isQuanTri, onNavigate }: { isQuanTri: boolean; onNavigate?: () => void }) {
+export function NavList({
+  isQuanTri,
+  onNavigate,
+  activeHref,
+}: {
+  isQuanTri: boolean;
+  onNavigate?: () => void;
+  // Ghi đè đường dẫn hiện tại (chỉ dùng cho trang demo /design)
+  activeHref?: string;
+}) {
   const pathname = usePathname();
+  const current = activeHref ?? pathname;
 
   return (
     <nav className="flex flex-col gap-4" aria-label="Điều hướng chính">
@@ -33,14 +43,14 @@ export function NavList({ isQuanTri, onNavigate }: { isQuanTri: boolean; onNavig
         const items = group.items.filter((it) => !it.quanTriOnly || isQuanTri);
         if (items.length === 0) return null;
         return (
-          <div key={group.label ?? i} className="flex flex-col gap-1.5">
+          <div key={group.label ?? i} className="flex flex-col gap-1.5 [@media(min-height:900px)]:gap-3">
             {group.label && (
               <p className="px-3 pb-1 text-xs font-medium tracking-wider text-muted-foreground/80 uppercase">
                 {group.label}
               </p>
             )}
             {items.map(({ href, label, icon: Icon }) => {
-              const active = isActive(pathname, href);
+              const active = isActive(current, href);
               return (
                 <Link
                   key={href}
@@ -51,7 +61,7 @@ export function NavList({ isQuanTri, onNavigate }: { isQuanTri: boolean; onNavig
                     "flex h-10 items-center gap-3 rounded-lg px-3 text-sm font-medium transition-colors duration-150 ease-out max-md:h-11",
                     active
                       ? "bg-brand-gradient text-primary-foreground shadow-card"
-                      : "text-foreground/70 hover:bg-card hover:text-foreground",
+                      : "text-foreground/80 hover:bg-card hover:text-foreground",
                   )}
                 >
                   <Icon className="size-5 shrink-0" strokeWidth={1.75} aria-hidden />
@@ -73,7 +83,7 @@ export function PeriodCard({ period }: { period: PeriodInfo | null }) {
     <div className="rounded-2xl border border-transparent bg-card p-2.5 shadow-card dark:border-border">
       <div
         className="rounded-xl p-3"
-        style={{ backgroundImage: "linear-gradient(135deg, var(--hue-green-from), transparent 85%)" }}
+        style={{ backgroundImage: "linear-gradient(135deg, var(--tint-lime), transparent 85%)" }}
       >
         <div className="flex items-center gap-2">
           <CalendarClock className="size-5 text-hue-blue" strokeWidth={1.75} aria-hidden />
@@ -97,12 +107,20 @@ export function PeriodCard({ period }: { period: PeriodInfo | null }) {
 }
 
 // Sidebar desktop cố định ~240px (mục 8.5b). Nền hòa cùng nền trang, không viền (ảnh mẫu). Ẩn dưới md — mobile dùng MobileNav.
-export function Sidebar({ isQuanTri, period }: { isQuanTri: boolean; period: PeriodInfo | null }) {
+export function Sidebar({
+  isQuanTri,
+  period,
+  activeHref,
+}: {
+  isQuanTri: boolean;
+  period: PeriodInfo | null;
+  activeHref?: string;
+}) {
   return (
     <aside className="fixed inset-y-0 left-0 z-30 hidden w-60 flex-col gap-6 bg-sidebar p-4 md:flex dark:border-r">
       <BrandLogo />
       <div className="flex-1 overflow-y-auto">
-        <NavList isQuanTri={isQuanTri} />
+        <NavList isQuanTri={isQuanTri} activeHref={activeHref} />
       </div>
       <PeriodCard period={period} />
     </aside>
