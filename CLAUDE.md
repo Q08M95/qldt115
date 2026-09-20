@@ -100,11 +100,13 @@ Nhóm quyết định slot đăng ký được (Giảng viên/Trợ giảng), l�
 
 "Là bác sĩ" là thuộc tính cố định (bằng cấp y khoa có sẵn từ trước), không đạt được qua thăng tiến nội bộ — nên cơ chế đổi nhóm chỉ có **1 trường hợp**: thăng/giáng **Trợ giảng ↔ Giảng viên trong cùng nhánh bác sĩ/không bác sĩ** theo KPI (không áp dụng nhóm Ban giám đốc).
 
-- Cuối mỗi kỳ, hệ thống rà soát người đạt **KPI ≥ ngưỡng X điểm, liên tục Y kỳ** → xuất hiện như đề xuất trong "Đề xuất nhân sự" (module Nhân sự), Admin duyệt/bỏ qua thủ công — không tự động áp dụng
-- X, Y cấu hình qua giao diện Admin, không hardcode. Giá trị khởi điểm: **X ≥ 85 điểm, Y = 3 kỳ liên tiếp**
+- Cuối mỗi kỳ (khi đóng kỳ), hệ thống rà soát 2 chiều, kết quả xuất hiện như đề xuất trong "Đề xuất nhân sự" (module Nhân sự), Admin duyệt/bỏ qua thủ công — không tự động áp dụng:
+  - **Thăng** (Trợ giảng → Giảng viên): **KPI ≥ ngưỡng X điểm, liên tục Y kỳ đã đóng gần nhất**
+  - **Giáng** (Giảng viên → Trợ giảng): **KPI < ngưỡng X' điểm, liên tục Y' kỳ đã đóng gần nhất**. Người không dạy trong kỳ (không có kết quả KPI) không bị tính là "thấp"
+- X, Y, X', Y' cấu hình qua giao diện Admin, không hardcode. Giá trị khởi điểm: **thăng X ≥ 85 điểm, Y = 3 kỳ liên tiếp; giáng X' < 50 điểm, Y' = 3 kỳ liên tiếp** (ngưỡng giáng phải thấp hơn ngưỡng thăng)
 - Lưu lịch sử mọi thay đổi đã duyệt: nhóm cũ, nhóm mới, ngày hiệu lực, người duyệt (phục vụ Nhật ký hệ thống, mục 4.6)
 
-**Thời điểm áp dụng:** nhóm mới có hiệu lực từ **kỳ đánh giá tiếp theo**, kỳ đang tính dở vẫn dùng nhóm cũ (nhất quán nguyên tắc không hồi tố đã áp dụng cho cấu hình KPI, mục 7).
+**Thời điểm áp dụng:** nhóm mới có hiệu lực từ **kỳ đánh giá tiếp theo**, kỳ đang tính dở vẫn dùng nhóm cũ (nhất quán nguyên tắc không hồi tố đã áp dụng cho cấu hình KPI, mục 7). Cách thực hiện: duyệt đề xuất thì hồ sơ đổi nhóm ngay (để lọc điều kiện đăng ký/matching phản ánh đúng), lịch sử đổi nhóm ghi ngày hiệu lực = ngày đầu kỳ sau kỳ đã sinh đề xuất, và khi tính KPI mỗi người được xếp theo **nhóm tại ngày cuối của kỳ đang tính**.
 
 ---
 
@@ -335,7 +337,7 @@ Tất cả các giá trị sau **phải cấu hình qua giao diện, không hard
 - Rubric C2 (mô tả 4 mức: 100/80/60/0%)
 - Danh mục: môn học/chuyên môn, loại chứng chỉ, **nhóm lớp (kèm hệ số D1 gắn sẵn cho từng nhóm)**, loại kinh phí
 - Kỳ đánh giá (ngày bắt đầu/kết thúc từng kỳ)
-- Ngưỡng đề xuất đổi nhóm theo KPI (X điểm, Y kỳ liên tiếp — mục 3)
+- Ngưỡng đề xuất đổi nhóm theo KPI: thăng (X điểm, Y kỳ liên tiếp) và giáng (X' điểm, Y' kỳ liên tiếp) — mục 3
 - **Ngưỡng số người tối thiểu trong 1 nhóm để dùng percentile A1** (khởi điểm 5 người, dưới ngưỡng này chuyển sang fallback so với lịch sử bản thân — mục 6)
 - Ngưỡng cảnh báo dồn tải khi 1 người đảm nhiệm quá nhiều slot cùng vai trò trong 1 lớp (khởi điểm 70%, mục 4.2)
 - Ngưỡng cảnh báo pool ứng viên nhỏ khi tạo Bài (khởi điểm <3 người, mục 4.3), tỷ trọng matching-score (80% công bằng khối lượng / 20% KPI tie-break, mục 4.3)
@@ -445,7 +447,7 @@ Vì bộ tiêu chí/trọng số **sẽ còn thay đổi**, công thức phải 
 
 3. **Snapshot theo kỳ, không hồi tố:** khi 1 kỳ đánh giá đóng, lưu lại bản chụp cấu hình trọng số đã dùng, gắn liền với kết quả kỳ đó. Đổi trọng số cho kỳ mới không làm thay đổi kết quả các kỳ đã đóng.
 
-4. **Áp dụng từ kỳ tiếp theo:** thay đổi cấu hình chỉ ảnh hưởng kỳ đang mở tiếp theo.
+4. **Áp dụng từ kỳ tiếp theo:** thay đổi cấu hình không bao giờ làm đổi kết quả kỳ đã đóng. **Quyết định triển khai (đã chốt):** kỳ **Đang mở** và **Chờ duyệt** dùng cấu hình mới nhất (để Admin sửa được cấu hình nhập sai ngay trong kỳ); bản chụp cấu hình chỉ được lưu khi **đóng kỳ**.
 
 5. **Màn hình "Cấu hình KPI" cho Admin:** thêm/sửa/xóa tiêu chí, chỉnh trọng số, có validate tự động (tổng trọng số các tiêu chí con trong 1 nhóm phải = 100%, tổng trọng số nhóm A/B/C phải = 100%).
 
@@ -453,6 +455,17 @@ Vì bộ tiêu chí/trọng số **sẽ còn thay đổi**, công thức phải 
 - Kỳ = **quý**, Admin tạo/quản lý danh sách kỳ với ngày bắt đầu-kết thúc cụ thể
 - 3 trạng thái: **Đang mở** (thu thập dữ liệu) → **Chờ duyệt** (Admin xem KPI trước khi công bố) → **Đã đóng** (khóa cứng, chỉ xem)
 - Lớp dạy xuyên 2 kỳ: tính theo ngày của từng buổi học cụ thể (không theo ngày bắt đầu lớp)
+
+**Quyết định triển khai Giai đoạn 6 (đã chốt, dùng làm chuẩn khi làm các giai đoạn sau):**
+- **"Đã dạy"** = slot đã phân công của Bài **đã kết thúc**, lớp không bị hủy. Bài thuộc kỳ theo **ngày bắt đầu của Bài theo giờ Việt Nam** (Bài 01:00 sáng 01/10 thuộc kỳ chứa 01/10 dù theo giờ UTC vẫn là 30/09). KPI chỉ tính cho người có dạy ít nhất 1 Bài trong kỳ.
+- **Trọng số động ở mọi cấp:** chia lại trọng số cho tiêu chí có dữ liệu trong từng nhóm, rồi chia lại giữa các nhóm có dữ liệu. B1 chưa có bản ghi điểm danh thì coi là thiếu dữ liệu (Giai đoạn 7 quyết định cách ghi 0% khi vắng).
+- **Hệ số D ở cấp Bài:** hệ số Bài = max(D1 của nhóm lớp, D2 nếu lớp không kinh phí) × D3(vai trò). A1 = tổng giờ × hệ số (giờ quy đổi). **C2 = điểm rubric × hệ số rồi chặn tối đa 100.**
+- **A1 percentile:** xếp hạng giờ quy đổi theo **nhóm nhân sự tại cuối kỳ** (không trộn nhóm), tập so sánh gồm mọi người đang tham gia **kể cả người không dạy trong kỳ** (đã chốt giữ cách này). Điểm = 100 × (số người thấp hơn + 0,5 × số người bằng) ÷ số người trong nhóm.
+- **A1 fallback** khi nhóm dưới ngưỡng (khởi điểm 5 người): điểm = 50 + 50 × (giờ quy đổi kỳ này ÷ trung bình giờ quy đổi các kỳ đã đóng trước của chính người đó − 1), chặn 0-100; chưa có lịch sử thì thiếu A1 (trọng số chia lại). Số kỳ so sánh cấu hình được (khởi điểm 3).
+- **A2** = Bài tự đăng ký được duyệt ÷ tổng Bài đã dạy; **A3** = lời mời được đồng ý ÷ lời mời đã phản hồi (đồng ý + từ chối); **C1/C3** tính theo lớp, gộp trung bình đơn giản hoặc theo số Bài mỗi lớp (cấu hình); **C2** trung bình các lần dự giờ trong kỳ; **A4** đếm 1 lần/lớp không kinh phí, lưu riêng, không vào công thức.
+- **Quyền xem KPI:** kỳ Đang mở và Đã đóng công khai nội bộ; kỳ **Chờ duyệt chỉ Admin/Quản lý lớp** xem (chưa công bố). Bản ghi dự giờ C2 chi tiết (kèm ghi chú) chỉ Admin/Quản lý lớp và chính người được chấm đọc được; điểm C2 đã gộp vào KPI thì công khai như mọi thành phần KPI.
+- **Vòng đời kỳ:** Đang mở ⇄ Chờ duyệt → Đã đóng. Phải đóng kỳ theo thứ tự thời gian (kỳ sớm hơn đóng trước). Trang chi tiết kỳ có **danh sách kiểm tra trước khi đóng** (chỉ cảnh báo, không chặn): kỳ chưa kết thúc, lớp có Bài đã dạy chưa "Đã hoàn thành", lớp thiếu C1, lớp thiếu C3, lượt dạy chưa có điểm danh.
+- **Mở lại kỳ:** chỉ mở lại được **kỳ đã đóng gần nhất**, bắt buộc có lý do (lưu nhật ký). Kỳ về Chờ duyệt, kết quả khóa và snapshot bị xóa, đề xuất đổi nhóm đang chờ duyệt do lần đóng đó sinh ra bị thu hồi; **không mở lại được** nếu đã có đề xuất đổi nhóm sinh từ kỳ đó được duyệt.
 
 ---
 

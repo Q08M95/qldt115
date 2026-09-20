@@ -1,11 +1,12 @@
 import { notFound } from "next/navigation";
 import { AppShell } from "@/components/app-shell/app-shell";
 import { CauHinhKpiForm } from "@/components/kpi/cau-hinh-kpi-form";
-import { KyChuyenTrangThai, KyFormDrawer, XoaKyButton } from "@/components/kpi/ky-danh-gia-ui";
+import { KyChuyenTrangThai, KyFormDrawer, MoLaiKyButton, XoaKyButton } from "@/components/kpi/ky-danh-gia-ui";
+import { demCanhBao, KyKiemTraCard, KyNhatKy } from "@/components/kpi/ky-kiem-tra-card";
 import { KpiKyTable } from "@/components/kpi/kpi-ky-table";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardAction, CardHeader, CardTitle } from "@/components/ui/card";
-import type { CauHinhKpi, KpiKyRow, KyDanhGia } from "@/types/database";
+import type { CauHinhKpi, KiemTraDongKy, KpiKyRow, KyDanhGia, NhatKyKy } from "@/types/database";
 
 // Trang demo màn hình KPI với dữ liệu giả — chỉ chạy khi dev, dùng để đối chiếu giao diện. Production trả 404.
 const CAU_HINH: CauHinhKpi = {
@@ -34,10 +35,25 @@ const CAU_HINH: CauHinhKpi = {
     { id: "2", ten: "ACLS", he_so_d1: 1.2, thu_tu: 2, dang_dung: true },
     { id: "3", ten: "BLS", he_so_d1: 1, thu_tu: 3, dang_dung: true },
   ],
-  thamSo: { min_nhom: 5, so_ky_fallback: 3, gop_c: 0, doi_nhom_x: 85, doi_nhom_y: 3 },
+  thamSo: { min_nhom: 5, so_ky_fallback: 3, gop_c: 0, doi_nhom_x: 85, doi_nhom_y: 3, giang_nhom_x: 50, giang_nhom_y: 3 },
 };
 
 const KY: KyDanhGia = { id: "k1", ten: "Quý 3/2026", tu: "2026-07-01", den: "2026-09-30", trang_thai: "cho_duyet", dong_luc: null };
+
+const KIEM_TRA: KiemTraDongKy = {
+  chua_ket_thuc: false,
+  con_ngay: 0,
+  lop_chua_hoan_thanh: [{ id: "l1", ten: "ACLS-08" }],
+  lop_thieu_c1: [{ id: "l2", ten: "BLS-15" }, { id: "l3", ten: "ABCDE-03" }],
+  lop_thieu_c3: [],
+  luot_thieu_diem_danh: 6,
+  tong_luot: 10,
+};
+
+const NHAT_KY: NhatKyKy[] = [
+  { id: "n2", hanh_dong: "mo_lai", ly_do: "Bổ sung điểm khảo sát của lớp BLS-15 nhập muộn", luc: "2026-10-03T03:00:00Z", nguoi_ten: "Nguyễn Hoàng Tú Minh" },
+  { id: "n1", hanh_dong: "dong", ly_do: null, luc: "2026-10-01T02:00:00Z", nguoi_ten: "Nguyễn Hoàng Tú Minh" },
+];
 
 const HANG: KpiKyRow[] = [
   {
@@ -75,10 +91,13 @@ export default async function DesignKpiPage(props: { searchParams: Promise<Recor
             <CardAction className="flex flex-wrap items-center gap-2">
               <KyFormDrawer ky={{ ...KY, trang_thai: "dang_mo" }} />
               <XoaKyButton ky={{ ...KY, trang_thai: "dang_mo" }} />
-              <KyChuyenTrangThai ky={KY} />
+              <KyChuyenTrangThai ky={KY} soCanhBao={demCanhBao(KIEM_TRA)} />
+              <MoLaiKyButton ky={{ ...KY, trang_thai: "da_dong" }} />
             </CardAction>
           </CardHeader>
+          <KyKiemTraCard kiemTra={KIEM_TRA} />
           <KpiKyTable rows={HANG} />
+          <KyNhatKy items={NHAT_KY} />
         </Card>
       ) : (
         <CauHinhKpiForm cauHinh={CAU_HINH} />

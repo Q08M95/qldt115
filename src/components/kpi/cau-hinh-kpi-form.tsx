@@ -79,6 +79,8 @@ export function CauHinhKpiForm({ cauHinh }: { cauHinh: CauHinhKpi }) {
     gop_c: String(cauHinh.thamSo.gop_c),
     doi_nhom_x: fmt(cauHinh.thamSo.doi_nhom_x),
     doi_nhom_y: fmt(cauHinh.thamSo.doi_nhom_y),
+    giang_nhom_x: fmt(cauHinh.thamSo.giang_nhom_x),
+    giang_nhom_y: fmt(cauHinh.thamSo.giang_nhom_y),
   }));
 
   const nhomSapXep = useMemo(() => [...cauHinh.nhom].sort((a, b) => a.ma.localeCompare(b.ma)), [cauHinh.nhom]);
@@ -113,10 +115,15 @@ export function CauHinhKpiForm({ cauHinh }: { cauHinh: CauHinhKpi }) {
   const soKy = parse(ts.so_ky_fallback);
   const x = parse(ts.doi_nhom_x);
   const y = parse(ts.doi_nhom_y);
+  const xg = parse(ts.giang_nhom_x);
+  const yg = parse(ts.giang_nhom_y);
   if (!(Number.isInteger(minNhom) && minNhom >= 2)) loi.push("Số người tối thiểu của nhóm phải là số nguyên từ 2 trở lên.");
   if (!(Number.isInteger(soKy) && soKy >= 1 && soKy <= 8)) loi.push("Số kỳ so sánh lịch sử phải là số nguyên từ 1 đến 8.");
   if (!(x >= 0 && x <= 100)) loi.push("Ngưỡng KPI đổi nhóm phải từ 0 đến 100.");
   if (!(Number.isInteger(y) && y >= 1 && y <= 12)) loi.push("Số kỳ liên tiếp phải là số nguyên từ 1 đến 12.");
+  if (!(xg >= 0 && xg <= 100)) loi.push("Ngưỡng KPI giáng nhóm phải từ 0 đến 100.");
+  if (!(Number.isInteger(yg) && yg >= 1 && yg <= 12)) loi.push("Số kỳ liên tiếp để giáng nhóm phải là số nguyên từ 1 đến 12.");
+  if (xg >= x) loi.push("Ngưỡng giáng nhóm phải thấp hơn ngưỡng thăng nhóm.");
   for (const t of cauHinh.tieuChi) {
     const v = parse(tc[t.ma].w);
     if (!(v >= 0 && v <= 100)) loi.push(`Trọng số của ${t.ma} phải từ 0 đến 100.`);
@@ -141,6 +148,8 @@ export function CauHinhKpiForm({ cauHinh }: { cauHinh: CauHinhKpi }) {
           gop_c: Number(ts.gop_c),
           doi_nhom_x: x,
           doi_nhom_y: y,
+          giang_nhom_x: xg,
+          giang_nhom_y: yg,
         },
       });
       setKetQua(res ?? { ok: true });
@@ -302,6 +311,15 @@ export function CauHinhKpiForm({ cauHinh }: { cauHinh: CauHinhKpi }) {
           <label className="grid gap-1.5 text-sm">
             <span className="font-medium">Số kỳ đã đóng liên tiếp phải đạt ngưỡng</span>
             <NumberInput value={ts.doi_nhom_y} onChange={(v) => setTs({ ...ts, doi_nhom_y: v })} label="Số kỳ liên tiếp" suffix="kỳ" />
+          </label>
+          <label className="grid gap-1.5 text-sm">
+            <span className="font-medium">Ngưỡng KPI đề xuất giáng nhóm (Giảng viên xuống Trợ giảng)</span>
+            <NumberInput value={ts.giang_nhom_x} onChange={(v) => setTs({ ...ts, giang_nhom_x: v })} label="Ngưỡng KPI giáng nhóm" suffix="điểm" />
+            <span className="text-xs text-muted-foreground">KPI dưới mức này. Người không dạy trong kỳ không bị tính là thấp.</span>
+          </label>
+          <label className="grid gap-1.5 text-sm">
+            <span className="font-medium">Số kỳ đã đóng liên tiếp dưới ngưỡng để giáng</span>
+            <NumberInput value={ts.giang_nhom_y} onChange={(v) => setTs({ ...ts, giang_nhom_y: v })} label="Số kỳ liên tiếp để giáng nhóm" suffix="kỳ" />
           </label>
         </CardContent>
       </Card>

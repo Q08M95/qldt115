@@ -1,12 +1,12 @@
 "use client";
 
-import { CheckCheck, ClipboardCheck, Pencil, Plus, Trash2, Undo2 } from "lucide-react";
+import { CheckCheck, ClipboardCheck, History, Pencil, Plus, Trash2, Undo2 } from "lucide-react";
 import { FormDrawer } from "@/components/form-drawer";
 import { Field } from "@/components/field";
 import { XacNhanDialog } from "@/components/lop-hoc/xac-nhan-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { doiTrangThaiKy, luuKy, xoaKy } from "@/lib/kpi/actions";
+import { doiTrangThaiKy, luuKy, moLaiKy, xoaKy } from "@/lib/kpi/actions";
 import type { KyDanhGia } from "@/types/database";
 
 // Tạo kỳ mới (kèm gợi ý quý tiếp theo) hoặc sửa kỳ đang mở
@@ -70,7 +70,7 @@ export function XoaKyButton({ ky }: { ky: KyDanhGia }) {
 }
 
 // Vòng đời kỳ: Đang mở ⇄ Chờ duyệt → Đã đóng (khóa cứng)
-export function KyChuyenTrangThai({ ky }: { ky: KyDanhGia }) {
+export function KyChuyenTrangThai({ ky, soCanhBao = 0 }: { ky: KyDanhGia; soCanhBao?: number }) {
   if (ky.trang_thai === "da_dong") return null;
 
   if (ky.trang_thai === "dang_mo") {
@@ -98,7 +98,7 @@ export function KyChuyenTrangThai({ ky }: { ky: KyDanhGia }) {
           </Button>
         }
         title={`Đóng ${ky.ten}?`}
-        description="KPI của kỳ được chụp lại cùng cấu hình đang dùng và khóa cứng — đổi cấu hình sau này không làm thay đổi kết quả kỳ này. Hệ thống cũng rà soát và tạo đề xuất đổi nhóm nếu có người đủ điều kiện. Không thể mở lại kỳ đã đóng."
+        description={`${soCanhBao > 0 ? `Còn ${soCanhBao} mục chưa hoàn tất trong danh sách kiểm tra bên dưới — nên xử lý trước khi đóng. ` : ""}KPI của kỳ được chụp lại cùng cấu hình đang dùng và khóa cứng: đổi cấu hình sau này không làm thay đổi kết quả kỳ này. Hệ thống cũng rà soát và tạo đề xuất đổi nhóm (thăng/giáng) nếu có người đủ điều kiện. Nếu cần sửa sau khi đóng, chỉ mở lại được kỳ đóng gần nhất, kèm lý do.`}
         confirmLabel="Đóng kỳ"
         onConfirm={() => doiTrangThaiKy(ky.id, "da_dong")}
       />
@@ -114,5 +114,23 @@ export function KyChuyenTrangThai({ ky }: { ky: KyDanhGia }) {
         onConfirm={() => doiTrangThaiKy(ky.id, "dang_mo")}
       />
     </>
+  );
+}
+
+// Mở lại kỳ đã đóng GẦN NHẤT (bắt buộc lý do). Kết quả đã khóa bị xóa, kỳ về Chờ duyệt để bổ sung dữ liệu rồi đóng lại.
+export function MoLaiKyButton({ ky }: { ky: KyDanhGia }) {
+  return (
+    <XacNhanDialog
+      trigger={
+        <Button variant="outline" size="sm">
+          <History /> Mở lại kỳ
+        </Button>
+      }
+      title={`Mở lại ${ky.ten}?`}
+      description="Kỳ về trạng thái Chờ duyệt: kết quả KPI và bản chụp cấu hình đã khóa bị xóa, đề xuất đổi nhóm đang chờ duyệt do lần đóng này sinh ra bị thu hồi; đóng lại sẽ tính lại từ dữ liệu hiện tại. Không mở lại được nếu đã có đề xuất đổi nhóm của kỳ này được duyệt. Lý do được lưu lại."
+      confirmLabel="Mở lại kỳ"
+      onConfirm={(lyDo) => moLaiKy(ky.id, lyDo)}
+      nhapLyDo={{ nhan: "Lý do mở lại kỳ", placeholder: "Ví dụ: bổ sung điểm khảo sát của lớp ACLS-08 nhập muộn" }}
+    />
   );
 }

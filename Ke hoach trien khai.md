@@ -175,6 +175,7 @@ Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / 
 
 > Đã làm: migration `20260923100000_giai_doan_6_kpi_engine.sql` + test `supabase/tests/giai_doan_6_kpi.sql` (68 kiểm tra, có số liệu tính tay ở đầu file). Màn hình: `/cau-hinh/kpi` (Cấu hình KPI), `/cau-hinh/ky-danh-gia` (danh sách + tạo/sửa/xóa kỳ), `/cau-hinh/ky-danh-gia/[id]` (chuyển trạng thái + bảng KPI xem trước khi công bố); ô "Kỳ đánh giá hiện tại" ở sidebar đọc kỳ thật.
 > Quyết định thiết kế: (1) "Đã dạy" = slot đã phân công của Bài đã kết thúc; Bài thuộc kỳ theo ngày bắt đầu (giờ VN). (2) Kỳ Đang mở/Chờ duyệt dùng cấu hình hiện tại; đóng kỳ mới chụp cấu hình + khóa kết quả. (3) Kỳ Chờ duyệt chỉ Admin/Quản lý lớp xem; kỳ Đang mở và Đã đóng công khai nội bộ. (4) A1 fallback: 50 + 50×(giờ quy đổi kỳ này ÷ trung bình các kỳ trước − 1), chặn 0-100. (5) C2 nhân hệ số D rồi chặn tối đa 100. (6) Chỉ sinh đề xuất thăng Trợ giảng → Giảng viên (cùng nhánh bác sĩ); duyệt thì hiệu lực ghi từ ngày đầu kỳ sau, KPI dùng nhóm tại cuối kỳ (hàm `nhom_tai_ngay`). (7) Bảng `diem_danh_bai` và `danh_gia_du_gio` mới có khung dữ liệu — Giai đoạn 7 làm check-in, tự sinh 0% khi vắng, màn hình nhập C2. (8) B1 chưa có bản ghi thì coi là thiếu dữ liệu (chia lại trọng số), chưa mặc định 0%.
+> Bổ sung sau rà soát (migration `20260923110000_giai_doan_6b_kiem_tra_mo_lai_giang_nhom.sql`, test cùng file `giai_doan_6_kpi.sql` — nay 87 kiểm tra): (a) danh sách kiểm tra trước khi đóng kỳ (chỉ cảnh báo); (b) mở lại kỳ đã đóng gần nhất kèm lý do, có nhật ký `ky_danh_gia_nhat_ky`; (c) đề xuất GIÁNG nhóm (Giảng viên → Trợ giảng) cùng nhánh, ngưỡng cấu hình khởi điểm KPI < 50 liên tục 3 kỳ; (d) bản ghi dự giờ C2 chỉ Admin/Quản lý lớp và chính người được chấm đọc được; (e) ghi các quyết định thiết kế vào CLAUDE.md mục 3, 4.8, 7. Giữ nguyên theo quyết định: kỳ Đang mở/Chờ duyệt dùng cấu hình mới nhất; percentile A1 tính cả người không dạy.
 > Chưa làm (để giai đoạn sau): thông báo công bố KPI/kết quả đề xuất đổi nhóm (Giai đoạn 8), Nhật ký khi sửa cấu hình/đóng kỳ/duyệt đổi nhóm (Giai đoạn 9).
 
 ---
@@ -182,6 +183,8 @@ Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / 
 ## Giai đoạn 7 — Module Đánh giá chất lượng (4.4)
 
 *Tham chiếu: mục 4.4 (cơ chế check-in chi tiết ở cuối mục)*
+
+> Lưu ý từ Giai đoạn 6: nút "Xem KPI của tôi" ở sidebar trỏ tới `/danh-gia` — trang này làm ở giai đoạn này (đến lúc đó nút mới hoạt động). Bảng `diem_danh_bai`, `danh_gia_du_gio` đã có khung; policy đọc C2 đã giới hạn (Admin/Quản lý lớp + chính chủ) — màn hình nhập C2 phải ghi qua hàm SQL riêng.
 
 - [ ] Cơ chế check-in B1: nút "Tôi đã có mặt" chỉ hiện với người đã "Đã phân công" đúng slot, trong khung giờ cấu hình quanh giờ học (khởi điểm 45 phút trước)
 - [ ] Tính B1 tự động theo công thức giảm tuyến tính (ngưỡng tối đa cấu hình, khởi điểm 30 phút)

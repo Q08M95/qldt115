@@ -12,9 +12,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import type { ActionState } from "@/lib/nhan-su/actions";
 
 // Modal giữa màn hình chỉ cho xác nhận ngắn (mục 8.5): hủy lớp, xóa Bài, hoàn thành lớp...
+// Có thể yêu cầu nhập lý do (nhapLyDo): nút xác nhận chỉ bật khi lý do đủ dài, và lý do được truyền vào onConfirm.
 export function XacNhanDialog({
   trigger,
   title,
@@ -24,6 +27,7 @@ export function XacNhanDialog({
   destructive,
   onConfirm,
   redirectTo,
+  nhapLyDo,
 }: {
   trigger: React.ReactNode;
   title: string;
@@ -31,21 +35,28 @@ export function XacNhanDialog({
   confirmLabel: string;
   pendingLabel?: string;
   destructive?: boolean;
-  onConfirm: () => Promise<ActionState>;
+  onConfirm: (lyDo: string) => Promise<ActionState>;
   // Chuyển trang sau khi thành công (vd xóa lớp xong quay về danh sách)
   redirectTo?: string;
+  nhapLyDo?: { nhan: string; placeholder?: string; toiThieu?: number };
 }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [lyDo, setLyDo] = useState("");
   const [pending, start] = useTransition();
+  const toiThieu = nhapLyDo?.toiThieu ?? 5;
+  const thieuLyDo = !!nhapLyDo && lyDo.trim().length < toiThieu;
 
   return (
     <Dialog
       open={open}
       onOpenChange={(o) => {
         setOpen(o);
-        if (!o) setError(null);
+        if (!o) {
+          setError(null);
+          setLyDo("");
+        }
       }}
     >
       <DialogTrigger asChild>{trigger}</DialogTrigger>
@@ -54,6 +65,20 @@ export function XacNhanDialog({
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
+        {nhapLyDo && (
+          <div className="grid gap-1.5">
+            <Label htmlFor="xac-nhan-ly-do" className="text-sm font-medium">
+              {nhapLyDo.nhan}
+            </Label>
+            <Textarea
+              id="xac-nhan-ly-do"
+              value={lyDo}
+              onChange={(e) => setLyDo(e.target.value)}
+              placeholder={nhapLyDo.placeholder}
+              maxLength={500}
+            />
+          </div>
+        )}
         {error && (
           <p role="alert" className="rounded-lg bg-danger-bg px-3 py-2 text-sm text-danger">
             {error}
@@ -62,10 +87,10 @@ export function XacNhanDialog({
         <DialogFooter>
           <Button
             variant={destructive ? "destructive" : "default"}
-            disabled={pending}
+            disabled={pending || thieuLyDo}
             onClick={() =>
               start(async () => {
-                const res = await onConfirm();
+                const res = await onConfirm(lyDo.trim());
                 if (res?.error) {
                   setError(res.error);
                   return;

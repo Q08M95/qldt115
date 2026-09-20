@@ -3,7 +3,7 @@ import "server-only";
 import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { getNhomLop } from "@/lib/lop-hoc/queries";
-import type { CauHinhKpi, KpiKyRow, KyDanhGia, ThamSoKpi } from "@/types/database";
+import type { CauHinhKpi, KiemTraDongKy, KpiKyRow, KyDanhGia, NhatKyKy, ThamSoKpi } from "@/types/database";
 
 const num = (v: unknown) => Number(v);
 
@@ -89,6 +89,38 @@ export async function getKpiKy(kyId: string): Promise<KpiKyRow[]> {
   }));
 }
 
+// Danh sách kiểm tra trước khi đóng kỳ (chỉ người quản trị gọi được)
+export async function getKiemTraDongKy(kyId: string): Promise<KiemTraDongKy> {
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("kiem_tra_dong_ky", { p_ky: kyId });
+  if (error) throw new Error(`Không lập được danh sách kiểm tra: ${error.message}`);
+  return data as KiemTraDongKy;
+}
+
+// Lịch sử đóng / mở lại của 1 kỳ (chỉ người quản trị đọc được)
+export async function getNhatKyKy(kyId: string): Promise<NhatKyKy[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("ky_danh_gia_nhat_ky")
+    .select("id, hanh_dong, ly_do, luc, nguoi")
+    .eq("ky_id", kyId)
+    .order("luc", { ascending: false });
+  if (error) throw new Error(`Không đọc được nhật ký kỳ: ${error.message}`);
+  const ids = [...new Set((data ?? []).map((r) => r.nguoi).filter((v): v is string => !!v))];
+  const ten = new Map<string, string>();
+  if (ids.length > 0) {
+    const { data: ps } = await supabase.from("profiles").select("id, ho_ten").in("id", ids);
+    for (const p of ps ?? []) ten.set(p.id, p.ho_ten);
+  }
+  return (data ?? []).map((r) => ({
+    id: r.id,
+    hanh_dong: r.hanh_dong as NhatKyKy["hanh_dong"],
+    ly_do: r.ly_do,
+    luc: r.luc,
+    nguoi_ten: r.nguoi ? (ten.get(r.nguoi) ?? null) : null,
+  }));
+}
+
 export async function getCauHinhKpi(): Promise<CauHinhKpi> {
   const supabase = await createClient();
   const [nhomRes, tcRes, hsRes, chRes, nhomLop] = await Promise.all([
@@ -108,6 +140,8 @@ export async function getCauHinhKpi(): Promise<CauHinhKpi> {
     gop_c: kv.kpi_gop_c ?? 0,
     doi_nhom_x: kv.kpi_doi_nhom_x ?? 85,
     doi_nhom_y: kv.kpi_doi_nhom_y ?? 3,
+    giang_nhom_x: kv.kpi_giang_nhom_x ?? 50,
+    giang_nhom_y: kv.kpi_giang_nhom_y ?? 3,
   };
   return {
     nhom: (nhomRes.data ?? []).map((r) => ({ ...r, trong_so: num(r.trong_so) })),

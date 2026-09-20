@@ -68,13 +68,26 @@ export async function doiTrangThaiKy(id: string, moi: TrangThaiKy): Promise<Acti
   return { ok: true };
 }
 
+// Mở lại kỳ đã đóng gần nhất (bắt buộc lý do): kỳ về Chờ duyệt, kết quả đã khóa bị xóa và tính lại khi đóng lần nữa
+export async function moLaiKy(id: string, lyDo: string): Promise<ActionState> {
+  await requireQuanTri();
+  if (!UUID.test(id)) return { error: "Mã kỳ không hợp lệ." };
+  if (lyDo.trim().length < 5) return { error: "Hãy nhập lý do mở lại kỳ (tối thiểu 5 ký tự)." };
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("mo_lai_ky", { p_id: id, p_ly_do: lyDo.trim() });
+  if (error) return fail(error);
+  revalidateKy(id);
+  revalidatePath("/nhan-su/de-xuat");
+  return { ok: true };
+}
+
 // ---------- Cấu hình KPI ----------
 export interface CauHinhKpiPayload {
   nhom: Record<string, number>;
   tieu_chi: Record<string, { trong_so: number; bat: boolean }>;
   he_so: Record<string, number>;
   d1: Record<string, number>;
-  tham_so: { min_nhom: number; so_ky_fallback: number; gop_c: number; doi_nhom_x: number; doi_nhom_y: number };
+  tham_so: { min_nhom: number; so_ky_fallback: number; gop_c: number; doi_nhom_x: number; doi_nhom_y: number; giang_nhom_x: number; giang_nhom_y: number };
 }
 
 export async function luuCauHinhKpi(payload: CauHinhKpiPayload): Promise<ActionState> {

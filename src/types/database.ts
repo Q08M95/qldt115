@@ -261,6 +261,27 @@ export interface ThamSoKpi {
   gop_c: number; // 0 = trung bình đơn giản, 1 = theo số Bài mỗi lớp
   doi_nhom_x: number;
   doi_nhom_y: number;
+  giang_nhom_x: number;
+  giang_nhom_y: number;
+}
+
+// Danh sách kiểm tra trước khi đóng kỳ (chỉ cảnh báo, không chặn)
+export interface KiemTraDongKy {
+  chua_ket_thuc: boolean;
+  con_ngay: number;
+  lop_chua_hoan_thanh: { id: string; ten: string }[];
+  lop_thieu_c1: { id: string; ten: string }[];
+  lop_thieu_c3: { id: string; ten: string }[];
+  luot_thieu_diem_danh: number;
+  tong_luot: number;
+}
+
+export interface NhatKyKy {
+  id: string;
+  hanh_dong: "dong" | "mo_lai";
+  ly_do: string | null;
+  luc: string;
+  nguoi_ten: string | null;
 }
 
 export interface CauHinhKpi {

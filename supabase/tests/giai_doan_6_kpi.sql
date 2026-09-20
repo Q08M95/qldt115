@@ -100,7 +100,7 @@ declare
   ok boolean;
   nl uuid;
   l1 uuid; l2 uuid; l3 uuid;
-  b1 uuid; b2 uuid; b3 uuid; b4 uuid; b5 uuid; b6 uuid;
+  b1 uuid; b2 uuid; b3 uuid; b4 uuid; b5 uuid; b6 uuid; b7 uuid;
   k1 uuid; k2 uuid; kx uuid;
   orig jsonb; porig jsonb; pdef jsonb; ch jsonb; ch2 jsonb;
   d numeric; d2 numeric; d3 numeric; d4 numeric;
@@ -108,6 +108,7 @@ declare
   tt text;
   j jsonb;
   dx uuid;
+  dx2 uuid;
   ids_cu uuid[];
   r record;
 begin
@@ -126,7 +127,7 @@ begin
     'tieu_chi', (select jsonb_object_agg(x ->> 'ma', jsonb_build_object('trong_so', x -> 'trong_so', 'bat', x -> 'bat'))
                  from jsonb_array_elements(orig -> 'tieu_chi') x),
     'he_so', orig -> 'he_so', 'd1', orig -> 'd1', 'tham_so', orig -> 'tham_so');
-  -- Cấu hình khởi điểm theo CLAUDE.md (riêng ngưỡng đổi nhóm tạm hạ xuống 70 điểm / 2 kỳ để thử được với 2 kỳ)
+  -- Cấu hình khởi điểm theo CLAUDE.md (riêng ngưỡng thăng nhóm tạm 70 điểm / 2 kỳ và ngưỡng giáng nhóm 65 điểm / 2 kỳ để thử được với 2 kỳ)
   pdef := jsonb_build_object(
     'nhom', '{"A": 25, "B": 30, "C": 45}'::jsonb,
     'tieu_chi', '{"A1": {"trong_so": 50, "bat": true}, "A2": {"trong_so": 25, "bat": true}, "A3": {"trong_so": 25, "bat": true},
@@ -134,7 +135,7 @@ begin
                   "C2": {"trong_so": 40, "bat": true}, "C3": {"trong_so": 35, "bat": true}}'::jsonb,
     'he_so', '{"D2": 1.1, "D3_GV": 1.1, "D3_TG": 1}'::jsonb,
     'd1', (select jsonb_object_agg(id::text, 1.0) from public.danh_muc_nhom_lop),
-    'tham_so', '{"min_nhom": 5, "so_ky_fallback": 3, "gop_c": 0, "doi_nhom_x": 70, "doi_nhom_y": 2}'::jsonb);
+    'tham_so', '{"min_nhom": 5, "so_ky_fallback": 3, "gop_c": 0, "doi_nhom_x": 70, "doi_nhom_y": 2, "giang_nhom_x": 65, "giang_nhom_y": 2}'::jsonb);
 
   -- ===== Dữ liệu thử: 3 lớp, 6 Bài (đều đã kết thúc) =====
   insert into public.lop_hoc (ten, nhom_lop_id, doi_tuong, loai_kinh_phi, ngay_bat_dau, ngay_ket_thuc, trang_thai, c1_phan_tram, c1_nguon, c3_phan_tram)
@@ -150,6 +151,7 @@ begin
   insert into public.bai_hoc (lop_id, thu_tu, ten, bat_dau, ket_thuc) values (l2, 2, 'B4', '2025-08-06 08:00:00+07', '2025-08-06 10:00:00+07') returning id into b4;
   insert into public.bai_hoc (lop_id, thu_tu, ten, bat_dau, ket_thuc) values (l3, 1, 'B5', '2025-09-30 08:00:00+07', '2025-09-30 10:00:00+07') returning id into b5;
   insert into public.bai_hoc (lop_id, thu_tu, ten, bat_dau, ket_thuc) values (l3, 2, 'B6', '2025-10-01 01:00:00+07', '2025-10-01 03:00:00+07') returning id into b6;
+  insert into public.bai_hoc (lop_id, thu_tu, ten, bat_dau, ket_thuc) values (l2, 3, 'B7', '2025-10-02 08:00:00+07', '2025-10-02 10:00:00+07') returning id into b7;
 
   insert into public.slot_giang_day (bai_id, vai_tro, vi_tri, trang_thai, nguoi_phan_cong) values
     (b1, 'giang_vien', 1, 'da_phan_cong', a2), (b1, 'tro_giang', 1, 'da_phan_cong', a7),
@@ -157,7 +159,8 @@ begin
     (b3, 'giang_vien', 1, 'da_phan_cong', a3), (b3, 'tro_giang', 1, 'da_phan_cong', a8), (b3, 'tro_giang', 2, 'da_phan_cong', a7),
     (b4, 'giang_vien', 1, 'da_phan_cong', a3),
     (b5, 'giang_vien', 1, 'da_phan_cong', a5),
-    (b6, 'tro_giang', 1, 'da_phan_cong', a7);
+    (b6, 'tro_giang', 1, 'da_phan_cong', a7),
+    (b7, 'giang_vien', 1, 'da_phan_cong', a4);
 
   -- Đăng ký chủ động được duyệt (A2) và lời mời (A3)
   insert into public.dang_ky_giang_day (bai_id, vai_tro, user_id, loai, trang_thai, slot_id)
@@ -184,7 +187,7 @@ begin
   select count(*) into d2 from public.he_so_do_kho;
   res := res || jsonb_build_object('t', '01 Có đủ 3 nhóm tiêu chí, 8 tiêu chí con (A1-A4, B1, C1-C3), 3 hệ số D (D2, D3 GV/TG)', 'ok', n = 3 and d = 8 and d2 = 3);
   select count(*) into n from public.cau_hinh_he_thong where khoa like 'kpi\_%';
-  res := res || jsonb_build_object('t', '02 Có đủ 5 tham số KPI (ngưỡng percentile, số kỳ fallback, cách gộp C, ngưỡng đổi nhóm X/Y)', 'ok', n = 5);
+  res := res || jsonb_build_object('t', '02 Có đủ 7 tham số KPI (ngưỡng percentile, số kỳ fallback, cách gộp C, ngưỡng thăng X/Y, ngưỡng giáng X/Y)', 'ok', n = 7);
   select count(*) into n from public.tieu_chi_con where ma = 'A4' and tinh_vao_kpi = false;
   res := res || jsonb_build_object('t', '03 A4 tách khỏi công thức KPI (tinh_vao_kpi = false)', 'ok', n = 1);
   select k.tu, k.den into r from public.ky_hien_tai() k;
@@ -230,6 +233,13 @@ begin
   exception when check_violation then ok := true;
   end;
   res := res || jsonb_build_object('t', '09 Tắt B1 mà không chia lại trọng số nhóm (25+45 <> 100) bị từ chối', 'ok', ok);
+
+  ok := false;
+  begin
+    perform public.luu_cau_hinh_kpi(jsonb_set(pdef, '{tham_so,giang_nhom_x}', '70'));
+  exception when check_violation then ok := true;
+  end;
+  res := res || jsonb_build_object('t', '09b Ngưỡng giáng nhóm không thấp hơn ngưỡng thăng nhóm bị từ chối', 'ok', ok);
 
   perform public.luu_cau_hinh_kpi(pdef);
   select h.gia_tri into d from public.he_so_do_kho h where h.ma = 'D2';
@@ -325,6 +335,29 @@ begin
   res := res || jsonb_build_object('t', '32 Gộp C1 theo số Bài (a7: L1 2 Bài 80%, L2 1 Bài 60%): KPI 75,71 thay vì 75,08 khi trung bình đơn giản', 'ok',
     abs(d - 75.08) < 0.011 and abs(d2 - 75.71) < 0.011);
 
+  -- ===== Danh sách kiểm tra trước khi đóng kỳ =====
+  update public.lop_hoc set trang_thai = 'dang_mo' where id = l3;
+  update public.lop_hoc set c1_phan_tram = null, c1_nguon = null where id = l1;
+  perform pg_temp.vao(a1);
+  j := public.kiem_tra_dong_ky(k1);
+  execute 'reset role';
+  res := res || jsonb_build_object('t', '70 Kiểm tra trước đóng kỳ: L3 chưa hoàn thành, L1 thiếu C1, L2 thiếu C3, 6/10 lượt dạy chưa có điểm danh', 'ok',
+    jsonb_array_length(j -> 'lop_chua_hoan_thanh') = 1 and (j -> 'lop_chua_hoan_thanh' -> 0 ->> 'ten') = 'ZZ Test L3'
+    and jsonb_array_length(j -> 'lop_thieu_c1') = 1 and (j -> 'lop_thieu_c1' -> 0 ->> 'ten') = 'ZZ Test L1'
+    and jsonb_array_length(j -> 'lop_thieu_c3') = 1 and (j -> 'lop_thieu_c3' -> 0 ->> 'ten') = 'ZZ Test L2'
+    and (j ->> 'luot_thieu_diem_danh')::int = 6 and (j ->> 'tong_luot')::int = 10 and (j ->> 'chua_ket_thuc')::boolean = false);
+  update public.lop_hoc set trang_thai = 'da_hoan_thanh' where id = l3;
+  update public.lop_hoc set c1_phan_tram = 80, c1_nguon = 'nhap_tay' where id = l1;
+  perform pg_temp.vao(a1);
+  j := public.kiem_tra_dong_ky(k1);
+  execute 'reset role';
+  res := res || jsonb_build_object('t', '71 Sau khi bổ sung: chỉ còn L2 thiếu C3, không còn lớp chưa hoàn thành hay thiếu C1', 'ok',
+    jsonb_array_length(j -> 'lop_chua_hoan_thanh') = 0 and jsonb_array_length(j -> 'lop_thieu_c1') = 0 and jsonb_array_length(j -> 'lop_thieu_c3') = 1);
+  perform pg_temp.vao(a2);
+  ok := false; begin perform public.kiem_tra_dong_ky(k1); exception when insufficient_privilege then ok := true; end;
+  execute 'reset role';
+  res := res || jsonb_build_object('t', '72 GV KHÔNG xem được danh sách kiểm tra đóng kỳ', 'ok', ok);
+
   -- ===== Quyền: GV/TG =====
   perform pg_temp.vao(a2);
   select count(*) into n from public.kpi_ky(k1);
@@ -345,7 +378,14 @@ begin
   ok := false; begin insert into public.ket_qua_kpi (ky_id, user_id, kpi, diem_nhom, gia_tri, trong_so_hieu_luc, gio_thuc, gio_quy_doi, so_bai, so_lop, a4_ky, a4_luy_ke)
     values (k1, a2, 100, '{}', '{}', '{}', 0, 0, 0, 0, 0, 0); exception when insufficient_privilege then ok := true; end;
   res := res || jsonb_build_object('t', '40 GV KHÔNG tự ghi kết quả KPI', 'ok', ok);
+  select count(*) into n from public.danh_gia_du_gio;
+  select count(*) into d from public.danh_gia_du_gio where user_id = a3;
+  res := res || jsonb_build_object('t', '40b GV chỉ đọc được bản ghi dự giờ (C2) của CHÍNH MÌNH (2 bản ghi), không đọc của a3', 'ok', n = 2 and d = 0);
   execute 'reset role';
+  perform pg_temp.vao(a1);
+  select count(*) into n from public.danh_gia_du_gio;
+  execute 'reset role';
+  res := res || jsonb_build_object('t', '40c Admin đọc được toàn bộ bản ghi dự giờ (3 bản ghi)', 'ok', n = 3);
 
   execute 'set local role anon';
   ok := false; begin perform count(*) from public.ket_qua_kpi; exception when insufficient_privilege then ok := true; end;
@@ -409,6 +449,14 @@ begin
   execute 'reset role';
   res := res || jsonb_build_object('t', '53 Kỳ đã đóng: GV xem được kết quả đã công bố', 'ok', n = 6 and d = 1);
 
+  perform pg_temp.vao(a2);
+  select count(*) into n from public.ky_danh_gia_nhat_ky;
+  execute 'reset role';
+  perform pg_temp.vao(a1);
+  select count(*) into d from public.ky_danh_gia_nhat_ky where ky_id = k1 and hanh_dong = 'dong';
+  execute 'reset role';
+  res := res || jsonb_build_object('t', '53b Nhật ký kỳ: đã ghi lần đóng kỳ 1; GV KHÔNG đọc được', 'ok', n = 0 and d = 1);
+
   -- KPI kỳ gần nhất phục vụ tie-break matching-score
   select public.kpi_gan_nhat(a2) into d;
   select public.kpi_gan_nhat(a6) into d2;
@@ -425,18 +473,51 @@ begin
   res := res || jsonb_build_object('t', '57 KPI a7 kỳ 2 = 79,50 (A: 13,89 và 100; không có B; C 100)', 'ok', abs(r.kpi - 79.50) < 0.02);
 
   select count(*) into n from public.tinh_kpi(k2, public.cau_hinh_kpi_hien_tai());
-  res := res || jsonb_build_object('t', '58 Kỳ 2 chỉ có a7 (a2..a5 không dạy trong kỳ này)', 'ok', n = 1);
+  res := res || jsonb_build_object('t', '58 Kỳ 2 chỉ có a7 và a4 (a4 dạy Bài lớp L2 điểm thấp)', 'ok', n = 2);
+  select t.kpi into d from public.tinh_kpi(k2, public.cau_hinh_kpi_hien_tai()) t where t.user_id = a4;
+  res := res || jsonb_build_object('t', '58b KPI a4 kỳ 2 = 60 (A1 90 percentile, A2 0; C chỉ có C1 60)', 'ok', abs(d - 60) < 0.02);
 
   -- ===== Đóng kỳ 2 => đề xuất đổi nhóm =====
   perform pg_temp.vao(a1);
   perform public.doi_trang_thai_ky(k2, 'cho_duyet');
   j := public.doi_trang_thai_ky(k2, 'da_dong');
   execute 'reset role';
-  res := res || jsonb_build_object('t', '59 Đóng kỳ 2 (KPI a7 = 75,08 rồi 79,50, đều >= 70 trong 2 kỳ liên tiếp): sinh đúng 1 đề xuất đổi nhóm', 'ok',
-    (j ->> 'so_de_xuat_doi_nhom')::int = 1);
+  res := res || jsonb_build_object('t', '59 Đóng kỳ 2: a7 (KPI 75,08 rồi 79,50 >= 70) được đề xuất THĂNG, a4 (63,00 rồi 60 < 65) được đề xuất GIÁNG => 2 đề xuất', 'ok',
+    (j ->> 'so_de_xuat_doi_nhom')::int = 2);
+
+  -- Mở lại kỳ 2 (kỳ đóng gần nhất) rồi đóng lại
+  perform pg_temp.vao(a2);
+  ok := false; begin perform public.mo_lai_ky(k2, 'Thử mở lại kỳ bằng tài khoản GV'); exception when insufficient_privilege then ok := true; end;
+  execute 'reset role';
+  res := res || jsonb_build_object('t', '73 GV KHÔNG mở lại được kỳ', 'ok', ok);
+  perform pg_temp.vao(a1);
+  ok := false; begin perform public.mo_lai_ky(k1, 'Thử mở lại kỳ không phải gần nhất'); exception when check_violation then ok := true; end;
+  res := res || jsonb_build_object('t', '74 Không mở lại được kỳ 1 vì không phải kỳ đã đóng gần nhất', 'ok', ok);
+  ok := false; begin perform public.mo_lai_ky(k2, '  '); exception when check_violation then ok := true; end;
+  res := res || jsonb_build_object('t', '75 Mở lại kỳ bắt buộc có lý do', 'ok', ok);
+  perform public.mo_lai_ky(k2, 'Bổ sung điểm C1 còn thiếu');
+  execute 'reset role';
+  select (k.trang_thai = 'cho_duyet' and k.cau_hinh_snapshot is null and k.dong_luc is null) into ok from public.ky_danh_gia k where k.id = k2;
+  res := res || jsonb_build_object('t', '76 Mở lại kỳ 2: về Chờ duyệt, xóa snapshot và kết quả đã khóa, thu hồi 2 đề xuất đổi nhóm đang chờ', 'ok',
+    ok and (select count(*) from public.ket_qua_kpi where ky_id = k2) = 0
+    and (select count(*) from public.de_xuat_nhan_su where ky_id = k2) = 0
+    and (select count(*) from public.ket_qua_kpi where ky_id = k1) = 6);
+  res := res || jsonb_build_object('t', '77 Nhật ký kỳ ghi lần mở lại kèm lý do', 'ok',
+    exists (select 1 from public.ky_danh_gia_nhat_ky l where l.ky_id = k2 and l.hanh_dong = 'mo_lai' and l.ly_do = 'Bổ sung điểm C1 còn thiếu'));
+  perform pg_temp.vao(a1);
+  j := public.doi_trang_thai_ky(k2, 'da_dong');
+  execute 'reset role';
+  res := res || jsonb_build_object('t', '78 Đóng lại kỳ 2: lưu lại 2 kết quả và sinh lại đúng 2 đề xuất (không trùng)', 'ok',
+    (j ->> 'so_ket_qua')::int = 2 and (j ->> 'so_de_xuat_doi_nhom')::int = 2);
+
   select x.id, x.user_id = a7 and x.loai = 'doi_nhom' and x.nhom_cu = 'tg_bac_si' and x.nhom_moi = 'gv_bac_si' and x.ky_id = k2 and x.trang_thai = 'cho_duyet'
-    into dx, ok from public.de_xuat_nhan_su x where x.user_id in (a1, a2, a3, a4, a5, a6, a7, a8, a9);
-  res := res || jsonb_build_object('t', '60 Đề xuất: a7 từ Trợ giảng bác sĩ lên Giảng viên bác sĩ (cùng nhánh), gắn với kỳ 2, chờ duyệt', 'ok', ok);
+    into dx, ok from public.de_xuat_nhan_su x where x.user_id = a7;
+  res := res || jsonb_build_object('t', '60 Đề xuất THĂNG: a7 từ Trợ giảng bác sĩ lên Giảng viên bác sĩ (cùng nhánh), gắn với kỳ 2, chờ duyệt', 'ok', ok);
+  select x.id, x.nhom_cu = 'gv_bac_si' and x.nhom_moi = 'tg_bac_si' and x.ky_id = k2 and x.trang_thai = 'cho_duyet' and x.noi_dung like 'KPI dưới%'
+    into dx2, ok from public.de_xuat_nhan_su x where x.user_id = a4;
+  res := res || jsonb_build_object('t', '60b Đề xuất GIÁNG: a4 từ Giảng viên bác sĩ xuống Trợ giảng bác sĩ (cùng nhánh), gắn với kỳ 2, chờ duyệt', 'ok', ok);
+  res := res || jsonb_build_object('t', '60c KHÔNG đề xuất cho người khác (a2 86, a3 72, a5 71 không thấp; a8 chỉ có 1 kỳ)', 'ok',
+    (select count(*) from public.de_xuat_nhan_su where user_id in (a1, a2, a3, a5, a6, a8, a9)) = 0);
   res := res || jsonb_build_object('t', '61 Chạy rà soát lần nữa không sinh đề xuất trùng (đã có đề xuất chờ duyệt)', 'ok', public.ra_soat_doi_nhom(k2) = 0);
 
   perform pg_temp.vao(a2);
@@ -450,6 +531,16 @@ begin
   execute 'reset role';
   select (ns.nhom = 'gv_bac_si'), (p.vai_tro_giang_day = 'giang_vien') into ok, ok2 from public.nhan_su_nhom ns join public.profiles p on p.id = ns.user_id where ns.user_id = a7;
   res := res || jsonb_build_object('t', '63 Duyệt đề xuất: a7 thành Giảng viên bác sĩ, vai trò giảng dạy đổi theo', 'ok', ok and ok2);
+  perform pg_temp.vao(a1);
+  perform public.xu_ly_de_xuat(dx2, true);
+  execute 'reset role';
+  select (ns.nhom = 'tg_bac_si'), (p.vai_tro_giang_day = 'tro_giang') into ok, ok2 from public.nhan_su_nhom ns join public.profiles p on p.id = ns.user_id where ns.user_id = a4;
+  res := res || jsonb_build_object('t', '63b Duyệt đề xuất giáng: a4 thành Trợ giảng bác sĩ, vai trò giảng dạy đổi theo, hiệu lực ghi từ 01/01/2026', 'ok',
+    ok and ok2 and exists (select 1 from public.lich_su_doi_nhom h where h.user_id = a4 and h.nhom_cu = 'gv_bac_si' and h.nhom_moi = 'tg_bac_si' and h.ngay_hieu_luc = '2026-01-01'));
+  perform pg_temp.vao(a1);
+  ok := false; begin perform public.mo_lai_ky(k2, 'Thử mở lại sau khi đã duyệt đổi nhóm'); exception when check_violation then ok := true; end;
+  execute 'reset role';
+  res := res || jsonb_build_object('t', '63c Không mở lại được kỳ 2 khi đã có đề xuất đổi nhóm sinh từ kỳ này được duyệt', 'ok', ok);
   res := res || jsonb_build_object('t', '64 Lịch sử đổi nhóm ghi hiệu lực từ 01/01/2026 (đầu kỳ sau), có lý do', 'ok',
     exists (select 1 from public.lich_su_doi_nhom h where h.user_id = a7 and h.nhom_cu = 'tg_bac_si' and h.nhom_moi = 'gv_bac_si'
             and h.ngay_hieu_luc = '2026-01-01' and h.ly_do is not null));
