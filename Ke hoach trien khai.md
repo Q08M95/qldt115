@@ -21,7 +21,7 @@
 | 2 | Design System nền tảng (token + App Shell) | ✅ Xong | 100% |
 | 3 | Module Nhân sự (4.1) | ✅ Xong | 100% |
 | 4 | Module Lớp học (4.2) | ✅ Xong | 100% |
-| 5 | Module Đăng ký giảng dạy (4.3) | 🟡 Đang làm — code xong, chờ chạy SQL + test | 90% |
+| 5 | Module Đăng ký giảng dạy (4.3) | ✅ Xong (trừ thông báo, phụ thuộc Giai đoạn 8) | 95% |
 | 6 | Hệ thống KPI — engine + cấu hình (5/6/7) | ⬜ Chưa bắt đầu | 0% |
 | 7 | Module Đánh giá chất lượng (4.4) | ⬜ Chưa bắt đầu | 0% |
 | 8 | Module Thông báo (4.5) | ⬜ Chưa bắt đầu | 0% |
@@ -144,7 +144,7 @@ Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / 
 - [ ] Sửa/hủy lớp đã có người được phân công → bắt buộc trigger thông báo (liên kết giai đoạn 8) — chưa làm được vì chưa có module Thông báo; các hàm SQL đã để sẵn dòng TODO tại đúng vị trí cần gọi
 - [x] Log lời mời bị từ chối (không chỉ lời mời được duyệt)
 - [x] Hiển thị công khai matching-score + progress bar cho mọi GV/TG, áp dụng cả lớp cùng nhóm lớp sắp mở tiếp theo
-- [ ] **Chờ:** chạy migration `20260921100000_giai_doan_5_dang_ky_giang_day.sql` + test `supabase/tests/giai_doan_5_rls.sql` (61 kiểm tra), rồi push
+- [x] Đã chạy migration `20260921100000` + bản vá `20260921100100` + test `supabase/tests/giai_doan_5_rls.sql` (61 kiểm tra đạt)
 - Ghi chú thiết kế: đăng ký/lời mời gắn ở cấp (Bài + vai trò), duyệt thì gán vào slot trống đầu tiên; kỳ hiện tại tạm = quý dương lịch và KPI tie-break tạm trung lập (thay ở Giai đoạn 6); tỷ trọng/ngưỡng lưu ở bảng `cau_hinh_he_thong` (màn hình sửa ở Giai đoạn 11)
 
 **Điều kiện hoàn thành:** đăng ký/duyệt/mời/từ chối chạy hết vòng đời 1 slot (Trống → Đang chờ duyệt → Đã phân công, và quay lại Trống khi bị từ chối/hủy), matching-score trả kết quả đúng thứ tự công bằng.
