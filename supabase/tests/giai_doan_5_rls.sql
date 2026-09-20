@@ -208,16 +208,16 @@ begin
   res := res || jsonb_build_object('t', '12 GV xem được danh sách gợi ý công khai của Bài đang mở', 'ok', n >= 3);
 
   -- ===== Luồng A: đăng ký nhiều Bài 1 lượt =====
-  select count(*) into n from public.dang_ky_bai(array[bai1, bai2, bai3, bai4]) where ok;
+  select count(*) into n from public.dang_ky_bai(array[bai1, bai2, bai3, bai4]) r where r.ok;
   res := res || jsonb_build_object('t', '13 a2 đăng ký 4 Bài 1 lượt: cả 4 thành công (tách thành 4 lượt riêng)', 'ok', n = 4);
 
-  select count(*) into n from public.dang_ky_bai(array[bai1]) where ok;
+  select count(*) into n from public.dang_ky_bai(array[bai1]) r where r.ok;
   res := res || jsonb_build_object('t', '14 Đăng ký lại Bài đã đăng ký bị từ chối', 'ok', n = 0);
 
-  select count(*) into n from public.dang_ky_bai(array[bai_l2]) where ok;
+  select count(*) into n from public.dang_ky_bai(array[bai_l2]) r where r.ok;
   res := res || jsonb_build_object('t', '15 Không đăng ký được Bài của lớp chưa mở (Nháp)', 'ok', n = 0);
 
-  select count(*) into n from public.dang_ky_bai(array[bai_w]) where ok;
+  select count(*) into n from public.dang_ky_bai(array[bai_w]) r where r.ok;
   res := res || jsonb_build_object('t', '16 Không đăng ký được Bài đã bắt đầu / slot đã đủ', 'ok', n = 0);
   execute 'reset role';
 
@@ -225,17 +225,17 @@ begin
   res := res || jsonb_build_object('t', '17 Slot GV Bài 1 chuyển "Đang chờ duyệt" sau khi có đăng ký', 'ok', n = 1);
 
   perform pg_temp.vao(a5);
-  select count(*) into n from public.dang_ky_bai(array[bai1, bai2]) where ok;
+  select count(*) into n from public.dang_ky_bai(array[bai1, bai2]) r where r.ok;
   res := res || jsonb_build_object('t', '18 a5 cũng đăng ký Bài 1 và Bài 2', 'ok', n = 2);
   execute 'reset role';
 
   perform pg_temp.vao(a3);
-  select count(*) into n from public.dang_ky_bai(array[bai1]) where ok;
+  select count(*) into n from public.dang_ky_bai(array[bai1]) r where r.ok;
   res := res || jsonb_build_object('t', '19 a3 (TG) đăng ký được slot TG của Bài 1', 'ok', n = 1);
   execute 'reset role';
 
   perform pg_temp.vao(a6);
-  select count(*) into n from public.dang_ky_bai(array[bai1]) where ok;
+  select count(*) into n from public.dang_ky_bai(array[bai1]) r where r.ok;
   res := res || jsonb_build_object('t', '20 a6 (sai nhóm) KHÔNG đăng ký được', 'ok', n = 0);
   execute 'reset role';
 
@@ -324,7 +324,7 @@ begin
 
   -- Tự duyệt: a4 (Quyền Quản lý lớp) đăng ký rồi tự duyệt cho chính mình (không chặn, có gắn cờ)
   perform pg_temp.vao(a4);
-  select count(*) into n from public.dang_ky_bai(array[bai3]) where ok;
+  select count(*) into n from public.dang_ky_bai(array[bai3]) r where r.ok;
   select id into rid from public.dang_ky_giang_day where user_id = a4 and bai_id = bai3 and trang_thai = 'cho_xu_ly';
   j := public.duyet_dang_ky(rid, false);
   execute 'reset role';
@@ -446,7 +446,7 @@ begin
 
   -- ===== Hủy lớp đóng các đăng ký còn chờ =====
   perform pg_temp.vao(a5);
-  select count(*) into n from public.dang_ky_bai(array[bai5]) where ok;
+  select count(*) into n from public.dang_ky_bai(array[bai5]) r where r.ok;
   execute 'reset role';
   select count(*) into tt from public.slot_giang_day where bai_id = bai5 and trang_thai = 'cho_duyet';
   res := res || jsonb_build_object('t', '55 a5 đăng ký Bài của lớp không kinh phí -> slot chờ duyệt', 'ok', n = 1 and tt::int = 1);
