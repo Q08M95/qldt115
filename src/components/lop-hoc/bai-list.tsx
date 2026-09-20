@@ -114,7 +114,11 @@ export function BaiList({
                   )}
                 </span>
                 <span className="hidden shrink-0 flex-wrap justify-end gap-1.5 sm:flex">
-                  {choDangKy && kn?.da_dang_ky && <Badge variant="warning">Bạn đã đăng ký / được phân công</Badge>}
+                  {choDangKy && kn?.da_dang_ky && (
+                    <Badge variant={b.slots.some((x) => x.nguoi?.id === viewer?.id) ? "success" : "warning"}>
+                      {b.slots.some((x) => x.nguoi?.id === viewer?.id) ? "Đã phân công" : "Đã đăng ký"}
+                    </Badge>
+                  )}
                   {gv.tong > 0 && (
                     <Badge variant={gv.da === gv.tong ? "success" : "outline"}>
                       GV {gv.da}/{gv.tong}
