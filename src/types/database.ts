@@ -217,3 +217,77 @@ export interface DeXuatNhanSu {
   xu_ly_luc: string | null;
   created_at: string;
 }
+
+// ---------- Giai đoạn 6: KPI ----------
+export type TrangThaiKy = "dang_mo" | "cho_duyet" | "da_dong";
+
+export interface KyDanhGia {
+  id: string;
+  ten: string;
+  tu: string; // date 'YYYY-MM-DD'
+  den: string;
+  trang_thai: TrangThaiKy;
+  dong_luc: string | null;
+}
+
+export interface NhomTieuChi {
+  ma: string;
+  ten: string;
+  trong_so: number;
+  thu_tu: number;
+}
+
+export interface TieuChiCon {
+  ma: string;
+  nhom: string;
+  ten: string;
+  nguon: string;
+  don_vi: string;
+  trong_so: number;
+  bat: boolean;
+  tinh_vao_kpi: boolean;
+  thu_tu: number;
+}
+
+export interface HeSoDoKho {
+  ma: string;
+  ten: string;
+  gia_tri: number;
+}
+
+export interface ThamSoKpi {
+  min_nhom: number;
+  so_ky_fallback: number;
+  gop_c: number; // 0 = trung bình đơn giản, 1 = theo số Bài mỗi lớp
+  doi_nhom_x: number;
+  doi_nhom_y: number;
+}
+
+export interface CauHinhKpi {
+  nhom: NhomTieuChi[];
+  tieuChi: TieuChiCon[];
+  heSo: HeSoDoKho[];
+  nhomLop: NhomLop[];
+  thamSo: ThamSoKpi;
+}
+
+// 1 dòng kết quả KPI của 1 người trong 1 kỳ (kỳ đã đóng: bản khóa; kỳ đang mở/chờ duyệt: tính trực tiếp)
+export interface KpiKyRow {
+  user_id: string;
+  ho_ten: string;
+  avatar_url: string | null;
+  vai_tro: VaiTroGiangDay | null;
+  kpi: number;
+  hang: number;
+  diem_nhom: Record<string, number>;
+  gia_tri: Record<string, number>;
+  trong_so_hieu_luc: Record<string, number>;
+  gio_thuc: number;
+  gio_quy_doi: number;
+  so_bai: number;
+  so_lop: number;
+  a4_ky: number;
+  a4_luy_ke: number;
+  che_do_a1: "percentile" | "lich_su" | null;
+  percentile: number | null;
+}

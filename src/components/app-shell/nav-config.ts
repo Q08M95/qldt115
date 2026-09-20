@@ -71,6 +71,8 @@ export const SEGMENT_LABELS: Record<string, string> = {
   "ho-so": "Hồ sơ của tôi",
   "de-xuat": "Đề xuất nhân sự",
   "danh-muc": "Danh mục",
+  kpi: "Cấu hình KPI",
+  "ky-danh-gia": "Kỳ đánh giá",
   design: "Design System",
 };
 

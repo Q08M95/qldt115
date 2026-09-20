@@ -22,7 +22,7 @@
 | 3 | Module Nhân sự (4.1) | ✅ Xong | 100% |
 | 4 | Module Lớp học (4.2) | ✅ Xong | 100% |
 | 5 | Module Đăng ký giảng dạy (4.3) | ✅ Xong (trừ thông báo, phụ thuộc Giai đoạn 8) | 95% |
-| 6 | Hệ thống KPI — engine + cấu hình (5/6/7) | ⬜ Chưa bắt đầu | 0% |
+| 6 | Hệ thống KPI — engine + cấu hình (5/6/7) | ✅ Xong (B1/C2 chỉ có bảng dữ liệu, giao diện nhập ở Giai đoạn 7) | 100% |
 | 7 | Module Đánh giá chất lượng (4.4) | ⬜ Chưa bắt đầu | 0% |
 | 8 | Module Thông báo (4.5) | ⬜ Chưa bắt đầu | 0% |
 | 9 | Nhật ký hệ thống (4.6) | ⬜ Chưa bắt đầu | 0% |
@@ -145,7 +145,7 @@ Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / 
 - [x] Log lời mời bị từ chối (không chỉ lời mời được duyệt)
 - [x] Hiển thị công khai matching-score + progress bar cho mọi GV/TG, áp dụng cả lớp cùng nhóm lớp sắp mở tiếp theo
 - [x] Đã chạy migration `20260921100000` + bản vá `20260921100100` + test `supabase/tests/giai_doan_5_rls.sql` (61 kiểm tra đạt)
-- Ghi chú thiết kế: đăng ký/lời mời gắn ở cấp (Bài + vai trò), duyệt thì gán vào slot trống đầu tiên; kỳ hiện tại tạm = quý dương lịch và KPI tie-break tạm trung lập (thay ở Giai đoạn 6); tỷ trọng/ngưỡng lưu ở bảng `cau_hinh_he_thong` (màn hình sửa ở Giai đoạn 11)
+- Ghi chú thiết kế: đăng ký/lời mời gắn ở cấp (Bài + vai trò), duyệt thì gán vào slot trống đầu tiên; kỳ hiện tại tạm = quý dương lịch và KPI tie-break tạm trung lập (đã thay bằng kỳ đánh giá thật và KPI kỳ đã đóng ở Giai đoạn 6); tỷ trọng/ngưỡng lưu ở bảng `cau_hinh_he_thong` (màn hình sửa ở Giai đoạn 11)
 - [x] Mời NGOẠI LỆ vượt lọc cứng (bổ sung theo yêu cầu): Admin mời người ngoài đề xuất kèm lý do bắt buộc, người được mời vẫn phải đồng ý; vẫn chặn cứng trùng lịch/đã có đăng ký ở Bài. Migration `20260922100000_giai_doan_5b_moi_ngoai_le.sql` + test `supabase/tests/giai_doan_5b_ngoai_le.sql` (23 kiểm tra) — đã chạy, đạt hết
 
 **Điều kiện hoàn thành:** đăng ký/duyệt/mời/từ chối chạy hết vòng đời 1 slot (Trống → Đang chờ duyệt → Đã phân công, và quay lại Trống khi bị từ chối/hủy), matching-score trả kết quả đúng thứ tự công bằng.
@@ -156,22 +156,26 @@ Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / 
 
 *Tham chiếu: mục 5 (tiêu chí gốc), mục 6 (công thức tổng hợp), mục 7 (kiến trúc kỹ thuật)*
 
-- [ ] Bảng cấu hình `nhom_tieu_chi` (A/B/C, trọng số trong công thức tổng)
-- [ ] Bảng cấu hình `tieu_chi_con` (A1-A4, B1, C1-C3, trọng số trong nhóm, nguồn dữ liệu, đơn vị, Bật/Tắt)
-- [ ] Bảng cấu hình `he_so_do_kho` (D1 theo nhóm lớp, D2, D3)
-- [ ] Nạp giá trị khởi điểm đúng theo CLAUDE.md: 30/45/25 (B1/C/A), 40/35/25 (C2/C3/C1), 50/25/25 (A1/A2/A3), D2=×1.1, D3 GV×1.1/TG×1.0
-- [ ] Engine tính điểm tổng quát (1 service dùng chung mọi nhóm/mọi cấp): lấy tiêu chí con đang Bật → trung bình có trọng số → tự phân bổ lại trọng số khi thiếu dữ liệu (trọng số động)
-- [ ] Tính A1 bằng percentile rank theo nhóm (không trộn nhóm), cơ chế fallback so lịch sử 2-3 kỳ trước khi nhóm dưới ngưỡng tối thiểu (cấu hình, khởi điểm 5 người)
-- [ ] Gộp C1/C2/C3 khi 1 người dạy nhiều lớp/nhiều lần dự giờ trong kỳ: trung bình cộng đơn giản (mặc định, cấu hình đổi sang trọng số theo số buổi)
-- [ ] Áp hệ số D ở cấp từng Bài (D1/D2 kế thừa từ Lớp, D3 theo vai trò) nhân vào A1/C2 trước khi gộp lên điểm kỳ
-- [ ] A4 lũy kế — tách hoàn toàn khỏi công thức KPI, lưu bản ghi riêng dùng cho tie-break/vinh danh/matching-score
-- [ ] Quản lý kỳ đánh giá (quý): CRUD kỳ, 3 trạng thái Đang mở/Chờ duyệt/Đã đóng
-- [ ] Snapshot cấu hình khi đóng kỳ — khóa cứng, không hồi tố khi cấu hình đổi sau đó
-- [ ] Logic lớp dạy xuyên 2 kỳ: tính theo ngày từng buổi học, không theo ngày bắt đầu lớp
-- [ ] Cơ chế đổi nhóm theo KPI: rà soát cuối kỳ người đạt X điểm/Y kỳ liên tiếp (cấu hình, khởi điểm 85/3) → sinh đề xuất trong Đề xuất nhân sự, hiệu lực từ kỳ tiếp theo
-- [ ] Màn hình "Cấu hình KPI" cho Admin: sửa trọng số/hệ số, validate tổng trọng số = 100% theo từng nhóm
+- [x] Bảng cấu hình `nhom_tieu_chi` (A/B/C, trọng số trong công thức tổng)
+- [x] Bảng cấu hình `tieu_chi_con` (A1-A4, B1, C1-C3, trọng số trong nhóm, nguồn dữ liệu, đơn vị, Bật/Tắt)
+- [x] Bảng cấu hình `he_so_do_kho` (D1 theo nhóm lớp, D2, D3)
+- [x] Nạp giá trị khởi điểm đúng theo CLAUDE.md: 30/45/25 (B1/C/A), 40/35/25 (C2/C3/C1), 50/25/25 (A1/A2/A3), D2=×1.1, D3 GV×1.1/TG×1.0
+- [x] Engine tính điểm tổng quát (1 service dùng chung mọi nhóm/mọi cấp): lấy tiêu chí con đang Bật → trung bình có trọng số → tự phân bổ lại trọng số khi thiếu dữ liệu (trọng số động)
+- [x] Tính A1 bằng percentile rank theo nhóm (không trộn nhóm), cơ chế fallback so lịch sử 2-3 kỳ trước khi nhóm dưới ngưỡng tối thiểu (cấu hình, khởi điểm 5 người)
+- [x] Gộp C1/C2/C3 khi 1 người dạy nhiều lớp/nhiều lần dự giờ trong kỳ: trung bình cộng đơn giản (mặc định, cấu hình đổi sang trọng số theo số buổi)
+- [x] Áp hệ số D ở cấp từng Bài (D1/D2 kế thừa từ Lớp, D3 theo vai trò) nhân vào A1/C2 trước khi gộp lên điểm kỳ
+- [x] A4 lũy kế — tách hoàn toàn khỏi công thức KPI, lưu bản ghi riêng dùng cho tie-break/vinh danh/matching-score
+- [x] Quản lý kỳ đánh giá (quý): CRUD kỳ, 3 trạng thái Đang mở/Chờ duyệt/Đã đóng
+- [x] Snapshot cấu hình khi đóng kỳ — khóa cứng, không hồi tố khi cấu hình đổi sau đó
+- [x] Logic lớp dạy xuyên 2 kỳ: tính theo ngày từng buổi học, không theo ngày bắt đầu lớp
+- [x] Cơ chế đổi nhóm theo KPI: rà soát cuối kỳ người đạt X điểm/Y kỳ liên tiếp (cấu hình, khởi điểm 85/3) → sinh đề xuất trong Đề xuất nhân sự, hiệu lực từ kỳ tiếp theo
+- [x] Màn hình "Cấu hình KPI" cho Admin: sửa trọng số/hệ số, validate tổng trọng số = 100% theo từng nhóm
 
 **Điều kiện hoàn thành:** nhập đủ dữ liệu A/B/C mẫu cho 1 kỳ test, engine ra đúng điểm KPI theo tay tính tay (đối chiếu ví dụ số cụ thể), đóng kỳ xong đổi cấu hình không ảnh hưởng điểm đã đóng.
+
+> Đã làm: migration `20260923100000_giai_doan_6_kpi_engine.sql` + test `supabase/tests/giai_doan_6_kpi.sql` (68 kiểm tra, có số liệu tính tay ở đầu file). Màn hình: `/cau-hinh/kpi` (Cấu hình KPI), `/cau-hinh/ky-danh-gia` (danh sách + tạo/sửa/xóa kỳ), `/cau-hinh/ky-danh-gia/[id]` (chuyển trạng thái + bảng KPI xem trước khi công bố); ô "Kỳ đánh giá hiện tại" ở sidebar đọc kỳ thật.
+> Quyết định thiết kế: (1) "Đã dạy" = slot đã phân công của Bài đã kết thúc; Bài thuộc kỳ theo ngày bắt đầu (giờ VN). (2) Kỳ Đang mở/Chờ duyệt dùng cấu hình hiện tại; đóng kỳ mới chụp cấu hình + khóa kết quả. (3) Kỳ Chờ duyệt chỉ Admin/Quản lý lớp xem; kỳ Đang mở và Đã đóng công khai nội bộ. (4) A1 fallback: 50 + 50×(giờ quy đổi kỳ này ÷ trung bình các kỳ trước − 1), chặn 0-100. (5) C2 nhân hệ số D rồi chặn tối đa 100. (6) Chỉ sinh đề xuất thăng Trợ giảng → Giảng viên (cùng nhánh bác sĩ); duyệt thì hiệu lực ghi từ ngày đầu kỳ sau, KPI dùng nhóm tại cuối kỳ (hàm `nhom_tai_ngay`). (7) Bảng `diem_danh_bai` và `danh_gia_du_gio` mới có khung dữ liệu — Giai đoạn 7 làm check-in, tự sinh 0% khi vắng, màn hình nhập C2. (8) B1 chưa có bản ghi thì coi là thiếu dữ liệu (chia lại trọng số), chưa mặc định 0%.
+> Chưa làm (để giai đoạn sau): thông báo công bố KPI/kết quả đề xuất đổi nhóm (Giai đoạn 8), Nhật ký khi sửa cấu hình/đóng kỳ/duyệt đổi nhóm (Giai đoạn 9).
 
 ---
 
