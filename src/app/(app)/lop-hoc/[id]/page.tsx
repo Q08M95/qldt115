@@ -5,6 +5,7 @@ import { LopFormDrawer } from "@/components/lop-hoc/lop-form-drawer";
 import { LopHanhDong } from "@/components/lop-hoc/lop-hanh-dong";
 import { requireSession } from "@/lib/auth/session";
 import { getDangKyLop } from "@/lib/dang-ky/queries";
+import { getBaiCanCheckIn, getDiemDanhTheoBai } from "@/lib/danh-gia/queries";
 import { getLopChiTiet, getNhomLop } from "@/lib/lop-hoc/queries";
 import { getDanhMuc } from "@/lib/nhan-su/queries";
 
@@ -25,6 +26,7 @@ export default async function LopHocChiTietPage(props: PageProps<"/lop-hoc/[id]"
   if (!data) notFound();
 
   const { lop } = data;
+  const [diemDanh, baiCheckIn] = await Promise.all([getDiemDanhTheoBai(data.bai.map((b) => b.id)), getBaiCanCheckIn()]);
   const conSua = lop.trang_thai === "nhap" || lop.trang_thai === "dang_mo";
 
   return (
@@ -35,6 +37,8 @@ export default async function LopHocChiTietPage(props: PageProps<"/lop-hoc/[id]"
         isQuanTri={isQuanTri}
         viewer={{ id: profile.id, vaiTro: profile.vai_tro_giang_day, isQuanTri }}
         dangKy={dangKy}
+        diemDanh={diemDanh}
+        baiCheckIn={new Set(baiCheckIn.map((b) => b.bai_id))}
         headerActions={
           // Lớp đã hoàn thành/hủy không còn thao tác sửa hay chuyển trạng thái -> không dựng khung nút
           isQuanTri && conSua ? (

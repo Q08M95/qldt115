@@ -467,6 +467,13 @@ Vì bộ tiêu chí/trọng số **sẽ còn thay đổi**, công thức phải 
 - **Vòng đời kỳ:** Đang mở ⇄ Chờ duyệt → Đã đóng. Phải đóng kỳ theo thứ tự thời gian (kỳ sớm hơn đóng trước). Trang chi tiết kỳ có **danh sách kiểm tra trước khi đóng** (chỉ cảnh báo, không chặn): kỳ chưa kết thúc, lớp có Bài đã dạy chưa "Đã hoàn thành", lớp thiếu C1, lớp thiếu C3, lượt dạy chưa có điểm danh.
 - **Mở lại kỳ:** chỉ mở lại được **kỳ đã đóng gần nhất**, bắt buộc có lý do (lưu nhật ký). Kỳ về Chờ duyệt, kết quả khóa và snapshot bị xóa, đề xuất đổi nhóm đang chờ duyệt do lần đóng đó sinh ra bị thu hồi; **không mở lại được** nếu đã có đề xuất đổi nhóm sinh từ kỳ đó được duyệt.
 
+**Quyết định triển khai Giai đoạn 7 (đã chốt, dùng làm chuẩn khi làm các giai đoạn sau):**
+- **Check-in B1:** chỉ người đã "Đã phân công" đúng slot của Bài, trong khung **từ N phút trước giờ bắt đầu (khởi điểm 45) đến hết giờ kết thúc Bài**, lớp chưa hủy, mỗi người 1 lần/Bài. Ghi qua hàm `check_in_bai` (không ghi thẳng bảng). B1 = max(0, 100 − phút trễ × 100 ÷ ngưỡng tối đa) với phút trễ **tính tròn xuống theo phút**, ngưỡng khởi điểm 30 phút. Cả 2 tham số cấu hình ở màn hình Cấu hình KPI.
+- **Vắng = 0%:** từ mốc `b1_ap_dung_tu` (đặt = ngày mai của ngày chạy migration Giai đoạn 7), Bài đã dạy xong mà không có bản ghi điểm danh được engine tính B1 = 0%; Bài trước mốc vẫn coi là thiếu dữ liệu (không phạt oan khi chưa có check-in). Mốc nằm trong snapshot khi đóng kỳ (snapshot cũ không có khóa này = không áp dụng).
+- **Chỉnh tay B1:** chỉ Admin/Quản lý lớp, bắt buộc lý do ≥ 5 ký tự, lưu người sửa + thời điểm; điểm sửa tay được đánh dấu. Không sửa được Bài thuộc **kỳ đã đóng** (phải mở lại kỳ). Thông báo cho người bị sửa: Giai đoạn 8; ghi Nhật ký hệ thống: Giai đoạn 9.
+- **Nhập C2:** đặt ở hồ sơ nhân sự (module Nhân sự), chỉ Admin/Quản lý lớp, rubric 4 mức 100/80/60/0 (tên + mô tả chỉnh được ở Cấu hình KPI), chấm theo từng Bài đã bắt đầu của người có slot đã phân công; **cấm tự chấm cho chính mình** (luôn "không có dữ liệu"); không sửa được Bài thuộc kỳ đã đóng.
+- **Bảng KPI cá nhân** (`/danh-gia` cho bản thân, hồ sơ nhân sự cho người khác): số kỳ gần nhất có kết quả + trend %, xu hướng tối đa 8 kỳ, radar A/B/C (thanh ngang trên mobile), vị trí "top X%" (nhóm đủ lớn) hoặc so với TB các kỳ trước của chính người đó (fallback), A4 lũy kế, tiến độ tới ngưỡng đổi nhóm. **Tiến độ đổi nhóm chỉ trả cho chính chủ và người quản trị** (hướng thăng/giáng suy ra nhóm); hướng giáng chỉ hiện khi đã có ≥ 1 kỳ dưới ngưỡng.
+
 ---
 
 ## 8. Thiết kế UI/UX — Design System

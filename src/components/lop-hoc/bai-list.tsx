@@ -1,5 +1,7 @@
 import Link from "next/link";
-import { Ban, CalendarDays, ChevronDown, Layers } from "lucide-react";
+import { Ban, CalendarDays, ChevronDown, Layers, UserCheck } from "lucide-react";
+import { CheckInButton } from "@/components/danh-gia/check-in-button";
+import { ChinhDiemDanhDrawer } from "@/components/danh-gia/diem-danh-controls";
 import { NutHuyPhanCong } from "@/components/dang-ky/dang-ky-controls";
 import { DangKyForm } from "@/components/dang-ky/dang-ky-form";
 import { GoiYBai } from "@/components/dang-ky/goi-y-bai";
@@ -10,10 +12,11 @@ import { UserAvatar } from "@/components/user-avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardAction, CardHeader, CardTitle } from "@/components/ui/card";
 import type { DangKyLop } from "@/lib/dang-ky/queries";
+import { daBatDau } from "@/lib/danh-gia/thoi-gian";
 import { fmtDate, fmtTime } from "@/lib/format";
 import { TRANG_THAI_SLOT_LABEL, TRANG_THAI_SLOT_VARIANT } from "@/lib/lop-hoc/labels";
 import { VAI_TRO_LABEL } from "@/lib/nhan-su/labels";
-import type { BaiHoc, SlotGiangDay, TrangThaiLop, VaiTroGiangDay } from "@/types/database";
+import type { BaiHoc, DiemDanh, SlotGiangDay, TrangThaiLop, VaiTroGiangDay } from "@/types/database";
 
 export interface NguoiXem {
   id: string;
@@ -27,7 +30,66 @@ function demVaiTro(slots: SlotGiangDay[], vai: VaiTroGiangDay) {
   return { tong: cua.length, da: cua.filter((s) => s.trang_thai === "da_phan_cong").length };
 }
 
-function SlotRow({ slot, coTheHuy }: { slot: SlotGiangDay; coTheHuy: boolean }) {
+const fmtPt = (n: number) => `${String(Math.round(n * 100) / 100).replace(".", ",")}%`;
+
+// Điểm danh (B1) của người đảm nhiệm slot: badge kết quả; người đó thấy nút "Tôi đã có mặt" khi Bài trong khung check-in;
+// Admin/Quản lý lớp chỉnh tay được sau khi Bài đã bắt đầu (mục 4.4)
+function DiemDanhSlot({
+  baiId,
+  slot,
+  diemDanh,
+  daBat,
+  choCheckIn,
+  isQuanTri,
+  viewerId,
+}: {
+  baiId: string;
+  slot: SlotGiangDay;
+  diemDanh?: DiemDanh;
+  daBat: boolean;
+  choCheckIn: boolean;
+  isQuanTri: boolean;
+  viewerId?: string;
+}) {
+  if (!slot.nguoi) return null;
+  const laToi = slot.nguoi.id === viewerId;
+  return (
+    <>
+      {diemDanh ? (
+        <Badge
+          variant={diemDanh.b1_phan_tram >= 100 ? "success" : diemDanh.b1_phan_tram > 0 ? "warning" : "danger"}
+          title={
+            diemDanh.chinh_tay
+              ? `Đã chỉnh tay${diemDanh.ly_do_chinh ? `: ${diemDanh.ly_do_chinh}` : ""}`
+              : diemDanh.check_in_luc
+                ? `Check-in lúc ${fmtTime(diemDanh.check_in_luc)}`
+                : undefined
+          }
+        >
+          <UserCheck /> B1 {fmtPt(diemDanh.b1_phan_tram)}
+          {diemDanh.chinh_tay && " · sửa tay"}
+        </Badge>
+      ) : laToi && choCheckIn ? (
+        <CheckInButton baiId={baiId} />
+      ) : daBat ? (
+        <Badge variant="neutral">Chưa check-in</Badge>
+      ) : null}
+      {isQuanTri && daBat && (
+        <ChinhDiemDanhDrawer baiId={baiId} userId={slot.nguoi.id} ten={slot.nguoi.ho_ten} diemDanh={diemDanh ?? null} />
+      )}
+    </>
+  );
+}
+
+function SlotRow({
+  slot,
+  coTheHuy,
+  diemDanhProps,
+}: {
+  slot: SlotGiangDay;
+  coTheHuy: boolean;
+  diemDanhProps?: React.ComponentProps<typeof DiemDanhSlot>;
+}) {
   return (
     <li className="flex flex-wrap items-center gap-x-3 gap-y-1 py-2 text-sm">
       <span className="w-14 shrink-0 text-xs text-muted-foreground">Vị trí {slot.vi_tri}</span>
@@ -40,6 +102,7 @@ function SlotRow({ slot, coTheHuy }: { slot: SlotGiangDay; coTheHuy: boolean }) 
         <span className="flex-1 text-muted-foreground">Chưa có người</span>
       )}
       <Badge variant={TRANG_THAI_SLOT_VARIANT[slot.trang_thai]}>{TRANG_THAI_SLOT_LABEL[slot.trang_thai]}</Badge>
+      {diemDanhProps && <DiemDanhSlot {...diemDanhProps} />}
       {coTheHuy && slot.nguoi && <NutHuyPhanCong slotId={slot.id} ten={slot.nguoi.ho_ten} />}
     </li>
   );
@@ -56,6 +119,8 @@ export function BaiList({
   khongKinhPhi = false,
   viewer,
   dangKy,
+  diemDanh,
+  baiCheckIn,
 }: {
   lopId: string;
   ngayBatDau: string;
@@ -67,6 +132,9 @@ export function BaiList({
   khongKinhPhi?: boolean;
   viewer?: NguoiXem;
   dangKy?: DangKyLop;
+  // Điểm danh B1 của các Bài trong lớp (khóa `${bai_id}:${user_id}`) và các Bài của người xem đang trong khung check-in
+  diemDanh?: Map<string, DiemDanh>;
+  baiCheckIn?: Set<string>;
 }) {
   const khaNang = new Map((dangKy?.kha_nang ?? []).map((k) => [k.bai_id, k]));
   // Đăng ký chủ động chỉ khi lớp đã mở đăng ký và người xem đã có vai trò (Giảng viên/Trợ giảng)
@@ -144,7 +212,24 @@ export function BaiList({
                         <p className="mb-1 text-xs font-semibold tracking-wide text-muted-foreground uppercase">{VAI_TRO_LABEL[vai]}</p>
                         <ul className="divide-y rounded-xl border px-3">
                           {slots.map((s) => (
-                            <SlotRow key={s.id} slot={s} coTheHuy={coTheSua} />
+                            <SlotRow
+                              key={s.id}
+                              slot={s}
+                              coTheHuy={coTheSua}
+                              diemDanhProps={
+                                lopTrangThai === "da_huy" || lopTrangThai === "nhap"
+                                  ? undefined
+                                  : {
+                                      baiId: b.id,
+                                      slot: s,
+                                      diemDanh: s.nguoi ? diemDanh?.get(`${b.id}:${s.nguoi.id}`) : undefined,
+                                      daBat: daBatDau(b.bat_dau),
+                                      choCheckIn: !!baiCheckIn?.has(b.id),
+                                      isQuanTri: !!viewer?.isQuanTri,
+                                      viewerId: viewer?.id,
+                                    }
+                              }
+                            />
                           ))}
                         </ul>
                       </div>

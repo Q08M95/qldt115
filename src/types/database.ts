@@ -312,3 +312,96 @@ export interface KpiKyRow {
   che_do_a1: "percentile" | "lich_su" | null;
   percentile: number | null;
 }
+
+// ---------- Đánh giá chất lượng (Giai đoạn 7) ----------
+// Bài của tôi đang trong khung giờ check-in (hàm bai_can_check_in)
+export interface BaiCheckIn {
+  bai_id: string;
+  bai_ten: string;
+  lop_id: string;
+  lop_ten: string;
+  bat_dau: string;
+  ket_thuc: string;
+  da_check_in: boolean;
+  check_in_luc: string | null;
+  b1_phan_tram: number | null;
+}
+
+// Điểm danh (B1) của 1 người ở 1 Bài
+export interface DiemDanh {
+  bai_id: string;
+  user_id: string;
+  check_in_luc: string | null;
+  b1_phan_tram: number;
+  chinh_tay: boolean;
+  ly_do_chinh: string | null;
+}
+
+export type MucDuGio = 100 | 80 | 60 | 0;
+
+export interface RubricMuc {
+  muc: MucDuGio;
+  ten: string;
+  mo_ta: string;
+}
+
+export interface CauHinhDiemDanh {
+  checkin_truoc_phut: number;
+  b1_tre_toi_da_phut: number;
+  rubric: RubricMuc[];
+}
+
+// 1 lần dự giờ (C2) của 1 người ở 1 Bài — chỉ người quản trị và chính người được chấm đọc được
+export interface DuGio {
+  bai_id: string;
+  user_id: string;
+  muc_diem: MucDuGio;
+  ghi_chu: string | null;
+}
+
+// Bài đã/đang diễn ra mà 1 người được phân công — danh sách để Admin chấm dự giờ / chỉnh điểm danh
+export interface BaiDaDay {
+  bai_id: string;
+  bai_ten: string;
+  lop_id: string;
+  lop_ten: string;
+  bat_dau: string;
+  ket_thuc: string;
+  vai_tro: VaiTroGiangDay;
+  diem_danh: DiemDanh | null;
+  du_gio: DuGio | null;
+}
+
+// KPI của 1 người trong 1 kỳ (đã chuẩn hóa từ hàm kpi_ca_nhan); kpi = null: kỳ đó không dạy nên chưa có kết quả
+export interface KpiCaNhanKy {
+  ky_id: string;
+  ten: string;
+  tu: string;
+  den: string;
+  trang_thai: TrangThaiKy;
+  kpi: number | null;
+  diem_nhom: Record<string, number>;
+  gia_tri: Record<string, number>;
+  trong_so_hieu_luc: Record<string, number>;
+  gio_thuc: number;
+  gio_quy_doi: number;
+  so_bai: number;
+  so_lop: number;
+  che_do_a1: "percentile" | "lich_su" | null;
+  percentile: number | null;
+}
+
+// Tiến độ tới ngưỡng đổi nhóm — chỉ trả cho chính người đó hoặc người quản trị; KHÔNG nêu tên nhóm
+export interface TienDoDoiNhom {
+  huong: "thang" | "giang";
+  nguong: number;
+  so_ky_can: number;
+  so_ky_dat: number;
+}
+
+export interface KpiCaNhan {
+  ky: KpiCaNhanKy[]; // cũ -> mới
+  a4_tong: number;
+  so_ky_fallback: number;
+  tien_do: TienDoDoiNhom | null;
+}

@@ -13,6 +13,7 @@ import {
   TRANG_THAI_LOP_VARIANT,
 } from "@/lib/lop-hoc/labels";
 import type { LopChiTiet } from "@/lib/lop-hoc/queries";
+import type { DiemDanh } from "@/types/database";
 import { NHOM_LABEL } from "@/lib/nhan-su/labels";
 
 function Fact({ icon: Icon, nhan, children }: { icon?: typeof Users; nhan: string; children: React.ReactNode }) {
@@ -34,12 +35,17 @@ export function LopChiTietView({
   headerActions,
   viewer,
   dangKy,
+  diemDanh,
+  baiCheckIn,
 }: {
   data: LopChiTiet;
   isQuanTri: boolean;
   // Người đang xem + dữ liệu đăng ký/gợi ý (Giai đoạn 5); bỏ trống thì chỉ xem thông tin lớp
   viewer?: NguoiXem;
   dangKy?: DangKyLop;
+  // Điểm danh B1 các Bài trong lớp + các Bài của người xem đang trong khung check-in (Giai đoạn 7)
+  diemDanh?: Map<string, DiemDanh>;
+  baiCheckIn?: Set<string>;
   // Nút sửa lớp / chuyển trạng thái (chỉ truyền cho người quản trị)
   headerActions?: React.ReactNode;
 }) {
@@ -102,6 +108,8 @@ export function LopChiTietView({
           khongKinhPhi={lop.loai_kinh_phi === "khong_kinh_phi"}
           viewer={viewer}
           dangKy={dangKy}
+          diemDanh={diemDanh}
+          baiCheckIn={baiCheckIn}
         />
 
         <div className="flex min-w-0 flex-col gap-5">

@@ -23,7 +23,7 @@
 | 4 | Module Lớp học (4.2) | ✅ Xong | 100% |
 | 5 | Module Đăng ký giảng dạy (4.3) | ✅ Xong (trừ thông báo, phụ thuộc Giai đoạn 8) | 95% |
 | 6 | Hệ thống KPI — engine + cấu hình (5/6/7) | ✅ Xong (B1/C2 chỉ có bảng dữ liệu, giao diện nhập ở Giai đoạn 7) | 100% |
-| 7 | Module Đánh giá chất lượng (4.4) | ⬜ Chưa bắt đầu | 0% |
+| 7 | Module Đánh giá chất lượng (4.4) | ✅ Xong (nhắc check-in bằng thông báo ở Giai đoạn 8; thông báo/Nhật ký khi sửa điểm danh ở Giai đoạn 8-9) | 100% |
 | 8 | Module Thông báo (4.5) | ⬜ Chưa bắt đầu | 0% |
 | 9 | Nhật ký hệ thống (4.6) | ⬜ Chưa bắt đầu | 0% |
 | 10 | Báo cáo (4.7) + Tổng quan (4.7b) | ⬜ Chưa bắt đầu | 0% |
@@ -186,14 +186,18 @@ Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / 
 
 > Lưu ý từ Giai đoạn 6: nút "Xem KPI của tôi" ở sidebar trỏ tới `/danh-gia` — trang này làm ở giai đoạn này (đến lúc đó nút mới hoạt động). Bảng `diem_danh_bai`, `danh_gia_du_gio` đã có khung; policy đọc C2 đã giới hạn (Admin/Quản lý lớp + chính chủ) — màn hình nhập C2 phải ghi qua hàm SQL riêng.
 
-- [ ] Cơ chế check-in B1: nút "Tôi đã có mặt" chỉ hiện với người đã "Đã phân công" đúng slot, trong khung giờ cấu hình quanh giờ học (khởi điểm 45 phút trước)
-- [ ] Tính B1 tự động theo công thức giảm tuyến tính (ngưỡng tối đa cấu hình, khởi điểm 30 phút)
-- [ ] Không check-in → mặc định 0%
-- [ ] Admin/Quản lý lớp chỉnh sửa thủ công điểm danh, ghi Nhật ký hệ thống (liên kết giai đoạn 9)
-- [ ] Màn hình nhập C2 (rubric 4 mức) gắn theo Bài cụ thể được dự giờ — đặt trong module Nhân sự (4.1) theo đúng thiết kế "quy về đúng nơi"
-- [ ] Bảng KPI cá nhân hoàn chỉnh: Stat Card + trend pill, Area/Line chart xu hướng nhiều kỳ, Radar/bar chart breakdown A/B/C, progress bar percentile (ẩn tên nhóm) hoặc fallback lịch sử bản thân, badge A4 lũy kế, progress tracker hướng tới ngưỡng đổi nhóm
+- [x] Cơ chế check-in B1: nút "Tôi đã có mặt" chỉ hiện với người đã "Đã phân công" đúng slot, trong khung giờ cấu hình quanh giờ học (khởi điểm 45 phút trước)
+- [x] Tính B1 tự động theo công thức giảm tuyến tính (ngưỡng tối đa cấu hình, khởi điểm 30 phút)
+- [x] Không check-in → mặc định 0%
+- [x] Admin/Quản lý lớp chỉnh sửa thủ công điểm danh, ghi Nhật ký hệ thống (liên kết giai đoạn 9)
+- [x] Màn hình nhập C2 (rubric 4 mức) gắn theo Bài cụ thể được dự giờ — đặt trong module Nhân sự (4.1) theo đúng thiết kế "quy về đúng nơi"
+- [x] Bảng KPI cá nhân hoàn chỉnh: Stat Card + trend pill, Area/Line chart xu hướng nhiều kỳ, Radar/bar chart breakdown A/B/C, progress bar percentile (ẩn tên nhóm) hoặc fallback lịch sử bản thân, badge A4 lũy kế, progress tracker hướng tới ngưỡng đổi nhóm
 
 **Điều kiện hoàn thành:** check-in 1 buổi học thật → B1 tự tính đúng, Bảng KPI cá nhân hiển thị đủ toàn bộ thành phần theo spec 4.4, đúng nguyên tắc ẩn nhãn nhóm.
+
+> Đã làm: migration `20260924100000_giai_doan_7_danh_gia_chat_luong.sql` + test `supabase/tests/giai_doan_7_danh_gia.sql` (43 kiểm tra). Màn hình: nút "Tôi đã có mặt" + badge B1 từng slot trong chi tiết lớp; banner check-in đầu Trang chủ; `/danh-gia` (KPI của tôi); hồ sơ nhân sự có Bảng KPI cá nhân + khối "Dự giờ và điểm danh" (chỉ người quản trị: chấm C2, chỉnh B1); Cấu hình KPI có thêm phần điểm danh + rubric.
+> Quyết định thiết kế (đã ghi CLAUDE.md mục 7): (1) khung check-in từ 45 phút trước đến hết giờ Bài, phút trễ tính tròn xuống; (2) vắng = 0% từ mốc `b1_ap_dung_tu` (mai của ngày chạy migration), Bài trước mốc vẫn thiếu dữ liệu; (3) sửa tay B1/nhập C2 bắt buộc lý do (B1), không tự chấm C2 cho chính mình, không sửa Bài thuộc kỳ đã đóng; (4) tiến độ đổi nhóm chỉ hiện cho chính chủ và người quản trị.
+> Chưa làm (để giai đoạn sau): nhắc check-in trước giờ học + thông báo khi điểm danh bị sửa (Giai đoạn 8), Nhật ký hệ thống khi sửa điểm danh/nhập C2 (Giai đoạn 9), mini-calendar lịch dạy và gauge KPI trên Tổng quan (Giai đoạn 10).
 
 ---
 
