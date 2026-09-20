@@ -95,7 +95,7 @@ export function KyKiemTraCard({ kiemTra }: { kiemTra: KiemTraDongKy }) {
         <Muc dat={kiemTra.luot_thieu_diem_danh === 0} title="Điểm danh (B1) đã có cho mọi lượt dạy">
           {kiemTra.luot_thieu_diem_danh > 0 && (
             <>
-              {kiemTra.luot_thieu_diem_danh}/{kiemTra.tong_luot} lượt dạy chưa có điểm danh — chưa có B1 thì KPI của người đó chia lại trọng số cho các tiêu chí còn lại.
+              {kiemTra.luot_thieu_diem_danh}/{kiemTra.tong_luot} lượt dạy chưa có điểm danh — từ ngày áp dụng, lượt không check-in bị tính B1 = 0% (Bài trước ngày áp dụng thì chia lại trọng số). Nếu do lỗi kỹ thuật, hãy chỉnh tay điểm danh trước khi đóng kỳ.
             </>
           )}
         </Muc>
