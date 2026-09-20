@@ -7,7 +7,7 @@ import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/componen
 import { ChungChiDrawer } from "@/components/nhan-su/chung-chi-drawer";
 import { EditProfileDrawer } from "@/components/nhan-su/edit-profile-drawer";
 import { QuanTriDrawer } from "@/components/nhan-su/quan-tri-drawer";
-import { DatLaiMatKhauDrawer, DoiMatKhauDrawer } from "@/components/nhan-su/tai-khoan-drawers";
+import { DatLaiMatKhauDrawer, DoiMatKhauDrawer, SuaEmailDrawer } from "@/components/nhan-su/tai-khoan-drawers";
 import { XoaChungChiButton } from "@/components/nhan-su/xoa-chung-chi-button";
 import { fmtDate, fmtTime } from "@/lib/format";
 import {
@@ -88,7 +88,7 @@ export function ProfileInfoCard({
           </div>
         </dl>
 
-        {(canEdit || isQuanTri || laChuHoSo) && (
+        {(canEdit || isQuanTri || laChuHoSo || laAdmin) && (
           <div className="flex flex-wrap gap-2">
             {canEdit && (
               <EditProfileDrawer profile={profile} chuyenMon={chuyenMon} danhMucChuyenMon={danhMucChuyenMon} />
@@ -97,6 +97,8 @@ export function ProfileInfoCard({
             {/* Đổi mật khẩu: chỉ chủ tài khoản. Đặt lại mật khẩu cho người khác: chỉ Admin gốc. */}
             {laChuHoSo && <DoiMatKhauDrawer />}
             {laAdmin && !laChuHoSo && <DatLaiMatKhauDrawer userId={profile.id} hoTen={profile.ho_ten} />}
+            {/* Sửa email cần service_role nên chỉ Admin gốc (kể cả sửa email của chính mình) */}
+            {laAdmin && <SuaEmailDrawer userId={profile.id} hoTen={profile.ho_ten} email={profile.email} />}
           </div>
         )}
       </CardContent>

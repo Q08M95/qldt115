@@ -1,6 +1,6 @@
 "use client";
 
-import { KeyRound, UserPlus } from "lucide-react";
+import { KeyRound, Mail, UserPlus } from "lucide-react";
 import { Field } from "@/components/field";
 import { FormDrawer } from "@/components/form-drawer";
 import { PasswordField } from "@/components/password-field";
@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { NativeSelect } from "@/components/ui/native-select";
 import { NHOM_OPTIONS } from "@/lib/nhan-su/labels";
-import { datLaiMatKhau, doiMatKhau, themNhanSu } from "@/lib/nhan-su/tai-khoan-actions";
+import { datLaiMatKhau, doiEmail, doiMatKhau, themNhanSu } from "@/lib/nhan-su/tai-khoan-actions";
 
 // Chỉ Admin gốc thấy (trang cha kiểm tra; Server Action kiểm tra lại)
 export function ThemNhanSuDrawer() {
@@ -90,6 +90,34 @@ export function DatLaiMatKhauDrawer({ userId, hoTen }: { userId: string; hoTen: 
       <PasswordField id="mat_khau" name="mat_khau" label="Mật khẩu mới (tối thiểu 8 ký tự)" withGenerate required />
       <p className="text-xs text-muted-foreground">
         Mật khẩu cũ sẽ không còn dùng được. Hãy gửi mật khẩu mới cho {hoTen} và nhắc họ đổi lại sau khi đăng nhập.
+      </p>
+    </FormDrawer>
+  );
+}
+
+// Admin gốc sửa email đăng nhập (vd nhập nhầm tên miền lúc tạo). Mật khẩu giữ nguyên.
+export function SuaEmailDrawer({ userId, hoTen, email }: { userId: string; hoTen: string; email: string }) {
+  return (
+    <FormDrawer
+      trigger={
+        <Button variant="outline" size="sm">
+          <Mail /> Sửa email
+        </Button>
+      }
+      title="Sửa email đăng nhập"
+      description={hoTen}
+      action={doiEmail}
+      submitLabel="Lưu email"
+    >
+      <input type="hidden" name="user_id" value={userId} />
+      <Field label="Email hiện tại" htmlFor="email_cu">
+        <Input id="email_cu" value={email} readOnly disabled />
+      </Field>
+      <Field label="Email mới" htmlFor="email_moi" hint="Có hiệu lực ngay, không gửi thư xác nhận. Mật khẩu giữ nguyên.">
+        <Input id="email_moi" name="email" type="email" required autoComplete="off" defaultValue="" />
+      </Field>
+      <p className="text-xs text-muted-foreground">
+        Từ lần đăng nhập sau, {hoTen} dùng email mới. Hãy báo cho họ biết. Kiểm tra kỹ tên miền (vd gmail.com) trước khi lưu.
       </p>
     </FormDrawer>
   );

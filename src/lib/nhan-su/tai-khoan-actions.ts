@@ -11,9 +11,9 @@ import { resolveNhom } from "@/lib/nhan-su/labels";
 import type { ActionState } from "@/lib/nhan-su/actions";
 import type { NhomNhanSu } from "@/types/database";
 
-// Tài khoản: thêm nhân sự (1 người / nhiều người từ CSV), đổi mật khẩu, đặt lại mật khẩu.
-// Việc tạo tài khoản và đặt lại mật khẩu cần service_role nên CHỈ Admin gốc làm được (không gồm người giữ Quyền Quản lý lớp).
-// TODO Giai đoạn 9: ghi Nhật ký hệ thống cho tạo tài khoản / đặt lại mật khẩu (không bao giờ ghi mật khẩu).
+// Tài khoản: thêm nhân sự (1 người / nhiều người từ CSV), đổi mật khẩu, đặt lại mật khẩu, sửa email.
+// Việc tạo tài khoản, đặt lại mật khẩu và sửa email cần service_role nên CHỈ Admin gốc làm được (không gồm người giữ Quyền Quản lý lớp).
+// TODO Giai đoạn 9: ghi Nhật ký hệ thống cho tạo tài khoản / đặt lại mật khẩu / sửa email (không bao giờ ghi mật khẩu).
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -27,7 +27,8 @@ function raw(fd: FormData, k: string) {
 }
 
 function authErrorMessage(e: { code?: string; message: string }) {
-  if (e.code === "email_exists" || /already (been )?registered|already exists/i.test(e.message)) return "Email này đã có tài khoản.";
+  // Đổi email sang địa chỉ đã có: Auth có thể trả email_exists hoặc lỗi ràng buộc duy nhất của database (23505 / "Database error updating user")
+  if (e.code === "email_exists" || e.code === "23505" || /already (been )?registered|already exists|duplicate key|Database error updating user/i.test(e.message)) return "Email này đã có tài khoản.";
   if (e.code === "weak_password") return "Mật khẩu quá yếu theo quy định của hệ thống.";
   if (e.code === "over_request_rate_limit" || e.code === "over_email_send_rate_limit") return "Thao tác quá nhanh, hãy thử lại sau ít phút.";
   return e.message;
@@ -212,5 +213,46 @@ export async function datLaiMatKhau(_prev: ActionState, fd: FormData): Promise<A
   }
   const { error } = await admin.auth.admin.updateUserById(userId, { password: matKhau });
   if (error) return { error: authErrorMessage(error) };
+  return { ok: true };
+}
+
+// ---------- Admin sửa email đăng nhập của 1 tài khoản (vd gõ nhầm tên miền lúc tạo) ----------
+// Email nằm ở 2 nơi: Supabase Auth (dùng để đăng nhập) và profiles.email (hiển thị) — cập nhật cả hai, lỗi giữa chừng thì hoàn tác.
+export async function doiEmail(_prev: ActionState, fd: FormData): Promise<ActionState> {
+  if (!(await requireAdminGoc())) return { error: "Chỉ Admin được sửa email." };
+
+  const userId = raw(fd, "user_id").trim();
+  const email = raw(fd, "email").trim().toLowerCase();
+  if (!UUID.test(userId)) return { error: "Mã người dùng không hợp lệ." };
+  if (!EMAIL.test(email)) return { error: "Email không hợp lệ." };
+
+  let admin: ReturnType<typeof createAdminClient>;
+  try {
+    admin = createAdminClient();
+  } catch (e) {
+    return { error: (e as Error).message };
+  }
+
+  const { data: hoSo } = await admin.from("profiles").select("email").eq("id", userId).maybeSingle();
+  if (!hoSo) return { error: "Không tìm thấy tài khoản." };
+  if (hoSo.email.toLowerCase() === email) return { error: "Email mới trùng với email hiện tại." };
+  // Kiểm tra trùng trước cho thông báo rõ ràng (profiles.email luôn khớp email đăng nhập)
+  // ilike coi "_" và "%" là ký tự đại diện nên phải thoát chúng để so khớp đúng nguyên văn
+  const mau = email.replace(/[\\%_]/g, (c) => `\\${c}`);
+  const { data: trung } = await admin.from("profiles").select("id").ilike("email", mau).neq("id", userId).limit(1);
+  if (trung && trung.length > 0) return { error: "Email này đã có tài khoản." };
+
+  // email_confirm: đổi có hiệu lực ngay, không gửi thư xác nhận (hệ thống chưa cấu hình gửi email)
+  const { error } = await admin.auth.admin.updateUserById(userId, { email, email_confirm: true });
+  if (error) return { error: authErrorMessage(error) };
+
+  const { error: profErr } = await admin.from("profiles").update({ email }).eq("id", userId);
+  if (profErr) {
+    // Hoàn tác email đăng nhập để 2 nơi không lệch nhau
+    await admin.auth.admin.updateUserById(userId, { email: hoSo.email, email_confirm: true });
+    return { error: "Không cập nhật được hồ sơ, email chưa được đổi. Hãy thử lại." };
+  }
+
+  revalidatePath("/", "layout");
   return { ok: true };
 }
