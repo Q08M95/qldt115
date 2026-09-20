@@ -189,7 +189,8 @@ begin
   execute 'reset role';
 
   perform pg_temp.vao(a7);
-  select ly_do into tt from public.kha_nang_dang_ky_lop(lop1) where bai_id = bai2;
+  -- Bài 1 có slot Trợ giảng (Bài 2 chỉ có slot Giảng viên nên a7 sẽ nhận lý do "không cần vai trò này")
+  select ly_do into tt from public.kha_nang_dang_ky_lop(lop1) where bai_id = bai1;
   res := res || jsonb_build_object('t', '08 a7 thiếu chứng chỉ thấy lý do nêu tên chứng chỉ thiếu', 'ok', tt like 'Thiếu chứng chỉ yêu cầu:%');
   execute 'reset role';
 
