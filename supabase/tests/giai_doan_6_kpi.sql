@@ -108,9 +108,16 @@ declare
   tt text;
   j jsonb;
   dx uuid;
+  ids_cu uuid[];
   r record;
 begin
   select id into nl from public.danh_muc_nhom_lop order by thu_tu limit 1;
+
+  -- Cô lập nhân sự THẬT: percentile A1 so sánh trong cả nhóm, nên người thật đang tham gia (0 giờ) làm lệch số tính tay.
+  -- Tạm chuyển họ sang "tạm ngừng" trong khối này và khôi phục ở cuối (khối DO là 1 giao dịch: lỗi giữa chừng cũng tự hoàn tác).
+  select coalesce(array_agg(p.id), '{}') into ids_cu from public.profiles p
+  where p.trang_thai_tham_gia = 'dang_tham_gia' and p.id not in (a1, a2, a3, a4, a5, a6, a7, a8, a9);
+  update public.profiles set trang_thai_tham_gia = 'tam_ngung' where id = any (ids_cu);
 
   -- Lưu cấu hình hiện có để khôi phục ở cuối
   orig := public.cau_hinh_kpi_hien_tai();
@@ -463,6 +470,11 @@ begin
   execute 'reset role';
   res := res || jsonb_build_object('t', '68 Đã khôi phục cấu hình KPI ban đầu (trọng số nhóm, D2, ngưỡng đổi nhóm)', 'ok',
     public.cau_hinh_kpi_hien_tai() = orig);
+
+  -- Khôi phục trạng thái tham gia của nhân sự thật
+  update public.profiles set trang_thai_tham_gia = 'dang_tham_gia' where id = any (ids_cu);
+  res := res || jsonb_build_object('t', '69 Đã khôi phục trạng thái "đang tham gia" của nhân sự thật', 'ok',
+    not exists (select 1 from public.profiles p where p.id = any (ids_cu) and p.trang_thai_tham_gia <> 'dang_tham_gia'));
 
   insert into pg_temp.ket_qua (ten, dat)
   select e ->> 't', (e ->> 'ok')::boolean from jsonb_array_elements(res) e;
