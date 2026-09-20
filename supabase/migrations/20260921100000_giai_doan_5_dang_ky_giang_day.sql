@@ -352,7 +352,7 @@ begin
     -- Mọi người đang tham gia, kèm nhóm, số giờ trong kỳ và A4 — làm tập so sánh percentile theo nhóm
     select p.id as uid, n.nhom as nhom_nv,
       coalesce((
-        select sum(extract(epoch from (b.ket_thuc - b.bat_dau)) / 3600.0)
+        select sum(extract(epoch from (b.ket_thuc - b.bat_dau))::numeric / 3600.0)
         from public.slot_giang_day s
         join public.bai_hoc b on b.id = s.bai_id
         join public.lop_hoc l on l.id = b.lop_id
@@ -380,7 +380,7 @@ begin
     select c.uid, c.gio, c.a4,
       count(*) over (partition by c.nhom_nv) as n_nhom,
       rank() over (partition by c.nhom_nv order by c.cs) as rk,
-      cume_dist() over (partition by c.nhom_nv order by c.cs) as cd
+      (cume_dist() over (partition by c.nhom_nv order by c.cs))::numeric as cd
     from chi_so c
   ),
   ung as (
