@@ -60,7 +60,7 @@ export function BaiList({
   lopId: string;
   ngayBatDau: string;
   bai: BaiHoc[];
-  // Người quản trị và lớp còn sửa được (Nháp / Đang mở)
+  // Người quản trị và lớp còn sửa được (Dự kiến / Đang mở)
   coTheSua: boolean;
   lopTrangThai?: TrangThaiLop;
   // Lớp không kinh phí: gợi ý xếp theo A4 thay vì khối lượng giờ (mục 4.3)

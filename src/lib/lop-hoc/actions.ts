@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireQuanTri } from "@/lib/auth/session";
 import { localInputToIso } from "@/lib/format";
+import { chuanHoaThongBao } from "@/lib/lop-hoc/thong-bao";
 import type { ActionState } from "@/lib/nhan-su/actions";
 import { createClient } from "@/lib/supabase/server";
 import type { DoiTuongLop, LoaiKinhPhi, NhomNhanSu, TrangThaiLop } from "@/types/database";
@@ -23,7 +24,7 @@ function str(fd: FormData, k: string) {
 function fail(error: { message: string; code?: string }): ActionState {
   if (error.code === "23505") return { error: "Giá trị này đã tồn tại." };
   if (error.code === "42501") return { error: "Bạn không có quyền thực hiện thao tác này." };
-  return { error: error.message };
+  return { error: chuanHoaThongBao(error.message) };
 }
 
 function revalidateLop(id?: string) {
@@ -162,7 +163,7 @@ export async function datC1ThuCong(_prev: ActionState, fd: FormData): Promise<Ac
   const lopId = str(fd, "lop_id");
   const v = phanTram(fd, "c1");
   if (!UUID.test(lopId)) return { error: "Mã lớp không hợp lệ." };
-  if (v === "loi") return { error: "C1 phải là số từ 0 đến 100." };
+  if (v === "loi") return { error: "Khảo sát hài lòng học viên (C1) phải là số từ 0 đến 100." };
 
   const supabase = await createClient();
   const { error } = await supabase.rpc("dat_c1_thu_cong", { p_lop: lopId, p_phan_tram: v });
@@ -177,7 +178,7 @@ export async function datC3(_prev: ActionState, fd: FormData): Promise<ActionSta
   const lopId = str(fd, "lop_id");
   const v = phanTram(fd, "c3");
   if (!UUID.test(lopId)) return { error: "Mã lớp không hợp lệ." };
-  if (v === "loi") return { error: "C3 phải là số từ 0 đến 100." };
+  if (v === "loi") return { error: "Tỷ lệ học viên đạt chuẩn đầu ra (C3) phải là số từ 0 đến 100." };
 
   const supabase = await createClient();
   const { error } = await supabase.rpc("dat_c3", { p_lop: lopId, p_phan_tram: v });

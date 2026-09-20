@@ -21,7 +21,7 @@ export default async function LopHocChiTietPage(props: PageProps<"/lop-hoc/[id]"
     getDanhMuc("danh_muc_loai_chung_chi"),
     getDangKyLop(id), // gợi ý + đăng ký + khả năng đăng ký; RLS/hàm SQL tự lọc theo người xem
   ]);
-  // RLS: GV/TG không thấy lớp Nháp (chưa công khai sớm) -> trả null -> 404
+  // RLS: GV/TG không thấy lớp Dự kiến (chưa công khai sớm) -> trả null -> 404
   if (!data) notFound();
 
   const { lop } = data;

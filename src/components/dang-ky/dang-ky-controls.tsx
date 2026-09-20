@@ -155,9 +155,6 @@ export function NutDuyet({ id }: { id: string }) {
             <DialogTitle>Cảnh báo dồn tải</DialogTitle>
             <DialogDescription>{canhBao}</DialogDescription>
           </DialogHeader>
-          <p className="text-sm text-muted-foreground">
-            Đây chỉ là cảnh báo, không chặn cứng — 1 giảng viên xuyên suốt cả khóa đôi khi là chủ đích sư phạm hợp lý.
-          </p>
           {loiXacNhan && (
             <p role="alert" className="rounded-lg bg-danger-bg px-3 py-2 text-sm text-danger">
               {loiXacNhan}

@@ -40,7 +40,7 @@ function chuanHoaLop(r: Record<string, unknown>): LopHocTongHop {
   };
 }
 
-// Danh sách lớp kèm tiến độ theo vai trò. RLS lo việc ẩn lớp Nháp với GV/TG.
+// Danh sách lớp kèm tiến độ theo vai trò. RLS lo việc ẩn lớp Dự kiến với GV/TG.
 export async function getLopList(): Promise<LopHocTongHop[]> {
   const supabase = await createClient();
   const { data, error } = await supabase

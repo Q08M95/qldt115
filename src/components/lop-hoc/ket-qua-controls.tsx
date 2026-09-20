@@ -85,7 +85,7 @@ export function KhaoSatControls({ lopId, khaoSat }: { lopId: string; khaoSat: Kh
       {!khaoSat ? (
         <>
           <p className="text-xs text-muted-foreground">
-            Tạo đường dẫn công khai (không cần đăng nhập, ẩn danh) gồm 2 câu hỏi đánh giá 1–5. C1 được tự tính lại mỗi khi có phản hồi mới.
+            Tạo đường dẫn công khai (không cần đăng nhập, ẩn danh) gồm 2 câu hỏi đánh giá 1–5. Điểm khảo sát hài lòng học viên (C1) được tự tính lại mỗi khi có phản hồi mới.
           </p>
           <div>
             <Button variant="outline" onClick={() => run(true)} disabled={pending}>

@@ -9,7 +9,7 @@ function ChiSo({ nhan, ma, value, phu }: { nhan: string; ma: string; value: numb
   return (
     <div className="rounded-xl bg-background p-3">
       <p className="text-xs text-muted-foreground">
-        {ma} · {nhan}
+        {nhan} ({ma})
       </p>
       <p className="mt-1 text-[26px] leading-none font-bold tabular-nums">
         {value === null ? <span className="text-base font-medium text-muted-foreground">Chưa có</span> : `${value}%`}
@@ -43,14 +43,14 @@ export function KetQuaCard({
       <CardContent className="grid gap-5">
         {!hoanThanh ? (
           <p className="text-sm text-muted-foreground">
-            Kết quả khảo sát hài lòng (C1) và tỷ lệ đạt chuẩn đầu ra (C3) chỉ nhập được sau khi lớp chuyển sang “Đã hoàn thành”.
+            Kết quả khảo sát hài lòng học viên (C1) và tỷ lệ học viên đạt chuẩn đầu ra (C3) chỉ nhập được sau khi lớp chuyển sang “Đã hoàn thành”.
           </p>
         ) : (
           <>
             <div className="grid gap-3 sm:grid-cols-2">
               <ChiSo
                 ma="C1"
-                nhan="Hài lòng học viên"
+                nhan="Khảo sát hài lòng học viên"
                 value={lop.c1_phan_tram}
                 phu={
                   lop.c1_nguon && (
@@ -60,7 +60,7 @@ export function KetQuaCard({
                   )
                 }
               />
-              <ChiSo ma="C3" nhan="Đạt chuẩn đầu ra" value={lop.c3_phan_tram} />
+              <ChiSo ma="C3" nhan="Tỷ lệ học viên đạt chuẩn đầu ra" value={lop.c3_phan_tram} />
             </div>
 
             {isQuanTri && (
@@ -70,7 +70,7 @@ export function KetQuaCard({
                   action={datC1ThuCong}
                   lopId={lop.id}
                   name="c1"
-                  label="C1 nhập tay (%)"
+                  label="Khảo sát hài lòng học viên (C1) — nhập tay (%)"
                   hint="Dùng khi khảo sát làm ngoài hệ thống. Hình thức nhập sau cùng ghi đè, không cộng dồn."
                   value={lop.c1_nguon === "nhap_tay" ? lop.c1_phan_tram : null}
                 />
@@ -78,7 +78,7 @@ export function KetQuaCard({
                   action={datC3}
                   lopId={lop.id}
                   name="c3"
-                  label="C3 — % học viên đạt chuẩn đầu ra"
+                  label="Tỷ lệ học viên đạt chuẩn đầu ra (C3) — nhập tay (%)"
                   hint="Nhập % tổng hợp, không cần danh sách học viên."
                   value={lop.c3_phan_tram}
                 />

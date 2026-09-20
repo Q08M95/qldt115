@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { requireQuanTri, requireSession } from "@/lib/auth/session";
+import { chuanHoaThongBao } from "@/lib/lop-hoc/thong-bao";
 import type { ActionState } from "@/lib/nhan-su/actions";
 import { createClient } from "@/lib/supabase/server";
 import type { NhanSuChoMoi, VaiTroGiangDay } from "@/types/database";
@@ -21,7 +22,7 @@ export type DuyetState = ActionState & { canhBao?: string };
 function fail(error: { message: string; code?: string }): { error: string } {
   if (error.code === "42501") return { error: "Bạn không có quyền thực hiện thao tác này." };
   if (error.code === "23505") return { error: "Thao tác này đã được thực hiện trước đó." };
-  return { error: error.message };
+  return { error: chuanHoaThongBao(error.message) };
 }
 
 function revalidateLop() {

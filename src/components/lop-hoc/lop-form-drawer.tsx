@@ -48,7 +48,7 @@ export function LopFormDrawer({
       description={
         sua
           ? "Đổi thông tin chung của lớp. Các Bài và slot chỉnh riêng ở trang chi tiết lớp."
-          : "Lớp mới ở trạng thái Nháp. Thêm các Bài ở trang chi tiết lớp rồi mới mở đăng ký."
+          : "Lớp mới ở trạng thái Dự kiến. Thêm các Bài ở trang chi tiết lớp rồi mới mở đăng ký."
       }
       action={luuLopHoc}
       submitLabel={sua ? "Lưu thay đổi" : "Tạo lớp"}
@@ -136,7 +136,7 @@ export function LopFormDrawer({
       <label className="flex cursor-pointer items-start gap-3 rounded-lg border p-3 text-sm">
         <input type="checkbox" name="cong_khai_som" defaultChecked={lop?.cong_khai_som} className="mt-0.5 size-4 accent-primary" />
         <span>
-          <span className="block font-medium">Công khai sớm khi còn Nháp</span>
+          <span className="block font-medium">Công khai sớm khi còn Dự kiến</span>
           <span className="block text-xs text-muted-foreground">
             Cho GV/TG thấy lớp và các Bài dự kiến trước khi mở đăng ký chính thức, để sắp xếp lịch cá nhân.
           </span>

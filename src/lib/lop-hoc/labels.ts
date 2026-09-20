@@ -16,7 +16,7 @@ export const LOAI_KINH_PHI_LABEL: Record<LoaiKinhPhi, string> = {
 };
 
 export const TRANG_THAI_LOP_LABEL: Record<TrangThaiLopHienThi, string> = {
-  nhap: "Nháp",
+  nhap: "Dự kiến",
   dang_mo: "Đang mở đăng ký",
   da_du_dang_ky: "Đã đủ đăng ký",
   dang_dien_ra: "Đang diễn ra",
@@ -25,7 +25,7 @@ export const TRANG_THAI_LOP_LABEL: Record<TrangThaiLopHienThi, string> = {
 };
 
 // Màu badge theo semantic (mục 8.1): mở đăng ký = xanh dương, đủ đăng ký = xanh lá, đang diễn ra = xanh ngọc,
-// hoàn thành = navy, hủy = danger, nháp = neutral
+// hoàn thành = navy, hủy = danger, dự kiến = neutral
 export const TRANG_THAI_LOP_VARIANT: Record<
   TrangThaiLopHienThi,
   "neutral" | "blue" | "green" | "teal" | "navy" | "danger"

@@ -186,7 +186,7 @@ export async function countDeXuatChoDuyet(): Promise<number> {
   return count ?? 0;
 }
 
-// Lịch sử giảng dạy của 1 người: mọi Bài đã/đang được phân công (RLS tự ẩn Bài của lớp Nháp chưa công khai)
+// Lịch sử giảng dạy của 1 người: mọi Bài đã/đang được phân công (RLS tự ẩn Bài của lớp Dự kiến chưa công khai)
 export async function getLichSuGiangDay(userId: string): Promise<LichSuBai[]> {
   const supabase = await createClient();
   const { data, error } = await supabase

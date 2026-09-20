@@ -153,7 +153,7 @@ Phạm vi: quản lý lớp học (không phải nền tảng học online).
 - **A4 (lớp không kinh phí) tính theo LỚP, không theo Bài:** "loại kinh phí" là thuộc tính của cả Lớp, áp dụng cho mọi Bài trong lớp đó (không có chuyện 1 lớp vừa có Bài có kinh phí vừa có Bài không kinh phí) — nhưng vì 1 lớp không kinh phí có thể gồm nhiều Bài, nếu tính A4 theo từng Bài thì 1 người dạy nhiều Bài trong cùng lớp sẽ bị đếm nhiều lần cho cùng 1 đóng góp. Do đó chỉ tính **1 lần A4** cho mỗi lớp không kinh phí mà người đó tham gia dạy, bất kể dạy bao nhiêu Bài trong lớp đó
 - **A1, B1, conflict detection không phát sinh phức tạp thêm** — các cơ chế này vốn đã thiết kế theo buổi (Bài), nên hoạt động tự nhiên khi tổng hợp từ nhiều Bài mà 1 người đảm nhiệm, không cần thay đổi gì
 
-- **Trạng thái lớp:** Đang mở đăng ký / Đã đủ đăng ký / Đang diễn ra / Đã hoàn thành / Đã hủy — chi phối việc mở/đóng nhận đăng ký từng Bài (mục 4.3), việc hủy/đổi lịch (mục 4.3), và chỉ cho nhập kết quả C1/C3 sau khi lớp chuyển "Đã hoàn thành". **"Đã đủ đăng ký" là trạng thái suy ra (derived)** từ việc tất cả Bài trong lớp đã đủ số người được duyệt cho mọi vai trò cần, không phải trường nhập tay
+- **Trạng thái lớp:** Dự kiến (lớp mới tạo, chưa mở đăng ký; có thể công khai sớm cho GV/TG xem) / Đang mở đăng ký / Đã đủ đăng ký / Đang diễn ra / Đã hoàn thành / Đã hủy — chi phối việc mở/đóng nhận đăng ký từng Bài (mục 4.3), việc hủy/đổi lịch (mục 4.3), và chỉ cho nhập kết quả C1/C3 sau khi lớp chuyển "Đã hoàn thành". **"Đã đủ đăng ký" là trạng thái suy ra (derived)** từ việc tất cả Bài trong lớp đã đủ số người được duyệt cho mọi vai trò cần, không phải trường nhập tay
 
 - **Kết quả sau khi hoàn thành:** % đạt chuẩn đầu ra (C3) — nhập tay % tổng hợp, gắn vào hồ sơ lớp, không cần lưu danh sách học viên (mục 5)
 
@@ -196,7 +196,7 @@ Phạm vi: quản lý lớp học (không phải nền tảng học online).
 **Công khai cho mọi người, không chỉ Admin (nhất quán nguyên tắc công khai nội bộ, mục 3):**
 - **Đề xuất nhân sự/matching-score** của mỗi Bài hiển thị công khai cho tất cả GV/TG xem (không chỉ Admin thao tác mời) — mọi người thấy được ai đang được gợi ý, tăng minh bạch
 - **Progress bar theo vai trò** (mục 4.2) công khai trên danh sách lớp và trang chi tiết lớp cho mọi người, không riêng Admin
-- Áp dụng **cho cả lớp đang mở đăng ký lẫn lớp cùng nhóm lớp (mục 4.2) sắp mở tiếp theo** đã được tạo sẵn trong hệ thống (kể cả đang ở trạng thái "Nháp" nếu Admin muốn công khai sớm) — để GV/TG chủ động thấy trước các lớp tương tự sắp tới và sắp xếp lịch cá nhân, không phải chỉ biết khi lớp chính thức mở đăng ký
+- Áp dụng **cho cả lớp đang mở đăng ký lẫn lớp cùng nhóm lớp (mục 4.2) sắp mở tiếp theo** đã được tạo sẵn trong hệ thống (kể cả đang ở trạng thái "Dự kiến" nếu Admin muốn công khai sớm) — để GV/TG chủ động thấy trước các lớp tương tự sắp tới và sắp xếp lịch cá nhân, không phải chỉ biết khi lớp chính thức mở đăng ký
 - **Danh sách lớp** nên hỗ trợ lọc theo **nhóm lớp** để người dùng dễ dàng tìm các lớp cùng loại sắp mở
 
 **Kiểm tra trùng lịch:** nguyên tắc đơn giản — không trùng giờ với Bài khác đã được duyệt của người đó là đủ điều kiện, không phân biệt cùng lớp hay khác lớp, không cần thêm phức tạp.
@@ -484,7 +484,7 @@ Phong cách tham khảo: **"Soft SaaS Dashboard"** (xem file `tham khao theme.jp
 | `success` | bg Green gradient / text Green solid | Đã duyệt, đạt, tăng |
 | `danger` | bg `#FEE2E2` / text `#DC2626` (đỏ — chỉ riêng cho trend giảm/từ chối, đúng như ảnh, không gradient) | Từ chối, vi phạm, giảm |
 | `warning` | bg `#FEF2F2` (đỏ pastel rất nhạt) / text `#F87171` (đỏ nhạt hơn danger) — cùng hue đỏ với `danger` nhưng **nhạt/nhẹ hơn hẳn về cường độ**, phân biệt bằng độ đậm chứ không phải đổi màu | Chờ duyệt, cảnh báo (pool nhỏ, dồn tải) |
-| `neutral` | bg `#F4F4F5` / text `#71717A` (xám trung tính, không thuộc 4 màu gốc — dùng cho trạng thái "không màu" như Nháp/Vô hiệu hóa) | Nháp, vô hiệu hóa, không còn tham gia |
+| `neutral` | bg `#F4F4F5` / text `#71717A` (xám trung tính, không thuộc 4 màu gốc — dùng cho trạng thái "không màu" như Dự kiến/Vô hiệu hóa) | Dự kiến, vô hiệu hóa, không còn tham gia |
 
 **Icon badge nền gradient (dùng cho phân loại/nhấn mạnh, KHÔNG dùng trên thẻ KPI stat — thẻ stat dùng icon outline xám-xanh theo ảnh mẫu):** luân phiên qua đúng 4 màu gốc ở trên (Blue → Navy → Teal → Green), nền dùng gradient tương ứng — nếu 1 màn hình cần nhiều hơn 4 badge, lặp lại chu kỳ hoặc đổi độ đậm/nhạt của gradient (vd Blue gradient sáng hơn/tối hơn) thay vì thêm hue thứ 5.
 

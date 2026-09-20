@@ -21,7 +21,7 @@ const ROWS = [
   { name: "Nguyễn Văn An", code: "GV-001", lop: "ACLS-08", so: 24, status: "Đã duyệt", variant: "success" as const },
   { name: "Trần Thị Bình", code: "TG-014", lop: "BLS-21", so: 12, status: "Chờ duyệt", variant: "warning" as const },
   { name: "Lê Minh Châu", code: "GV-007", lop: "SCC-LX-03", so: 18, status: "Từ chối", variant: "danger" as const },
-  { name: "Phạm Quốc Dũng", code: "TG-020", lop: "ABCDE-05", so: 6, status: "Nháp", variant: "neutral" as const },
+  { name: "Phạm Quốc Dũng", code: "TG-020", lop: "ABCDE-05", so: 6, status: "Dự kiến", variant: "neutral" as const },
 ];
 
 export default function DesignPage() {
@@ -187,7 +187,7 @@ export default function DesignPage() {
                   <Badge variant="success">Đã duyệt</Badge>
                   <Badge variant="warning">Chờ duyệt</Badge>
                   <Badge variant="danger">Từ chối</Badge>
-                  <Badge variant="neutral">Nháp</Badge>
+                  <Badge variant="neutral">Dự kiến</Badge>
                 </div>
               </CardContent>
             </Card>

@@ -1,6 +1,6 @@
 import type { LopHocTongHop, TrangThaiLopHienThi } from "@/types/database";
 
-// Lớp cần chú ý đứng trước: đang mở/đủ đăng ký/đang diễn ra, rồi Nháp, cuối cùng đã hoàn thành/hủy.
+// Lớp cần chú ý đứng trước: đang mở/đủ đăng ký/đang diễn ra, rồi Dự kiến, cuối cùng đã hoàn thành/hủy.
 // Lớp còn hoạt động xếp theo ngày bắt đầu gần nhất trước (để GV/TG thấy lớp sắp tới); lớp đã kết thúc thì mới nhất trước.
 const THU_TU: Record<TrangThaiLopHienThi, number> = {
   dang_mo: 0,
