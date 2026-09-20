@@ -98,7 +98,7 @@ Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / 
 - [x] Trạng thái tham gia giảng dạy (Đang tham gia/Tạm ngừng/Không còn tham gia) + logic ẩn khỏi đăng ký slot/matching khi không "Đang tham gia" *(đã có cột `trang_thai_tham_gia` + hàm SQL đổi trạng thái + hiển thị; phần ẩn khỏi đăng ký slot/matching áp dụng ở Giai đoạn 5 khi có các bảng đó)*
 - [x] Màn hình danh sách Nhân sự (data table, filter nhóm chỉ Admin thấy)
 - [x] Màn hình chi tiết hồ sơ (2 cột: thông tin cá nhân | Bảng KPI — cột KPI để trống/placeholder, hoàn thiện ở giai đoạn 7)
-- [x] Lịch sử giảng dạy (khung dữ liệu — nội dung thật đổ vào khi có giai đoạn 5/6)
+- [x] Lịch sử giảng dạy (đã đổ dữ liệu thật từ giai đoạn 4/5: các Bài đã/đang phân công, tổng giờ, A4 lũy kế)
 - [x] Lịch sử thay đổi nhóm (khung dữ liệu, dùng ở giai đoạn 6 khi có cơ chế đổi nhóm) *(bảng `lich_su_doi_nhom` do `dat_nhom` tự ghi; chỉ Admin/Quản lý lớp đọc)*
 - [x] Đề xuất nhân sự — màn hình danh sách đề xuất cần duyệt (khung, nội dung đổ dần ở các giai đoạn sau)
 - [x] *(bổ sung)* Quản lý tài khoản trong app: **Thêm nhân sự** (1 người + nhập nhiều từ CSV/Excel, mật khẩu tự sinh), **Đổi mật khẩu** (tự đổi, xác minh mật khẩu cũ), **Đặt lại mật khẩu** cho người khác — chỉ Admin gốc, dùng `SUPABASE_SERVICE_ROLE_KEY` (biến môi trường, chỉ ở server)

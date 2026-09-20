@@ -111,9 +111,9 @@ export default async function DangKyPage() {
       </Khung>
 
       <div className="lg:col-span-2">
-        <Khung icon={CalendarCheck} tieuDe="Lịch được phân công của tôi" dem={sapToi.length}>
+        <Khung icon={CalendarCheck} tieuDe="Lịch sắp diễn ra của tôi" dem={sapToi.length}>
           {sapToi.length === 0 ? (
-            <EmptyState icon={CalendarCheck} title="Bạn chưa được phân công Bài nào." />
+            <EmptyState icon={CalendarCheck} title="Bạn chưa có Bài nào sắp diễn ra. Các Bài đã dạy xem ở Lịch sử giảng dạy trong hồ sơ." />
           ) : (
             <ul className="divide-y">
               {sapToi.map((s) => (

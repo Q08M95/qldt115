@@ -7,6 +7,7 @@ import type {
   ChuyenMonCuaNguoi,
   DanhMuc,
   DeXuatNhanSu,
+  LichSuBai,
   LichSuDoiNhom,
   NhomNhanSu,
   Profile,
@@ -183,4 +184,38 @@ export async function countDeXuatChoDuyet(): Promise<number> {
     .select("id", { count: "exact", head: true })
     .eq("trang_thai", "cho_duyet");
   return count ?? 0;
+}
+
+// Lịch sử giảng dạy của 1 người: mọi Bài đã/đang được phân công (RLS tự ẩn Bài của lớp Nháp chưa công khai)
+export async function getLichSuGiangDay(userId: string): Promise<LichSuBai[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("slot_giang_day")
+    .select("id, vai_tro, bai_hoc(id, ten, bat_dau, ket_thuc, lop_hoc(id, ten, loai_kinh_phi, trang_thai))")
+    .eq("nguoi_phan_cong", userId);
+  if (error) throw new Error(`Không đọc được lịch sử giảng dạy: ${error.message}`);
+
+  type Lop = { id: string; ten: string; loai_kinh_phi: LichSuBai["loai_kinh_phi"]; trang_thai: LichSuBai["lop_trang_thai"] };
+  type Bai = { id: string; ten: string; bat_dau: string; ket_thuc: string; lop_hoc: Lop | Lop[] | null };
+  return ((data ?? []) as unknown as { id: string; vai_tro: LichSuBai["vai_tro"]; bai_hoc: Bai | Bai[] | null }[])
+    .map((r) => {
+      const b = one(r.bai_hoc);
+      const l = one(b?.lop_hoc ?? null);
+      if (!b || !l) return null;
+      return {
+        slot_id: r.id,
+        vai_tro: r.vai_tro,
+        bai_id: b.id,
+        bai_ten: b.ten,
+        bat_dau: b.bat_dau,
+        ket_thuc: b.ket_thuc,
+        lop_id: l.id,
+        lop_ten: l.ten,
+        loai_kinh_phi: l.loai_kinh_phi,
+        lop_trang_thai: l.trang_thai,
+        sap_dien_ra: new Date(b.ket_thuc).getTime() >= Date.now(),
+      };
+    })
+    .filter((x): x is LichSuBai => x !== null)
+    .sort((a, b) => b.bat_dau.localeCompare(a.bat_dau));
 }

@@ -29,7 +29,13 @@ export async function guiKhaoSat(_prev: ActionState, fd: FormData): Promise<Acti
     p_nhan_xet: nhanXet || null,
   });
   if (error) {
-    return { error: error.code === "P0002" ? "Khảo sát này không tồn tại hoặc đã đóng." : "Không gửi được phản hồi, vui lòng thử lại." };
+    const thongBao =
+      error.code === "P0002"
+        ? "Khảo sát này không tồn tại hoặc đã đóng."
+        : error.code === "54000"
+          ? "Đang có quá nhiều phản hồi cùng lúc, vui lòng thử lại sau ít phút."
+          : "Không gửi được phản hồi, vui lòng thử lại.";
+    return { error: thongBao };
   }
   return { ok: true };
 }

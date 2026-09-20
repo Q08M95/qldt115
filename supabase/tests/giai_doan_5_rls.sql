@@ -112,6 +112,7 @@ declare
   d_a4 numeric;
   d_a5 numeric;
   arr uuid[];
+  arr2 uuid[];
   tt text;
   v boolean;
 begin
@@ -177,6 +178,14 @@ begin
   res := res || jsonb_build_object('t', '04 Công bằng: a5 (đã dạy 4 giờ trong kỳ) điểm thấp hơn a2 (0 giờ)', 'ok', d_a5 < d_a2);
   res := res || jsonb_build_object('t', '05 Cùng nhóm, cùng khối lượng (a2, a4): điểm bằng nhau', 'ok', d_a2 = d_a4);
 
+  -- goi_y_lop (tính 1 lần cho cả lớp) phải trùng khớp từng người + từng hạng với ung_vien_bai (1 Bài)
+  select array_agg(u.user_id order by u.hang) into arr from public.ung_vien_bai(bai1, 'giang_vien') u;
+  select array_agg(g.user_id order by g.hang) into arr2 from public.goi_y_lop(lop1) g where g.bai_id = bai1 and g.vai_tro = 'giang_vien';
+  res := res || jsonb_build_object('t', '05b goi_y_lop trùng khớp ung_vien_bai (cùng người, cùng thứ hạng) cho GV Bài 1', 'ok', arr is not null and arr = arr2);
+  select array_agg(u.user_id order by u.hang) into arr from public.ung_vien_bai(bai1, 'tro_giang') u;
+  select array_agg(g.user_id order by g.hang) into arr2 from public.goi_y_lop(lop1) g where g.bai_id = bai1 and g.vai_tro = 'tro_giang';
+  res := res || jsonb_build_object('t', '05c goi_y_lop trùng khớp ung_vien_bai cho TG Bài 1', 'ok', arr is not null and arr = arr2);
+
   select count(*) into n from public.ung_vien_bai(bai_l2, 'giang_vien');
   res := res || jsonb_build_object('t', '06 Admin xem được gợi ý của lớp Nháp', 'ok', n >= 1);
 
@@ -201,6 +210,9 @@ begin
 
   select count(*) into n from public.ung_vien_bai(bai_l2, 'giang_vien');
   res := res || jsonb_build_object('t', '10 GV KHÔNG thấy gợi ý của lớp Nháp chưa công khai', 'ok', n = 0);
+
+  select count(*) into n from public.goi_y_lop(lop2);
+  res := res || jsonb_build_object('t', '10b GV KHÔNG thấy goi_y_lop của lớp Nháp chưa công khai', 'ok', n = 0);
 
   select count(*) into n from public.kha_nang_dang_ky_lop(lop2);
   res := res || jsonb_build_object('t', '11 GV KHÔNG thấy khả năng đăng ký của lớp Nháp', 'ok', n = 0);

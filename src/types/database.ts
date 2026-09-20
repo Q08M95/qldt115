@@ -185,6 +185,22 @@ export interface KhaNangBai {
   da_dang_ky: boolean;
 }
 
+// 1 dòng lịch sử giảng dạy của 1 người (1 Bài đã/đang được phân công)
+export interface LichSuBai {
+  slot_id: string;
+  vai_tro: VaiTroGiangDay;
+  bai_id: string;
+  bai_ten: string;
+  bat_dau: string;
+  ket_thuc: string;
+  lop_id: string;
+  lop_ten: string;
+  loai_kinh_phi: LoaiKinhPhi;
+  lop_trang_thai: TrangThaiLop;
+  // Bài chưa kết thúc tính đến lúc đọc dữ liệu (tính ở tầng truy vấn)
+  sap_dien_ra: boolean;
+}
+
 export interface KhaoSatLop {
   token: string;
   mo: boolean;

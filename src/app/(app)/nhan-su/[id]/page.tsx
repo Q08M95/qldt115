@@ -9,7 +9,7 @@ import {
   ProfileInfoCard,
 } from "@/components/nhan-su/profile-sections";
 import { requireSession } from "@/lib/auth/session";
-import { getDanhMuc, getNhanSuChiTiet } from "@/lib/nhan-su/queries";
+import { getDanhMuc, getLichSuGiangDay, getNhanSuChiTiet } from "@/lib/nhan-su/queries";
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -18,11 +18,12 @@ export default async function NhanSuChiTietPage(props: PageProps<"/nhan-su/[id]"
   const { id } = await props.params;
   if (!UUID.test(id)) notFound();
 
-  const [session, chiTiet, dmChuyenMon, dmLoaiChungChi] = await Promise.all([
+  const [session, chiTiet, dmChuyenMon, dmLoaiChungChi, lichSu] = await Promise.all([
     requireSession(),
     getNhanSuChiTiet(id),
     getDanhMuc("danh_muc_chuyen_mon"),
     getDanhMuc("danh_muc_loai_chung_chi"),
+    getLichSuGiangDay(id),
   ]);
   if (!chiTiet) notFound();
 
@@ -49,7 +50,7 @@ export default async function NhanSuChiTietPage(props: PageProps<"/nhan-su/[id]"
       </div>
       <div className="flex min-w-0 flex-col gap-5">
         <KpiPlaceholderCard />
-        <LichSuGiangDayCard />
+        <LichSuGiangDayCard items={lichSu} />
         {session.isQuanTri && <LichSuDoiNhomCard lichSu={chiTiet.lich_su_doi_nhom} />}
       </div>
     </div>

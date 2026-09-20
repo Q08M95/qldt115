@@ -50,5 +50,5 @@ export function fmtDate(s: string | null | undefined): string {
   if (m && s.length === 10) return `${m[3]}/${m[2]}/${m[1]}`;
   const d = new Date(s);
   if (Number.isNaN(d.getTime())) return "";
-  return d.toLocaleDateString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" });
+  return d.toLocaleDateString("en-GB", { timeZone: "Asia/Ho_Chi_Minh", day: "2-digit", month: "2-digit", year: "numeric" });
 }

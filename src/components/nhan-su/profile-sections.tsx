@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Award, BookOpen, Gauge, History, Mail, Phone } from "lucide-react";
 import { EmptyState } from "@/components/empty-state";
 import { UserAvatar } from "@/components/user-avatar";
@@ -8,7 +9,7 @@ import { EditProfileDrawer } from "@/components/nhan-su/edit-profile-drawer";
 import { QuanTriDrawer } from "@/components/nhan-su/quan-tri-drawer";
 import { DatLaiMatKhauDrawer, DoiMatKhauDrawer } from "@/components/nhan-su/tai-khoan-drawers";
 import { XoaChungChiButton } from "@/components/nhan-su/xoa-chung-chi-button";
-import { fmtDate } from "@/lib/format";
+import { fmtDate, fmtTime } from "@/lib/format";
 import {
   NHOM_LABEL,
   TRANG_THAI_LABEL,
@@ -19,6 +20,7 @@ import type {
   ChungChi,
   ChuyenMonCuaNguoi,
   DanhMuc,
+  LichSuBai,
   LichSuDoiNhom,
   NhomNhanSu,
   Profile,
@@ -214,16 +216,77 @@ export function KpiPlaceholderCard() {
   );
 }
 
-export function LichSuGiangDayCard() {
+// Lịch sử giảng dạy (mục 4.1): các Bài đã/đang được phân công + tổng giờ + A4 lũy kế (số lớp không kinh phí, đếm 1 lần mỗi lớp).
+// Bài của lớp đã hủy không tính vào tổng. items = undefined: trang demo, hiện khung rỗng.
+export function LichSuGiangDayCard({ items }: { items?: LichSuBai[] }) {
+  const hopLe = (items ?? []).filter((x) => x.lop_trang_thai !== "da_huy");
+  const gio = hopLe.reduce((t, x) => t + (new Date(x.ket_thuc).getTime() - new Date(x.bat_dau).getTime()) / 3600000, 0);
+  const soLop = new Set(hopLe.map((x) => x.lop_id)).size;
+  const a4 = new Set(hopLe.filter((x) => x.loai_kinh_phi === "khong_kinh_phi").map((x) => x.lop_id)).size;
+  const HIEN = 8;
+
+  const dong = (x: LichSuBai) => {
+    const huy = x.lop_trang_thai === "da_huy";
+    const sapToi = !huy && x.sap_dien_ra;
+    return (
+      <li key={x.slot_id} className="flex flex-wrap items-center gap-x-3 gap-y-1 py-3 text-sm">
+        <div className="min-w-40 flex-1">
+          <Link href={`/lop-hoc/${x.lop_id}`} className={huy ? "font-semibold text-muted-foreground line-through hover:underline" : "font-semibold hover:underline"}>
+            {x.bai_ten}
+          </Link>
+          <p className="text-xs text-muted-foreground">
+            {x.lop_ten} · <span className="tabular-nums">{fmtDate(x.bat_dau)} {fmtTime(x.bat_dau)}–{fmtTime(x.ket_thuc)}</span>
+          </p>
+        </div>
+        <Badge variant="blue">{VAI_TRO_LABEL[x.vai_tro]}</Badge>
+        {huy ? <Badge variant="danger">Lớp đã hủy</Badge> : sapToi ? <Badge variant="teal">Sắp diễn ra</Badge> : null}
+      </li>
+    );
+  };
+
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <History className="size-5 text-slate-500" strokeWidth={1.75} aria-hidden /> Lịch sử giảng dạy
+          {items && <Badge variant="teal">{items.length}</Badge>}
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <EmptyState icon={History} title="Chưa có lớp nào đã dạy." />
+        {!items || items.length === 0 ? (
+          <EmptyState icon={History} title="Chưa có lớp nào đã dạy." />
+        ) : (
+          <>
+            <dl className="mb-3 grid grid-cols-3 gap-3 rounded-xl bg-background p-3 text-center">
+              <div>
+                <dt className="text-xs text-muted-foreground">Bài / lớp</dt>
+                <dd className="mt-1 font-semibold tabular-nums">
+                  {hopLe.length} / {soLop}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-xs text-muted-foreground">Tổng giờ</dt>
+                <dd className="mt-1 font-semibold tabular-nums">{Math.round(gio * 10) / 10}</dd>
+              </div>
+              <div>
+                <dt className="text-xs text-muted-foreground" title="Số lớp không kinh phí đã nhận (đếm 1 lần mỗi lớp)">
+                  A4 lớp không kinh phí
+                </dt>
+                <dd className="mt-1 font-semibold tabular-nums">{a4}</dd>
+              </div>
+            </dl>
+            <ul className="divide-y">{items.slice(0, HIEN).map(dong)}</ul>
+            {items.length > HIEN && (
+              <details className="group/ls mt-1">
+                <summary className="cursor-pointer list-none text-sm font-medium text-primary marker:hidden [&::-webkit-details-marker]:hidden">
+                  <span className="group-open/ls:hidden">Xem thêm {items.length - HIEN} Bài</span>
+                  <span className="hidden group-open/ls:inline">Thu gọn</span>
+                </summary>
+                <ul className="divide-y">{items.slice(HIEN).map(dong)}</ul>
+              </details>
+            )}
+          </>
+        )}
       </CardContent>
     </Card>
   );

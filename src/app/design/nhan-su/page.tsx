@@ -18,7 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardAction, CardHeader, CardTitle } from "@/components/ui/card";
 import type { NhanSuRow } from "@/lib/nhan-su/queries";
-import type { ChungChi, DanhMuc, Profile } from "@/types/database";
+import type { ChungChi, DanhMuc, LichSuBai, Profile } from "@/types/database";
 
 // Trang demo module Nhân sự với dữ liệu giả — chỉ chạy khi dev, dùng để đối chiếu giao diện. Production trả 404.
 const ROWS: NhanSuRow[] = [
@@ -34,6 +34,11 @@ const PROFILE: Profile = {
   phan_quyen: "giang_day", co_quyen_quan_ly_lop: true, vai_tro_giang_day: "giang_vien", trang_thai_tham_gia: "dang_tham_gia",
   kinh_nghiem: "8 năm giảng dạy cấp cứu ngoại viện.\nTừng phụ trách các khóa ACLS, BLS tại đơn vị.", created_at: "", updated_at: "",
 };
+const LICH_SU: LichSuBai[] = [
+  { slot_id: "s1", vai_tro: "giang_vien", bai_id: "b1", bai_ten: "Bài 2 - Thực hành xử trí loạn nhịp", bat_dau: "2099-10-06T01:00:00Z", ket_thuc: "2099-10-06T05:00:00Z", lop_id: "l1", lop_ten: "Lớp ACLS khóa 08", loai_kinh_phi: "co_kinh_phi", lop_trang_thai: "dang_mo", sap_dien_ra: true },
+  { slot_id: "s2", vai_tro: "giang_vien", bai_id: "b2", bai_ten: "Bài 1 - Sơ cứu cơ bản", bat_dau: "2026-08-12T01:00:00Z", ket_thuc: "2026-08-12T04:00:00Z", lop_id: "l2", lop_ten: "BLS cộng đồng (không kinh phí)", loai_kinh_phi: "khong_kinh_phi", lop_trang_thai: "da_hoan_thanh", sap_dien_ra: false },
+  { slot_id: "s3", vai_tro: "tro_giang", bai_id: "b3", bai_ten: "Bài 3 - Đánh giá", bat_dau: "2026-07-03T01:00:00Z", ket_thuc: "2026-07-03T04:30:00Z", lop_id: "l3", lop_ten: "ABCDE nâng cao", loai_kinh_phi: "co_kinh_phi", lop_trang_thai: "da_huy", sap_dien_ra: false },
+];
 const DM: DanhMuc[] = [{ id: "a", ten: "Bác sĩ", thu_tu: 1, dang_dung: true }, { id: "b", ten: "Thạc sĩ", thu_tu: 2, dang_dung: true }];
 const CC: ChungChi[] = [
   { id: "c1", user_id: "1", loai_id: "x", loai_ten: "ACLS", so_chung_chi: "ACLS-2024-118", noi_dung: "Chứng chỉ cấp cứu tim mạch nâng cao", ngay_cap: "2024-03-15", noi_cap: "Hội Tim mạch", hinh_anh_path: null, hinh_anh_url: null },
@@ -76,7 +81,7 @@ export default function DesignNhanSuPage() {
           </div>
           <div className="flex min-w-0 flex-col gap-5">
             <KpiPlaceholderCard />
-            <LichSuGiangDayCard />
+            <LichSuGiangDayCard items={LICH_SU} />
             <LichSuDoiNhomCard lichSu={[{ id: "l1", nhom_cu: "gv_khong_bac_si", nhom_moi: "gv_bac_si", ngay_hieu_luc: "2026-07-01", created_at: "" }, { id: "l0", nhom_cu: null, nhom_moi: "gv_khong_bac_si", ngay_hieu_luc: "2026-01-10", created_at: "" }]} />
           </div>
         </div>

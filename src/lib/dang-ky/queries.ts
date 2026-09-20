@@ -74,7 +74,7 @@ type BaiLop = {
   ten: string;
   bat_dau: string;
   ket_thuc: string;
-  lop_hoc: { id: string; ten: string } | { id: string; ten: string }[] | null;
+  lop_hoc: { id: string; ten: string; trang_thai: string } | { id: string; ten: string; trang_thai: string }[] | null;
 };
 
 export interface ViecCuaToi {
@@ -83,13 +83,13 @@ export interface ViecCuaToi {
     id: string;
     loai: LoaiDangKy;
     vai_tro: VaiTroGiangDay;
-    bai: { id: string; ten: string; bat_dau: string; ket_thuc: string; lop_id: string; lop_ten: string };
+    bai: { id: string; ten: string; bat_dau: string; ket_thuc: string; lop_id: string; lop_ten: string; lop_trang_thai: string };
   }[];
-  // Slot đã được phân công (sắp tới trước)
+  // Slot đã được phân công còn SẮP DIỄN RA (gần nhất trước); Bài đã qua và lớp đã hủy xem ở Lịch sử giảng dạy trong hồ sơ
   da_phan_cong: {
     slot_id: string;
     vai_tro: VaiTroGiangDay;
-    bai: { id: string; ten: string; bat_dau: string; ket_thuc: string; lop_id: string; lop_ten: string };
+    bai: { id: string; ten: string; bat_dau: string; ket_thuc: string; lop_id: string; lop_ten: string; lop_trang_thai: string };
   }[];
   // Chỉ người quản trị: hàng đợi đăng ký cần duyệt toàn đơn vị
   can_duyet: {
@@ -99,11 +99,11 @@ export interface ViecCuaToi {
     ho_ten: string;
     avatar_url: string | null;
     created_at: string;
-    bai: { id: string; ten: string; bat_dau: string; ket_thuc: string; lop_id: string; lop_ten: string };
+    bai: { id: string; ten: string; bat_dau: string; ket_thuc: string; lop_id: string; lop_ten: string; lop_trang_thai: string };
   }[];
 }
 
-const BAI_SELECT = "bai_hoc(id, ten, bat_dau, ket_thuc, lop_hoc(id, ten))";
+const BAI_SELECT = "bai_hoc(id, ten, bat_dau, ket_thuc, lop_hoc(id, ten, trang_thai))";
 
 function chuanBai(b: BaiLop | BaiLop[] | null) {
   const bai = one(b);
@@ -115,6 +115,7 @@ function chuanBai(b: BaiLop | BaiLop[] | null) {
     ket_thuc: bai?.ket_thuc ?? "",
     lop_id: lop?.id ?? "",
     lop_ten: lop?.ten ?? "",
+    lop_trang_thai: lop?.trang_thai ?? "",
   };
 }
 
@@ -154,6 +155,7 @@ export async function getViecCuaToi(userId: string, isQuanTri: boolean): Promise
     })),
     da_phan_cong: ((slotRes.data ?? []) as unknown as { id: string; vai_tro: VaiTroGiangDay; bai_hoc: BaiLop | BaiLop[] | null }[])
       .map((r) => ({ slot_id: r.id, vai_tro: r.vai_tro, bai: chuanBai(r.bai_hoc) }))
+      .filter((r) => r.bai.lop_trang_thai !== "da_huy" && new Date(r.bai.ket_thuc).getTime() >= Date.now())
       .sort((a, b) => a.bai.bat_dau.localeCompare(b.bai.bat_dau)),
     can_duyet: ((duyetRes.data ?? []) as unknown as {
       id: string;
