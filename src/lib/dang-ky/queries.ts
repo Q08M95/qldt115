@@ -27,7 +27,7 @@ export async function getDangKyLop(lopId: string): Promise<DangKyLop> {
     supabase.rpc("goi_y_lop", { p_lop: lopId }),
     supabase
       .from("dang_ky_giang_day")
-      .select("id, bai_id, vai_tro, user_id, loai, created_at, profiles(ho_ten, avatar_url), bai_hoc!inner(lop_id)")
+      .select("id, bai_id, vai_tro, user_id, loai, created_at, ngoai_le, ly_do_ngoai_le, vuot_loc, profiles(ho_ten, avatar_url), bai_hoc!inner(lop_id)")
       .eq("bai_hoc.lop_id", lopId)
       .eq("trang_thai", "cho_xu_ly")
       .order("created_at"),
@@ -47,6 +47,9 @@ export async function getDangKyLop(lopId: string): Promise<DangKyLop> {
       user_id: string;
       loai: LoaiDangKy;
       created_at: string;
+      ngoai_le: boolean;
+      ly_do_ngoai_le: string | null;
+      vuot_loc: string | null;
       profiles: Nguoi | Nguoi[] | null;
     }[]).map((r) => ({
       id: r.id,
@@ -55,6 +58,9 @@ export async function getDangKyLop(lopId: string): Promise<DangKyLop> {
       user_id: r.user_id,
       loai: r.loai,
       created_at: r.created_at,
+      ngoai_le: r.ngoai_le,
+      ly_do_ngoai_le: r.ly_do_ngoai_le,
+      vuot_loc: r.vuot_loc,
       ho_ten: one(r.profiles)?.ho_ten ?? "",
       avatar_url: one(r.profiles)?.avatar_url ?? null,
     })),

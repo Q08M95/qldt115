@@ -122,8 +122,8 @@ export const DANG_KY: DangKyLop = {
     uv("b3", "giang_vien", 7, "u10", "Ngô Bảo Ngọc", 0.22, 14),
   ],
   dang_ky_cho: [
-    { id: "d1", bai_id: "b3", vai_tro: "giang_vien", user_id: "u3", ho_ten: "Lê Minh Châu", avatar_url: null, loai: "tu_dang_ky", created_at: "" },
-    { id: "d2", bai_id: "b3", vai_tro: "giang_vien", user_id: "u7", ho_ten: "Đỗ Khánh Linh", avatar_url: null, loai: "duoc_moi", created_at: "" },
+    { id: "d1", bai_id: "b3", vai_tro: "giang_vien", user_id: "u3", ho_ten: "Lê Minh Châu", avatar_url: null, loai: "tu_dang_ky", created_at: "", ngoai_le: false, ly_do_ngoai_le: null, vuot_loc: null },
+    { id: "d2", bai_id: "b3", vai_tro: "giang_vien", user_id: "u7", ho_ten: "Đỗ Khánh Linh", avatar_url: null, loai: "duoc_moi", created_at: "", ngoai_le: true, ly_do_ngoai_le: "Giảng viên thỉnh giảng, Ban giám đốc đã đồng ý", vuot_loc: "Chưa đủ điều kiện đăng ký lớp này" },
   ],
   kha_nang: [
     { bai_id: "b1", ly_do: null, da_dang_ky: false },

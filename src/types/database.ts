@@ -163,6 +163,19 @@ export interface DangKyCho {
   avatar_url: string | null;
   loai: LoaiDangKy;
   created_at: string;
+  // Mời ngoại lệ vượt lọc cứng (chỉ người quản trị/chính chủ đọc được lý do)
+  ngoai_le: boolean;
+  ly_do_ngoai_le: string | null;
+  vuot_loc: string | null;
+}
+
+// 1 dòng trong hộp thoại "Mời người ngoài đề xuất": ly_do = null nghĩa là vốn đủ điều kiện
+export interface NhanSuChoMoi {
+  user_id: string;
+  ho_ten: string;
+  ly_do: string | null;
+  // true = không thể mời kể cả ngoại lệ (trùng lịch / đã có đăng ký hoặc lời mời ở Bài này)
+  chan_cung: boolean;
 }
 
 // Khả năng đăng ký của chính người xem cho 1 Bài: ly_do = null nghĩa là đăng ký được

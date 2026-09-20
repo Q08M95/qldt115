@@ -146,6 +146,7 @@ Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / 
 - [x] Hiển thị công khai matching-score + progress bar cho mọi GV/TG, áp dụng cả lớp cùng nhóm lớp sắp mở tiếp theo
 - [x] Đã chạy migration `20260921100000` + bản vá `20260921100100` + test `supabase/tests/giai_doan_5_rls.sql` (61 kiểm tra đạt)
 - Ghi chú thiết kế: đăng ký/lời mời gắn ở cấp (Bài + vai trò), duyệt thì gán vào slot trống đầu tiên; kỳ hiện tại tạm = quý dương lịch và KPI tie-break tạm trung lập (thay ở Giai đoạn 6); tỷ trọng/ngưỡng lưu ở bảng `cau_hinh_he_thong` (màn hình sửa ở Giai đoạn 11)
+- [ ] Mời NGOẠI LỆ vượt lọc cứng (bổ sung theo yêu cầu): Admin mời người ngoài đề xuất kèm lý do bắt buộc, người được mời vẫn phải đồng ý; vẫn chặn cứng trùng lịch/đã có đăng ký ở Bài. Migration `20260922100000_giai_doan_5b_moi_ngoai_le.sql` + test `supabase/tests/giai_doan_5b_ngoai_le.sql` (23 kiểm tra) — chờ chạy
 
 **Điều kiện hoàn thành:** đăng ký/duyệt/mời/từ chối chạy hết vòng đời 1 slot (Trống → Đang chờ duyệt → Đã phân công, và quay lại Trống khi bị từ chối/hủy), matching-score trả kết quả đúng thứ tự công bằng.
 

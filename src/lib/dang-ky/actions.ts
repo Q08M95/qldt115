@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { requireQuanTri, requireSession } from "@/lib/auth/session";
 import type { ActionState } from "@/lib/nhan-su/actions";
 import { createClient } from "@/lib/supabase/server";
-import type { VaiTroGiangDay } from "@/types/database";
+import type { NhanSuChoMoi, VaiTroGiangDay } from "@/types/database";
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const VAI_TRO: VaiTroGiangDay[] = ["giang_vien", "tro_giang"];
@@ -84,16 +84,36 @@ export async function tuChoiDangKy(id: string, lyDo: string): Promise<ActionStat
   return { ok: true };
 }
 
-export async function moiGiangDay(baiId: string, vaiTro: VaiTroGiangDay, userId: string): Promise<ActionState> {
+// Mời (Luồng B). ngoaiLe = true: mời người NGOÀI danh sách đủ điều kiện (vượt lọc cứng), bắt buộc có lý do.
+// Người được mời vẫn phải đồng ý. Trùng lịch / đã có đăng ký ở cùng Bài vẫn bị chặn cứng (kiểm tra ở hàm SQL).
+export async function moiGiangDay(baiId: string, vaiTro: VaiTroGiangDay, userId: string, ngoaiLe = false, lyDo = ""): Promise<ActionState> {
   await requireQuanTri();
   if (!UUID.test(baiId) || !UUID.test(userId) || !VAI_TRO.includes(vaiTro)) return { error: "Yêu cầu không hợp lệ." };
+  if (ngoaiLe && !lyDo.trim()) return { error: "Hãy nhập lý do khi mời ngoại lệ." };
 
   const supabase = await createClient();
-  const { error } = await supabase.rpc("moi_giang_day", { p_bai: baiId, p_vai: vaiTro, p_user: userId });
+  const { error } = await supabase.rpc("moi_giang_day", {
+    p_bai: baiId,
+    p_vai: vaiTro,
+    p_user: userId,
+    p_ngoai_le: ngoaiLe,
+    p_ly_do: lyDo.trim() || null,
+  });
   if (error) return fail(error);
 
   revalidateLop();
   return { ok: true };
+}
+
+// Danh sách mọi nhân sự kèm lý do không nằm trong đề xuất, nạp khi mở hộp thoại "Mời người ngoài đề xuất"
+export async function nhanSuChoMoi(baiId: string, vaiTro: VaiTroGiangDay): Promise<{ error?: string; ds?: NhanSuChoMoi[] }> {
+  await requireQuanTri();
+  if (!UUID.test(baiId) || !VAI_TRO.includes(vaiTro)) return { error: "Yêu cầu không hợp lệ." };
+
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("nhan_su_cho_moi", { p_bai: baiId, p_vai: vaiTro });
+  if (error) return fail(error);
+  return { ds: (data ?? []) as NhanSuChoMoi[] };
 }
 
 export async function thuHoiLoiMoi(id: string): Promise<ActionState> {

@@ -7,6 +7,7 @@ import {
   NutRut,
   NutThuHoi,
 } from "@/components/dang-ky/dang-ky-controls";
+import { MoiNgoaiLe } from "@/components/dang-ky/moi-ngoai-le";
 import { UserAvatar } from "@/components/user-avatar";
 import { Badge } from "@/components/ui/badge";
 import { VAI_TRO_LABEL } from "@/lib/nhan-su/labels";
@@ -125,6 +126,13 @@ export function GoiYBai({
                     {dangKy && hang !== undefined && ` · hạng gợi ý #${hang}`}
                     {dangKy && hang === undefined && " · không còn đủ điều kiện"}
                   </p>
+                  {isQuanTri && d.ngoai_le && (
+                    <p className="mt-1 pl-9 text-xs text-warning">
+                      <Badge variant="warning" className="mr-1.5">Ngoại lệ</Badge>
+                      {d.ly_do_ngoai_le}
+                      {d.vuot_loc && <span className="text-muted-foreground"> (bỏ qua: {d.vuot_loc})</span>}
+                    </p>
+                  )}
                 </div>
                 {isQuanTri && dangKy && <NutDuyet id={d.id} />}
                 {isQuanTri && !dangKy && <NutThuHoi id={d.id} />}
@@ -134,6 +142,12 @@ export function GoiYBai({
             );
           })}
         </ul>
+      )}
+
+      {isQuanTri && (
+        <div className="-mx-1">
+          <MoiNgoaiLe baiId={baiId} vaiTro={vaiTro} />
+        </div>
       )}
 
       {soUngVien === 0 ? (
