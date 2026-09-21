@@ -71,7 +71,7 @@ begin
   insert into public.bai_hoc (lop_id, thu_tu, ten, bat_dau, ket_thuc) values (l1, 2, 'Bài 2', now() + interval '4 days', now() + interval '4 days 2 hours') returning id into b2;
   insert into public.bai_hoc (lop_id, thu_tu, ten, bat_dau, ket_thuc) values (l1, 3, 'Bài 3', now() + interval '6 days', now() + interval '6 days 2 hours') returning id into b3;
   insert into public.slot_giang_day (bai_id, vai_tro, vi_tri) values (b1, 'giang_vien', 1), (b2, 'giang_vien', 1), (b3, 'giang_vien', 1);
-  v_k := 'dang_ky:' || l1 || ':' || a2;
+  v_k := 'dang_ky:' || l1;
 
   -- ===== Đăng ký cần duyệt: hết hiệu lực khi xử lý xong =====
   perform pg_temp.vao(a2);
@@ -97,12 +97,12 @@ begin
   perform pg_temp.vao(a3);
   perform public.dang_ky_bai(array[b3]);
   perform pg_temp.ra();
-  select count(*) into n from public.thong_bao where user_id = a1 and khoa = 'dang_ky:' || l1 || ':' || a3 and not da_doc;
+  select count(*) into n from public.thong_bao where user_id = a1 and khoa = v_k and not da_doc;
   select id into reg1 from public.dang_ky_giang_day where user_id = a3 and bai_id = b3;
   perform pg_temp.vao(a1);
   perform public.tu_choi_dang_ky(reg1, 'Không phù hợp');
   perform pg_temp.ra();
-  select count(*) into n2 from public.thong_bao where user_id = a1 and khoa = 'dang_ky:' || l1 || ':' || a3 and not da_doc;
+  select count(*) into n2 from public.thong_bao where user_id = a1 and khoa = v_k and not da_doc;
   res := res || jsonb_build_object('t', '04 Từ chối đăng ký duy nhất: thông báo "cần duyệt" của người đó tự đã đọc', 'ok', n = 1 and n2 = 0);
 
   -- ===== Đề xuất cần duyệt =====

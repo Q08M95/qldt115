@@ -144,7 +144,7 @@ begin
   execute 'reset role';
   select count(*), max(noi_dung), bool_and(muc_do = 'can_hanh_dong') into n, v_tin, ok from public.thong_bao where user_id = a1 and loai = 'dang_ky_can_duyet';
   res := res || jsonb_build_object('t', '07 a2 đăng ký 2 Bài 1 lượt: Admin nhận đúng 1 thông báo "cần hành động", ghi rõ 2 Bài', 'ok',
-    n = 1 and ok and v_tin like '%2 Bài%' and v_tin like '%ZZ Test8 Lớp 1%');
+    n = 1 and ok and v_tin like '%2 lượt Bài%' and v_tin like '%ZZ Test8 Lớp 1%');
   select count(*) into n from public.thong_bao where user_id = a2 and loai = 'dang_ky_can_duyet';
   res := res || jsonb_build_object('t', '08 Người đăng ký không nhận thông báo về chính đăng ký của mình', 'ok', n = 0);
 
@@ -207,7 +207,7 @@ begin
   -- ===== Nhắc check-in (job) =====
   update public.cau_hinh_he_thong set gia_tri = 30 where khoa = 'nhac_check_in_truoc_phut';
   insert into public.bai_hoc (lop_id, thu_tu, ten, bat_dau, ket_thuc) values (l2, 1, 'R1', now() + interval '20 minutes', now() + interval '2 hours') returning id into bR;
-  insert into public.bai_hoc (lop_id, thu_tu, ten, bat_dau, ket_thuc) values (l2, 2, 'R2', now() + interval '3 hours', now() + interval '5 hours') returning id into bR2;
+  insert into public.bai_hoc (lop_id, thu_tu, ten, bat_dau, ket_thuc) values (l2, 2, 'R2', now() + interval '8 hours', now() + interval '10 hours') returning id into bR2;
   insert into public.bai_hoc (lop_id, thu_tu, ten, bat_dau, ket_thuc) values (l2, 3, 'R3', now() - interval '10 minutes', now() + interval '1 hour') returning id into bR3;
   insert into public.bai_hoc (lop_id, thu_tu, ten, bat_dau, ket_thuc) values (l2, 4, 'R6', now() + interval '40 minutes', now() + interval '2 hours') returning id into bR6;
   insert into public.bai_hoc (lop_id, thu_tu, ten, bat_dau, ket_thuc) values (l3, 1, 'R4', now() + interval '10 minutes', now() + interval '1 hour') returning id into bR4;
@@ -220,7 +220,7 @@ begin
 
   n := public.nhac_check_in();
   select count(*) into n2 from public.thong_bao where loai = 'nhac_check_in' and user_id in (a2, a3, a4);
-  res := res || jsonb_build_object('t', '16 Job nhắc check-in: chỉ a2 (Bài R1 bắt đầu sau 20 phút) được nhắc; Bài xa (3 giờ, 40 phút), đã bắt đầu, lớp hủy, đã check-in đều không', 'ok',
+  res := res || jsonb_build_object('t', '16 Job nhắc check-in: chỉ a2 (Bài R1 bắt đầu sau 20 phút) được nhắc; Bài xa (8 giờ, 40 phút), đã bắt đầu, lớp hủy, đã check-in đều không', 'ok',
     n >= 1 and n2 = 1 and exists (select 1 from public.thong_bao where user_id = a2 and khoa = 'nhac_check_in:' || bR || ':' || a2 and muc_do = 'can_hanh_dong'));
   n := public.nhac_check_in();
   select count(*) into n2 from public.thong_bao where loai = 'nhac_check_in' and user_id in (a2, a3, a4);
