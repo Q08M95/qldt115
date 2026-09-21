@@ -24,7 +24,7 @@
 | 5 | Module Đăng ký giảng dạy (4.3) | ✅ Xong (trừ thông báo, phụ thuộc Giai đoạn 8) | 95% |
 | 6 | Hệ thống KPI — engine + cấu hình (5/6/7) | ✅ Xong (B1/C2 chỉ có bảng dữ liệu, giao diện nhập ở Giai đoạn 7) | 100% |
 | 7 | Module Đánh giá chất lượng (4.4) | ✅ Xong (nhắc check-in bằng thông báo ở Giai đoạn 8; thông báo/Nhật ký khi sửa điểm danh ở Giai đoạn 8-9) | 100% |
-| 8 | Module Thông báo (4.5) | 🟡 Đã code + test cục bộ xong; chờ chạy migration/test trên Supabase thật và thiết lập Web Push (Vercel env + webhook) | 90% |
+| 8 | Module Thông báo (4.5) | ✅ Xong (đã chạy migration + test trên Supabase thật, pg_cron/pg_net bật, webhook push đã cấu hình; còn thử nhận push thật trên thiết bị của người dùng) | 100% |
 | 9 | Nhật ký hệ thống (4.6) | ⬜ Chưa bắt đầu | 0% |
 | 10 | Báo cáo (4.7) + Tổng quan (4.7b) | ⬜ Chưa bắt đầu | 0% |
 | 11 | Cấu hình hệ thống — hoàn thiện (4.8) | ⬜ Chưa bắt đầu | 0% |
@@ -215,7 +215,7 @@ Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / 
 
 > Đã làm: migration `20260925100000_giai_doan_8_thong_bao.sql` + test `supabase/tests/giai_doan_8_thong_bao.sql` (37 kiểm tra, PGlite cục bộ 37/37; hồi quy Giai đoạn 3-7 vẫn pass). Màn hình: chuông thông báo, `/thong-bao`, thẻ bật thông báo đẩy, ô "Nhắc check-in trước giờ học" ở Cấu hình KPI, trang demo `/design/thong-bao` (chỉ dev). Script `scripts/thiet-lap-push.mjs`.
 > Quyết định thiết kế (đã ghi CLAUDE.md mục 7): (1) sinh thông báo bằng trigger, người thao tác không tự nhận thông báo; (2) không lộ nhãn nhóm trong thông báo đổi nhóm; (3) nhắc check-in mỗi (Bài, người) 1 lần, chặn theo khung check-in; (4) push qua pg_net → webhook app, thiếu cấu hình chỉ mất push.
-> **Việc còn lại để đóng giai đoạn:** chạy migration + test trên Supabase thật; `node scripts/thiet-lap-push.mjs tao-khoa`, thêm 4 biến vào Vercel, deploy, rồi `... webhook https://qldt115.vercel.app`; thử nhận push thật (máy tính + điện thoại).
+> Đã xác nhận trên Supabase thật: test 37/37 true, 2 job pg_cron active, 4 biến Vercel + webhook đã thiết lập. Đã kiểm tra chuỗi trigger → pg_net → `/api/push/gui` → web-push (dùng subscription giả: webhook gọi push service và dọn subscription hết hạn). **Chưa thử được nhận push trên trình duyệt/điện thoại thật** (trình duyệt tự động hóa không đăng ký push được) — người dùng tự thử ở `/thong-bao` > "Bật thông báo đẩy".
 
 ---
 
