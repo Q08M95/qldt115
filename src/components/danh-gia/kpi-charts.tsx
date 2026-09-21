@@ -149,6 +149,101 @@ export function RadarNhom({ truc, className }: { truc: TrucRadar[]; className?: 
   );
 }
 
+export interface DiemNhomKy {
+  nhan: string;
+  A: number | null;
+  B: number | null;
+  C: number | null;
+}
+
+// Đường điểm 3 nhóm tiêu chí A/B/C qua các kỳ (so sánh cùng lúc sản lượng / chuyên cần / chất lượng để thấy nhóm nào đang kéo điểm tổng).
+// Mỗi đường là gradient từ màu gốc nhạt sang đậm theo màu gốc hệ thống (mục 8.1); số cuối mỗi đường ghi giá trị kỳ gần nhất.
+export const MAU_NHOM = [
+  { ma: "A" as const, nhan: "Sản lượng", bien: "--hue-blue" },
+  { ma: "B" as const, nhan: "Chuyên cần", bien: "--hue-teal" },
+  { ma: "C" as const, nhan: "Chất lượng", bien: "--hue-navy" },
+];
+
+export function DuongNhomQuaKy({ ky, className }: { ky: DiemNhomKy[]; className?: string }) {
+  const W = 460;
+  const H = 230;
+  const L = 32;
+  const R = 44;
+  const T = 16;
+  const B = 30;
+  const cw = W - L - R;
+  const ch = H - T - B;
+  const PAD = 18;
+  // Trục dọc tự co theo dữ liệu (không luôn 0–100) để 3 đường không dồn thành một dải mỏng ở phần trên
+  const tatCa = ky.flatMap((k) => [k.A, k.B, k.C]).filter((v): v is number => v !== null);
+  const thap = tatCa.length ? Math.min(...tatCa) : 0;
+  const cao = tatCa.length ? Math.max(...tatCa) : 100;
+  let lo = Math.max(0, Math.floor((thap - 8) / 10) * 10);
+  let hi = Math.min(100, Math.ceil((cao + 4) / 10) * 10);
+  if (hi - lo < 30) {
+    lo = Math.max(0, hi - 30);
+    hi = lo + 30;
+  }
+  const moc = [lo, Math.round((lo + hi) / 2), hi];
+  // Số cuối các đường có thể sát nhau: đẩy nhẹ xuống để không chồng chữ (cách tối thiểu 13px)
+  const cuoiNhom = MAU_NHOM.map((m) => {
+    const k = [...ky].reverse().find((d) => d[m.ma] !== null);
+    return { ma: m.ma, v: k ? (k[m.ma] as number) : null };
+  })
+    .filter((d): d is { ma: "A" | "B" | "C"; v: number } => d.v !== null)
+    .map((d) => ({ ma: d.ma, y: T + (1 - (Math.max(lo, Math.min(hi, d.v)) - lo) / (hi - lo)) * ch }))
+    .sort((a, b) => a.y - b.y);
+  const viTriNhan: Record<string, number> = {};
+  cuoiNhom.forEach((d, i) => {
+    viTriNhan[d.ma] = i === 0 ? d.y : Math.max(d.y, viTriNhan[cuoiNhom[i - 1].ma] + 13);
+  });
+  const x = (i: number) => (ky.length === 1 ? L + cw / 2 : L + PAD + ((cw - 2 * PAD) * i) / (ky.length - 1));
+  const y = (v: number) => T + (1 - (Math.max(lo, Math.min(hi, v)) - lo) / (hi - lo)) * ch;
+
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Điểm 3 nhóm tiêu chí qua các kỳ" className={className}>
+      <defs>
+        {MAU_NHOM.map((m) => (
+          <linearGradient key={m.ma} id={`nhom-${m.ma}`} x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor={`var(${m.bien})`} stopOpacity="0.55" />
+            <stop offset="100%" stopColor={`var(${m.bien})`} />
+          </linearGradient>
+        ))}
+      </defs>
+      {moc.map((g, gi) => (
+        <g key={g}>
+          <line x1={L} x2={W - R} y1={y(g)} y2={y(g)} stroke="var(--border)" strokeWidth="1" strokeDasharray={gi === 0 ? undefined : "3 4"} />
+          <text x={L - 8} y={y(g) + 4} textAnchor="end" fontSize="11" fill="var(--muted-foreground)">
+            {g}
+          </text>
+        </g>
+      ))}
+      {MAU_NHOM.map((m) => {
+        const diem = ky.map((k, i) => ({ i, v: k[m.ma] })).filter((d): d is { i: number; v: number } => d.v !== null);
+        if (diem.length === 0) return null;
+        const duong = diem.map((d, j) => `${j === 0 ? "M" : "L"}${x(d.i)},${y(d.v)}`).join(" ");
+        const cuoi = diem[diem.length - 1];
+        return (
+          <g key={m.ma}>
+            {diem.length > 1 && <path d={duong} fill="none" stroke={`url(#nhom-${m.ma})`} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />}
+            {diem.map((d) => (
+              <circle key={d.i} cx={x(d.i)} cy={y(d.v)} r={d.i === cuoi.i ? 4.5 : 3} fill="var(--card)" stroke={`url(#nhom-${m.ma})`} strokeWidth="2.25" />
+            ))}
+            <text x={x(cuoi.i) + 9} y={(viTriNhan[m.ma] ?? y(cuoi.v)) + 4} fontSize="12" fontWeight="700" fill={`url(#nhom-${m.ma})`}>
+              {fmt(cuoi.v)}
+            </text>
+          </g>
+        );
+      })}
+      {ky.map((k, i) => (
+        <text key={`${k.nhan}-${i}`} x={x(i)} y={H - 8} textAnchor="middle" fontSize="11" fill="var(--muted-foreground)">
+          {k.nhan}
+        </text>
+      ))}
+    </svg>
+  );
+}
+
 // Đồng hồ bán nguyệt 0–100: vị trí so với đồng nghiệp (top X%) hoặc chỉ số đơn lẻ; số lớn ở giữa
 export function DongHoBanNguyet({ phanTram, so, nhan, className }: { phanTram: number; so: string; nhan?: string; className?: string }) {
   const v = Math.max(0, Math.min(100, phanTram));

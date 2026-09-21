@@ -11,12 +11,12 @@ import type { KpiCaNhan, KpiCaNhanKy } from "@/types/database";
 const so = (n: number, toiDa = 1) => n.toLocaleString("vi-VN", { maximumFractionDigits: toiDa });
 
 // Nhóm A/B/C là nhóm TIÊU CHÍ (không phải nhóm nhân sự) nên hiển thị cho mọi người
-const NHOM_TC = [
+export const NHOM_TC = [
   { ma: "A", nhan: "Sản lượng" },
   { ma: "B", nhan: "Chuyên cần" },
   { ma: "C", nhan: "Chất lượng" },
 ];
-const TIEU_CHI = [
+export const TIEU_CHI = [
   { ma: "A1", nhan: "Giờ dạy" },
   { ma: "A2", nhan: "Tự đăng ký" },
   { ma: "A3", nhan: "Nhận lời mời" },
@@ -27,7 +27,7 @@ const TIEU_CHI = [
 ];
 
 // "Demo - Quý 4/2025" → "Q4/2025"; tên khác giữ nguyên nhưng cắt gọn để nhãn trục không tràn
-function tenNganKy(k: KpiCaNhanKy) {
+export function tenNganKy(k: KpiCaNhanKy) {
   const m = /Quý\s*(\d)\s*\/\s*(\d{4})/i.exec(k.ten);
   return m ? `Q${m[1]}/${m[2]}` : k.ten.length > 10 ? `${k.ten.slice(0, 9)}…` : k.ten;
 }

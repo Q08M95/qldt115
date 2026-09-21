@@ -3,9 +3,9 @@ import { AppShell } from "@/components/app-shell/app-shell";
 import { CauHinhDiemDanhForm } from "@/components/kpi/cau-hinh-diem-danh-form";
 import { CheckInBanner } from "@/components/danh-gia/check-in-banner";
 import { DuGioCard } from "@/components/danh-gia/du-gio-card";
-import { LichSuGiangDayCard } from "@/components/nhan-su/profile-sections";
+import { KpiSoSanhCards } from "@/components/danh-gia/kpi-so-sanh";
 import { KpiCaNhanBoard } from "@/components/danh-gia/kpi-ca-nhan";
-import type { BaiCheckIn, BaiDaDay, KpiCaNhan, KpiCaNhanKy, LichSuBai, RubricMuc } from "@/types/database";
+import type { BaiCheckIn, BaiDaDay, KpiCaNhan, KpiCaNhanKy, RubricMuc } from "@/types/database";
 
 // Trang demo Bảng KPI cá nhân + check-in + chấm dự giờ với dữ liệu giả — chỉ chạy khi dev, dùng để đối chiếu giao diện. Production trả 404.
 // ?v=banner : banner check-in ở Trang chủ (chỉ đặt ở Trang chủ). ?v=fallback : nhóm nhỏ (so với lịch sử bản thân), ?v=giang : tiến độ giáng, ?v=trong : chưa có dữ liệu.
@@ -63,21 +63,6 @@ const RUBRIC: RubricMuc[] = [
   { muc: 60, ten: "Đạt", mo_ta: "Đạt yêu cầu tối thiểu, có một số hạn chế cần cải thiện." },
   { muc: 0, ten: "Chưa đạt", mo_ta: "Không đạt yêu cầu: sai sót đáng kể hoặc thiếu chuẩn bị." },
 ];
-
-const LICH_SU: LichSuBai[] = BAI_MAU();
-function BAI_MAU(): LichSuBai[] {
-  const mau = (i: number, ten: string, lop: string, gio: number, vai: "giang_vien" | "tro_giang", kp: "co_kinh_phi" | "khong_kinh_phi", sap: boolean): LichSuBai => ({
-    slot_id: "s" + i, vai_tro: vai, bai_id: "b" + i, bai_ten: ten, bat_dau: new Date(2026, 8, 25 - i * 3, gio).toISOString(), ket_thuc: new Date(2026, 8, 25 - i * 3, gio + 3).toISOString(),
-    lop_id: "l" + i, lop_ten: lop, loai_kinh_phi: kp, lop_trang_thai: "dang_mo", sap_dien_ra: sap,
-  });
-  return [
-    mau(0, "Bài 4 — Sát hạch", "ACLS-08", 8, "giang_vien", "co_kinh_phi", true),
-    mau(1, "Bài 3 — Thực hành", "ACLS-08", 8, "giang_vien", "co_kinh_phi", false),
-    mau(2, "Bài 2 — Lý thuyết", "ACLS-08", 13, "giang_vien", "co_kinh_phi", false),
-    mau(3, "Bài 1", "BLS-15", 8, "tro_giang", "khong_kinh_phi", false),
-    mau(4, "Bài 5", "SCC-LX-05", 13, "giang_vien", "co_kinh_phi", false),
-  ];
-}
 
 const BAI: BaiDaDay[] = [
   {
@@ -149,7 +134,9 @@ export default async function DesignDanhGiaPage(props: { searchParams: Promise<{
           <KpiCaNhanBoard data={data} tieuDe="KPI của tôi" />
           <DuGioCard userId="u" hoTen="Nguyễn Văn An" bai={BAI} rubric={RUBRIC} laChinhMinh={false} />
         </div>
-        <LichSuGiangDayCard items={LICH_SU} />
+        <div className="flex flex-col gap-5">
+          <KpiSoSanhCards data={data} />
+        </div>
       </div>
     </AppShell>
   );

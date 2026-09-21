@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/client";
 import { SU_KIEN_THONG_BAO_DOI } from "@/lib/thong-bao/hien-thi";
+import { nhomNgay } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { ThongBao } from "@/types/database";
 import { ThongBaoItem } from "./thong-bao-item";
@@ -119,11 +120,17 @@ export function DanhSachThongBao({ userId, banDau }: { userId: string; banDau: T
           </div>
         ) : (
           <ul className={cn("grid gap-0.5 transition-opacity", dangTai && "opacity-60")}>
-            {ds.map((tb) => (
-              <li key={tb.id}>
-                <ThongBaoItem tb={tb} onChon={chon} />
-              </li>
-            ))}
+            {ds.map((tb, i) => {
+              // Tiêu đề nhóm thời gian khi sang nhóm mới — danh sách dài vẫn dễ lướt
+              const nhom = nhomNgay(tb.created_at);
+              const dauNhom = i === 0 || nhom !== nhomNgay(ds[i - 1].created_at);
+              return (
+                <li key={tb.id}>
+                  {dauNhom && <p className="px-3 pt-3 pb-1 text-xs font-semibold tracking-wide text-muted-foreground uppercase">{nhom}</p>}
+                  <ThongBaoItem tb={tb} onChon={chon} />
+                </li>
+              );
+            })}
           </ul>
         )}
 

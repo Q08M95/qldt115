@@ -69,3 +69,18 @@ export function tuongDoi(s: string | null | undefined): string {
   if (ngay < 7) return `${ngay} ngày trước`;
   return fmtDateTime(s);
 }
+
+// Nhóm thời gian của thông báo cho tiêu đề trong danh sách dài: Hôm nay / Hôm qua / Tuần này / Tháng này / Cũ hơn (theo ngày giờ Việt Nam).
+// Đặt ở lib (không gọi Date.now trực tiếp trong component) để tránh lỗi purity của React.
+export function nhomNgay(s: string | null | undefined): string {
+  if (!s) return "";
+  const d = new Date(s);
+  if (Number.isNaN(d.getTime())) return "";
+  const ngayVN = (x: Date) => x.toLocaleDateString("en-CA", { timeZone: VN_TZ });
+  const soNgay = Math.round((Date.parse(`${ngayVN(new Date())}T00:00:00Z`) - Date.parse(`${ngayVN(d)}T00:00:00Z`)) / 86400000);
+  if (soNgay <= 0) return "Hôm nay";
+  if (soNgay === 1) return "Hôm qua";
+  if (soNgay <= 6) return "Tuần này";
+  if (soNgay <= 30) return "Tháng này";
+  return "Cũ hơn";
+}
