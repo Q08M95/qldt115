@@ -251,6 +251,8 @@ Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / 
 - [ ] Trang Tổng quan GV/TG: tổng quan toàn đơn vị (không chỉ cá nhân), lịch dạy sắp tới dạng mini-calendar/timeline, progress KPI cá nhân rút gọn, thông báo mới nhất, thẻ gợi ý lớp
 - [ ] Người giữ Quyền Quản lý lớp thấy cả 2 bộ widget cùng lúc
 
+> **Tiến độ (chia 3 lượt):** lượt 1 = báo cáo #3, #4, #5, #8 (khung tuần/tháng/quý/năm) — đã viết xong migration `20260929100000_giai_doan_10a_bao_cao.sql` + test `supabase/tests/giai_doan_10a_bao_cao.sql` (26 kiểm tra, PGlite cục bộ 26/26; hồi quy Giai đoạn 3-8, 9 vẫn pass) + trang `/bao-cao` (4 báo cáo, có demo dev `/design/bao-cao`); **đã xác nhận trên Supabase thật: migration + test 26/26 true, đã push**. Lượt 2 = báo cáo #1, #2, #6, #7 (theo kỳ) + xuất Excel/PDF. Lượt 3 = trang Tổng quan Admin + GV/TG.
+
 **Điều kiện hoàn thành:** cả 8 báo cáo lấy đúng số liệu thật từ dữ liệu đã có ở các giai đoạn trước, Tổng quan tải nhanh và đúng nguyên tắc phân quyền/ẩn nhãn nhóm.
 
 ---

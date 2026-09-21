@@ -498,6 +498,12 @@ Vì bộ tiêu chí/trọng số **sẽ còn thay đổi**, công thức phải 
 - **Xuất Excel nhật ký:** nút "Xuất Excel" ở `/nhat-ky` (route `/nhat-ky/xuat`) theo đúng bộ lọc đang xem, tối đa 5000 dòng mới nhất, **chỉ người quản trị** (mục 4.7). Helper `src/lib/xuat/excel.ts` (`exceljs`) dùng chung cho các báo cáo xuất Excel ở Giai đoạn 10.
 - **Hiển thị:** trang `/nhat-ky` — lọc theo loại, khoảng ngày, từ khóa; danh sách 30 dòng/trang (bảng ở desktop, thẻ ở mobile), bấm "Xem thay đổi" để xem bảng trước → sau.
 
+**Quyết định triển khai Giai đoạn 10, lượt 1 — Báo cáo #3, #4, #5, #8 (đã chốt, dùng làm chuẩn cho lượt sau):**
+- **Khoảng thời gian** tính bằng ngày giờ Việt Nam của **giờ bắt đầu Bài**; app tính khoảng tuần (thứ Hai–Chủ nhật) / tháng / quý / năm (`src/lib/bao-cao/khoang.ts`) rồi truyền `p_tu, p_den` cho hàm SQL (tối đa 400 ngày). Trang `/bao-cao?bc=…&kt=tuan|thang|quy|nam&moc=YYYY-MM-DD&vt=giang_vien|tro_giang`, so sánh xu hướng với khoảng liền trước.
+- **Hàm SQL** (`bc_san_luong`, `bc_ty_le_dang_ky`, `bc_van_hanh_dang_ky`, `bc_canh_bao_pool`): SECURITY DEFINER, stable, cấp cho mọi người đăng nhập (công khai nội bộ), **không trả nhãn nhóm** — chỉ vai trò. "Đã dạy" giống engine KPI (slot đã phân công, Bài đã kết thúc, lớp không hủy). Báo cáo #8 đọc thẳng view `lop_hoc_tong_hop` (RLS lo việc ẩn lớp Dự kiến chưa công khai).
+- **#3:** giờ đã dạy theo người (kể cả người 0 giờ đang tham gia), tách riêng giờ "đã phân công chưa diễn ra"; **chỉ số đồng đều = (1 − Gini) × 100** và % giờ do 20% người dạy nhiều nhất đảm nhiệm (chỉ tính người đang tham gia). **#4:** A2/A3 cùng định nghĩa engine KPI, mẫu số 0 hiện "–". **#5:** tỷ lệ lấp đầy slot (Bài bắt đầu trong khoảng, lớp Đang mở/Đã hoàn thành), thời gian TB lấp slot = lúc duyệt/đồng ý − lúc tạo slot; "đang chờ xử lý" và "Bài cảnh báo pool nhỏ" là **realtime, không theo khoảng** (pool = số người từ `goi_y_core`, dưới ngưỡng `canh_bao_pool_nho`, 0 người cũng tính). **#8:** lớp có thời gian giao khoảng, theo trạng thái hiển thị / nhóm lớp / loại kinh phí / đối tượng.
+- Biểu đồ dùng chung ở `src/components/bao-cao/bieu-do.tsx` (thanh ngang, donut, sparkline, cột theo thời gian kiểu "Weekly Revenue"); xuất Excel/PDF cho #1,3,6,7 làm ở lượt 2 (tái dùng `taoFileExcel`).
+
 ---
 
 ## 8. Thiết kế UI/UX — Design System
