@@ -104,10 +104,10 @@ export function ThanhNgang({ dong, toiDa, chuThichThem }: { dong: DongThanh[]; t
 }
 
 // Thanh tiến độ nhỏ (0–100%) dùng trong bảng: cùng cách neo gradient theo đường ray
-export function ThanhMini({ v, className }: { v: number | null; className?: string }) {
+export function ThanhMini({ v, className = "h-2 w-full min-w-14" }: { v: number | null; className?: string }) {
   const p = v === null ? 0 : Math.max(0, Math.min(100, v));
   return (
-    <div className={cn("relative h-2 w-full min-w-14 overflow-hidden rounded-full bg-muted/70", className)} aria-hidden>
+    <div className={cn("relative overflow-hidden rounded-full bg-muted/70", className)} aria-hidden>
       {p > 0 && <div className="absolute inset-y-0 left-0 rounded-full" style={lopThanh(p)} />}
     </div>
   );
