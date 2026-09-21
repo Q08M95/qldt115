@@ -198,6 +198,87 @@ Gợi ý kịch bản test (đăng nhập bằng trình duyệt; dùng cửa s�
 Dọn dẹp: node scripts/demo-gd89.mjs xoa  rồi chạy supabase/tests/xoa_demo_gd89.sql trong SQL Editor (xóa nhật ký demo).`);
 }
 
+// Kịch bản riêng để test 2 tính năng gộp thông báo (8c): "đăng ký cần duyệt" gộp theo lớp và nhắc check-in gộp các Bài liền nhau.
+// Dùng lại (hoặc tạo nếu thiếu) 6 tài khoản demo; có thể chạy lại nhiều lần — mỗi lần tạo thêm 2 lớp mới với giờ tính theo lúc chạy lệnh.
+async function gop() {
+  const co = new Map((await tatCaUsers()).map((u) => [u.email, u.id]));
+  const id = {};
+  for (const n of NHAN_SU) {
+    const email = `${n.key}${MIEN}`;
+    let uid = co.get(email);
+    if (!uid) {
+      uid = (await authAdmin("users", { method: "POST", body: { email, password: MAT_KHAU, email_confirm: true, user_metadata: { ho_ten: n.ho_ten } } })).id;
+      console.log("  + tài khoản", email);
+      if (n.nhom) await rest("nhan_su_nhom?on_conflict=user_id", { method: "POST", body: { user_id: uid, nhom: n.nhom }, prefer: "resolution=merge-duplicates" });
+      if (n.admin) await rest(`profiles?id=eq.${uid}`, { method: "PATCH", body: { phan_quyen: "admin" } });
+      if (n.key === "qt") await rest(`profiles?id=eq.${uid}`, { method: "PATCH", body: { co_quyen_quan_ly_lop: true } });
+    }
+    id[n.key] = uid;
+  }
+
+  const [nhomLop] = await rest("danh_muc_nhom_lop?select=id&limit=1");
+  const hom = homNayVN();
+  const gio = new Date().toLocaleTimeString("en-GB", { timeZone: "Asia/Ho_Chi_Minh", hour: "2-digit", minute: "2-digit" }).replace(":", "");
+  const taoLop = async (ten, trangThai) => {
+    const [lop] = await rest("lop_hoc", {
+      method: "POST",
+      prefer: "return=representation",
+      body: { ten: `${TIEN_TO_LOP}${ten} ${gio}`, nhom_lop_id: nhomLop.id, doi_tuong: "nhan_vien_y_te", loai_kinh_phi: "co_kinh_phi", ngay_bat_dau: cong(hom, -1), ngay_ket_thuc: cong(hom, 8), dia_diem: "Demo GD89", trang_thai: trangThai },
+    });
+    await rest("lop_hoc_nhom_du_dieu_kien", { method: "POST", body: [{ lop_id: lop.id, nhom: "gv_bac_si" }, { lop_id: lop.id, nhom: "tg_bac_si" }] });
+    return lop;
+  };
+  const taoBai = async (lop, thuTu, ten, batDau, ketThuc, { gv = 0, tg = 0, giao = [] }) => {
+    const [bai] = await rest("bai_hoc", { method: "POST", prefer: "return=representation", body: { lop_id: lop.id, thu_tu: thuTu, ten, bat_dau: batDau, ket_thuc: ketThuc } });
+    const slots = [];
+    for (let i = 1; i <= gv; i++) slots.push({ bai_id: bai.id, vai_tro: "giang_vien", vi_tri: i });
+    for (let i = 1; i <= tg; i++) slots.push({ bai_id: bai.id, vai_tro: "tro_giang", vi_tri: i });
+    const dong = await rest("slot_giang_day", { method: "POST", prefer: "return=representation", body: slots });
+    for (const [key, vaiTro] of giao) {
+      const s = dong.find((x) => x.vai_tro === vaiTro && !x.nguoi_phan_cong);
+      await rest(`slot_giang_day?id=eq.${s.id}`, { method: "PATCH", body: { trang_thai: "da_phan_cong", nguoi_phan_cong: id[key] } });
+      s.nguoi_phan_cong = id[key];
+    }
+    return bai;
+  };
+
+  // --- B: đăng ký gộp theo lớp ---
+  const lopD = await taoLop("Lớp thử gộp đăng ký", "dang_mo");
+  const d = [];
+  for (let i = 1; i <= 4; i++) d.push(await taoBai(lopD, i, `Bài ${i}`, iso(60 * 24 * (i + 9)), iso(60 * 24 * (i + 9) + 120), { gv: 1, tg: 1 }));
+  const g1 = await dangNhap(`g1${MIEN}`);
+  const g2 = await dangNhap(`g2${MIEN}`);
+  const t1 = await dangNhap(`t1${MIEN}`);
+  const t2 = await dangNhap(`t2${MIEN}`);
+  await g1.rpc("dang_ky_bai", { p_bai_ids: [d[0].id, d[1].id] });
+  await g2.rpc("dang_ky_bai", { p_bai_ids: [d[2].id] });
+  await t1.rpc("dang_ky_bai", { p_bai_ids: [d[0].id, d[3].id] });
+  await t2.rpc("dang_ky_bai", { p_bai_ids: [d[1].id] });
+  console.log(`  • Lớp "${lopD.ten}": g1 đăng ký 2 Bài, g2 1 Bài, t1 2 Bài, t2 1 Bài (tổng 4 người / 6 lượt) — Admin/qt chỉ có 1 thông báo gộp cho lớp`);
+
+  // --- D: nhắc check-in gộp ---
+  const lopN = await taoLop("Lớp thử nhắc check-in gộp", "dang_mo");
+  // g1: K1 (+35 phút, 30 phút) và K2 (+80 phút, nghỉ 15 phút) liền nhau => 1 nhắc chung; K3 sau 9 giờ => nhắc riêng lúc còn 30 phút
+  await taoBai(lopN, 1, "K1 - Bài đầu (g1)", iso(35), iso(65), { gv: 1, giao: [["g1", "giang_vien"]] });
+  await taoBai(lopN, 2, "K2 - Bài liền sau K1 (g1)", iso(80), iso(110), { gv: 1, giao: [["g1", "giang_vien"]] });
+  await taoBai(lopN, 3, "K3 - Bài xa 9 giờ sau (g1)", iso(9 * 60), iso(9 * 60 + 60), { gv: 1, giao: [["g1", "giang_vien"]] });
+  // g2: L1 (+45 phút) một mình; L2 sau 8 giờ
+  await taoBai(lopN, 4, "L1 - Bài đơn (g2)", iso(45), iso(90), { gv: 1, giao: [["g2", "giang_vien"]] });
+  await taoBai(lopN, 5, "L2 - Bài xa 8 giờ sau (g2)", iso(8 * 60), iso(8 * 60 + 60), { gv: 1, giao: [["g2", "giang_vien"]] });
+  console.log(`  • Lớp "${lopN.ten}": g1 có K1+K2 liền nhau và K3 xa; g2 có L1 đơn và L2 xa`);
+  console.log(`
+KỊCH BẢN TEST GỘP THÔNG BÁO (giờ tính từ lúc chạy lệnh; job nhắc chạy mỗi phút):
+ B — Đăng ký gộp theo lớp
+  1. Đăng nhập Admin thật (hoặc ad@ / qt@) → chuông có ĐÚNG 1 thông báo "Đăng ký cần duyệt" cho lớp "Lớp thử gộp đăng ký": "4 người đăng ký (6 lượt Bài) đang chờ duyệt — lớp …: GD89 GV1…, GD89 GV2…, GD89 TG1…, và 1 người khác".
+  2. Mở lớp → duyệt hoặc từ chối một vài đăng ký → quay lại chuông: số trong thông báo GIẢM tương ứng, vẫn chưa đọc.
+  3. Xử lý hết → thông báo tự chuyển ĐÃ ĐỌC. Sau đó đăng nhập g2@ (cửa sổ ẩn danh) đăng ký thêm 1 Bài còn trống của lớp → Admin có thêm 1 thông báo MỚI (chưa đọc).
+ D — Nhắc check-in gộp
+  4. Sau khoảng 5-6 phút, g1@ nhận 1 thông báo "Sắp đến giờ dạy — 2 Bài liên tiếp, nhớ check-in" liệt kê K1 và K2 (KHÔNG có K3). g2@ nhận nhắc riêng cho L1 (tiêu đề "Sắp đến giờ dạy — nhớ check-in"), khoảng 15 phút sau khi tạo.
+  5. g1 vào Trang chủ → banner check-in: check-in K1 → thông báo gộp VẪN CHƯA ĐỌC (còn K2). Đợi tới khi K2 vào khung check-in (~35 phút sau khi tạo) rồi check-in K2 → thông báo tự ĐÃ ĐỌC.
+  6. K3 (g1) và L2 (g2) đến hạn sau ~8,5 giờ nên không có nhắc lúc này (đúng: Bài xa không bị nhắc gộp nhầm).
+Dọn: node scripts/demo-gd89.mjs xoa  (rồi chạy supabase/tests/xoa_demo_gd89.sql để dọn nhật ký).`);
+}
+
 async function kiemTra() {
   const users = await tatCaUsers();
   for (const n of NHAN_SU) {
@@ -236,5 +317,6 @@ async function xoa() {
 const lenh = process.argv[2];
 if (lenh === "tao") await tao();
 else if (lenh === "xoa") await xoa();
+else if (lenh === "gop") await gop();
 else if (lenh === "kiemtra") await kiemTra();
-else console.log("Dùng: node scripts/demo-gd89.mjs tao | xoa | kiemtra");
+else console.log("Dùng: node scripts/demo-gd89.mjs tao | gop | xoa | kiemtra");
