@@ -20,6 +20,15 @@ export const gradientCss = (m: MauBieuDo) => `linear-gradient(90deg, ${CSS_MAU[m
 const so = (n: number, toiDa = 1) => n.toLocaleString("vi-VN", { maximumFractionDigits: toiDa });
 
 // ===== Thanh ngang xếp hạng theo người =====
+// Gradient thương hiệu được "neo" theo cả đường ray (không co theo từng thanh): thanh ngắn thiên về xanh ngọc, thanh dài đi tới navy — các thanh nhìn liền một dải màu.
+const GRAD_BRAND = "linear-gradient(90deg, var(--brand-from), var(--brand-to))";
+const lopThanh = (p: number): React.CSSProperties => ({
+  width: `${p}%`,
+  backgroundImage: GRAD_BRAND,
+  backgroundSize: `${10000 / Math.max(p, 0.01)}% 100%`,
+  backgroundRepeat: "no-repeat",
+});
+
 export interface DongThanh {
   khoa: string;
   nhan: string;
@@ -27,42 +36,52 @@ export interface DongThanh {
   avatar?: { ten: string; src: string | null };
   href?: string;
   gia_tri: number;
-  // Phần thêm (vd giờ đã phân công nhưng chưa diễn ra) — vẽ nối tiếp bằng màu nhạt hơn
+  // Phần thêm (vd giờ đã phân công nhưng chưa diễn ra) — nối tiếp cùng dải màu nhưng nhạt hơn
   gia_tri_them?: number;
   hien_thi: string;
+  // Dòng nhỏ dưới giá trị (vd "+3h" sắp tới)
+  hien_thi_phu?: string;
 }
 
 export function ThanhNgang({ dong, toiDa, chuThichThem }: { dong: DongThanh[]; toiDa?: number; chuThichThem?: string }) {
   const max = Math.max(toiDa ?? 0, ...dong.map((d) => d.gia_tri + (d.gia_tri_them ?? 0)), 0.0001);
+  const pct = (v: number) => Math.min(100, (v / max) * 100);
   return (
     <div className="grid gap-1">
       {chuThichThem && (
         <p className="flex items-center gap-3 pb-1 text-xs text-muted-foreground">
           <span className="flex items-center gap-1.5">
-            <span className="h-2 w-5 rounded-full bg-brand-gradient" aria-hidden /> Đã dạy
+            <span className="h-2 w-5 rounded-full" style={{ backgroundImage: GRAD_BRAND }} aria-hidden /> Đã dạy
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="h-2 w-5 rounded-full bg-grad-blue" aria-hidden /> {chuThichThem}
+            <span className="h-2 w-5 rounded-full opacity-40" style={{ backgroundImage: GRAD_BRAND }} aria-hidden /> {chuThichThem}
           </span>
         </p>
       )}
       <ul className="grid gap-0.5">
         {dong.map((d) => {
+          const p1 = pct(d.gia_tri);
+          const p2 = pct(d.gia_tri + (d.gia_tri_them ?? 0));
           const noiDung = (
             <>
-              <div className="flex min-w-0 items-center gap-2.5 sm:w-[38%] sm:shrink-0">
-                {d.avatar && <UserAvatar name={d.avatar.ten} src={d.avatar.src} className="size-7 text-xs" />}
+              <div className="flex min-w-0 items-center gap-2.5 sm:w-[40%] sm:shrink-0">
+                {d.avatar && <UserAvatar name={d.avatar.ten} src={d.avatar.src} className="size-7 shrink-0 text-xs" />}
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-medium">{d.nhan}</p>
-                  {d.phu && <p className="truncate text-xs text-muted-foreground">{d.phu}</p>}
+                  <p className="truncate text-sm font-medium" title={d.nhan}>
+                    {d.nhan}
+                  </p>
+                  {d.phu && <p className="line-clamp-2 text-xs text-muted-foreground">{d.phu}</p>}
                 </div>
               </div>
               <div className="flex min-w-0 flex-1 items-center gap-3">
-                <div className="flex h-3 min-w-0 flex-1 overflow-hidden rounded-full bg-muted/70" role="img" aria-label={`${d.nhan}: ${d.hien_thi}`}>
-                  {d.gia_tri > 0 && <div className="h-full rounded-full bg-brand-gradient" style={{ width: `${(d.gia_tri / max) * 100}%` }} />}
-                  {(d.gia_tri_them ?? 0) > 0 && <div className="h-full bg-grad-blue" style={{ width: `${((d.gia_tri_them ?? 0) / max) * 100}%` }} />}
+                <div className="relative h-3 min-w-0 flex-1 overflow-hidden rounded-full bg-muted/70" role="img" aria-label={`${d.nhan}: ${d.hien_thi}`}>
+                  {p2 > p1 && <div className="absolute inset-y-0 left-0 rounded-full opacity-40" style={lopThanh(p2)} />}
+                  {p1 > 0 && <div className="absolute inset-y-0 left-0 rounded-full" style={lopThanh(p1)} />}
                 </div>
-                <span className="w-16 shrink-0 text-right text-sm font-medium tabular-nums">{d.hien_thi}</span>
+                <span className="w-16 shrink-0 text-right tabular-nums">
+                  <span className="block text-sm font-medium">{d.hien_thi}</span>
+                  {d.hien_thi_phu && <span className="block text-xs text-muted-foreground">{d.hien_thi_phu}</span>}
+                </span>
               </div>
             </>
           );
@@ -80,6 +99,16 @@ export function ThanhNgang({ dong, toiDa, chuThichThem }: { dong: DongThanh[]; t
           );
         })}
       </ul>
+    </div>
+  );
+}
+
+// Thanh tiến độ nhỏ (0–100%) dùng trong bảng: cùng cách neo gradient theo đường ray
+export function ThanhMini({ v, className }: { v: number | null; className?: string }) {
+  const p = v === null ? 0 : Math.max(0, Math.min(100, v));
+  return (
+    <div className={cn("relative h-2 w-full min-w-14 overflow-hidden rounded-full bg-muted/70", className)} aria-hidden>
+      {p > 0 && <div className="absolute inset-y-0 left-0 rounded-full" style={lopThanh(p)} />}
     </div>
   );
 }

@@ -51,10 +51,10 @@ export function BaoCaoVanHanhDangKy({
             <StatTile icon={ShieldCheck} label="Tỷ lệ lấp đầy" value={pt(layDay)} trend={xuHuong(layDay, layDayTruoc)}>
               <Sparkline gia_tri={serie.map((s) => s.phan_cong)} nhan="Slot được phân công theo ngày" className="mt-3 h-8 w-full" />
             </StatTile>
-            <StatTile icon={Timer} label="Thời gian TB lấp slot" value={thoiGianLap(hienTai.gio_lap_tb)}>
+            <StatTile icon={Timer} label="TB lấp slot" value={thoiGianLap(hienTai.gio_lap_tb)}>
               <p className="mt-3 text-xs text-muted-foreground">{hienTai.so_slot_do_duyet > 0 ? `Trên ${hienTai.so_slot_do_duyet} slot đã có người` : "Chưa có slot nào được duyệt"}</p>
             </StatTile>
-            <StatTile icon={Hourglass} label="Đang chờ xử lý" value={cho}>
+            <StatTile icon={Hourglass} label="Đang chờ" value={cho}>
               <p className="mt-3 text-xs text-muted-foreground">
                 {hienTai.dang_ky_cho} đăng ký · {hienTai.loi_moi_cho} lời mời
               </p>

@@ -11,15 +11,20 @@ import type { KhoangBaoCao } from "@/lib/bao-cao/khoang";
 import { tongHopTyLe, xuHuong, type DongTyLeTinh, type LocVaiTro } from "@/lib/bao-cao/tinh-toan";
 import type { DongTyLe } from "@/lib/bao-cao/types";
 import type { KhoaBaoCao } from "@/lib/bao-cao/url";
+import { ThanhMini } from "./bieu-do";
 import { LocVaiTroLinks } from "./thanh-dieu-khien";
 
 const pt = (v: number | null) => (v === null ? "–" : `${v.toLocaleString("vi-VN", { maximumFractionDigits: 1 })}%`);
 
-function ThanhTyLe({ v }: { v: number | null }) {
+// Ô tỷ lệ: thanh + % ở trên, số đếm nhỏ ở dưới (vd "4/5 Bài") — gọn trong 1 cột nên bảng không bị tràn
+function OTyLe({ v, chu }: { v: number | null; chu: string }) {
   return (
-    <div className="flex items-center gap-2">
-      <div className="h-2 w-20 overflow-hidden rounded-full bg-muted/70">{v !== null && v > 0 && <div className="h-full rounded-full bg-brand-gradient" style={{ width: `${Math.min(100, v)}%` }} />}</div>
-      <span className="w-12 text-right text-sm font-medium tabular-nums">{pt(v)}</span>
+    <div className="grid gap-1">
+      <div className="flex items-center gap-2">
+        <ThanhMini v={v} />
+        <span className="w-14 shrink-0 text-right text-sm font-medium tabular-nums">{pt(v)}</span>
+      </div>
+      <span className="text-xs text-muted-foreground">{chu}</span>
     </div>
   );
 }
@@ -61,8 +66,8 @@ export function BaoCaoTyLe({
         <>
           <StatRow>
             <StatTile icon={HandHeart} label="Tự đăng ký (A2)" value={pt(t.a2)} trend={xuHuong(t.a2, truoc.a2)} />
-            <StatTile icon={MailCheck} label="Nhận lời mời (A3)" value={pt(t.a3)} trend={xuHuong(t.a3, truoc.a3)} />
-            <StatTile icon={Users} label="Người có dữ liệu" value={t.soNguoi} />
+            <StatTile icon={MailCheck} label="Nhận mời (A3)" value={pt(t.a3)} trend={xuHuong(t.a3, truoc.a3)} />
+            <StatTile icon={Users} label="Có dữ liệu" value={t.soNguoi} />
           </StatRow>
 
           <Card className="gap-4 px-0">
@@ -78,17 +83,15 @@ export function BaoCaoTyLe({
               {dong.length === 0 ? (
                 <EmptyState icon={HandHeart} title="Chưa có ai dạy xong Bài hoặc phản hồi lời mời trong khoảng thời gian này" />
               ) : (
-                <>
-                  {/* Máy tính: bảng */}
-                  <div className="hidden md:block">
-                    <table className="w-full text-sm">
+                <div className="@container">
+                  {/* Khu vực đủ rộng: bảng 3 cột (theo bề rộng của thẻ, không theo màn hình) */}
+                  <div className="hidden @[40rem]:block">
+                    <table className="w-full table-fixed text-sm">
                       <thead>
                         <tr className="border-b text-left text-[13px] font-medium text-muted-foreground">
-                          <th className="pb-2 font-medium">Người dạy</th>
-                          <th className="pb-2 text-right font-medium">Bài đã dạy</th>
-                          <th className="pb-2 pl-6 font-medium">Tự đăng ký (A2)</th>
-                          <th className="pb-2 text-right font-medium">Lời mời</th>
-                          <th className="pb-2 pl-6 font-medium">Nhận lời mời (A3)</th>
+                          <th className="w-[34%] pb-2 font-medium">Người dạy</th>
+                          <th className="w-[33%] pb-2 pl-4 font-medium">Tự đăng ký (A2)</th>
+                          <th className="w-[33%] pb-2 pl-4 font-medium">Nhận lời mời (A3)</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -97,44 +100,30 @@ export function BaoCaoTyLe({
                             <td className="py-2.5 pr-3">
                               <Nguoi r={r} />
                             </td>
-                            <td className="py-2.5 text-right tabular-nums">
-                              {r.so_bai_da_day}
-                              {r.so_bai_da_day > 0 && <span className="text-xs text-muted-foreground"> ({r.so_tu_dang_ky} tự ĐK)</span>}
+                            <td className="py-2.5 pl-4">
+                              <OTyLe v={r.a2} chu={`${r.so_tu_dang_ky}/${r.so_bai_da_day} Bài đã dạy`} />
                             </td>
-                            <td className="py-2.5 pl-6">
-                              <ThanhTyLe v={r.a2} />
-                            </td>
-                            <td className="py-2.5 text-right tabular-nums">
-                              {r.soMoi}
-                              {r.soMoi > 0 && <span className="text-xs text-muted-foreground"> ({r.so_moi_dong_y} đồng ý)</span>}
-                            </td>
-                            <td className="py-2.5 pl-6">
-                              <ThanhTyLe v={r.a3} />
+                            <td className="py-2.5 pl-4">
+                              <OTyLe v={r.a3} chu={`${r.so_moi_dong_y}/${r.soMoi} lời mời`} />
                             </td>
                           </tr>
                         ))}
                       </tbody>
                     </table>
                   </div>
-                  {/* Điện thoại: mỗi người 1 thẻ */}
-                  <ul className="grid gap-2 md:hidden">
+                  {/* Khu vực hẹp: mỗi người 1 thẻ */}
+                  <ul className="grid gap-2 @[40rem]:hidden">
                     {dong.map((r) => (
                       <li key={r.user_id} className="grid gap-2.5 rounded-xl border p-3">
                         <Nguoi r={r} />
-                        <div className="grid grid-cols-2 gap-3 text-xs text-muted-foreground">
-                          <div className="grid gap-1">
-                            <span>Tự đăng ký · {r.so_tu_dang_ky}/{r.so_bai_da_day} Bài</span>
-                            <ThanhTyLe v={r.a2} />
-                          </div>
-                          <div className="grid gap-1">
-                            <span>Nhận lời mời · {r.so_moi_dong_y}/{r.soMoi}</span>
-                            <ThanhTyLe v={r.a3} />
-                          </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <OTyLe v={r.a2} chu={`Tự đăng ký ${r.so_tu_dang_ky}/${r.so_bai_da_day} Bài`} />
+                          <OTyLe v={r.a3} chu={`Nhận mời ${r.so_moi_dong_y}/${r.soMoi}`} />
                         </div>
                       </li>
                     ))}
                   </ul>
-                </>
+                </div>
               )}
             </CardContent>
           </Card>

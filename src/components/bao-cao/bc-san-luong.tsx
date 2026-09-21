@@ -37,12 +37,13 @@ export function BaoCaoSanLuong({
     .map((r) => ({
       khoa: r.user_id,
       nhan: r.ho_ten,
-      phu: `${VAI_TRO_LABEL[r.vai_tro]}${r.dang_tham_gia ? "" : " · đã nghỉ"} · ${r.so_bai} Bài${r.so_lop > 0 ? ` / ${r.so_lop} lớp` : ""}${r.gio_sap > 0 ? ` · +${gio(r.gio_sap).replace(" giờ", "h")} sắp tới` : ""}`,
+      phu: `${VAI_TRO_LABEL[r.vai_tro]}${r.dang_tham_gia ? "" : " · đã nghỉ"} · ${r.so_bai} Bài${r.so_lop > 0 ? ` / ${r.so_lop} lớp` : ""}`,
       avatar: { ten: r.ho_ten, src: r.avatar_url },
       href: `/nhan-su/${r.user_id}`,
       gia_tri: r.gio_thuc,
       gia_tri_them: r.gio_sap,
       hien_thi: gio(r.gio_thuc).replace(" giờ", "h"),
+      hien_thi_phu: r.gio_sap > 0 ? `+${gio(r.gio_sap).replace(" giờ", "h")}` : undefined,
     }));
   const coHapSap = t.nguoi.some((r) => r.gio_sap > 0);
 
@@ -51,9 +52,9 @@ export function BaoCaoSanLuong({
       main={
         <>
           <StatRow>
-            <StatTile icon={Clock} label="Tổng giờ đã dạy" value={gio(t.tongGio)} trend={xuHuong(t.tongGio, truoc.tongGio)} />
-            <StatTile icon={Users} label="Giờ TB mỗi người" value={gio(t.gioTB)} trend={xuHuong(t.gioTB, truoc.gioTB)} />
-            <StatTile icon={UserX} label="Chưa dạy giờ nào" value={`${t.soNguoiKhongDay}/${t.soNguoi}`} />
+            <StatTile icon={Clock} label="Giờ đã dạy" value={gio(t.tongGio)} trend={xuHuong(t.tongGio, truoc.tongGio)} />
+            <StatTile icon={Users} label="Giờ TB/người" value={gio(t.gioTB)} trend={xuHuong(t.gioTB, truoc.gioTB)} />
+            <StatTile icon={UserX} label="Chưa dạy giờ" value={`${t.soNguoiKhongDay}/${t.soNguoi}`} />
           </StatRow>
 
           <Card className="gap-4 px-0">

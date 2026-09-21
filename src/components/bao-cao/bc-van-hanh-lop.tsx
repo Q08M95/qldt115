@@ -10,7 +10,7 @@ import { DOI_TUONG_LABEL, LOAI_KINH_PHI_LABEL, TRANG_THAI_LOP_LABEL, TRANG_THAI_
 import { phanTram, tongHopLop } from "@/lib/bao-cao/tinh-toan";
 import type { DongLop } from "@/lib/bao-cao/types";
 import type { TrangThaiLopHienThi } from "@/types/database";
-import { ChuThichDonut, Donut, ThanhNgang, type MauBieuDo } from "./bieu-do";
+import { ChuThichDonut, Donut, ThanhMini, ThanhNgang, type MauBieuDo } from "./bieu-do";
 
 const MAU_TRANG_THAI: Record<TrangThaiLopHienThi, MauBieuDo> = {
   nhap: "neutral",
@@ -27,8 +27,8 @@ function TienDo({ da, tong }: { da: number; tong: number }) {
   const v = phanTram(da, tong);
   return (
     <div className="flex items-center gap-2">
-      <div className="h-2 w-20 overflow-hidden rounded-full bg-muted/70">{v !== null && v > 0 && <div className="h-full rounded-full bg-brand-gradient" style={{ width: `${Math.min(100, v)}%` }} />}</div>
-      <span className="text-xs text-muted-foreground tabular-nums">
+      <ThanhMini v={v} className="w-20" />
+      <span className="text-xs whitespace-nowrap text-muted-foreground tabular-nums">
         {da}/{tong}
       </span>
     </div>
@@ -51,7 +51,7 @@ export function BaoCaoVanHanhLop({ rows }: { rows: DongLop[] }) {
       main={
         <>
           <StatRow>
-            <StatTile icon={School} label="Lớp trong khoảng" value={t.tong} />
+            <StatTile icon={School} label="Số lớp" value={t.tong} />
             <StatTile icon={CircleDot} label="Đang hoạt động" value={dangHoatDong} />
             <StatTile icon={Layers} label="Lấp đầy slot" value={pt(phanTram(t.slotDaPhanCong, t.slotTong))} />
           </StatRow>
@@ -66,15 +66,15 @@ export function BaoCaoVanHanhLop({ rows }: { rows: DongLop[] }) {
               {rows.length === 0 ? (
                 <EmptyState icon={BookOpen} title="Không có lớp nào diễn ra trong khoảng thời gian này" />
               ) : (
-                <>
-                  <div className="hidden md:block">
+                <div className="@container">
+                  <div className="hidden @[42rem]:block">
                     <table className="w-full text-sm">
                       <thead>
                         <tr className="border-b text-left text-[13px] font-medium text-muted-foreground">
                           <th className="pb-2 font-medium">Lớp</th>
                           <th className="pb-2 font-medium">Thời gian</th>
                           <th className="pb-2 font-medium">Trạng thái</th>
-                          <th className="pb-2 font-medium">Slot phân công</th>
+                          <th className="pb-2 font-medium whitespace-nowrap">Slot phân công</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -88,7 +88,7 @@ export function BaoCaoVanHanhLop({ rows }: { rows: DongLop[] }) {
                                 </span>
                               </Link>
                             </td>
-                            <td className="py-2.5 pr-3 whitespace-nowrap text-muted-foreground">
+                            <td className="py-2.5 pr-3 text-muted-foreground">
                               {fmtDate(r.ngay_bat_dau)} – {fmtDate(r.ngay_ket_thuc)}
                             </td>
                             <td className="py-2.5 pr-3">
@@ -102,7 +102,7 @@ export function BaoCaoVanHanhLop({ rows }: { rows: DongLop[] }) {
                       </tbody>
                     </table>
                   </div>
-                  <ul className="grid gap-2 md:hidden">
+                  <ul className="grid gap-2 @[42rem]:hidden">
                     {rows.map((r) => (
                       <li key={r.id}>
                         <Link href={`/lop-hoc/${r.id}`} className="grid gap-2 rounded-xl border p-3">
@@ -118,7 +118,7 @@ export function BaoCaoVanHanhLop({ rows }: { rows: DongLop[] }) {
                       </li>
                     ))}
                   </ul>
-                </>
+                </div>
               )}
             </CardContent>
           </Card>
@@ -134,9 +134,11 @@ export function BaoCaoVanHanhLop({ rows }: { rows: DongLop[] }) {
               {lat.length === 0 ? (
                 <p className="py-6 text-center text-sm text-muted-foreground">Chưa có lớp nào.</p>
               ) : (
-                <div className="grid items-center gap-4 @container sm:grid-cols-[auto_1fr] lg:grid-cols-1 xl:grid-cols-[auto_1fr]">
-                  <Donut lat={lat} giua={String(t.tong)} phu="lớp" className="mx-auto size-32" />
-                  <ChuThichDonut lat={lat} />
+                <div className="@container">
+                  <div className="grid items-center gap-4 @[22rem]:grid-cols-[auto_1fr]">
+                    <Donut lat={lat} giua={String(t.tong)} phu="lớp" className="mx-auto size-32" />
+                    <ChuThichDonut lat={lat} />
+                  </div>
                 </div>
               )}
             </CardContent>

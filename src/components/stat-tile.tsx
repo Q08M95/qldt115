@@ -24,7 +24,9 @@ export function StatTile({
     <div className={cn("rounded-2xl border border-transparent bg-card px-5 py-4 shadow-card dark:border-border", className)}>
       <div className="flex items-center gap-2">
         <Icon className="size-[18px] shrink-0 text-slate-500 dark:text-slate-400" strokeWidth={1.75} aria-hidden />
-        <span className="flex-1 text-sm font-medium text-foreground/70">{label}</span>
+        <span className="min-w-0 flex-1 truncate text-sm font-medium text-foreground/70" title={label}>
+          {label}
+        </span>
         <ChevronRight className="size-4 text-muted-foreground/70" aria-hidden />
       </div>
       <div className="mt-3 flex items-center justify-between gap-2">
