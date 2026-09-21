@@ -158,7 +158,7 @@ export function DongHoBanNguyet({ phanTram, so, nhan, className }: { phanTram: n
   return (
     <svg viewBox="0 0 120 78" role="img" aria-label={nhan ? `${nhan}: ${so}` : so} className={className}>
       <GradDefs id="kpi-dh" />
-      <path d="M10,60 A50,50 0 0 1 110,60" fill="none" stroke="var(--card)" strokeOpacity="0.65" strokeWidth="11" strokeLinecap="round" />
+      <path d="M10,60 A50,50 0 0 1 110,60" fill="none" stroke="var(--border)" strokeWidth="11" strokeLinecap="round" />
       {v > 0 && <path d={`M10,60 A50,50 0 0 1 ${px},${py}`} fill="none" stroke="url(#kpi-dh-net)" strokeWidth="11" strokeLinecap="round" />}
       <text x="60" y="52" textAnchor="middle" fontSize="17" fontWeight="700" fill="var(--foreground)">
         {so}

@@ -96,7 +96,7 @@ export async function getKpiCaNhan(userId: string): Promise<KpiCaNhan> {
 
 // Các Bài đã bắt đầu mà 1 người được phân công (mới nhất trước) kèm điểm danh B1 và điểm dự giờ C2.
 // Bản ghi dự giờ chỉ người quản trị và chính người được chấm đọc được (RLS) — trang gọi hàm này cho Admin.
-export async function getBaiDaDay(userId: string, gioiHan = 30): Promise<BaiDaDay[]> {
+export async function getBaiDaDay(userId: string, gioiHan = 12): Promise<BaiDaDay[]> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("slot_giang_day")

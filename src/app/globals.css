@@ -294,6 +294,28 @@
   .bg-grad-danger-solid {
     background-image: linear-gradient(135deg, var(--solid-danger-from), var(--solid-danger-to));
   }
+  /* Chữ có màu = chữ gradient (đậm dần từ màu gốc về phía chữ) */
+  .text-grad-navy,
+  .text-grad-blue,
+  .text-grad-teal,
+  .text-grad-green {
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
+  .text-grad-navy {
+    background-image: linear-gradient(135deg, var(--hue-navy), color-mix(in oklab, var(--hue-navy) 55%, var(--foreground)));
+  }
+  .text-grad-blue {
+    background-image: linear-gradient(135deg, var(--hue-blue), color-mix(in oklab, var(--hue-blue) 55%, var(--foreground)));
+  }
+  .text-grad-teal {
+    background-image: linear-gradient(135deg, var(--hue-teal), color-mix(in oklab, var(--hue-teal) 55%, var(--foreground)));
+  }
+  .text-grad-green {
+    background-image: linear-gradient(135deg, var(--hue-green), color-mix(in oklab, var(--hue-green) 55%, var(--foreground)));
+  }
   .shadow-card {
     box-shadow: var(--shadow-card);
   }

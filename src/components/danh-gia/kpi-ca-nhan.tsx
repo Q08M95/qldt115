@@ -48,42 +48,42 @@ function ThanhTienDo({ phanTram, cao = "h-2", className }: { phanTram: number; c
   );
 }
 
-// Màu ô số liệu: 4 màu gốc của hệ thống, nền gradient + chữ "-on" tương ứng (mục 8.1)
+// Màu con số: 4 màu gốc của hệ thống, chữ gradient (mục 8.1); nền ô trung tính
 const HUE = {
-  navy: "bg-grad-navy text-hue-navy-on",
-  blue: "bg-grad-blue text-hue-blue-on",
-  teal: "bg-grad-teal text-hue-teal-on",
-  green: "bg-grad-green text-hue-green-on",
+  navy: "text-grad-navy",
+  blue: "text-grad-blue",
+  teal: "text-grad-teal",
+  green: "text-grad-green",
 } as const;
 
-// Ô số liệu: chip icon tròn + nhãn ngắn ở trên, giá trị lớn ở dưới; nền gradient theo màu
+// Ô số liệu: nhãn ngắn (icon + chữ) ở trên, giá trị lớn ở giữa; số có màu gradient, nền trung tính
 function O({
   icon: Icon,
   nhan,
-  hue,
   children,
   className,
 }: {
   icon: typeof Gauge;
   nhan: string;
-  hue: keyof typeof HUE;
   children: React.ReactNode;
   className?: string;
 }) {
   return (
-    <div className={cn("flex min-w-0 flex-col gap-3 rounded-2xl p-4 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.35)]", HUE[hue], className)}>
-      <div className="flex items-center gap-2">
-        <span className="hidden size-7 shrink-0 items-center justify-center rounded-full bg-white/45 @sm:flex dark:bg-white/15">
-          <Icon className="size-4" strokeWidth={1.75} aria-hidden />
-        </span>
-        <span className="text-[12.5px] leading-tight font-semibold opacity-85">{nhan}</span>
+    <div className={cn("flex min-w-0 flex-col items-center justify-between gap-3 rounded-2xl bg-background p-4 text-center", className)}>
+      <div className="flex items-center justify-center gap-1.5 text-muted-foreground">
+        <Icon className="hidden size-4 shrink-0 @sm:block" strokeWidth={1.75} aria-hidden />
+        <span className="text-[12.5px] leading-tight font-medium">{nhan}</span>
       </div>
-      <div className="min-w-0">{children}</div>
+      <div className="flex min-w-0 flex-1 flex-col items-center justify-center">{children}</div>
     </div>
   );
 }
 
-const SO_LON = "text-[30px] leading-none font-semibold tabular-nums";
+// Số lớn có màu gradient (chỉ áp cho chính con số, chú thích bên cạnh giữ màu chữ thường)
+function So({ hue, children }: { hue: keyof typeof HUE; children: React.ReactNode }) {
+  return <span className={cn("inline-block text-[30px] leading-none font-semibold tabular-nums", HUE[hue])}>{children}</span>;
+}
+const CHU_THICH = "mt-1.5 text-xs text-muted-foreground";
 
 function Muc({ tieuDe, children, className }: { tieuDe: string; children: React.ReactNode; className?: string }) {
   return (
@@ -99,7 +99,7 @@ function OViTri({ hienTai, lichSu, soKy }: { hienTai: KpiCaNhanKy; lichSu: KpiCa
   if (hienTai.che_do_a1 === "percentile" && hienTai.percentile !== null) {
     const top = Math.max(1, Math.round(100 - hienTai.percentile));
     return (
-      <O icon={Gauge} nhan="Vị trí" hue="blue">
+      <O icon={Gauge} nhan="Vị trí">
         <DongHoBanNguyet phanTram={hienTai.percentile} so={`Top ${top}%`} nhan="so với đồng nghiệp" className="mx-auto h-auto w-full max-w-36" />
       </O>
     );
@@ -109,18 +109,18 @@ function OViTri({ hienTai, lichSu, soKy }: { hienTai: KpiCaNhanKy; lichSu: KpiCa
     const tb = truoc.reduce((s, k) => s + k.gio_quy_doi, 0) / truoc.length;
     const chenh = Math.round((hienTai.gio_quy_doi / tb - 1) * 100);
     return (
-      <O icon={Gauge} nhan="So với bản thân" hue="blue">
-        <p className={SO_LON}>
+      <O icon={Gauge} nhan="So với bản thân">
+        <So hue="blue">
           {chenh >= 0 ? "+" : "−"}
           {Math.abs(chenh)}%
-        </p>
-        <p className="mt-1.5 text-xs opacity-75">TB {truoc.length} kỳ trước</p>
+        </So>
+        <p className={CHU_THICH}>TB {truoc.length} kỳ trước</p>
       </O>
     );
   }
   return (
-    <O icon={Gauge} nhan="Vị trí" hue="blue">
-      <p className={SO_LON}>—</p>
+    <O icon={Gauge} nhan="Vị trí">
+      <So hue="blue">—</So>
     </O>
   );
 }
@@ -130,17 +130,17 @@ function OMucTieu({ td }: { td: NonNullable<KpiCaNhan["tien_do"]> }) {
   const thang = td.huong === "thang";
   const dem = Math.max(td.so_ky_can, 1);
   return (
-    <O icon={Target} nhan={thang ? "Lên Giảng viên" : "Cảnh báo KPI thấp"} hue="teal">
-      <p className={SO_LON}>
-        {so(td.so_ky_dat, 0)}
-        <span className="text-base font-medium opacity-70">/{so(td.so_ky_can, 0)} kỳ</span>
+    <O icon={Target} nhan={thang ? "Lên Giảng viên" : "Cảnh báo KPI thấp"}>
+      <p>
+        <So hue="teal">{so(td.so_ky_dat, 0)}</So>
+        <span className="text-base font-medium text-muted-foreground">/{so(td.so_ky_can, 0)} kỳ</span>
       </p>
-      <div className="mt-2.5 flex gap-1" role="img" aria-label={`${td.so_ky_dat} trên ${td.so_ky_can} kỳ liên tiếp`}>
+      <div className="mt-2.5 flex w-full gap-1" role="img" aria-label={`${td.so_ky_dat} trên ${td.so_ky_can} kỳ liên tiếp`}>
         {Array.from({ length: dem }, (_, i) => (
-          <span key={i} className={cn("h-2 flex-1 rounded-full", i < td.so_ky_dat ? (thang ? "bg-brand-gradient" : "bg-grad-danger-solid") : "bg-white/55 dark:bg-white/20")} />
+          <span key={i} className={cn("h-2 flex-1 rounded-full", i < td.so_ky_dat ? (thang ? "bg-brand-gradient" : "bg-grad-danger-solid") : "bg-border")} />
         ))}
       </div>
-      <p className="mt-1.5 text-xs opacity-75">
+      <p className={CHU_THICH}>
         {thang ? "≥" : "<"} {so(td.nguong)} điểm liên tiếp
       </p>
     </O>
@@ -192,22 +192,22 @@ export function KpiCaNhanBoard({ data, tieuDe = "Bảng KPI cá nhân" }: { data
       </CardHeader>
 
       <div className="grid grid-cols-3 gap-3 px-5">
-        <O icon={Activity} nhan={`KPI ${tenNganKy(hienTai)}`} hue="navy">
-          <div className="flex flex-wrap items-end justify-between gap-x-2 gap-y-1">
-            <p className={SO_LON}>{so(kpi)}</p>
+        <O icon={Activity} nhan={`KPI ${tenNganKy(hienTai)}`}>
+          <div className="flex flex-col items-center gap-2">
+            <So hue="navy">{so(kpi)}</So>
             {xuHuong !== undefined && <TrendPill value={xuHuong} className="shrink-0" />}
           </div>
         </O>
-        <O icon={Clock} nhan="Giờ dạy" hue="blue">
-          <p className={SO_LON}>
-            {so(hienTai.gio_thuc)}
-            <span className="text-base font-medium opacity-70">h</span>
+        <O icon={Clock} nhan="Giờ dạy">
+          <p>
+            <So hue="blue">{so(hienTai.gio_thuc)}</So>
+            <span className="text-base font-medium text-muted-foreground">h</span>
           </p>
-          <p className="mt-1.5 text-xs opacity-75">quy đổi {so(hienTai.gio_quy_doi)}h</p>
+          <p className={CHU_THICH}>quy đổi {so(hienTai.gio_quy_doi)}h</p>
         </O>
-        <O icon={Layers} nhan="Số Bài" hue="teal">
-          <p className={SO_LON}>{hienTai.so_bai}</p>
-          <p className="mt-1.5 text-xs opacity-75">{hienTai.so_lop} lớp</p>
+        <O icon={Layers} nhan="Số Bài">
+          <So hue="teal">{hienTai.so_bai}</So>
+          <p className={CHU_THICH}>{hienTai.so_lop} lớp</p>
         </O>
       </div>
 
@@ -242,11 +242,11 @@ export function KpiCaNhanBoard({ data, tieuDe = "Bảng KPI cá nhân" }: { data
         </div>
       </Muc>
 
-      <div className={cn("grid gap-3 border-t px-5 pt-5", hienMucTieu ? "grid-cols-1 @md:grid-cols-3" : "grid-cols-1 @md:grid-cols-2")}>
+      <div className={cn("grid gap-3 border-t px-5 pt-5", hienMucTieu ? "grid-cols-3" : "grid-cols-2")}>
         <OViTri hienTai={hienTai} lichSu={coDuLieu.slice(0, -1)} soKy={data.so_ky_fallback} />
-        <O icon={Award} nhan="Lớp không kinh phí" hue="green">
-          <p className={SO_LON}>{data.a4_tong}</p>
-          <p className="mt-1.5 text-xs opacity-75">lũy kế (A4)</p>
+        <O icon={Award} nhan="Lớp không kinh phí">
+          <So hue="green">{data.a4_tong}</So>
+          <p className={CHU_THICH}>lũy kế (A4)</p>
         </O>
         {hienMucTieu && data.tien_do && <OMucTieu td={data.tien_do} />}
       </div>
