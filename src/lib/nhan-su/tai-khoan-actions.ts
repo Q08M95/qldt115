@@ -13,7 +13,7 @@ import type { NhomNhanSu } from "@/types/database";
 
 // Tài khoản: thêm nhân sự (1 người / nhiều người từ CSV), đổi mật khẩu, đặt lại mật khẩu, sửa email.
 // Việc tạo tài khoản, đặt lại mật khẩu và sửa email cần service_role nên CHỈ Admin gốc làm được (không gồm người giữ Quyền Quản lý lớp).
-// TODO Giai đoạn 9: ghi Nhật ký hệ thống cho tạo tài khoản / đặt lại mật khẩu / sửa email (không bao giờ ghi mật khẩu).
+// Mỗi việc ghi Nhật ký hệ thống (Giai đoạn 9) qua ghiNhatKyTaiKhoan — KHÔNG BAO GIỜ ghi mật khẩu.
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -34,6 +34,24 @@ function authErrorMessage(e: { code?: string; message: string }) {
   return e.message;
 }
 
+// Ghi Nhật ký hệ thống cho thao tác tài khoản (chạy bằng service_role nên không có auth.uid() để trigger tự ghi).
+// Lỗi ghi nhật ký không được làm hỏng thao tác chính đã thành công; chỉ báo lên log máy chủ.
+async function ghiNhatKyTaiKhoan(
+  admin: ReturnType<typeof createAdminClient>,
+  p: { nguoi: string; doiTuong: string; moTa: string; lienQuan: string; truoc?: Record<string, unknown>; sau?: Record<string, unknown> },
+) {
+  const { error } = await admin.rpc("ghi_nhat_ky_ngoai", {
+    p_nguoi: p.nguoi,
+    p_loai: "tai_khoan",
+    p_doi_tuong: p.doiTuong,
+    p_mo_ta: p.moTa,
+    p_lien_quan: [p.lienQuan],
+    p_truoc: p.truoc ?? null,
+    p_sau: p.sau ?? null,
+  });
+  if (error) console.error("Không ghi được Nhật ký hệ thống:", error.message);
+}
+
 async function requireAdminGoc() {
   const session = await requireSession();
   return session.isAdmin ? session : null;
@@ -41,7 +59,8 @@ async function requireAdminGoc() {
 
 // ---------- Thêm 1 nhân sự ----------
 export async function themNhanSu(_prev: ActionState, fd: FormData): Promise<ActionState> {
-  if (!(await requireAdminGoc())) return { error: "Chỉ Admin được thêm nhân sự." };
+  const phien = await requireAdminGoc();
+  if (!phien) return { error: "Chỉ Admin được thêm nhân sự." };
 
   const email = raw(fd, "email").trim().toLowerCase();
   const hoTen = raw(fd, "ho_ten").trim();
@@ -68,6 +87,7 @@ export async function themNhanSu(_prev: ActionState, fd: FormData): Promise<Acti
     user_metadata: { ho_ten: hoTen },
   });
   if (error || !data.user) return { error: authErrorMessage(error ?? { message: "Không tạo được tài khoản." }) };
+  await ghiNhatKyTaiKhoan(admin, { nguoi: phien.profile.id, doiTuong: hoTen, moTa: `Tạo tài khoản cho ${hoTen} (${email})`, lienQuan: data.user.id, sau: { email, ho_ten: hoTen } });
 
   revalidatePath("/nhan-su");
 
@@ -93,7 +113,8 @@ export interface KetQuaDong {
 export type NhapNhieuState = { error?: string; ketQua?: KetQuaDong[] } | null;
 
 export async function nhapNhieuNhanSu(_prev: NhapNhieuState, fd: FormData): Promise<NhapNhieuState> {
-  if (!(await requireAdminGoc())) return { error: "Chỉ Admin được thêm nhân sự." };
+  const phien = await requireAdminGoc();
+  if (!phien) return { error: "Chỉ Admin được thêm nhân sự." };
 
   const rows = parseNhanSuCsv(raw(fd, "csv"));
   if (rows.length === 0) return { error: "Chưa có dòng dữ liệu nào." };
@@ -133,6 +154,13 @@ export async function nhapNhieuNhanSu(_prev: NhapNhieuState, fd: FormData): Prom
     });
     if (error || !data.user) return (ketQua[idx] = { ...base, ok: false, thong_bao: authErrorMessage(error ?? { message: "Không tạo được." }) });
 
+    await ghiNhatKyTaiKhoan(admin, {
+      nguoi: phien!.profile.id,
+      doiTuong: r.ho_ten.trim(),
+      moTa: `Tạo tài khoản cho ${r.ho_ten.trim()} (${email}) từ danh sách CSV`,
+      lienQuan: data.user.id,
+      sau: { email, ho_ten: r.ho_ten.trim() },
+    });
     let thongBao = "Đã tạo";
     if (nhom) {
       const { error: nhomErr } = await supabase.rpc("dat_nhom", { p_user: data.user.id, p_nhom: nhom as NhomNhanSu });
@@ -198,7 +226,8 @@ export async function doiMatKhau(_prev: ActionState, fd: FormData): Promise<Acti
 
 // ---------- Admin đặt lại mật khẩu cho người khác (thay cho "quên mật khẩu" khi chưa có email) ----------
 export async function datLaiMatKhau(_prev: ActionState, fd: FormData): Promise<ActionState> {
-  if (!(await requireAdminGoc())) return { error: "Chỉ Admin được đặt lại mật khẩu." };
+  const phien = await requireAdminGoc();
+  if (!phien) return { error: "Chỉ Admin được đặt lại mật khẩu." };
 
   const userId = raw(fd, "user_id").trim();
   const matKhau = raw(fd, "mat_khau");
@@ -213,13 +242,16 @@ export async function datLaiMatKhau(_prev: ActionState, fd: FormData): Promise<A
   }
   const { error } = await admin.auth.admin.updateUserById(userId, { password: matKhau });
   if (error) return { error: authErrorMessage(error) };
+  const { data: dich } = await admin.from("profiles").select("ho_ten").eq("id", userId).maybeSingle();
+  await ghiNhatKyTaiKhoan(admin, { nguoi: phien.profile.id, doiTuong: dich?.ho_ten ?? userId, moTa: `Đặt lại mật khẩu cho ${dich?.ho_ten ?? "tài khoản"}`, lienQuan: userId });
   return { ok: true };
 }
 
 // ---------- Admin sửa email đăng nhập của 1 tài khoản (vd gõ nhầm tên miền lúc tạo) ----------
 // Email nằm ở 2 nơi: Supabase Auth (dùng để đăng nhập) và profiles.email (hiển thị) — cập nhật cả hai, lỗi giữa chừng thì hoàn tác.
 export async function doiEmail(_prev: ActionState, fd: FormData): Promise<ActionState> {
-  if (!(await requireAdminGoc())) return { error: "Chỉ Admin được sửa email." };
+  const phien = await requireAdminGoc();
+  if (!phien) return { error: "Chỉ Admin được sửa email." };
 
   const userId = raw(fd, "user_id").trim();
   const email = raw(fd, "email").trim().toLowerCase();
@@ -233,7 +265,7 @@ export async function doiEmail(_prev: ActionState, fd: FormData): Promise<Action
     return { error: (e as Error).message };
   }
 
-  const { data: hoSo } = await admin.from("profiles").select("email").eq("id", userId).maybeSingle();
+  const { data: hoSo } = await admin.from("profiles").select("email, ho_ten").eq("id", userId).maybeSingle();
   if (!hoSo) return { error: "Không tìm thấy tài khoản." };
   if (hoSo.email.toLowerCase() === email) return { error: "Email mới trùng với email hiện tại." };
   // Kiểm tra trùng trước cho thông báo rõ ràng (profiles.email luôn khớp email đăng nhập)
@@ -252,6 +284,14 @@ export async function doiEmail(_prev: ActionState, fd: FormData): Promise<Action
     await admin.auth.admin.updateUserById(userId, { email: hoSo.email, email_confirm: true });
     return { error: "Không cập nhật được hồ sơ, email chưa được đổi. Hãy thử lại." };
   }
+  await ghiNhatKyTaiKhoan(admin, {
+    nguoi: phien.profile.id,
+    doiTuong: hoSo.ho_ten,
+    moTa: `Sửa email đăng nhập của ${hoSo.ho_ten}`,
+    lienQuan: userId,
+    truoc: { email: hoSo.email },
+    sau: { email },
+  });
 
   revalidatePath("/", "layout");
   return { ok: true };

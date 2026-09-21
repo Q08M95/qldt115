@@ -44,7 +44,8 @@ export const NAV_GROUPS: NavGroup[] = [
     label: "Hệ thống",
     items: [
       { href: "/thong-bao", label: "Thông báo", icon: Bell },
-      { href: "/nhat-ky", label: "Nhật ký hệ thống", icon: ScrollText, quanTriOnly: true },
+      // Hiện với mọi người: GV/TG xem phần nhật ký liên quan đến chính mình (mục 4.6)
+      { href: "/nhat-ky", label: "Nhật ký hệ thống", icon: ScrollText },
       { href: "/cau-hinh", label: "Cấu hình hệ thống", icon: Settings, quanTriOnly: true },
     ],
   },

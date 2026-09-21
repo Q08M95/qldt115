@@ -436,3 +436,42 @@ export interface ThongBao {
   da_doc: boolean;
   created_at: string;
 }
+
+// ============ Nhật ký hệ thống (Giai đoạn 9, mục 4.6) ============
+export type LoaiNhatKy =
+  | "duyet_dang_ky"
+  | "tu_choi_dang_ky"
+  | "moi_giang_day"
+  | "phan_hoi_loi_moi"
+  | "thu_hoi_loi_moi"
+  | "huy_phan_cong"
+  | "xu_ly_de_xuat"
+  | "sua_lop"
+  | "huy_lop"
+  | "doi_lich_bai"
+  | "nhap_ket_qua_lop"
+  | "doi_trang_thai_tham_gia"
+  | "doi_cau_hinh"
+  | "doi_ky_danh_gia"
+  | "doi_phan_quyen"
+  | "gan_quyen_quan_ly_lop"
+  | "sua_diem_danh"
+  | "nhap_du_gio"
+  | "sua_ho_so"
+  | "doi_nhom"
+  | "tai_khoan";
+
+export interface NhatKy {
+  id: string;
+  created_at: string;
+  nguoi_thuc_hien: string | null;
+  nguoi_thuc_hien_ten: string | null;
+  loai: LoaiNhatKy;
+  doi_tuong: string | null;
+  mo_ta: string;
+  lien_ket: string | null;
+  tu_duyet: boolean;
+  ly_do: string | null;
+  truoc: Record<string, unknown> | null;
+  sau: Record<string, unknown> | null;
+}

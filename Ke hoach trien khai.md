@@ -25,7 +25,7 @@
 | 6 | Hệ thống KPI — engine + cấu hình (5/6/7) | ✅ Xong (B1/C2 chỉ có bảng dữ liệu, giao diện nhập ở Giai đoạn 7) | 100% |
 | 7 | Module Đánh giá chất lượng (4.4) | ✅ Xong (nhắc check-in bằng thông báo ở Giai đoạn 8; thông báo/Nhật ký khi sửa điểm danh ở Giai đoạn 8-9) | 100% |
 | 8 | Module Thông báo (4.5) | ✅ Xong (đã chạy migration + test trên Supabase thật, pg_cron/pg_net bật, webhook push đã cấu hình; còn thử nhận push thật trên thiết bị của người dùng) | 100% |
-| 9 | Nhật ký hệ thống (4.6) | ⬜ Chưa bắt đầu | 0% |
+| 9 | Nhật ký hệ thống (4.6) | ✅ Xong (đã chạy migration + test 34/34 trên Supabase thật) | 100% |
 | 10 | Báo cáo (4.7) + Tổng quan (4.7b) | ⬜ Chưa bắt đầu | 0% |
 | 11 | Cấu hình hệ thống — hoàn thiện (4.8) | ⬜ Chưa bắt đầu | 0% |
 | 12 | Responsive/Mobile polish (8.9) | ⬜ Chưa bắt đầu | 0% |
@@ -223,11 +223,14 @@ Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / 
 
 *Tham chiếu: mục 4.6*
 
-- [ ] Bảng `audit_log`: người thực hiện, loại hành động, đối tượng, thời gian, giá trị trước/sau
-- [ ] Ghi log cho toàn bộ hành động đã liệt kê ở 4.6 (duyệt/từ chối đăng ký có gắn nhãn tự duyệt, duyệt đề xuất, sửa/hủy lớp, đổi trạng thái tham gia, đổi cấu hình hệ thống, gán/thu hồi Quyền Quản lý lớp, sửa điểm danh, sửa hồ sơ người khác)
-- [ ] Màn hình xem log: đầy đủ cho người giữ Quyền Quản lý lớp, giới hạn chỉ log liên quan bản thân cho GV/TG
+- [x] Bảng `audit_log`: người thực hiện, loại hành động, đối tượng, thời gian, giá trị trước/sau *(chỉ-thêm, RLS theo `nguoi_lien_quan`)*
+- [x] Ghi log cho toàn bộ hành động đã liệt kê ở 4.6 (duyệt/từ chối đăng ký có gắn nhãn tự duyệt, duyệt đề xuất, sửa/hủy lớp, đổi trạng thái tham gia, đổi cấu hình hệ thống, gán/thu hồi Quyền Quản lý lớp, sửa điểm danh, sửa hồ sơ người khác) *(cả tạo tài khoản, đặt lại mật khẩu, sửa email, đổi nhóm, dự giờ C2, kỳ đánh giá)*
+- [x] Màn hình xem log: đầy đủ cho người giữ Quyền Quản lý lớp, giới hạn chỉ log liên quan bản thân cho GV/TG
 
 **Điều kiện hoàn thành:** mọi hành động nhạy cảm ở các module trước đều để lại đúng 1 dòng log, phân quyền xem đúng.
+
+> Đã làm: migration `20260926100000_giai_doan_9_nhat_ky_he_thong.sql` + test `supabase/tests/giai_doan_9_nhat_ky.sql` (34 kiểm tra, PGlite cục bộ 34/34; hồi quy Giai đoạn 3-8 vẫn pass). Trang `/nhat-ky` (lọc loại/ngày/từ khóa, phân trang, xem trước → sau), menu Nhật ký hiện với mọi người. Quyết định thiết kế đã ghi CLAUDE.md mục 7.
+> Đã xác nhận trên Supabase thật: test 34/34 true. Còn kiểm tra tay trang `/nhat-ky` sau khi deploy.
 
 ---
 
