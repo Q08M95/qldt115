@@ -85,7 +85,7 @@ export function MoiNgoaiLe({ baiId, vaiTro }: { baiId: string; vaiTro: VaiTroGia
 
         {laNgoaiLe && (
           <>
-            <div className="flex gap-2 rounded-lg bg-warning-bg px-3 py-2 text-sm text-warning">
+            <div className="flex gap-2 rounded-lg bg-grad-warning px-3 py-2 text-sm text-warning">
               <AlertTriangle className="mt-0.5 size-4 shrink-0" aria-hidden />
               <span>
                 <strong className="font-medium">{nguoi?.ho_ten}</strong> không nằm trong đề xuất: {nguoi?.ly_do}. Việc mời sẽ được ghi nhận là ngoại lệ.
@@ -98,7 +98,7 @@ export function MoiNgoaiLe({ baiId, vaiTro }: { baiId: string; vaiTro: VaiTroGia
         )}
 
         {error && (
-          <p role="alert" className="rounded-lg bg-danger-bg px-3 py-2 text-sm text-danger">
+          <p role="alert" className="rounded-lg bg-grad-danger px-3 py-2 text-sm text-danger">
             {error}
           </p>
         )}

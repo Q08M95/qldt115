@@ -45,7 +45,7 @@ export function TienDoVaiTroRow({
         aria-valuemax={h.tong}
         aria-valuenow={h.da}
       >
-        <div className={cn("h-full rounded-full", h.du ? "bg-success" : "bg-brand-gradient")} style={{ width: `${h.phanTram}%` }} />
+        <div className={cn("h-full rounded-full", h.du ? "bg-[linear-gradient(90deg,#86efac,#16a34a)]" : "bg-brand-gradient")} style={{ width: `${h.phanTram}%` }} />
       </div>
       {h.da > 0 && <p className="text-xs text-muted-foreground">{h.nhanSu} nhân sự khác nhau tham gia</p>}
     </div>

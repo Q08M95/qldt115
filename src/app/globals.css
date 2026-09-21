@@ -114,6 +114,19 @@
   --warning-fg: #f87171;
   --neutral-bg: #f4f4f5;
   --neutral-fg: #71717a;
+  /* Gradient nhạt cho nền semantic (mục 8.1: mọi bề mặt có màu đều dùng gradient) */
+  --success-from: #dcfce7;
+  --success-to: #b9f3cd;
+  --danger-from: #fee2e2;
+  --danger-to: #fcc8c8;
+  --warning-from: #fef2f2;
+  --warning-to: #fddcdc;
+  --neutral-from: #f4f4f5;
+  --neutral-to: #e4e4e8;
+  --soft-primary-from: #e8effb;
+  --soft-primary-to: #d3e2f7;
+  --solid-danger-from: #f05252;
+  --solid-danger-to: #dc2626;
 
   /* 4 màu gốc: gradient nền badge + solid cho icon/chữ */
   /* 4 gradient nền lấy mẫu trực tiếp từ ảnh: Blue nhạt, Navy-lam, Mint, Lime.
@@ -186,6 +199,18 @@
   --warning-fg: #fca5a5;
   --neutral-bg: #27272a;
   --neutral-fg: #a1a1aa;
+  --success-from: #0b3a20;
+  --success-to: #052e16;
+  --danger-from: #5c1414;
+  --danger-to: #450a0a;
+  --warning-from: #4a3535;
+  --warning-to: #3a2a2a;
+  --neutral-from: #33333a;
+  --neutral-to: #27272a;
+  --soft-primary-from: #1a2f57;
+  --soft-primary-to: #14233f;
+  --solid-danger-from: #f98080;
+  --solid-danger-to: #ef4444;
 
   /* Badge dark: nền gradient tối/khử bão hòa, icon dùng bản sáng của màu gốc */
   --hue-blue: #60a5fa;
@@ -250,6 +275,24 @@
   }
   .bg-grad-green {
     background-image: linear-gradient(135deg, var(--hue-green-from), var(--hue-green-to));
+  }
+  .bg-grad-success {
+    background-image: linear-gradient(135deg, var(--success-from), var(--success-to));
+  }
+  .bg-grad-danger {
+    background-image: linear-gradient(135deg, var(--danger-from), var(--danger-to));
+  }
+  .bg-grad-warning {
+    background-image: linear-gradient(135deg, var(--warning-from), var(--warning-to));
+  }
+  .bg-grad-neutral {
+    background-image: linear-gradient(135deg, var(--neutral-from), var(--neutral-to));
+  }
+  .bg-grad-primary-soft {
+    background-image: linear-gradient(135deg, var(--soft-primary-from), var(--soft-primary-to));
+  }
+  .bg-grad-danger-solid {
+    background-image: linear-gradient(135deg, var(--solid-danger-from), var(--solid-danger-to));
   }
   .shadow-card {
     box-shadow: var(--shadow-card);

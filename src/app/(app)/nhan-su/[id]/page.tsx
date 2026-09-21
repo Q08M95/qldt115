@@ -37,30 +37,38 @@ export default async function NhanSuChiTietPage(props: PageProps<"/nhan-su/[id]"
   // Chủ hồ sơ tự sửa hồ sơ/chứng chỉ của mình; Admin/Quản lý lớp sửa của mọi người
   const canEdit = laChuHoSo || session.isQuanTri;
 
+  // Hàng trên: trái = thông tin cá nhân, phải = Bảng KPI (2 cột cao xấp xỉ nhau); hàng dưới: các danh sách dài chia đều 2 cột
+  // để không để trống 1 bên (mục 8.8)
+  const duGio = session.isQuanTri ? (
+    <DuGioCard userId={id} hoTen={chiTiet.profile.ho_ten} bai={baiDaDay} rubric={rubric} laChinhMinh={laChuHoSo} />
+  ) : null;
+
   return (
-    <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)]">
+    <div className="flex flex-col gap-5">
       <BreadcrumbLabel label={chiTiet.profile.ho_ten} />
-      <div className="flex min-w-0 flex-col gap-5">
-        <ProfileInfoCard
-          profile={chiTiet.profile}
-          nhom={session.isQuanTri ? chiTiet.nhom : null}
-          chuyenMon={chiTiet.chuyen_mon}
-          danhMucChuyenMon={dmChuyenMon}
-          canEdit={canEdit}
-          isQuanTri={session.isQuanTri}
-          laAdmin={session.isAdmin}
-          laChuHoSo={laChuHoSo}
-        />
-        <ChuyenMonCard chuyenMon={chiTiet.chuyen_mon} />
-        <ChungChiCard userId={id} chungChi={chiTiet.chung_chi} loai={dmLoaiChungChi} canEdit={canEdit} />
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)]">
+        <div className="flex min-w-0 flex-col gap-5">
+          <ProfileInfoCard
+            profile={chiTiet.profile}
+            nhom={session.isQuanTri ? chiTiet.nhom : null}
+            chuyenMon={chiTiet.chuyen_mon}
+            danhMucChuyenMon={dmChuyenMon}
+            canEdit={canEdit}
+            isQuanTri={session.isQuanTri}
+            laAdmin={session.isAdmin}
+            laChuHoSo={laChuHoSo}
+          />
+          <ChuyenMonCard chuyenMon={chiTiet.chuyen_mon} />
+          <ChungChiCard userId={id} chungChi={chiTiet.chung_chi} loai={dmLoaiChungChi} canEdit={canEdit} />
+          {session.isQuanTri && <LichSuDoiNhomCard lichSu={chiTiet.lich_su_doi_nhom} />}
+        </div>
+        <div className="min-w-0">
+          <KpiCaNhanBoard data={kpi} />
+        </div>
       </div>
-      <div className="flex min-w-0 flex-col gap-5">
-        <KpiCaNhanBoard data={kpi} />
-        {session.isQuanTri && (
-          <DuGioCard userId={id} hoTen={chiTiet.profile.ho_ten} bai={baiDaDay} rubric={rubric} laChinhMinh={laChuHoSo} />
-        )}
+      <div className={session.isQuanTri ? "grid items-start gap-5 lg:grid-cols-2" : ""}>
         <LichSuGiangDayCard items={lichSu} />
-        {session.isQuanTri && <LichSuDoiNhomCard lichSu={chiTiet.lich_su_doi_nhom} />}
+        {duGio}
       </div>
     </div>
   );

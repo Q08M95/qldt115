@@ -19,7 +19,7 @@ export function CheckInBanner({ items }: { items: BaiCheckIn[] }) {
     >
       <div className="mb-3 flex items-center gap-2 text-sm font-semibold">
         <Clock className="size-4" aria-hidden />
-        {conChua ? "Đến giờ check-in — bấm “Tôi đã có mặt” để ghi nhận điểm danh" : "Bạn đã check-in đủ các buổi đang diễn ra"}
+        {conChua ? "Đến giờ check-in" : "Đã check-in đủ"}
       </div>
       <ul className="grid gap-2">
         {items.map((b) => (
@@ -43,7 +43,7 @@ export function CheckInBanner({ items }: { items: BaiCheckIn[] }) {
           </li>
         ))}
       </ul>
-      {conChua && <p className="mt-3 text-xs text-white/75">Không check-in trong buổi học sẽ tính B1 = 0%. Trễ giờ học điểm B1 giảm dần theo số phút trễ.</p>}
+      {conChua && <p className="mt-3 text-xs text-white/75">Không check-in = B1 0% · trễ càng lâu B1 càng giảm</p>}
     </section>
   );
 }

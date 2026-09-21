@@ -1,4 +1,5 @@
-// Biểu đồ SVG thuần cho Bảng KPI cá nhân (mục 4.4/8.6) — không thêm thư viện chart; màu lấy từ token chung (chart-1 = xanh dương, brand = navy).
+// Biểu đồ SVG thuần cho Bảng KPI cá nhân và cấu hình điểm danh (mục 4.4/8.6) — không thêm thư viện chart.
+// Mọi nét/nền có màu đều dùng gradient thương hiệu (--brand-from → --brand-to), theo nguyên tắc "có màu là có gradient" (mục 8.1).
 
 export interface DiemXuHuong {
   nhan: string;
@@ -7,14 +8,34 @@ export interface DiemXuHuong {
 
 const fmt = (n: number) => n.toLocaleString("vi-VN", { maximumFractionDigits: 1 });
 
-// Area chart xu hướng KPI qua các kỳ: trục dọc 0–100 điểm, nền gradient nhạt dần xuống đáy, đường 2px, chấm + nhãn giá trị
+// Định nghĩa gradient dùng chung (id riêng theo tiền tố để nhiều biểu đồ cùng trang không đụng nhau)
+function GradDefs({ id }: { id: string }) {
+  return (
+    <defs>
+      <linearGradient id={`${id}-net`} x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stopColor="var(--brand-from)" />
+        <stop offset="100%" stopColor="var(--brand-to)" />
+      </linearGradient>
+      <linearGradient id={`${id}-nen`} x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stopColor="var(--brand-to)" stopOpacity="0.30" />
+        <stop offset="100%" stopColor="var(--brand-from)" stopOpacity="0" />
+      </linearGradient>
+      <linearGradient id={`${id}-dac`} x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stopColor="var(--brand-from)" stopOpacity="0.38" />
+        <stop offset="100%" stopColor="var(--brand-to)" stopOpacity="0.16" />
+      </linearGradient>
+    </defs>
+  );
+}
+
+// Area chart xu hướng KPI qua các kỳ: trục dọc 0–100 điểm, nền gradient nhạt dần xuống đáy, đường 2px gradient, chấm + nhãn giá trị
 export function AreaXuHuong({ diem, className }: { diem: DiemXuHuong[]; className?: string }) {
   const W = 600;
-  const H = 230;
+  const H = 210;
   const L = 34;
   const R = 22;
-  const T = 26;
-  const B = 34;
+  const T = 24;
+  const B = 32;
   const cw = W - L - R;
   const ch = H - T - B;
   const PAD = 28; // chừa khoảng trống hai đầu để nhãn giá trị/kỳ không đè lên trục và không bị cắt
@@ -33,12 +54,7 @@ export function AreaXuHuong({ diem, className }: { diem: DiemXuHuong[]; classNam
 
   return (
     <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Xu hướng KPI qua các kỳ" className={className}>
-      <defs>
-        <linearGradient id="kpi-area-grad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="var(--chart-1)" stopOpacity="0.28" />
-          <stop offset="100%" stopColor="var(--chart-1)" stopOpacity="0" />
-        </linearGradient>
-      </defs>
+      <GradDefs id="kpi-xh" />
       {[0, 25, 50, 75, 100].map((g) => (
         <g key={g}>
           <line x1={L} x2={W - R} y1={y(g)} y2={y(g)} stroke="var(--border)" strokeWidth="1" strokeDasharray={g === 0 ? undefined : "3 4"} />
@@ -47,24 +63,24 @@ export function AreaXuHuong({ diem, className }: { diem: DiemXuHuong[]; classNam
           </text>
         </g>
       ))}
-      {vung && <path d={vung} fill="url(#kpi-area-grad)" />}
-      {diem.length > 1 && <path d={duong} fill="none" stroke="var(--chart-1)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />}
+      {vung && <path d={vung} fill="url(#kpi-xh-nen)" />}
+      {diem.length > 1 && <path d={duong} fill="none" stroke="url(#kpi-xh-net)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />}
       {diem.map((d, i) => {
         const cuoi = i === diem.length - 1;
         return (
           <g key={`${d.nhan}-${i}`}>
-            <circle cx={x(i)} cy={y(d.gia_tri)} r={cuoi ? 5 : 3.5} fill="var(--card)" stroke="var(--chart-1)" strokeWidth="2" />
+            <circle cx={x(i)} cy={y(d.gia_tri)} r={cuoi ? 5.5 : 4} fill="var(--card)" stroke="url(#kpi-xh-net)" strokeWidth="2.5" />
             <text
               x={x(i)}
               y={y(d.gia_tri) - 11}
               textAnchor="middle"
-              fontSize={cuoi ? 13 : 11}
-              fontWeight={cuoi ? 600 : 500}
-              fill={cuoi ? "var(--chart-1)" : "var(--muted-foreground)"}
+              fontSize={cuoi ? 14 : 11}
+              fontWeight={cuoi ? 700 : 500}
+              fill={cuoi ? "var(--primary)" : "var(--muted-foreground)"}
             >
               {fmt(d.gia_tri)}
             </text>
-            <text x={x(i)} y={H - 10} textAnchor="middle" fontSize="11" fill="var(--muted-foreground)">
+            <text x={x(i)} y={H - 9} textAnchor="middle" fontSize="11" fill="var(--muted-foreground)">
               {d.nhan}
             </text>
           </g>
@@ -82,11 +98,11 @@ export interface TrucRadar {
 
 // Radar 3 trục A/B/C: thấy ngay điểm mạnh/yếu (sản lượng / chuyên cần / chất lượng), không chỉ điểm tổng
 export function RadarNhom({ truc, className }: { truc: TrucRadar[]; className?: string }) {
-  const W = 420;
-  const H = 320;
+  const W = 340;
+  const H = 270;
   const cx = W / 2;
-  const cy = 165;
-  const r = 110;
+  const cy = 138;
+  const r = 88;
   const n = truc.length;
   const goc = (i: number) => (-90 + (360 * i) / n) * (Math.PI / 180);
   const diem = (i: number, ty: number) => `${cx + r * ty * Math.cos(goc(i))},${cy + r * ty * Math.sin(goc(i))}`;
@@ -95,16 +111,17 @@ export function RadarNhom({ truc, className }: { truc: TrucRadar[]; className?: 
 
   return (
     <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Điểm theo nhóm tiêu chí" className={className}>
+      <GradDefs id="kpi-rd" />
       {[0.25, 0.5, 0.75, 1].map((ty) => (
         <polygon key={ty} points={vong(ty)} fill="none" stroke="var(--border)" strokeWidth="1" />
       ))}
       {truc.map((_, i) => (
         <line key={i} x1={cx} y1={cy} x2={cx + r * Math.cos(goc(i))} y2={cy + r * Math.sin(goc(i))} stroke="var(--border)" strokeWidth="1" />
       ))}
-      <polygon points={du} fill="var(--chart-1)" fillOpacity="0.2" stroke="var(--chart-1)" strokeWidth="2" strokeLinejoin="round" />
+      <polygon points={du} fill="url(#kpi-rd-dac)" stroke="url(#kpi-rd-net)" strokeWidth="2.5" strokeLinejoin="round" />
       {truc.map((t, i) => {
-        const lx = cx + (r + 26) * Math.cos(goc(i));
-        const ly = cy + (r + 22) * Math.sin(goc(i));
+        const lx = cx + (r + 22) * Math.cos(goc(i));
+        const ly = cy + (r + 20) * Math.sin(goc(i));
         const canh = Math.abs(Math.cos(goc(i))) < 0.2 ? "middle" : Math.cos(goc(i)) > 0 ? "start" : "end";
         return (
           <g key={t.nhan}>
@@ -112,20 +129,109 @@ export function RadarNhom({ truc, className }: { truc: TrucRadar[]; className?: 
               <circle
                 cx={cx + r * (t.gia_tri / 100) * Math.cos(goc(i))}
                 cy={cy + r * (t.gia_tri / 100) * Math.sin(goc(i))}
-                r="3.5"
-                fill="var(--chart-1)"
+                r="4"
+                fill="var(--card)"
+                stroke="url(#kpi-rd-net)"
+                strokeWidth="2.5"
               />
             )}
             <text x={lx} y={ly - 3} textAnchor={canh} fontSize="12" fontWeight="500" fill="var(--foreground)">
               {t.nhan}
             </text>
-            <text x={lx} y={ly + 12} textAnchor={canh} fontSize="12" fontWeight="600" fill="var(--chart-1)">
+            <text x={lx} y={ly + 13} textAnchor={canh} fontSize="14" fontWeight="700" fill="var(--primary)">
               {t.gia_tri === null ? "—" : fmt(t.gia_tri)}
             </text>
             <title>{`${t.nhan}: ${t.gia_tri === null ? "chưa có dữ liệu" : fmt(t.gia_tri)}`}</title>
           </g>
         );
       })}
+    </svg>
+  );
+}
+
+// Đồng hồ bán nguyệt 0–100: vị trí so với đồng nghiệp (top X%) hoặc chỉ số đơn lẻ; số lớn ở giữa
+export function DongHoBanNguyet({ phanTram, so, nhan, className }: { phanTram: number; so: string; nhan?: string; className?: string }) {
+  const v = Math.max(0, Math.min(100, phanTram));
+  const a = Math.PI * (1 - v / 100);
+  const px = 60 + 50 * Math.cos(a);
+  const py = 60 - 50 * Math.sin(a);
+  return (
+    <svg viewBox="0 0 120 78" role="img" aria-label={nhan ? `${nhan}: ${so}` : so} className={className}>
+      <GradDefs id="kpi-dh" />
+      <path d="M10,60 A50,50 0 0 1 110,60" fill="none" stroke="var(--muted)" strokeWidth="11" strokeLinecap="round" />
+      {v > 0 && <path d={`M10,60 A50,50 0 0 1 ${px},${py}`} fill="none" stroke="url(#kpi-dh-net)" strokeWidth="11" strokeLinecap="round" />}
+      <text x="60" y="52" textAnchor="middle" fontSize="17" fontWeight="700" fill="var(--foreground)">
+        {so}
+      </text>
+      {nhan && (
+        <text x="60" y="70" textAnchor="middle" fontSize="9.5" fill="var(--muted-foreground)">
+          {nhan}
+        </text>
+      )}
+    </svg>
+  );
+}
+
+// Đường B1 theo phút trễ (cấu hình điểm danh): 100% khi đúng giờ, giảm tuyến tính về 0% tại ngưỡng — cập nhật ngay khi sửa ngưỡng
+export function DuongB1({ nguong, className }: { nguong: number; className?: string }) {
+  const W = 360;
+  const H = 170;
+  const L = 34;
+  const R = 16;
+  const T = 16;
+  const B = 30;
+  const cw = W - L - R;
+  const ch = H - T - B;
+  const tren = Math.max(nguong * 1.5, 1);
+  const x = (p: number) => L + (cw * Math.min(p, tren)) / tren;
+  const y = (v: number) => T + (1 - v / 100) * ch;
+  const gd = `M${x(0)},${y(100)} L${x(nguong)},${y(0)} L${x(tren)},${y(0)}`;
+  const nhanX = [0, nguong / 2, nguong, tren].map((p) => Math.round(p * 10) / 10);
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`B1 giảm từ 100% xuống 0% khi trễ ${nguong} phút`} className={className}>
+      <GradDefs id="kpi-b1" />
+      {[0, 50, 100].map((g) => (
+        <g key={g}>
+          <line x1={L} x2={W - R} y1={y(g)} y2={y(g)} stroke="var(--border)" strokeWidth="1" strokeDasharray={g === 0 ? undefined : "3 4"} />
+          <text x={L - 6} y={y(g) + 4} textAnchor="end" fontSize="10.5" fill="var(--muted-foreground)">
+            {g}%
+          </text>
+        </g>
+      ))}
+      <path d={`${gd} L${x(tren)},${T + ch} L${x(0)},${T + ch} Z`} fill="url(#kpi-b1-nen)" />
+      <path d={gd} fill="none" stroke="url(#kpi-b1-net)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx={x(nguong)} cy={y(0)} r="4.5" fill="var(--card)" stroke="url(#kpi-b1-net)" strokeWidth="2.5" />
+      {nhanX.map((p, i) => (
+        <text key={`${p}-${i}`} x={x(p)} y={H - 8} textAnchor="middle" fontSize="10.5" fill={p === nguong ? "var(--primary)" : "var(--muted-foreground)"} fontWeight={p === nguong ? 700 : 400}>
+          {p}′
+        </text>
+      ))}
+    </svg>
+  );
+}
+
+// Khung check-in trên trục thời gian của 1 buổi học: [N phút trước giờ học … hết giờ học] tô gradient, mốc "Bắt đầu"
+export function KhungCheckIn({ truoc, className }: { truoc: number; className?: string }) {
+  const W = 360;
+  const H = 74;
+  const gioHoc = 90; // buổi minh họa 90 phút
+  const tong = Math.max(truoc, 0) + gioHoc + 15;
+  const x = (p: number) => 12 + ((W - 24) * (p + Math.max(truoc, 0) + 7)) / tong;
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`Được check-in từ ${truoc} phút trước giờ học đến hết giờ học`} className={className}>
+      <GradDefs id="kpi-ci" />
+      <rect x="12" y="26" width={W - 24} height="14" rx="7" fill="var(--muted)" />
+      <rect x={x(-truoc)} y="26" width={Math.max(x(gioHoc) - x(-truoc), 2)} height="14" rx="7" fill="url(#kpi-ci-net)" />
+      <line x1={x(0)} x2={x(0)} y1="18" y2="48" stroke="var(--foreground)" strokeWidth="1.5" strokeDasharray="3 3" />
+      <text x={x(-truoc)} y="16" textAnchor="middle" fontSize="10.5" fontWeight="700" fill="var(--primary)">
+        −{truoc}′
+      </text>
+      <text x={x(0)} y="62" textAnchor="middle" fontSize="10.5" fill="var(--foreground)">
+        Bắt đầu
+      </text>
+      <text x={x(gioHoc)} y="62" textAnchor="middle" fontSize="10.5" fill="var(--muted-foreground)">
+        Kết thúc
+      </text>
     </svg>
   );
 }

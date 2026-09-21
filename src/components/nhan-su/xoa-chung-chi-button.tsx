@@ -34,7 +34,7 @@ export function XoaChungChiButton({ id, ten }: { id: string; ten: string }) {
             Chứng chỉ “{ten}” và ảnh minh chứng đi kèm sẽ bị xóa vĩnh viễn.
           </DialogDescription>
         </DialogHeader>
-        {error && <p className="rounded-lg bg-danger-bg px-3 py-2 text-sm text-danger">{error}</p>}
+        {error && <p className="rounded-lg bg-grad-danger px-3 py-2 text-sm text-danger">{error}</p>}
         <DialogFooter>
           <Button
             variant="destructive"

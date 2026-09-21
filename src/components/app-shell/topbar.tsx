@@ -167,7 +167,7 @@ export function Topbar({
           <Link href="/thong-bao" aria-label={`Thông báo${unreadCount ? `, ${unreadCount} chưa đọc` : ""}`}>
             <Bell />
             {unreadCount > 0 && (
-              <span className="absolute -top-1.5 -right-1.5 flex size-4 items-center justify-center rounded-full bg-destructive text-[10px] font-medium text-white tabular-nums">
+              <span className="absolute -top-1.5 -right-1.5 flex size-4 items-center justify-center rounded-full bg-grad-danger-solid text-[10px] font-medium text-white tabular-nums">
                 {unreadCount > 9 ? "9+" : unreadCount}
               </span>
             )}

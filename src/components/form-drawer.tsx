@@ -66,7 +66,7 @@ function DrawerForm({
       <div className="flex-1 space-y-5 overflow-y-auto p-5">
         {children}
         {state?.error && (
-          <p role="alert" className="rounded-lg bg-danger-bg px-3 py-2 text-sm text-danger">
+          <p role="alert" className="rounded-lg bg-grad-danger px-3 py-2 text-sm text-danger">
             {state.error}
           </p>
         )}

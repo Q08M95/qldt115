@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { AppShell } from "@/components/app-shell/app-shell";
+import { CauHinhDiemDanhForm } from "@/components/kpi/cau-hinh-diem-danh-form";
 import { CheckInBanner } from "@/components/danh-gia/check-in-banner";
 import { DuGioCard } from "@/components/danh-gia/du-gio-card";
 import { KpiCaNhanBoard } from "@/components/danh-gia/kpi-ca-nhan";
@@ -98,6 +99,16 @@ export default async function DesignDanhGiaPage(props: { searchParams: Promise<{
     };
   } else if (v === "trong") {
     data = { ky: [], a4_tong: 0, so_ky_fallback: 3, tien_do: null };
+  }
+
+  if (v === "cauhinh") {
+    return (
+      <AppShell user={{ name: "Nguyễn Hoàng Tú Minh", email: "minh@example.com" }} isQuanTri period={{ name: "Quý 3/2026", daysLeft: 11 }} unreadCount={3} activeHref="/cau-hinh">
+        <div className="max-w-4xl">
+          <CauHinhDiemDanhForm cauHinh={{ checkin_truoc_phut: 45, b1_tre_toi_da_phut: 30, rubric: RUBRIC }} />
+        </div>
+      </AppShell>
+    );
   }
 
   return (

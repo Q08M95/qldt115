@@ -11,11 +11,11 @@ const badgeVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary/10 text-primary",
-        success: "bg-success-bg text-success",
-        warning: "bg-warning-bg text-warning",
-        danger: "bg-danger-bg text-danger",
-        neutral: "bg-neutral-bg text-neutral",
+        default: "bg-grad-primary-soft text-primary",
+        success: "bg-grad-success text-success",
+        warning: "bg-grad-warning text-warning",
+        danger: "bg-grad-danger text-danger",
+        neutral: "bg-grad-neutral text-neutral",
         blue: "bg-grad-blue text-hue-blue-on",
         navy: "bg-grad-navy text-hue-navy-on",
         teal: "bg-grad-teal text-hue-teal-on",

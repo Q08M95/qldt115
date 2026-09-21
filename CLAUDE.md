@@ -506,6 +506,8 @@ Phong cách tham khảo: **"Soft SaaS Dashboard"** (xem file `tham khao theme.jp
 | `warning` | bg `#FEF2F2` (đỏ pastel rất nhạt) / text `#F87171` (đỏ nhạt hơn danger) — cùng hue đỏ với `danger` nhưng **nhạt/nhẹ hơn hẳn về cường độ**, phân biệt bằng độ đậm chứ không phải đổi màu | Chờ duyệt, cảnh báo (pool nhỏ, dồn tải) |
 | `neutral` | bg `#F4F4F5` / text `#71717A` (xám trung tính, không thuộc 4 màu gốc — dùng cho trạng thái "không màu" như Dự kiến/Vô hiệu hóa) | Dự kiến, vô hiệu hóa, không còn tham gia |
 
+**Quy tắc bổ sung (đã chốt, ghi đè ghi chú "không gradient" ở dòng `danger` ở trên):** MỌI nơi có nền/nét/đổ màu — badge (success/warning/danger/neutral/default), cảnh báo lỗi, nút, thanh tiến độ, biểu đồ (đường, vùng, radar, đồng hồ) — đều dùng gradient nhẹ, không dùng màu phẳng. Đã có sẵn tiện ích `bg-grad-success|warning|danger|neutral|primary-soft|danger-solid|blue|navy|teal|green`, `bg-brand-gradient`; biểu đồ SVG dùng `linearGradient` từ `--brand-from → --brand-to`. Ngoại lệ: checkbox/radio gốc của trình duyệt (không tô gradient được), viền và nền trung tính của bề mặt.
+
 **Icon badge nền gradient (dùng cho phân loại/nhấn mạnh, KHÔNG dùng trên thẻ KPI stat — thẻ stat dùng icon outline xám-xanh theo ảnh mẫu):** luân phiên qua đúng 4 màu gốc ở trên (Blue → Navy → Teal → Green), nền dùng gradient tương ứng — nếu 1 màn hình cần nhiều hơn 4 badge, lặp lại chu kỳ hoặc đổi độ đậm/nhạt của gradient (vd Blue gradient sáng hơn/tối hơn) thay vì thêm hue thứ 5.
 
 

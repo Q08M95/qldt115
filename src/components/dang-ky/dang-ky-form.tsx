@@ -28,7 +28,7 @@ export function DangKyForm({
 
       <div className="sticky bottom-14 z-10 flex md:bottom-0 flex-col gap-3 border-t bg-card px-5 py-4">
         {state?.error && (
-          <p role="alert" className="rounded-lg bg-danger-bg px-3 py-2 text-sm text-danger">
+          <p role="alert" className="rounded-lg bg-grad-danger px-3 py-2 text-sm text-danger">
             {state.error}
           </p>
         )}

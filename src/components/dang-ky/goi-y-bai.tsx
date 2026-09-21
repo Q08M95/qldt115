@@ -41,7 +41,7 @@ function DongUngVien({
   khongKinhPhi: boolean;
 }) {
   return (
-    <li className={cn("flex flex-wrap items-center gap-x-3 gap-y-1 py-2 text-sm", laToi && "rounded-lg bg-primary/5 px-2")}>
+    <li className={cn("flex flex-wrap items-center gap-x-3 gap-y-1 py-2 text-sm", laToi && "rounded-lg bg-grad-primary-soft px-2")}>
       <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-semibold tabular-nums">
         {u.hang}
       </span>
@@ -95,7 +95,7 @@ export function GoiYBai({
 
       {/* Cảnh báo pool ứng viên nhỏ — chỉ người quản trị, để chủ động mời sớm (mục 4.3) */}
       {isQuanTri && soUngVien === 0 && (
-        <div role="alert" className="flex gap-2 rounded-lg bg-danger-bg px-3 py-2 text-sm text-danger">
+        <div role="alert" className="flex gap-2 rounded-lg bg-grad-danger px-3 py-2 text-sm text-danger">
           <AlertTriangle className="mt-0.5 size-4 shrink-0" aria-hidden />
           <span>
             Chưa có ai đủ điều kiện cho slot {nhan} này. Hãy xem lại điều kiện nhóm/chứng chỉ của lớp có đang quá hẹp không.
@@ -103,7 +103,7 @@ export function GoiYBai({
         </div>
       )}
       {isQuanTri && soUngVien > 0 && soUngVien < nguongPool && (
-        <div role="alert" className="flex gap-2 rounded-lg bg-warning-bg px-3 py-2 text-sm text-warning">
+        <div role="alert" className="flex gap-2 rounded-lg bg-grad-warning px-3 py-2 text-sm text-warning">
           <AlertTriangle className="mt-0.5 size-4 shrink-0" aria-hidden />
           <span>
             Chỉ có {soUngVien} người đủ điều kiện (ngưỡng cảnh báo: dưới {nguongPool}). Nên mời sớm thay vì chờ đăng ký.

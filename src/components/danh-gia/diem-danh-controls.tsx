@@ -86,7 +86,7 @@ export function DuGioDrawer({
           <label
             key={r.muc}
             className={cn(
-              "flex cursor-pointer items-start gap-3 rounded-xl border p-3 has-checked:border-primary has-checked:bg-primary/5",
+              "flex cursor-pointer items-start gap-3 rounded-xl border p-3 has-checked:border-primary has-checked:bg-grad-primary-soft",
             )}
           >
             <input type="radio" name="muc" value={r.muc} defaultChecked={duGio?.muc_diem === r.muc} required className="mt-1 size-4 accent-primary" />

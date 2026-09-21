@@ -32,14 +32,12 @@ export function DuGioCard({
           <ClipboardCheck className="size-5 text-slate-500" strokeWidth={1.75} aria-hidden /> Dự giờ và điểm danh
         </CardTitle>
         <CardDescription>
-          {laChinhMinh
-            ? "Không tự chấm dự giờ cho chính mình — điểm C2 của bạn để người còn lại chấm (mục “không có dữ liệu”, trọng số tự chia lại)."
-            : "Chấm dự giờ (C2) theo rubric cho từng Bài, hoặc chỉnh tay điểm danh (B1) khi có lỗi kỹ thuật. Chỉ Admin/Quản lý lớp thấy khu vực này."}
+          {laChinhMinh ? "Không tự chấm C2 cho chính mình." : "Chấm C2 theo rubric · chỉnh tay B1. Chỉ Admin/Quản lý lớp thấy."}
         </CardDescription>
       </CardHeader>
       <CardContent className="px-0">
         {bai.length === 0 ? (
-          <EmptyState icon={ClipboardCheck} title="Chưa có Bài nào đã bắt đầu để chấm dự giờ hoặc chỉnh điểm danh." />
+          <EmptyState icon={ClipboardCheck} title="Chưa có Bài nào đã bắt đầu." />
         ) : (
           <ul className="divide-y border-t">
             {bai.map((b) => (
@@ -68,9 +66,7 @@ export function DuGioCard({
                       <Badge variant="blue" title={b.du_gio.ghi_chu ?? undefined}>
                         <Star /> C2 {b.du_gio.muc_diem}%
                       </Badge>
-                    ) : (
-                      <Badge variant="outline">Chưa chấm dự giờ</Badge>
-                    )}
+                    ) : null}
                     <DuGioDrawer baiId={b.bai_id} userId={userId} ten={hoTen} rubric={rubric} duGio={b.du_gio} />
                     {b.du_gio && <XoaDuGioButton baiId={b.bai_id} userId={userId} ten={hoTen} />}
                   </div>
