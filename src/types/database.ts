@@ -459,7 +459,13 @@ export type LoaiNhatKy =
   | "nhap_du_gio"
   | "sua_ho_so"
   | "doi_nhom"
-  | "tai_khoan";
+  | "tai_khoan"
+  | "tao_lop"
+  | "xoa_lop"
+  | "them_bai"
+  | "sua_bai"
+  | "xoa_bai"
+  | "tao_de_xuat";
 
 export interface NhatKy {
   id: string;

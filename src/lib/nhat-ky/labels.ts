@@ -27,6 +27,12 @@ export const LOAI_NHAT_KY: Record<LoaiNhatKy, { nhan: string; variant: BadgeVari
   sua_ho_so: { nhan: "Sửa hồ sơ", variant: "default" },
   doi_nhom: { nhan: "Đổi nhóm", variant: "warning" },
   tai_khoan: { nhan: "Tài khoản", variant: "default" },
+  tao_lop: { nhan: "Tạo lớp", variant: "navy" },
+  xoa_lop: { nhan: "Xóa lớp", variant: "danger" },
+  them_bai: { nhan: "Thêm Bài", variant: "navy" },
+  sua_bai: { nhan: "Sửa Bài", variant: "navy" },
+  xoa_bai: { nhan: "Xóa Bài", variant: "danger" },
+  tao_de_xuat: { nhan: "Tạo đề xuất", variant: "teal" },
 };
 
 export const LOAI_NHAT_KY_OPTIONS = Object.entries(LOAI_NHAT_KY).map(([v, o]) => [v, o.nhan] as const);

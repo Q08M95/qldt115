@@ -4,6 +4,7 @@ import { AppShell } from "@/components/app-shell/app-shell";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import type { ThongBao } from "@/types/database";
+import { TuyChonThongBao } from "@/components/thong-bao/tuy-chon-thong-bao";
 import { DemoList } from "./demo-list";
 
 // Trang demo Thông báo với dữ liệu giả — chỉ chạy khi dev, dùng để đối chiếu giao diện với ảnh mẫu. Production trả 404.
@@ -108,6 +109,7 @@ export default async function DesignThongBaoPage(props: { searchParams: Promise<
           </CardContent>
         </Card>
 
+        <div className="grid h-fit gap-5">
         {/* Panel thả xuống của chuông (mô phỏng tĩnh — bản thật là Popover) */}
         <div className="h-fit w-full max-w-sm rounded-2xl bg-popover shadow-lg ring-1 ring-foreground/10">
           <div className="flex items-center justify-between gap-2 px-4 pt-4 pb-2">
@@ -124,6 +126,8 @@ export default async function DesignThongBaoPage(props: { searchParams: Promise<
               Xem tất cả thông báo
             </Button>
           </div>
+        </div>
+        <TuyChonThongBao banDau={{ bai_trong_moi: { trong_app: false, day_push: false } }} isQuanTri />
         </div>
       </div>
     </AppShell>

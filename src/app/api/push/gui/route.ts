@@ -40,17 +40,29 @@ export async function POST(req: NextRequest) {
   const hetHan: string[] = [];
   await Promise.all(
     subs.map(async (s) => {
-      try {
-        // TTL 1 giờ: nhắc check-in quá giờ thì không còn ý nghĩa
-        await webpush.sendNotification({ endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } }, payload, { TTL: 3600, urgency: "high" });
-        gui++;
-      } catch (e) {
-        const code = (e as { statusCode?: number }).statusCode;
-        if (code === 404 || code === 410) hetHan.push(s.id);
+      // Lỗi tạm thời (mạng, 429, 5xx) thử lại ngay tối đa 2 lần; còn lỗi thì job thu_lai_push của database gọi lại sau
+      for (let lan = 0; lan < 3; lan++) {
+        try {
+          // TTL 1 giờ: nhắc check-in quá giờ thì không còn ý nghĩa
+          await webpush.sendNotification({ endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } }, payload, { TTL: 3600, urgency: "high" });
+          gui++;
+          return;
+        } catch (e) {
+          const code = (e as { statusCode?: number }).statusCode;
+          if (code === 404 || code === 410) {
+            hetHan.push(s.id);
+            return;
+          }
+          const tam = code === undefined || code === 429 || code >= 500;
+          if (!tam || lan === 2) return;
+          await new Promise((r) => setTimeout(r, 400 * (lan + 1)));
+        }
       }
     }),
   );
   // Thiết bị đã hủy đăng ký / hết hạn thì dọn đi
   if (hetHan.length > 0) await db.from("push_subscription").delete().in("id", hetHan);
+  // Đánh dấu đã đẩy được để job thử lại không gọi lại
+  if (gui > 0) await db.from("thong_bao").update({ push_luc: new Date().toISOString() }).eq("id", tb.id);
   return NextResponse.json({ gui, het_han: hetHan.length });
 }
