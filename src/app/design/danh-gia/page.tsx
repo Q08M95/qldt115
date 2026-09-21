@@ -105,7 +105,7 @@ export default async function DesignDanhGiaPage(props: { searchParams: Promise<{
     return (
       <AppShell user={{ name: "Nguyễn Hoàng Tú Minh", email: "minh@example.com" }} isQuanTri period={{ name: "Quý 3/2026", daysLeft: 11 }} unreadCount={3} activeHref="/cau-hinh">
         <div className="max-w-4xl">
-          <CauHinhDiemDanhForm cauHinh={{ checkin_truoc_phut: 45, b1_tre_toi_da_phut: 30, rubric: RUBRIC }} />
+          <CauHinhDiemDanhForm cauHinh={{ checkin_truoc_phut: 45, b1_tre_toi_da_phut: 30, nhac_check_in_truoc_phut: 30, rubric: RUBRIC }} />
         </div>
       </AppShell>
     );

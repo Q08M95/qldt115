@@ -3,8 +3,16 @@ import { NextResponse, type NextRequest } from "next/server";
 
 // Các route không cần đăng nhập: /login và /khao-sat (khảo sát hài lòng C1 công khai, ẩn danh — mục 4.2)
 // /design (trang demo Design System) chỉ public khi chạy dev, không bao giờ public ở production
-const PUBLIC_PATHS =
-  process.env.NODE_ENV === "production" ? ["/login", "/khao-sat"] : ["/login", "/khao-sat", "/design"];
+// PWA/Web Push (Giai đoạn 8): manifest và Service Worker trình duyệt tải không kèm phiên đăng nhập; /api/push/gui do database gọi,
+// tự xác thực bằng khóa chia sẻ PUSH_WEBHOOK_SECRET.
+const PUBLIC_PATHS = [
+  "/login",
+  "/khao-sat",
+  "/manifest.webmanifest",
+  "/sw.js",
+  "/api/push/gui",
+  ...(process.env.NODE_ENV === "production" ? [] : ["/design"]),
+];
 
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });

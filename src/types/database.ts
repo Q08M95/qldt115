@@ -348,6 +348,7 @@ export interface RubricMuc {
 export interface CauHinhDiemDanh {
   checkin_truoc_phut: number;
   b1_tre_toi_da_phut: number;
+  nhac_check_in_truoc_phut: number;
   rubric: RubricMuc[];
 }
 
@@ -404,4 +405,34 @@ export interface KpiCaNhan {
   a4_tong: number;
   so_ky_fallback: number;
   tien_do: TienDoDoiNhom | null;
+}
+
+// ============ Thông báo (Giai đoạn 8, mục 4.5) ============
+export type MucDoThongBao = "can_hanh_dong" | "thong_tin";
+export type LoaiThongBao =
+  | "bai_trong_moi"
+  | "duoc_moi"
+  | "dang_ky_can_duyet"
+  | "dang_ky_ket_qua"
+  | "loi_moi_ket_qua"
+  | "doi_lich"
+  | "huy_lop"
+  | "huy_phan_cong"
+  | "nhac_check_in"
+  | "cong_bo_kpi"
+  | "ket_qua_doi_nhom"
+  | "sua_diem_danh"
+  | "quyen_quan_ly_lop"
+  | "de_xuat_can_duyet";
+
+export interface ThongBao {
+  id: string;
+  user_id: string;
+  loai: LoaiThongBao;
+  muc_do: MucDoThongBao;
+  tieu_de: string;
+  noi_dung: string | null;
+  lien_ket: string | null;
+  da_doc: boolean;
+  created_at: string;
 }

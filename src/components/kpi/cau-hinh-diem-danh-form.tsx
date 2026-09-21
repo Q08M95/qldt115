@@ -49,6 +49,7 @@ export function CauHinhDiemDanhForm({ cauHinh }: { cauHinh: CauHinhDiemDanh }) {
   const [ketQua, setKetQua] = useState<{ ok?: boolean; error?: string } | null>(null);
   const [truoc, setTruoc] = useState(String(cauHinh.checkin_truoc_phut));
   const [tre, setTre] = useState(String(cauHinh.b1_tre_toi_da_phut));
+  const [nhac, setNhac] = useState(String(cauHinh.nhac_check_in_truoc_phut));
   const [rubric, setRubric] = useState(() =>
     Object.fromEntries(cauHinh.rubric.map((r) => [String(r.muc), { ten: r.ten, mo_ta: r.mo_ta }])),
   );
@@ -57,12 +58,14 @@ export function CauHinhDiemDanhForm({ cauHinh }: { cauHinh: CauHinhDiemDanh }) {
   const m = soNguyen(tre);
   const truocSai = !(Number.isInteger(t) && t >= 0 && t <= 240);
   const treSai = !(Number.isInteger(m) && m >= 1 && m <= 240);
+  const q = soNguyen(nhac);
+  const nhacSai = !(Number.isInteger(q) && q >= 1 && q <= 240);
   const rubricSai = cauHinh.rubric.some((r) => rubric[String(r.muc)].ten.trim() === "");
-  const hopLe = !truocSai && !treSai && !rubricSai;
+  const hopLe = !truocSai && !treSai && !nhacSai && !rubricSai;
 
   const luu = () =>
     start(async () => {
-      setKetQua(await luuCauHinhDiemDanh({ checkin_truoc_phut: t, b1_tre_toi_da_phut: m, rubric }));
+      setKetQua(await luuCauHinhDiemDanh({ checkin_truoc_phut: t, b1_tre_toi_da_phut: m, nhac_check_in_truoc_phut: q, rubric }));
     });
 
   return (
@@ -71,9 +74,10 @@ export function CauHinhDiemDanhForm({ cauHinh }: { cauHinh: CauHinhDiemDanh }) {
         <CardTitle>Điểm danh (B1) và rubric dự giờ (C2)</CardTitle>
       </CardHeader>
       <CardContent className="grid gap-6">
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-4 sm:grid-cols-3">
           <OSo nhan="Check-in trước giờ học" value={truoc} onChange={setTruoc} sai={truocSai} aria="Số phút được check-in trước giờ học" />
           <OSo nhan="Ngưỡng trễ tối đa (B1 = 0%)" value={tre} onChange={setTre} sai={treSai} aria="Ngưỡng trễ tối đa của B1 (phút)" />
+          <OSo nhan="Nhắc check-in trước giờ học" value={nhac} onChange={setNhac} sai={nhacSai} aria="Số phút gửi thông báo nhắc check-in trước giờ học" />
         </div>
 
         <div className="grid gap-3">
@@ -112,7 +116,13 @@ export function CauHinhDiemDanhForm({ cauHinh }: { cauHinh: CauHinhDiemDanh }) {
           <div className="text-sm" role={ketQua?.error || !hopLe ? "alert" : undefined}>
             {!hopLe ? (
               <span className="text-danger">
-                {truocSai ? "Check-in trước giờ học: số nguyên 0–240 phút." : treSai ? "Ngưỡng trễ: số nguyên 1–240 phút." : "Tên mức rubric không được để trống."}
+                {truocSai
+                  ? "Check-in trước giờ học: số nguyên 0–240 phút."
+                  : treSai
+                    ? "Ngưỡng trễ: số nguyên 1–240 phút."
+                    : nhacSai
+                      ? "Nhắc check-in: số nguyên 1–240 phút."
+                      : "Tên mức rubric không được để trống."}
               </span>
             ) : ketQua?.error ? (
               <span className="text-danger">{ketQua.error}</span>

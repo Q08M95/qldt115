@@ -87,6 +87,7 @@ export async function xoaDuGio(baiId: string, userId: string): Promise<ActionSta
 export interface CauHinhDiemDanhPayload {
   checkin_truoc_phut: number;
   b1_tre_toi_da_phut: number;
+  nhac_check_in_truoc_phut: number;
   rubric: Record<string, { ten: string; mo_ta: string }>;
 }
 
@@ -96,6 +97,7 @@ export async function luuCauHinhDiemDanh(payload: CauHinhDiemDanhPayload): Promi
     payload &&
     Number.isFinite(payload.checkin_truoc_phut) &&
     Number.isFinite(payload.b1_tre_toi_da_phut) &&
+    Number.isFinite(payload.nhac_check_in_truoc_phut) &&
     Object.values(payload.rubric ?? {}).every((r) => typeof r.ten === "string" && typeof r.mo_ta === "string");
   if (!hopLe) return { error: "Có ô nhập chưa hợp lệ." };
 

@@ -24,7 +24,7 @@
 | 5 | Module Đăng ký giảng dạy (4.3) | ✅ Xong (trừ thông báo, phụ thuộc Giai đoạn 8) | 95% |
 | 6 | Hệ thống KPI — engine + cấu hình (5/6/7) | ✅ Xong (B1/C2 chỉ có bảng dữ liệu, giao diện nhập ở Giai đoạn 7) | 100% |
 | 7 | Module Đánh giá chất lượng (4.4) | ✅ Xong (nhắc check-in bằng thông báo ở Giai đoạn 8; thông báo/Nhật ký khi sửa điểm danh ở Giai đoạn 8-9) | 100% |
-| 8 | Module Thông báo (4.5) | ⬜ Chưa bắt đầu | 0% |
+| 8 | Module Thông báo (4.5) | 🟡 Đã code + test cục bộ xong; chờ chạy migration/test trên Supabase thật và thiết lập Web Push (Vercel env + webhook) | 90% |
 | 9 | Nhật ký hệ thống (4.6) | ⬜ Chưa bắt đầu | 0% |
 | 10 | Báo cáo (4.7) + Tổng quan (4.7b) | ⬜ Chưa bắt đầu | 0% |
 | 11 | Cấu hình hệ thống — hoàn thiện (4.8) | ⬜ Chưa bắt đầu | 0% |
@@ -205,13 +205,17 @@ Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / 
 
 *Tham chiếu: mục 4.5*
 
-- [ ] Bảng `notifications`, phân loại Cần hành động / Thông tin
-- [ ] Bell icon + badge số chưa đọc + dropdown panel (8.7)
-- [ ] Trigger tạo thông báo cho toàn bộ sự kiện đã liệt kê ở 4.5 (Bài trống mới, mời dạy, duyệt/từ chối, đổi lịch/hủy lớp, nhắc check-in, công bố KPI, kết quả đổi nhóm, sửa điểm danh, gán/thu hồi Quyền Quản lý lớp, đề xuất mới cần duyệt, lời mời bị từ chối)
-- [ ] Web Push API/PWA — đăng ký subscription, gửi push thực sự (không chỉ trong-app)
-- [ ] Scheduled job (Supabase pg_cron hoặc Edge Function) cho nhắc check-in đúng giờ trước mỗi Bài
+- [x] Bảng `thong_bao` (`notifications`), phân loại Cần hành động / Thông tin *(RLS chỉ đọc của mình + đánh dấu đã đọc; ghi chỉ qua trigger/hàm)*
+- [x] Bell icon + badge số chưa đọc + dropdown panel (8.7) *(Popover 10 thông báo mới nhất; Realtime; trang `/thong-bao` lọc Tất cả/Chưa đọc/Cần hành động)*
+- [x] Trigger tạo thông báo cho toàn bộ sự kiện ở 4.5 (Bài trống mới, mời dạy, duyệt/từ chối, đổi lịch/hủy lớp, nhắc check-in, công bố KPI, kết quả đổi nhóm, sửa điểm danh, gán/thu hồi Quyền Quản lý lớp, đề xuất mới cần duyệt, lời mời bị từ chối)
+- [x] Web Push API/PWA — Service Worker, manifest + icon, đăng ký subscription theo thiết bị, webhook `/api/push/gui` gửi push bằng khóa VAPID *(đã kiểm tra: xác thực webhook, manifest, sw.js; **chưa thử nhận push thật trên trình duyệt/điện thoại** vì cần migration chạy trên Supabase thật)*
+- [x] Scheduled job (pg_cron mỗi phút) nhắc check-in trước giờ học + ô cấu hình "nhắc trước N phút" ở Cấu hình KPI
 
 **Điều kiện hoàn thành:** thực hiện 1 hành động (vd duyệt đăng ký) → người liên quan nhận thông báo trong app + push trình duyệt; job nhắc check-in tự chạy đúng giờ đã lên lịch.
+
+> Đã làm: migration `20260925100000_giai_doan_8_thong_bao.sql` + test `supabase/tests/giai_doan_8_thong_bao.sql` (37 kiểm tra, PGlite cục bộ 37/37; hồi quy Giai đoạn 3-7 vẫn pass). Màn hình: chuông thông báo, `/thong-bao`, thẻ bật thông báo đẩy, ô "Nhắc check-in trước giờ học" ở Cấu hình KPI, trang demo `/design/thong-bao` (chỉ dev). Script `scripts/thiet-lap-push.mjs`.
+> Quyết định thiết kế (đã ghi CLAUDE.md mục 7): (1) sinh thông báo bằng trigger, người thao tác không tự nhận thông báo; (2) không lộ nhãn nhóm trong thông báo đổi nhóm; (3) nhắc check-in mỗi (Bài, người) 1 lần, chặn theo khung check-in; (4) push qua pg_net → webhook app, thiếu cấu hình chỉ mất push.
+> **Việc còn lại để đóng giai đoạn:** chạy migration + test trên Supabase thật; `node scripts/thiet-lap-push.mjs tao-khoa`, thêm 4 biến vào Vercel, deploy, rồi `... webhook https://qldt115.vercel.app`; thử nhận push thật (máy tính + điện thoại).
 
 ---
 

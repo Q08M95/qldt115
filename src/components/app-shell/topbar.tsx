@@ -16,12 +16,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
+import { ChuongThongBao } from "@/components/thong-bao/chuong-thong-bao";
 import { UserAvatar } from "@/components/user-avatar";
 import { usePageLabels } from "./page-labels";
 import { BrandLogo, NavList } from "./sidebar";
 import { SEGMENT_LABELS } from "./nav-config";
 
 export interface ShellUser {
+  id?: string;
   name: string;
   email: string;
   avatarUrl?: string | null;
@@ -163,16 +165,21 @@ export function Topbar({
           </Link>
         </Button>
 
-        <Button asChild variant="outline" size="icon" className="relative rounded-full border-transparent shadow-card">
-          <Link href="/thong-bao" aria-label={`Thông báo${unreadCount ? `, ${unreadCount} chưa đọc` : ""}`}>
-            <Bell />
-            {unreadCount > 0 && (
-              <span className="absolute -top-1.5 -right-1.5 flex size-4 items-center justify-center rounded-full bg-grad-danger-solid text-[10px] font-medium text-white tabular-nums">
-                {unreadCount > 9 ? "9+" : unreadCount}
-              </span>
-            )}
-          </Link>
-        </Button>
+        {/* Chuông thông báo (mục 4.5/8.7): cần mã người dùng để nghe Realtime; trang demo không có thì hiện chuông tĩnh */}
+        {user.id ? (
+          <ChuongThongBao userId={user.id} soChuaDocBanDau={unreadCount} />
+        ) : (
+          <Button asChild variant="outline" size="icon" className="relative rounded-full border-transparent shadow-card">
+            <Link href="/thong-bao" aria-label={`Thông báo${unreadCount ? `, ${unreadCount} chưa đọc` : ""}`}>
+              <Bell />
+              {unreadCount > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 flex size-4 items-center justify-center rounded-full bg-grad-danger-solid text-[10px] font-medium text-white tabular-nums">
+                  {unreadCount > 9 ? "9+" : unreadCount}
+                </span>
+              )}
+            </Link>
+          </Button>
+        )}
 
         <UserMenu user={user} />
       </header>

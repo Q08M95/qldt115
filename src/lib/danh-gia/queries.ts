@@ -54,12 +54,17 @@ export async function getRubric(): Promise<RubricMuc[]> {
 export async function getCauHinhDiemDanh(): Promise<CauHinhDiemDanh> {
   const supabase = await createClient();
   const [ch, rubric] = await Promise.all([
-    supabase.from("cau_hinh_he_thong").select("khoa, gia_tri").in("khoa", ["checkin_truoc_phut", "b1_tre_toi_da_phut"]),
+    supabase.from("cau_hinh_he_thong").select("khoa, gia_tri").in("khoa", ["checkin_truoc_phut", "b1_tre_toi_da_phut", "nhac_check_in_truoc_phut"]),
     getRubric(),
   ]);
   if (ch.error) throw new Error(`Không đọc được cấu hình điểm danh: ${ch.error.message}`);
   const kv = Object.fromEntries((ch.data ?? []).map((r) => [r.khoa, num(r.gia_tri)]));
-  return { checkin_truoc_phut: kv.checkin_truoc_phut ?? 45, b1_tre_toi_da_phut: kv.b1_tre_toi_da_phut ?? 30, rubric };
+  return {
+    checkin_truoc_phut: kv.checkin_truoc_phut ?? 45,
+    b1_tre_toi_da_phut: kv.b1_tre_toi_da_phut ?? 30,
+    nhac_check_in_truoc_phut: kv.nhac_check_in_truoc_phut ?? 30,
+    rubric,
+  };
 }
 
 // KPI cá nhân nhiều kỳ + A4 + tiến độ đổi nhóm. Hàm SQL tự áp quyền xem kỳ Chờ duyệt và chỉ trả tiến độ đổi nhóm cho chính chủ/quản trị.

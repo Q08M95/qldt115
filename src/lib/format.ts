@@ -52,3 +52,20 @@ export function fmtDate(s: string | null | undefined): string {
   if (Number.isNaN(d.getTime())) return "";
   return d.toLocaleDateString("en-GB", { timeZone: "Asia/Ho_Chi_Minh", day: "2-digit", month: "2-digit", year: "numeric" });
 }
+
+// Thời gian tương đối kiểu "5 phút trước" (thông báo, mục 8.7); quá 7 ngày thì hiện ngày-giờ đầy đủ.
+// Đặt ở lib (không gọi Date.now trực tiếp trong component) để tránh lỗi purity của React.
+export function tuongDoi(s: string | null | undefined): string {
+  if (!s) return "";
+  const t = new Date(s).getTime();
+  if (Number.isNaN(t)) return "";
+  const giay = Math.max(0, Math.floor((Date.now() - t) / 1000));
+  if (giay < 60) return "vừa xong";
+  const phut = Math.floor(giay / 60);
+  if (phut < 60) return `${phut} phút trước`;
+  const gio = Math.floor(phut / 60);
+  if (gio < 24) return `${gio} giờ trước`;
+  const ngay = Math.floor(gio / 24);
+  if (ngay < 7) return `${ngay} ngày trước`;
+  return fmtDateTime(s);
+}
