@@ -81,7 +81,8 @@ export function DanhSachThongBao({ userId, banDau }: { userId: string; banDau: T
   }
 
   async function chon(tb: ThongBao) {
-    if (!tb.da_doc) await danhDauDaDoc(tb.id);
+    // Chỉ thông báo "thông tin" chuyển đã đọc khi bấm; "cần hành động" giữ nguyên tới khi việc xử lý xong
+    if (!tb.da_doc && tb.muc_do === "thong_tin") await danhDauDaDoc(tb.id);
     if (tb.lien_ket) router.push(tb.lien_ket);
   }
 

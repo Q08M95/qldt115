@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { SlidersHorizontal } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 import type { LoaiThongBao } from "@/types/database";
@@ -57,13 +56,10 @@ export function TuyChonThongBao({ banDau, isQuanTri }: { banDau: TuyChon; isQuan
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <SlidersHorizontal className="size-5 text-muted-foreground" aria-hidden /> Tùy chọn thông báo
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="grid gap-4">
+    <section className="grid gap-3">
+      <h3 className="flex items-center gap-2 text-sm font-semibold">
+        <SlidersHorizontal className="size-4 text-muted-foreground" aria-hidden /> Tùy chọn thông báo
+      </h3>
         <div>
           <div className="mb-1 hidden grid-cols-[minmax(0,1fr)_4.5rem_4.5rem] gap-3 px-1 text-xs font-medium text-muted-foreground sm:grid">
             <span />
@@ -100,7 +96,6 @@ export function TuyChonThongBao({ banDau, isQuanTri }: { banDau: TuyChon; isQuan
         <p className="text-xs text-muted-foreground">
           Luôn nhận (không tắt được): lời mời dạy, đổi lịch, hủy lớp, hủy phân công, <strong>nhắc check-in</strong>, điểm danh bị chỉnh sửa, kết quả đổi vai trò, Quyền Quản lý lớp.
         </p>
-      </CardContent>
-    </Card>
+    </section>
   );
 }

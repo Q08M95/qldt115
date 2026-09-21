@@ -17,7 +17,7 @@ export function CheckInButton({ baiId, variant = "default" }: { baiId: string; v
 
   return (
     <div className="flex flex-col items-stretch gap-1.5 sm:items-end">
-      <Button size="lg" variant={variant} onClick={bam} disabled={pending || ketQua?.ok === true} className="min-h-11">
+      <Button variant={variant} onClick={bam} disabled={pending || ketQua?.ok === true} className="max-md:min-h-11">
         <UserCheck /> {pending ? "Đang ghi nhận..." : ketQua?.ok ? "Đã ghi nhận" : "Tôi đã có mặt"}
       </Button>
       {ketQua?.error && (

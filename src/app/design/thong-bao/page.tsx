@@ -4,11 +4,11 @@ import { AppShell } from "@/components/app-shell/app-shell";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import type { ThongBao } from "@/types/database";
-import { TuyChonThongBao } from "@/components/thong-bao/tuy-chon-thong-bao";
+import { CaiDatThongBao } from "@/components/thong-bao/cai-dat-thong-bao";
 import { DemoList } from "./demo-list";
 
 // Trang demo Thông báo với dữ liệu giả — chỉ chạy khi dev, dùng để đối chiếu giao diện với ảnh mẫu. Production trả 404.
-// ?v=trong : danh sách rỗng. ?v=chuong : dùng chuông thật (chưa đăng nhập nên panel hiện rỗng) để kiểm tra Popover.
+// ?v=trong : danh sách rỗng. ?v=mo : mở sẵn "Cài đặt thông báo". ?v=chuong : dùng chuông thật (chưa đăng nhập nên panel hiện rỗng) để kiểm tra Popover.
 const phutTruoc = (p: number) => new Date(Date.now() - p * 60_000).toISOString();
 
 const TB = (o: Partial<ThongBao> & Pick<ThongBao, "id" | "loai" | "tieu_de">): ThongBao => ({
@@ -127,7 +127,7 @@ export default async function DesignThongBaoPage(props: { searchParams: Promise<
             </Button>
           </div>
         </div>
-        <TuyChonThongBao banDau={{ bai_trong_moi: { trong_app: false, day_push: false } }} isQuanTri />
+        <CaiDatThongBao tuyChon={{ bai_trong_moi: { trong_app: false, day_push: false } }} isQuanTri moMacDinh={v === "mo"} />
         </div>
       </div>
     </AppShell>

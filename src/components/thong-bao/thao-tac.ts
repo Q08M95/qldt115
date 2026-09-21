@@ -33,7 +33,9 @@ export async function danhDauDaDoc(id: string) {
   baoDoiThongBao();
 }
 
+// Chỉ đánh dấu các thông báo "thông tin". Thông báo "cần hành động" (mời dạy, đăng ký/đề xuất cần duyệt, nhắc check-in) TỰ chuyển đã đọc khi việc
+// đó được xử lý xong — bấm vào xem hoặc "đánh dấu tất cả" không làm chúng biến mất khi việc còn dang dở.
 export async function danhDauTatCaDaDoc() {
-  await createClient().from("thong_bao").update({ da_doc: true }).eq("da_doc", false);
+  await createClient().from("thong_bao").update({ da_doc: true }).eq("da_doc", false).eq("muc_do", "thong_tin");
   baoDoiThongBao();
 }
