@@ -2,7 +2,6 @@
 
 import { useState, useTransition } from "react";
 import { CheckCircle2, Save } from "lucide-react";
-import { DuongB1, KhungCheckIn } from "@/components/danh-gia/kpi-charts";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -44,7 +43,7 @@ function OSo({ nhan, value, onChange, sai, aria }: { nhan: string; value: string
 }
 
 // Điểm danh B1 (khung check-in, ngưỡng trễ) và rubric dự giờ C2 (mục 4.8). Đổi cấu hình chỉ ảnh hưởng các lần check-in/chấm điểm sau đó.
-// Hai con số được minh họa bằng biểu đồ cập nhật ngay khi sửa; rubric là 4 thẻ theo mức điểm.
+// Hai con số nhập gọn; rubric là 4 thẻ theo mức điểm.
 export function CauHinhDiemDanhForm({ cauHinh }: { cauHinh: CauHinhDiemDanh }) {
   const [pending, start] = useTransition();
   const [ketQua, setKetQua] = useState<{ ok?: boolean; error?: string } | null>(null);
@@ -72,15 +71,9 @@ export function CauHinhDiemDanhForm({ cauHinh }: { cauHinh: CauHinhDiemDanh }) {
         <CardTitle>Điểm danh (B1) và rubric dự giờ (C2)</CardTitle>
       </CardHeader>
       <CardContent className="grid gap-6">
-        <div className="grid gap-4 lg:grid-cols-2">
-          <div className="grid content-start gap-3 rounded-2xl bg-background p-4">
-            <OSo nhan="Check-in trước giờ học" value={truoc} onChange={setTruoc} sai={truocSai} aria="Số phút được check-in trước giờ học" />
-            {truocSai ? <div className="h-[74px]" /> : <KhungCheckIn truoc={t} className="h-auto w-full" />}
-          </div>
-          <div className="grid content-start gap-3 rounded-2xl bg-background p-4">
-            <OSo nhan="Ngưỡng trễ tối đa (B1 = 0%)" value={tre} onChange={setTre} sai={treSai} aria="Ngưỡng trễ tối đa của B1 (phút)" />
-            {treSai ? <div className="h-[170px]" /> : <DuongB1 nguong={m} className="h-auto w-full" />}
-          </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <OSo nhan="Check-in trước giờ học" value={truoc} onChange={setTruoc} sai={truocSai} aria="Số phút được check-in trước giờ học" />
+          <OSo nhan="Ngưỡng trễ tối đa (B1 = 0%)" value={tre} onChange={setTre} sai={treSai} aria="Ngưỡng trễ tối đa của B1 (phút)" />
         </div>
 
         <div className="grid gap-3">

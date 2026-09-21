@@ -158,7 +158,7 @@ export function DongHoBanNguyet({ phanTram, so, nhan, className }: { phanTram: n
   return (
     <svg viewBox="0 0 120 78" role="img" aria-label={nhan ? `${nhan}: ${so}` : so} className={className}>
       <GradDefs id="kpi-dh" />
-      <path d="M10,60 A50,50 0 0 1 110,60" fill="none" stroke="var(--muted)" strokeWidth="11" strokeLinecap="round" />
+      <path d="M10,60 A50,50 0 0 1 110,60" fill="none" stroke="var(--card)" strokeOpacity="0.65" strokeWidth="11" strokeLinecap="round" />
       {v > 0 && <path d={`M10,60 A50,50 0 0 1 ${px},${py}`} fill="none" stroke="url(#kpi-dh-net)" strokeWidth="11" strokeLinecap="round" />}
       <text x="60" y="52" textAnchor="middle" fontSize="17" fontWeight="700" fill="var(--foreground)">
         {so}
@@ -168,70 +168,6 @@ export function DongHoBanNguyet({ phanTram, so, nhan, className }: { phanTram: n
           {nhan}
         </text>
       )}
-    </svg>
-  );
-}
-
-// Đường B1 theo phút trễ (cấu hình điểm danh): 100% khi đúng giờ, giảm tuyến tính về 0% tại ngưỡng — cập nhật ngay khi sửa ngưỡng
-export function DuongB1({ nguong, className }: { nguong: number; className?: string }) {
-  const W = 360;
-  const H = 170;
-  const L = 34;
-  const R = 16;
-  const T = 16;
-  const B = 30;
-  const cw = W - L - R;
-  const ch = H - T - B;
-  const tren = Math.max(nguong * 1.5, 1);
-  const x = (p: number) => L + (cw * Math.min(p, tren)) / tren;
-  const y = (v: number) => T + (1 - v / 100) * ch;
-  const gd = `M${x(0)},${y(100)} L${x(nguong)},${y(0)} L${x(tren)},${y(0)}`;
-  const nhanX = [0, nguong / 2, nguong, tren].map((p) => Math.round(p * 10) / 10);
-  return (
-    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`B1 giảm từ 100% xuống 0% khi trễ ${nguong} phút`} className={className}>
-      <GradDefs id="kpi-b1" />
-      {[0, 50, 100].map((g) => (
-        <g key={g}>
-          <line x1={L} x2={W - R} y1={y(g)} y2={y(g)} stroke="var(--border)" strokeWidth="1" strokeDasharray={g === 0 ? undefined : "3 4"} />
-          <text x={L - 6} y={y(g) + 4} textAnchor="end" fontSize="10.5" fill="var(--muted-foreground)">
-            {g}%
-          </text>
-        </g>
-      ))}
-      <path d={`${gd} L${x(tren)},${T + ch} L${x(0)},${T + ch} Z`} fill="url(#kpi-b1-nen)" />
-      <path d={gd} fill="none" stroke="url(#kpi-b1-net)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx={x(nguong)} cy={y(0)} r="4.5" fill="var(--card)" stroke="url(#kpi-b1-net)" strokeWidth="2.5" />
-      {nhanX.map((p, i) => (
-        <text key={`${p}-${i}`} x={x(p)} y={H - 8} textAnchor="middle" fontSize="10.5" fill={p === nguong ? "var(--primary)" : "var(--muted-foreground)"} fontWeight={p === nguong ? 700 : 400}>
-          {p}′
-        </text>
-      ))}
-    </svg>
-  );
-}
-
-// Khung check-in trên trục thời gian của 1 buổi học: [N phút trước giờ học … hết giờ học] tô gradient, mốc "Bắt đầu"
-export function KhungCheckIn({ truoc, className }: { truoc: number; className?: string }) {
-  const W = 360;
-  const H = 74;
-  const gioHoc = 90; // buổi minh họa 90 phút
-  const tong = Math.max(truoc, 0) + gioHoc + 15;
-  const x = (p: number) => 12 + ((W - 24) * (p + Math.max(truoc, 0) + 7)) / tong;
-  return (
-    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`Được check-in từ ${truoc} phút trước giờ học đến hết giờ học`} className={className}>
-      <GradDefs id="kpi-ci" />
-      <rect x="12" y="26" width={W - 24} height="14" rx="7" fill="var(--muted)" />
-      <rect x={x(-truoc)} y="26" width={Math.max(x(gioHoc) - x(-truoc), 2)} height="14" rx="7" fill="url(#kpi-ci-net)" />
-      <line x1={x(0)} x2={x(0)} y1="18" y2="48" stroke="var(--foreground)" strokeWidth="1.5" strokeDasharray="3 3" />
-      <text x={x(-truoc)} y="16" textAnchor="middle" fontSize="10.5" fontWeight="700" fill="var(--primary)">
-        −{truoc}′
-      </text>
-      <text x={x(0)} y="62" textAnchor="middle" fontSize="10.5" fill="var(--foreground)">
-        Bắt đầu
-      </text>
-      <text x={x(gioHoc)} y="62" textAnchor="middle" fontSize="10.5" fill="var(--muted-foreground)">
-        Kết thúc
-      </text>
     </svg>
   );
 }
