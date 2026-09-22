@@ -11,12 +11,19 @@ export interface CotExcel {
 
 export type GiaTriO = string | number | boolean | Date | null | undefined;
 
+// Tên sheet Excel không được chứa \ / ? * [ ] và tối đa 31 ký tự (vd tên kỳ "Quý 3/2026" có dấu "/" phải thay thế,
+// nếu không exceljs sẽ ném lỗi ngay khi tạo sheet — chặn đứng toàn bộ luồng xuất file).
+function tenSheetHopLe(ten: string): string {
+  const s = ten.replace(/[\\/?*[\]]/g, "-").trim().slice(0, 31);
+  return s || "Sheet1";
+}
+
 // Tạo file .xlsx gọn cho báo cáo/nhật ký: dòng tiêu đề đậm + cố định + bộ lọc, chữ tự xuống dòng, canh trên.
 // Dùng chung cho mọi báo cáo cần xuất Excel (mục 4.7) — chỉ truyền cột và dòng dữ liệu.
 export async function taoFileExcel(opts: { tenSheet: string; cot: CotExcel[]; dong: Record<string, GiaTriO>[] }): Promise<Buffer> {
   const wb = new ExcelJS.Workbook();
   wb.created = new Date();
-  const ws = wb.addWorksheet(opts.tenSheet.slice(0, 31), { views: [{ state: "frozen", ySplit: 1 }] });
+  const ws = wb.addWorksheet(tenSheetHopLe(opts.tenSheet), { views: [{ state: "frozen", ySplit: 1 }] });
   ws.columns = opts.cot.map((c) => ({ header: c.tieu_de, key: c.khoa, width: c.rong ?? 18 }));
   opts.dong.forEach((d) => ws.addRow(d));
 

@@ -13,6 +13,8 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const vaiTro = (v: string | null) => (v ? VAI_TRO_LABEL[v as keyof typeof VAI_TRO_LABEL] : "");
+// Tên kỳ dạng "Quý 3/2026" có dấu "/" — không dùng thẳng trong tên file tải về (một số hệ điều hành/trình duyệt hiểu nhầm thành đường dẫn)
+const choTenFile = (ten: string) => ten.replace(/\//g, "-");
 
 export async function GET(req: NextRequest) {
   const phien = await getSession();
@@ -30,9 +32,9 @@ export async function GET(req: NextRequest) {
     const dieu = chonKy(list, sp.get("ky") ?? undefined);
     if (!dieu) return NextResponse.json({ error: "Chưa có kỳ đánh giá nào" }, { status: 404 });
     const rows = await getKpiTongHop(dieu.hienTai.id);
-    ten = `bao-cao-1-kpi-tong-hop-${dieu.hienTai.ten}`;
+    ten = `bao-cao-1-kpi-tong-hop-${choTenFile(dieu.hienTai.ten)}`;
     buf = await taoFileExcel({
-      tenSheet: `KPI ${dieu.hienTai.ten}`.slice(0, 31),
+      tenSheet: `KPI ${dieu.hienTai.ten}`,
       cot: [
         { tieu_de: "Hạng", khoa: "hang", rong: 8 },
         { tieu_de: "Họ tên", khoa: "ho_ten", rong: 26 },
@@ -70,7 +72,7 @@ export async function GET(req: NextRequest) {
     const t = tongHopSanLuong(await getSanLuong(khoang.tu, khoang.den), "tat-ca");
     ten = `bao-cao-3-san-luong-${khoang.tu}-${khoang.den}`;
     buf = await taoFileExcel({
-      tenSheet: "Sản lượng giảng dạy".slice(0, 31),
+      tenSheet: "Sản lượng giảng dạy",
       cot: [
         { tieu_de: "Họ tên", khoa: "ho_ten", rong: 26 },
         { tieu_de: "Vai trò", khoa: "vai_tro", rong: 14 },
@@ -97,9 +99,9 @@ export async function GET(req: NextRequest) {
     const dieu = chonKy(list, sp.get("ky") ?? undefined);
     if (!dieu) return NextResponse.json({ error: "Chưa có kỳ đánh giá nào" }, { status: 404 });
     const rows = [...(await getA4(dieu.hienTai.id))].sort((a, b) => b.a4_luy_ke - a.a4_luy_ke || b.a4_ky - a.a4_ky);
-    ten = `bao-cao-6-a4-${dieu.hienTai.ten}`;
+    ten = `bao-cao-6-a4-${choTenFile(dieu.hienTai.ten)}`;
     buf = await taoFileExcel({
-      tenSheet: `A4 ${dieu.hienTai.ten}`.slice(0, 31),
+      tenSheet: `A4 ${dieu.hienTai.ten}`,
       cot: [
         { tieu_de: "Hạng", khoa: "hang", rong: 8 },
         { tieu_de: "Họ tên", khoa: "ho_ten", rong: 26 },
@@ -122,9 +124,9 @@ export async function GET(req: NextRequest) {
     const dieu = chonKy(list, sp.get("ky") ?? undefined);
     if (!dieu) return NextResponse.json({ error: "Chưa có kỳ đánh giá nào" }, { status: 404 });
     const t = chuanHoaDeXuat(await getDeXuatThongKe(dieu.hienTai.id));
-    ten = `bao-cao-7-de-xuat-${dieu.hienTai.ten}`;
+    ten = `bao-cao-7-de-xuat-${choTenFile(dieu.hienTai.ten)}`;
     buf = await taoFileExcel({
-      tenSheet: `Đề xuất ${dieu.hienTai.ten}`.slice(0, 31),
+      tenSheet: `Đề xuất ${dieu.hienTai.ten}`,
       cot: [
         { tieu_de: "Loại đề xuất", khoa: "loai", rong: 26 },
         { tieu_de: "Chờ duyệt", khoa: "cho_duyet", rong: 12 },
