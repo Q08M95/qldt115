@@ -26,7 +26,7 @@
 | 7 | Module Đánh giá chất lượng (4.4) | ✅ Xong (nhắc check-in bằng thông báo ở Giai đoạn 8; thông báo/Nhật ký khi sửa điểm danh ở Giai đoạn 8-9) | 100% |
 | 8 | Module Thông báo (4.5) | ✅ Xong (đã chạy migration + test trên Supabase thật, pg_cron/pg_net bật, webhook push đã cấu hình; còn thử nhận push thật trên thiết bị của người dùng) | 100% |
 | 9 | Nhật ký hệ thống (4.6) | ✅ Xong (đã chạy migration + test 34/34 trên Supabase thật) | 100% |
-| 10 | Báo cáo (4.7) + Tổng quan (4.7b) | ⬜ Chưa bắt đầu | 0% |
+| 10 | Báo cáo (4.7) + Tổng quan (4.7b) | 🟨 Gần xong (còn bổ sung Tổng quan vào bản PDF xuất báo cáo) | 90% |
 | 11 | Cấu hình hệ thống — hoàn thiện (4.8) | ⬜ Chưa bắt đầu | 0% |
 | 12 | Responsive/Mobile polish (8.9) | ⬜ Chưa bắt đầu | 0% |
 | 13 | QA, kiểm thử, deploy production | ⬜ Chưa bắt đầu | 0% |
@@ -247,11 +247,12 @@ Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / 
 - [ ] Nguyên tắc realtime vs snapshot: báo cáo kỳ đã đóng dùng đúng snapshot đã khóa
 - [ ] Ẩn nhãn nhóm khỏi GV/TG xuyên suốt báo cáo
 - [ ] Xuất Excel/PDF cho báo cáo #1,3,6,7 — giới hạn quyền xuất cho Admin/Quyền Quản lý lớp
-- [ ] Trang Tổng quan Admin/Quản lý lớp: KPI stat card + sparkline, bảng việc cần duyệt, area/bar/donut/gauge theo spec 4.7b
-- [ ] Trang Tổng quan GV/TG: tổng quan toàn đơn vị (không chỉ cá nhân), lịch dạy sắp tới dạng mini-calendar/timeline, progress KPI cá nhân rút gọn, thông báo mới nhất, thẻ gợi ý lớp
-- [ ] Người giữ Quyền Quản lý lớp thấy cả 2 bộ widget cùng lúc
+- [x] Trang Tổng quan Admin/Quản lý lớp: KPI stat card + sparkline, bảng việc cần duyệt, area/bar/donut/gauge theo spec 4.7b
+- [x] Trang Tổng quan GV/TG: tổng quan toàn đơn vị (không chỉ cá nhân), lịch dạy sắp tới dạng timeline, progress KPI cá nhân rút gọn, thông báo mới nhất, thẻ gợi ý lớp
+- [x] Người giữ Quyền Quản lý lớp thấy cả 2 bộ widget cùng lúc
+- [ ] Bổ sung Tổng quan vào bản PDF xuất báo cáo (đã ghi rõ "chưa có" trong Phụ lục PDF, làm sau khi Tổng quan được xác nhận ổn định)
 
-> **Tiến độ (chia 3 lượt):** lượt 1 = báo cáo #3, #4, #5, #8 (khung tuần/tháng/quý/năm) — đã viết xong migration `20260929100000_giai_doan_10a_bao_cao.sql` + test `supabase/tests/giai_doan_10a_bao_cao.sql` (26 kiểm tra, PGlite cục bộ 26/26; hồi quy Giai đoạn 3-8, 9 vẫn pass) + trang `/bao-cao` (4 báo cáo, có demo dev `/design/bao-cao`); **đã xác nhận trên Supabase thật: migration + test 26/26 true, đã push**. Lượt 2 = báo cáo #1, #2, #6, #7 (theo kỳ) — migration `20260930100000_giai_doan_10b_bao_cao_theo_ky.sql` + test (20 kiểm tra) **đã xác nhận true trên Supabase thật, đã push**. Sau đó theo phản hồi người dùng (8 tab cuộn ngang bất tiện, xuất file rời rạc) đã **tái cấu trúc `/bao-cao` thành 2 nhóm xếp dọc** (Theo kỳ đánh giá | Theo hoạt động) và gộp "Xuất báo cáo" thành 1 nút duy nhất — Excel nhiều sheet + **PDF thiết kế đầy đủ** (biểu đồ, bảng, trang Phụ lục giải thích chỉ số) cho báo cáo #1+#3+#6+#7, dùng `@react-pdf/renderer` (không cần migration, đã push thẳng). Lượt 3 = trang Tổng quan Admin + GV/TG, sau đó bổ sung Tổng quan vào bản PDF.
+> **Tiến độ (chia 3 lượt):** lượt 1 = báo cáo #3, #4, #5, #8 (khung tuần/tháng/quý/năm) — đã viết xong migration `20260929100000_giai_doan_10a_bao_cao.sql` + test `supabase/tests/giai_doan_10a_bao_cao.sql` (26 kiểm tra, PGlite cục bộ 26/26; hồi quy Giai đoạn 3-8, 9 vẫn pass) + trang `/bao-cao` (4 báo cáo, có demo dev `/design/bao-cao`); **đã xác nhận trên Supabase thật: migration + test 26/26 true, đã push**. Lượt 2 = báo cáo #1, #2, #6, #7 (theo kỳ) — migration `20260930100000_giai_doan_10b_bao_cao_theo_ky.sql` + test (20 kiểm tra) **đã xác nhận true trên Supabase thật, đã push**. Sau đó theo phản hồi người dùng (8 tab cuộn ngang bất tiện, xuất file rời rạc) đã **tái cấu trúc `/bao-cao` thành 2 nhóm xếp dọc** (Theo kỳ đánh giá | Theo hoạt động) và gộp "Xuất báo cáo" thành 1 nút duy nhất — Excel nhiều sheet + **PDF thiết kế đầy đủ** (biểu đồ, bảng, trang Phụ lục giải thích chỉ số) cho báo cáo #1+#3+#6+#7, dùng `@react-pdf/renderer` (không cần migration, đã push thẳng). **Lượt 3 (trang Tổng quan Admin + GV/TG) đã xong** — không cần migration (chỉ truy vấn bảng/view/RPC đã có sẵn), đã kiểm tra cấu trúc truy vấn bằng script chỉ-đọc service-role trên Supabase thật (không kiểm tra được RLS theo vai trò vì service role bỏ qua RLS — cần người dùng tự đăng nhập xác nhận), đã push. Còn lại: bổ sung Tổng quan vào PDF.
 
 **Điều kiện hoàn thành:** cả 8 báo cáo lấy đúng số liệu thật từ dữ liệu đã có ở các giai đoạn trước, Tổng quan tải nhanh và đúng nguyên tắc phân quyền/ẩn nhãn nhóm.
 

@@ -61,6 +61,7 @@ export const MOBILE_TABS: NavItem[] = [
 
 // Nhãn breadcrumb / tiêu đề trang theo đoạn đường dẫn đầu
 export const SEGMENT_LABELS: Record<string, string> = {
+  "tong-quan": "Tổng quan",
   "lop-hoc": "Lớp học",
   "dang-ky": "Đăng ký giảng dạy",
   "nhan-su": "Nhân sự",

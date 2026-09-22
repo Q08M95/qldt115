@@ -24,7 +24,7 @@ import {
   type MauBieuDo,
 } from "./bieu-do";
 
-const MAU_TRANG_THAI: Record<TrangThaiLopHienThi, MauBieuDo> = {
+export const MAU_TRANG_THAI: Record<TrangThaiLopHienThi, MauBieuDo> = {
   nhap: "neutral",
   dang_mo: "blue",
   da_du_dang_ky: "green",
