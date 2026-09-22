@@ -10,7 +10,6 @@ import { VAI_TRO_LABEL } from "@/lib/nhan-su/labels";
 import type { KhoangBaoCao } from "@/lib/bao-cao/khoang";
 import { tongHopTyLe, xuHuong, type DongTyLeTinh, type LocVaiTro } from "@/lib/bao-cao/tinh-toan";
 import type { DongTyLe } from "@/lib/bao-cao/types";
-import type { KhoaBaoCao } from "@/lib/bao-cao/url";
 import { ThanhMini } from "./bieu-do";
 import { LocVaiTroLinks } from "./thanh-dieu-khien";
 
@@ -55,13 +54,13 @@ export function BaoCaoTyLe({
   rowsTruoc,
   loc,
   khoang,
-  bc,
+  ky,
 }: {
   rows: DongTyLe[];
   rowsTruoc: DongTyLe[];
   loc: LocVaiTro;
   khoang: KhoangBaoCao;
-  bc: KhoaBaoCao;
+  ky?: string;
 }) {
   const t = tongHopTyLe(rows, loc);
   const truoc = tongHopTyLe(rowsTruoc, loc);
@@ -83,7 +82,7 @@ export function BaoCaoTyLe({
                 Theo từng người <span className="text-sm font-normal text-muted-foreground">· {t.soNguoi} người</span>
               </CardTitle>
               <CardAction>
-                <LocVaiTroLinks bc={bc} khoang={khoang} vt={loc} />
+                <LocVaiTroLinks anchor="ty-le-dang-ky" khoang={khoang} ky={ky} vt={loc} />
               </CardAction>
             </CardHeader>
             <CardContent>

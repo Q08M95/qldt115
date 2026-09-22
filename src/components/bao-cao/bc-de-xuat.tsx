@@ -1,10 +1,8 @@
-import { Download, FileCheck2, Hourglass, ThumbsUp } from "lucide-react";
+import { FileCheck2, Hourglass, ThumbsUp } from "lucide-react";
 import { DashboardLayout, StatRow } from "@/components/dashboard-layout";
 import { StatTile } from "@/components/stat-tile";
-import { Button } from "@/components/ui/button";
-import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { chuanHoaDeXuat } from "@/lib/bao-cao/tinh-toan";
-import { hrefBaoCao } from "@/lib/bao-cao/url";
 import { LOAI_DE_XUAT_LABEL } from "@/lib/nhan-su/labels";
 import type { DeXuatThongKe, KyDanhGia } from "@/types/database";
 import { ChuThichDonut, Donut } from "./bieu-do";
@@ -13,7 +11,8 @@ const pt = (v: number | null) => (v === null ? "–" : `${v.toLocaleString("vi-V
 
 // Báo cáo #7 — Đề xuất nhân sự (mục 3/4.1/4.7): số liệu tổng hợp theo loại/kỳ + donut tỷ lệ duyệt/bỏ qua. KHÔNG hiển thị
 // ai được đề xuất gì (mức đó thuộc Nhật ký hệ thống, chỉ Admin/Quản lý lớp) — công khai cho mọi người ở dạng số liệu.
-export function BaoCaoDeXuat({ ky, data, isQuanTri }: { ky: KyDanhGia; data: DeXuatThongKe; isQuanTri: boolean }) {
+// Xuất Excel/PDF gộp chung 1 nút "Xuất báo cáo" ở đầu trang /bao-cao (mục 4.7).
+export function BaoCaoDeXuat({ ky, data }: { ky: KyDanhGia; data: DeXuatThongKe }) {
   const t = chuanHoaDeXuat(data);
   const lat = [
     { khoa: "da_duyet", nhan: "Đã duyệt", so: t.da_duyet, mau: "green" as const },
@@ -33,15 +32,6 @@ export function BaoCaoDeXuat({ ky, data, isQuanTri }: { ky: KyDanhGia; data: DeX
           <Card className="gap-4 px-0">
             <CardHeader>
               <CardTitle>Theo loại đề xuất — {ky.ten}</CardTitle>
-              {isQuanTri && t.tong > 0 && (
-                <CardAction>
-                  <Button asChild variant="outline" size="sm">
-                    <a href={hrefBaoCao({ bc: "de-xuat", ky: ky.id }).replace("/bao-cao?", "/bao-cao/xuat?")} download>
-                      <Download /> Xuất Excel
-                    </a>
-                  </Button>
-                </CardAction>
-              )}
             </CardHeader>
             <CardContent>
               <div className="@container">

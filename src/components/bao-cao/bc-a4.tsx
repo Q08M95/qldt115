@@ -1,18 +1,17 @@
-import { Download, HeartHandshake, Trophy } from "lucide-react";
+import { HeartHandshake, Trophy } from "lucide-react";
 import { EmptyState } from "@/components/empty-state";
 import { DashboardLayout, StatRow } from "@/components/dashboard-layout";
 import { StatTile } from "@/components/stat-tile";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UserAvatar } from "@/components/user-avatar";
 import { VAI_TRO_LABEL } from "@/lib/nhan-su/labels";
-import { hrefBaoCao } from "@/lib/bao-cao/url";
 import type { A4Row, KyDanhGia } from "@/types/database";
 
 // Báo cáo #6 — A4: đóng góp lớp không kinh phí (mục 4.2/6). Xếp hạng theo LŨY KẾ TOÀN THỜI GIAN (phục vụ vinh danh cuối
 // năm, không phụ thuộc kỳ đang xem); cột "trong kỳ" đổi theo kỳ đã chọn để thấy đóng góp gần đây.
-export function BaoCaoA4({ ky, rows, isQuanTri }: { ky: KyDanhGia; rows: A4Row[]; isQuanTri: boolean }) {
+// Xuất Excel/PDF gộp chung 1 nút "Xuất báo cáo" ở đầu trang /bao-cao (mục 4.7).
+export function BaoCaoA4({ ky, rows }: { ky: KyDanhGia; rows: A4Row[] }) {
   const coDongGop = rows.filter((r) => r.a4_luy_ke > 0);
   const tongLuyKe = rows.reduce((s, r) => s + r.a4_luy_ke, 0);
   const tongKy = rows.reduce((s, r) => s + r.a4_ky, 0);
@@ -33,15 +32,6 @@ export function BaoCaoA4({ ky, rows, isQuanTri }: { ky: KyDanhGia; rows: A4Row[]
               <CardTitle className="flex items-center gap-2">
                 Bảng xếp hạng A4 lũy kế <Badge variant="teal">{rows.length} người</Badge>
               </CardTitle>
-              {isQuanTri && rows.length > 0 && (
-                <CardAction>
-                  <Button asChild variant="outline" size="sm">
-                    <a href={hrefBaoCao({ bc: "a4", ky: ky.id }).replace("/bao-cao?", "/bao-cao/xuat?")} download>
-                      <Download /> Xuất Excel
-                    </a>
-                  </Button>
-                </CardAction>
-              )}
             </CardHeader>
             <CardContent>
               {rows.length === 0 ? (
@@ -89,7 +79,7 @@ export function BaoCaoA4({ ky, rows, isQuanTri }: { ky: KyDanhGia; rows: A4Row[]
               <span className="font-medium text-foreground">Lũy kế</span> tính từ trước tới hiện tại, không đổi theo kỳ đang xem — dùng để xét vinh danh cuối năm và tie-break khi xét khen thưởng (KPI bằng nhau).
             </p>
             <p>
-              <span className="font-medium text-foreground">Kỳ này</span> chỉ tính các lớp không kinh phí có Bài trong khoảng {ky.ten} — đổi kỳ ở tab phía trên để xem giai đoạn khác.
+              <span className="font-medium text-foreground">Kỳ này</span> chỉ tính các lớp không kinh phí có Bài trong khoảng {ky.ten} — đổi kỳ ở bộ lọc phía trên để xem giai đoạn khác.
             </p>
           </CardContent>
         </Card>

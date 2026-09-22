@@ -1,12 +1,10 @@
-import { Award, Download, Info, Users } from "lucide-react";
+import { Award, Info, Users } from "lucide-react";
 import { StatRow } from "@/components/dashboard-layout";
 import { KpiKyTable } from "@/components/kpi/kpi-ky-table";
 import { StatTile } from "@/components/stat-tile";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { fmtDate } from "@/lib/format";
-import { hrefBaoCao } from "@/lib/bao-cao/url";
 import { TRANG_THAI_KY_LABEL } from "@/lib/kpi/labels";
 import type { KpiKyRow, KyDanhGia } from "@/types/database";
 
@@ -15,6 +13,7 @@ const so = (n: number, toiDa = 1) => n.toLocaleString("vi-VN", { maximumFraction
 // Báo cáo #1 — KPI tổng hợp toàn đơn vị theo kỳ (mục 4.7): bảng xếp hạng nhiều cột số nên để FULL WIDTH (không tách
 // cột phụ như các báo cáo khác) — giống cách trình bày của /nhat-ky, tránh bảng bị bó hẹp rồi tràn ngang.
 // Admin xem thêm cột nhóm (đã xử lý trong KpiKyTable, gộp vào dòng tên thay vì thêm cột riêng).
+// Xuất Excel/PDF gộp chung 1 nút "Xuất báo cáo" ở đầu trang /bao-cao (mục 4.7), không đặt riêng ở từng báo cáo con.
 export function BaoCaoKpiTongHop({ ky, rows, isQuanTri }: { ky: KyDanhGia; rows: KpiKyRow[]; isQuanTri: boolean }) {
   const kpiTb = rows.length ? rows.reduce((s, r) => s + r.kpi, 0) / rows.length : null;
   const caoNhat = rows[0];
@@ -38,15 +37,6 @@ export function BaoCaoKpiTongHop({ ky, rows, isQuanTri }: { ky: KyDanhGia; rows:
               {fmtDate(ky.tu)} – {fmtDate(ky.den)}
             </span>
           </CardTitle>
-          {isQuanTri && rows.length > 0 && (
-            <CardAction>
-              <Button asChild variant="outline" size="sm">
-                <a href={hrefBaoCao({ bc: "kpi-tong-hop", ky: ky.id }).replace("/bao-cao?", "/bao-cao/xuat?")} download>
-                  <Download /> Xuất Excel
-                </a>
-              </Button>
-            </CardAction>
-          )}
         </CardHeader>
         {ky.trang_thai !== "da_dong" && (
           <p className="-mt-2 px-5 text-xs text-muted-foreground">

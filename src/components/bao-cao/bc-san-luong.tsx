@@ -1,36 +1,32 @@
-import { Clock, Download, Scale, UserX, Users } from "lucide-react";
+import { Clock, Scale, UserX, Users } from "lucide-react";
 import { DongHoBanNguyet } from "@/components/danh-gia/kpi-charts";
 import { EmptyState } from "@/components/empty-state";
 import { DashboardLayout, StatRow } from "@/components/dashboard-layout";
 import { StatTile } from "@/components/stat-tile";
-import { Button } from "@/components/ui/button";
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { VAI_TRO_LABEL } from "@/lib/nhan-su/labels";
 import type { KhoangBaoCao } from "@/lib/bao-cao/khoang";
 import { tongHopSanLuong, xuHuong, type LocVaiTro } from "@/lib/bao-cao/tinh-toan";
 import type { DongSanLuong } from "@/lib/bao-cao/types";
-import { hrefBaoCao, type KhoaBaoCao } from "@/lib/bao-cao/url";
 import { LocVaiTroLinks } from "./thanh-dieu-khien";
 import { ThanhNgang, type DongThanh } from "./bieu-do";
 
 const gio = (n: number) => `${n.toLocaleString("vi-VN", { maximumFractionDigits: 1 })} giờ`;
 
 // Báo cáo #3 — Sản lượng giảng dạy (mục 4.7): so sánh giờ dạy giữa mọi người để Admin tự kiểm tra nguyên tắc công bằng phân bổ (mục 4.3).
-// Không gắn nhãn nhóm; chỉ tách theo vai trò Giảng viên / Trợ giảng.
+// Không gắn nhãn nhóm; chỉ tách theo vai trò Giảng viên / Trợ giảng. Xuất Excel/PDF gộp chung 1 nút ở đầu trang /bao-cao.
 export function BaoCaoSanLuong({
   rows,
   rowsTruoc,
   loc,
   khoang,
-  bc,
-  isQuanTri,
+  ky,
 }: {
   rows: DongSanLuong[];
   rowsTruoc: DongSanLuong[];
   loc: LocVaiTro;
   khoang: KhoangBaoCao;
-  bc: KhoaBaoCao;
-  isQuanTri: boolean;
+  ky?: string;
 }) {
   const t = tongHopSanLuong(rows, loc);
   const truoc = tongHopSanLuong(rowsTruoc, loc);
@@ -67,14 +63,7 @@ export function BaoCaoSanLuong({
                 <span className="text-sm font-normal text-muted-foreground">· {t.nguoi.length} người</span>
               </CardTitle>
               <CardAction className="flex items-center gap-2">
-                <LocVaiTroLinks bc={bc} khoang={khoang} vt={loc} />
-                {isQuanTri && t.nguoi.length > 0 && (
-                  <Button asChild variant="outline" size="sm">
-                    <a href={hrefBaoCao({ bc: "san-luong", kt: khoang.khung, moc: khoang.laHienTai ? undefined : khoang.tu }).replace("/bao-cao?", "/bao-cao/xuat?")} download>
-                      <Download /> Xuất Excel
-                    </a>
-                  </Button>
-                )}
+                <LocVaiTroLinks anchor="san-luong" khoang={khoang} ky={ky} vt={loc} />
               </CardAction>
             </CardHeader>
             <CardContent>

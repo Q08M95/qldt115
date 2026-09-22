@@ -9,11 +9,13 @@ import { BaoCaoVanHanhDangKy } from "@/components/bao-cao/bc-van-hanh-dang-ky";
 import { BaoCaoVanHanhLop } from "@/components/bao-cao/bc-van-hanh-lop";
 import { BaoCaoXuHuongKpi } from "@/components/bao-cao/bc-xu-huong-kpi";
 import { BoLocKy } from "@/components/bao-cao/chon-ky";
-import { TabBaoCao, ThanhDieuKhien } from "@/components/bao-cao/thanh-dieu-khien";
-import { tinhKhoang } from "@/lib/bao-cao/khoang";
+import { MucBaoCao, MucLuc } from "@/components/bao-cao/muc-bao-cao";
+import { ChuyenNhomBaoCao, BoLocThoiGian } from "@/components/bao-cao/thanh-dieu-khien";
+import { XuatBaoCao } from "@/components/bao-cao/xuat-bao-cao";
+import { laKhung, tinhKhoang, type KhungThoiGian } from "@/lib/bao-cao/khoang";
 import { chonKy } from "@/lib/bao-cao/ky";
 import type { CanhBaoPool, DongLop, DongSanLuong, DongTyLe, VanHanhDangKy } from "@/lib/bao-cao/types";
-import { nhomCuaBaoCao, type KhoaBaoCao } from "@/lib/bao-cao/url";
+import { BAO_CAO_KY, BAO_CAO_THOI_GIAN, laNhomBaoCao, type NhomBaoCao } from "@/lib/bao-cao/url";
 import type { A4Row, DeXuatThongKe, KpiKyRow, KpiTheoKyRow, KyDanhGia } from "@/types/database";
 
 // Trang demo Báo cáo với dữ liệu giả — chỉ chạy khi dev, dùng để đối chiếu giao diện với ảnh mẫu. Production trả 404.
@@ -149,63 +151,71 @@ const DE_XUAT: DeXuatThongKe = {
   bo_qua: 3,
 };
 
-export default async function DesignBaoCaoPage(props: { searchParams: Promise<{ bc?: string; vt?: string; ky?: string; v?: string }> }) {
+export default async function DesignBaoCaoPage(props: { searchParams: Promise<{ nhom?: string; vt?: string; ky?: string; kt?: string; moc?: string; v?: string }> }) {
   if (process.env.NODE_ENV === "production") notFound();
-  const { bc = "kpi-tong-hop", vt = "tat-ca", ky, v } = await props.searchParams;
-  const khoang = tinhKhoang("thang", "2026-09-15");
+  const { nhom: nhomRaw, vt = "tat-ca", ky, kt: ktRaw, moc, v } = await props.searchParams;
+  const nhom: NhomBaoCao = laNhomBaoCao(nhomRaw) ? nhomRaw : "ky";
+  const kt: KhungThoiGian = laKhung(ktRaw) ? ktRaw : "thang";
+  const khoang = tinhKhoang(kt, moc ?? "2026-09-15");
   const trong = v === "trong";
   const gvtg = v === "gvtg";
   const loc = vt === "giang_vien" || vt === "tro_giang" ? vt : "tat-ca";
-  const khoa: KhoaBaoCao =
-    ([
-      "kpi-tong-hop",
-      "xu-huong-kpi",
-      "san-luong",
-      "ty-le-dang-ky",
-      "van-hanh-dang-ky",
-      "a4",
-      "de-xuat",
-      "van-hanh-lop",
-    ] as const).find((k) => k === bc) ?? "kpi-tong-hop";
-  const nhom = nhomCuaBaoCao(khoa);
+  const vtParam = loc === "tat-ca" ? undefined : loc;
+  const dieu = chonKy(KY_LIST, ky)!;
 
-  let dieuKhien: React.ReactNode;
-  let noiDung: React.ReactNode;
-
-  if (nhom === "khong_loc") {
-    dieuKhien = <TabBaoCao active={khoa} />;
-    noiDung = <BaoCaoXuHuongKpi ky={trong ? [] : KPI_THEO_KY} />;
-  } else if (nhom === "ky") {
-    const dieu = chonKy(KY_LIST, ky)!;
-    dieuKhien = <BoLocKy bc={khoa} list={KY_LIST} hienTai={dieu.hienTai} truoc={dieu.truoc} sau={dieu.sau} />;
-    if (khoa === "kpi-tong-hop") {
-      const rows = trong ? [] : gvtg ? KPI_TONG_HOP.map((r) => ({ ...r, nhom: null })) : KPI_TONG_HOP;
-      noiDung = <BaoCaoKpiTongHop ky={dieu.hienTai} rows={dieu.hienTai.id === "k5" && !gvtg ? [rows[0]] : dieu.hienTai.id === "k5" ? [] : rows} isQuanTri={!gvtg} />;
-    } else if (khoa === "a4") {
-      noiDung = <BaoCaoA4 ky={dieu.hienTai} rows={trong ? [] : A4} isQuanTri={!gvtg} />;
-    } else {
-      noiDung = <BaoCaoDeXuat ky={dieu.hienTai} data={trong ? { theo_loai: [], cho_duyet: 0, da_duyet: 0, bo_qua: 0 } : DE_XUAT} isQuanTri={!gvtg} />;
-    }
-  } else {
-    dieuKhien = <ThanhDieuKhien bc={khoa} khoang={khoang} vt={loc === "tat-ca" ? undefined : loc} />;
-    if (khoa === "san-luong") noiDung = <BaoCaoSanLuong rows={trong ? [] : SAN_LUONG} rowsTruoc={SAN_LUONG_TRUOC} loc={loc} khoang={khoang} bc={khoa} isQuanTri={!gvtg} />;
-    else if (khoa === "ty-le-dang-ky") noiDung = <BaoCaoTyLe rows={trong ? [] : TY_LE} rowsTruoc={TY_LE_TRUOC} loc={loc} khoang={khoang} bc={khoa} />;
-    else if (khoa === "van-hanh-dang-ky")
-      noiDung = (
-        <BaoCaoVanHanhDangKy
-          hienTai={trong ? { ...VAN_HANH, slot_tong: 0, slot_da_phan_cong: 0, gio_lap_tb: null, so_slot_do_duyet: 0, serie: SERIE.map((s) => ({ ...s, phan_cong: 0 })) } : VAN_HANH}
-          truoc={VAN_HANH_TRUOC}
-          canhBao={trong ? [] : POOL}
-          nguongPool={3}
-        />
-      );
-    else noiDung = <BaoCaoVanHanhLop rows={trong ? [] : LOP} />;
-  }
+  const noiDung =
+    nhom === "ky" ? (
+      <div className="grid gap-8">
+        <BoLocKy list={KY_LIST} hienTai={dieu.hienTai} truoc={dieu.truoc} sau={dieu.sau} kt={kt} />
+        <MucLuc items={BAO_CAO_KY} />
+        <MucBaoCao id="kpi-tong-hop" so={1} nhan="KPI tổng hợp">
+          <BaoCaoKpiTongHop
+            ky={dieu.hienTai}
+            rows={trong ? [] : dieu.hienTai.id === "k5" && !gvtg ? [KPI_TONG_HOP[0]] : dieu.hienTai.id === "k5" ? [] : gvtg ? KPI_TONG_HOP.map((r) => ({ ...r, nhom: null })) : KPI_TONG_HOP}
+            isQuanTri={!gvtg}
+          />
+        </MucBaoCao>
+        <MucBaoCao id="xu-huong-kpi" so={2} nhan="Xu hướng KPI">
+          <BaoCaoXuHuongKpi ky={trong ? [] : KPI_THEO_KY} />
+        </MucBaoCao>
+        <MucBaoCao id="a4" so={6} nhan="A4 — Lớp không kinh phí">
+          <BaoCaoA4 ky={dieu.hienTai} rows={trong ? [] : A4} />
+        </MucBaoCao>
+        <MucBaoCao id="de-xuat" so={7} nhan="Đề xuất nhân sự">
+          <BaoCaoDeXuat ky={dieu.hienTai} data={trong ? { theo_loai: [], cho_duyet: 0, da_duyet: 0, bo_qua: 0 } : DE_XUAT} />
+        </MucBaoCao>
+      </div>
+    ) : (
+      <div className="grid gap-8">
+        <BoLocThoiGian khoang={khoang} ky={dieu.hienTai.id} vt={vtParam} />
+        <MucLuc items={BAO_CAO_THOI_GIAN} />
+        <MucBaoCao id="san-luong" so={3} nhan="Sản lượng giảng dạy">
+          <BaoCaoSanLuong rows={trong ? [] : SAN_LUONG} rowsTruoc={SAN_LUONG_TRUOC} loc={loc} khoang={khoang} ky={dieu.hienTai.id} />
+        </MucBaoCao>
+        <MucBaoCao id="ty-le-dang-ky" so={4} nhan="Tự đăng ký & nhận lời mời">
+          <BaoCaoTyLe rows={trong ? [] : TY_LE} rowsTruoc={TY_LE_TRUOC} loc={loc} khoang={khoang} ky={dieu.hienTai.id} />
+        </MucBaoCao>
+        <MucBaoCao id="van-hanh-dang-ky" so={5} nhan="Vận hành đăng ký">
+          <BaoCaoVanHanhDangKy
+            hienTai={trong ? { ...VAN_HANH, slot_tong: 0, slot_da_phan_cong: 0, gio_lap_tb: null, so_slot_do_duyet: 0, serie: SERIE.map((s) => ({ ...s, phan_cong: 0 })) } : VAN_HANH}
+            truoc={VAN_HANH_TRUOC}
+            canhBao={trong ? [] : POOL}
+            nguongPool={3}
+          />
+        </MucBaoCao>
+        <MucBaoCao id="van-hanh-lop" so={8} nhan="Vận hành lớp học">
+          <BaoCaoVanHanhLop rows={trong ? [] : LOP} />
+        </MucBaoCao>
+      </div>
+    );
 
   return (
     <AppShell user={{ name: "Nguyễn Hoàng Tú Minh", email: "minh@example.com" }} isQuanTri period={{ name: "Quý 3/2026", daysLeft: 11 }} unreadCount={3} activeHref="/bao-cao">
-      <div className="grid gap-5">
-        {dieuKhien}
+      <div className="grid gap-6">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <ChuyenNhomBaoCao nhom={nhom} ky={dieu.hienTai.id} kt={kt} vt={vtParam} />
+          {!gvtg && <XuatBaoCao ky={dieu.hienTai.id} kt={kt} moc={khoang.tu} />}
+        </div>
         {noiDung}
       </div>
     </AppShell>
