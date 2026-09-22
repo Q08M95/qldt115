@@ -1,15 +1,23 @@
 import { notFound } from "next/navigation";
 import { AppShell } from "@/components/app-shell/app-shell";
+import { BaoCaoA4 } from "@/components/bao-cao/bc-a4";
+import { BaoCaoDeXuat } from "@/components/bao-cao/bc-de-xuat";
+import { BaoCaoKpiTongHop } from "@/components/bao-cao/bc-kpi-tong-hop";
 import { BaoCaoSanLuong } from "@/components/bao-cao/bc-san-luong";
 import { BaoCaoTyLe } from "@/components/bao-cao/bc-ty-le-dang-ky";
 import { BaoCaoVanHanhDangKy } from "@/components/bao-cao/bc-van-hanh-dang-ky";
 import { BaoCaoVanHanhLop } from "@/components/bao-cao/bc-van-hanh-lop";
-import { ThanhDieuKhien } from "@/components/bao-cao/thanh-dieu-khien";
+import { BaoCaoXuHuongKpi } from "@/components/bao-cao/bc-xu-huong-kpi";
+import { BoLocKy } from "@/components/bao-cao/chon-ky";
+import { TabBaoCao, ThanhDieuKhien } from "@/components/bao-cao/thanh-dieu-khien";
 import { tinhKhoang } from "@/lib/bao-cao/khoang";
+import { chonKy } from "@/lib/bao-cao/ky";
 import type { CanhBaoPool, DongLop, DongSanLuong, DongTyLe, VanHanhDangKy } from "@/lib/bao-cao/types";
+import { nhomCuaBaoCao, type KhoaBaoCao } from "@/lib/bao-cao/url";
+import type { A4Row, DeXuatThongKe, KpiKyRow, KpiTheoKyRow, KyDanhGia } from "@/types/database";
 
-// Trang demo Báo cáo (lượt 1) với dữ liệu giả — chỉ chạy khi dev, dùng để đối chiếu giao diện với ảnh mẫu. Production trả 404.
-// ?bc=san-luong|ty-le-dang-ky|van-hanh-dang-ky|van-hanh-lop&vt=giang_vien|tro_giang&v=trong
+// Trang demo Báo cáo với dữ liệu giả — chỉ chạy khi dev, dùng để đối chiếu giao diện với ảnh mẫu. Production trả 404.
+// ?bc=<8 khoa báo cáo>&vt=giang_vien|tro_giang&ky=<id>&v=trong|gvtg (gvtg = xem như GV/TG không phải Admin, cho báo cáo #1)
 const TEN = ["Nguyễn Văn An", "Trần Thị Bình", "Lê Hoàng Cường", "Phạm Minh Đức", "Võ Thu Hà", "Đặng Quốc Huy", "Bùi Lan Khanh", "Hoàng Gia Long", "Ngô Thanh Mai", "Đỗ Anh Nam", "Phan Thị Oanh", "Lý Quang Phúc", "Vũ Hải Quân", "Trương Diệu Linh", "Huỳnh Bảo Sơn", "Dương Mỹ Tâm", "Tạ Văn Uy", "Mai Thị Vân"];
 const GIO = [22, 20, 18, 16.5, 14, 13, 12, 10, 9, 8, 6, 5, 4, 3, 2, 0, 0, 0];
 
@@ -78,29 +86,127 @@ const LOP: DongLop[] = Array.from({ length: 11 }, (_, i) => ({
   slot_da_phan_cong: i === 4 ? 0 : 6 + (i % 4) + (i > 5 ? 2 : 0),
 }));
 
-export default async function DesignBaoCaoPage(props: { searchParams: Promise<{ bc?: string; vt?: string; v?: string }> }) {
+// ===== Lượt 2: theo kỳ đánh giá =====
+const NHOM_NS = ["gv_bac_si", "gv_khong_bac_si", "tg_bac_si", "tg_khong_bac_si"] as const;
+const KY_LIST: KyDanhGia[] = [
+  { id: "k1", ten: "Quý 4/2025", tu: "2025-10-01", den: "2025-12-31", trang_thai: "da_dong", dong_luc: "2026-01-02T03:00:00Z" },
+  { id: "k2", ten: "Quý 1/2026", tu: "2026-01-01", den: "2026-03-31", trang_thai: "da_dong", dong_luc: "2026-04-02T03:00:00Z" },
+  { id: "k3", ten: "Quý 2/2026", tu: "2026-04-01", den: "2026-06-30", trang_thai: "da_dong", dong_luc: "2026-07-02T03:00:00Z" },
+  { id: "k4", ten: "Quý 3/2026", tu: "2026-07-01", den: "2026-09-30", trang_thai: "dang_mo", dong_luc: null },
+  { id: "k5", ten: "Quý 4/2026", tu: "2026-10-01", den: "2026-12-31", trang_thai: "cho_duyet", dong_luc: null },
+];
+
+const KPI_TONG_HOP: KpiKyRow[] = TEN.slice(0, 12).map((ten, i) => {
+  const kpi = Math.max(35, 92 - i * 4.3 + (i % 3 === 0 ? 3 : 0));
+  return {
+    user_id: `u${i}`,
+    ho_ten: ten,
+    avatar_url: null,
+    vai_tro: i % 3 === 2 ? "tro_giang" : "giang_vien",
+    nhom: NHOM_NS[i % 4],
+    kpi: Math.round(kpi * 10) / 10,
+    hang: i + 1,
+    diem_nhom: { A: Math.round((kpi - 6) * 10) / 10, B: Math.round((kpi + 8) * 10) / 10, C: Math.round((kpi - 2) * 10) / 10 },
+    gia_tri: { A1: kpi - 8, A2: 60, A3: 100, B1: kpi + 8, C1: 80, C2: kpi, C3: 80 },
+    trong_so_hieu_luc: { A1: 12.5, A2: 6.25, A3: 6.25, B1: 30, C1: 11.25, C2: 18, C3: 15.75 },
+    gio_thuc: 20 - i,
+    gio_quy_doi: 22 - i,
+    so_bai: 8 - (i % 4),
+    so_lop: 3,
+    a4_ky: i % 5 === 0 ? 1 : 0,
+    a4_luy_ke: i % 5 === 0 ? 3 : 0,
+    che_do_a1: "percentile",
+    percentile: Math.max(5, 95 - i * 8),
+  };
+});
+
+const KPI_THEO_KY: KpiTheoKyRow[] = [
+  { ky_id: "k1", ten: "Quý 4/2025", tu: "2025-10-01", den: "2025-12-31", trang_thai: "da_dong", kpi_tb: 68.4, kpi_tb_gv: 70.1, kpi_tb_tg: 65.2, so_nguoi: 34 },
+  { ky_id: "k2", ten: "Quý 1/2026", tu: "2026-01-01", den: "2026-03-31", trang_thai: "da_dong", kpi_tb: 71.9, kpi_tb_gv: 73.5, kpi_tb_tg: 68.8, so_nguoi: 38 },
+  { ky_id: "k3", ten: "Quý 2/2026", tu: "2026-04-01", den: "2026-06-30", trang_thai: "da_dong", kpi_tb: 74.2, kpi_tb_gv: 75.0, kpi_tb_tg: 72.6, so_nguoi: 41 },
+  { ky_id: "k4", ten: "Quý 3/2026", tu: "2026-07-01", den: "2026-09-30", trang_thai: "dang_mo", kpi_tb: 76.8, kpi_tb_gv: 78.3, kpi_tb_tg: 73.9, so_nguoi: 40 },
+];
+
+const A4: A4Row[] = TEN.slice(0, 10).map((ten, i) => ({
+  user_id: `u${i}`,
+  ho_ten: ten,
+  avatar_url: null,
+  vai_tro: i % 3 === 2 ? "tro_giang" : "giang_vien",
+  dang_tham_gia: i !== 8,
+  a4_luy_ke: Math.max(0, 9 - i),
+  a4_ky: i < 4 ? 1 : 0,
+}));
+
+const DE_XUAT: DeXuatThongKe = {
+  theo_loai: [
+    { loai: "phan_cong", cho_duyet: 1, da_duyet: 4, bo_qua: 1 },
+    { loai: "dao_tao", cho_duyet: 0, da_duyet: 2, bo_qua: 0 },
+    { loai: "khen_thuong_nhac_nho", cho_duyet: 2, da_duyet: 5, bo_qua: 1 },
+    { loai: "doi_nhom", cho_duyet: 1, da_duyet: 2, bo_qua: 1 },
+  ],
+  cho_duyet: 4,
+  da_duyet: 13,
+  bo_qua: 3,
+};
+
+export default async function DesignBaoCaoPage(props: { searchParams: Promise<{ bc?: string; vt?: string; ky?: string; v?: string }> }) {
   if (process.env.NODE_ENV === "production") notFound();
-  const { bc = "san-luong", vt = "tat-ca", v } = await props.searchParams;
+  const { bc = "kpi-tong-hop", vt = "tat-ca", ky, v } = await props.searchParams;
   const khoang = tinhKhoang("thang", "2026-09-15");
   const trong = v === "trong";
+  const gvtg = v === "gvtg";
   const loc = vt === "giang_vien" || vt === "tro_giang" ? vt : "tat-ca";
-  const khoa = (["san-luong", "ty-le-dang-ky", "van-hanh-dang-ky", "van-hanh-lop"] as const).find((k) => k === bc) ?? "san-luong";
+  const khoa: KhoaBaoCao =
+    ([
+      "kpi-tong-hop",
+      "xu-huong-kpi",
+      "san-luong",
+      "ty-le-dang-ky",
+      "van-hanh-dang-ky",
+      "a4",
+      "de-xuat",
+      "van-hanh-lop",
+    ] as const).find((k) => k === bc) ?? "kpi-tong-hop";
+  const nhom = nhomCuaBaoCao(khoa);
+
+  let dieuKhien: React.ReactNode;
+  let noiDung: React.ReactNode;
+
+  if (nhom === "khong_loc") {
+    dieuKhien = <TabBaoCao active={khoa} />;
+    noiDung = <BaoCaoXuHuongKpi ky={trong ? [] : KPI_THEO_KY} />;
+  } else if (nhom === "ky") {
+    const dieu = chonKy(KY_LIST, ky)!;
+    dieuKhien = <BoLocKy bc={khoa} list={KY_LIST} hienTai={dieu.hienTai} truoc={dieu.truoc} sau={dieu.sau} />;
+    if (khoa === "kpi-tong-hop") {
+      const rows = trong ? [] : gvtg ? KPI_TONG_HOP.map((r) => ({ ...r, nhom: null })) : KPI_TONG_HOP;
+      noiDung = <BaoCaoKpiTongHop ky={dieu.hienTai} rows={dieu.hienTai.id === "k5" && !gvtg ? [rows[0]] : dieu.hienTai.id === "k5" ? [] : rows} isQuanTri={!gvtg} />;
+    } else if (khoa === "a4") {
+      noiDung = <BaoCaoA4 ky={dieu.hienTai} rows={trong ? [] : A4} isQuanTri={!gvtg} />;
+    } else {
+      noiDung = <BaoCaoDeXuat ky={dieu.hienTai} data={trong ? { theo_loai: [], cho_duyet: 0, da_duyet: 0, bo_qua: 0 } : DE_XUAT} isQuanTri={!gvtg} />;
+    }
+  } else {
+    dieuKhien = <ThanhDieuKhien bc={khoa} khoang={khoang} vt={loc === "tat-ca" ? undefined : loc} />;
+    if (khoa === "san-luong") noiDung = <BaoCaoSanLuong rows={trong ? [] : SAN_LUONG} rowsTruoc={SAN_LUONG_TRUOC} loc={loc} khoang={khoang} bc={khoa} isQuanTri={!gvtg} />;
+    else if (khoa === "ty-le-dang-ky") noiDung = <BaoCaoTyLe rows={trong ? [] : TY_LE} rowsTruoc={TY_LE_TRUOC} loc={loc} khoang={khoang} bc={khoa} />;
+    else if (khoa === "van-hanh-dang-ky")
+      noiDung = (
+        <BaoCaoVanHanhDangKy
+          hienTai={trong ? { ...VAN_HANH, slot_tong: 0, slot_da_phan_cong: 0, gio_lap_tb: null, so_slot_do_duyet: 0, serie: SERIE.map((s) => ({ ...s, phan_cong: 0 })) } : VAN_HANH}
+          truoc={VAN_HANH_TRUOC}
+          canhBao={trong ? [] : POOL}
+          nguongPool={3}
+        />
+      );
+    else noiDung = <BaoCaoVanHanhLop rows={trong ? [] : LOP} />;
+  }
 
   return (
     <AppShell user={{ name: "Nguyễn Hoàng Tú Minh", email: "minh@example.com" }} isQuanTri period={{ name: "Quý 3/2026", daysLeft: 11 }} unreadCount={3} activeHref="/bao-cao">
       <div className="grid gap-5">
-        <ThanhDieuKhien bc={khoa} khoang={khoang} vt={loc === "tat-ca" ? undefined : loc} />
-        {khoa === "san-luong" && <BaoCaoSanLuong rows={trong ? [] : SAN_LUONG} rowsTruoc={SAN_LUONG_TRUOC} loc={loc} khoang={khoang} bc={khoa} />}
-        {khoa === "ty-le-dang-ky" && <BaoCaoTyLe rows={trong ? [] : TY_LE} rowsTruoc={TY_LE_TRUOC} loc={loc} khoang={khoang} bc={khoa} />}
-        {khoa === "van-hanh-dang-ky" && (
-          <BaoCaoVanHanhDangKy
-            hienTai={trong ? { ...VAN_HANH, slot_tong: 0, slot_da_phan_cong: 0, gio_lap_tb: null, so_slot_do_duyet: 0, serie: SERIE.map((s) => ({ ...s, phan_cong: 0 })) } : VAN_HANH}
-            truoc={VAN_HANH_TRUOC}
-            canhBao={trong ? [] : POOL}
-            nguongPool={3}
-          />
-        )}
-        {khoa === "van-hanh-lop" && <BaoCaoVanHanhLop rows={trong ? [] : LOP} />}
+        {dieuKhien}
+        {noiDung}
       </div>
     </AppShell>
   );

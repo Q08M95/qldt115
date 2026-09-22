@@ -1,4 +1,4 @@
-import type { VaiTroGiangDay } from "@/types/database";
+import type { DeXuatThongKe, LoaiDeXuat, VaiTroGiangDay } from "@/types/database";
 import type { DiemNgayDangKy, DongLop, DongSanLuong, DongTyLe } from "./types";
 
 export type LocVaiTro = "tat-ca" | VaiTroGiangDay;
@@ -143,4 +143,14 @@ export function tongHopLop(rows: DongLop[]): TongHopLop {
     slotTong: rows.reduce((s, r) => s + r.slot_tong, 0),
     slotDaPhanCong: rows.reduce((s, r) => s + r.slot_da_phan_cong, 0),
   };
+}
+
+// ===== Báo cáo #7 =====
+const TAT_CA_LOAI: LoaiDeXuat[] = ["phan_cong", "dao_tao", "khen_thuong_nhac_nho", "doi_nhom"];
+
+// Đảm bảo đủ 4 loại (kể cả loại chưa có đề xuất nào) để bảng luôn hiển thị ổn định, đúng thứ tự LOAI_DE_XUAT_OPTIONS
+export function chuanHoaDeXuat(d: DeXuatThongKe) {
+  const theo_loai = TAT_CA_LOAI.map((loai) => d.theo_loai.find((x) => x.loai === loai) ?? { loai, cho_duyet: 0, da_duyet: 0, bo_qua: 0 });
+  const daXuLy = d.da_duyet + d.bo_qua;
+  return { theo_loai, cho_duyet: d.cho_duyet, da_duyet: d.da_duyet, bo_qua: d.bo_qua, tong: d.cho_duyet + daXuLy, tyLeDuyet: phanTram(d.da_duyet, daXuLy) };
 }

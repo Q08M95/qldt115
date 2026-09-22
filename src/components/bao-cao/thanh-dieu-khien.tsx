@@ -5,25 +5,33 @@ import { BAO_CAO, hrefBaoCao, type KhoaBaoCao } from "@/lib/bao-cao/url";
 import { cn } from "@/lib/utils";
 
 // Pill đang chọn: nền trắng, viền + chữ màu thương hiệu (mục 8.6 — đúng "03-07 | 10-14 | 17-21" trong ảnh mẫu); pill còn lại chữ xám
-const pill = (dang: boolean) =>
+export const pill = (dang: boolean) =>
   cn(
     "inline-flex h-9 items-center rounded-full border px-3.5 text-sm font-medium whitespace-nowrap transition-colors duration-150 sm:px-4",
     dang ? "border-primary bg-card text-primary" : "border-transparent text-muted-foreground hover:text-foreground",
   );
 
-// Chọn báo cáo (tab) + khung thời gian (tuần/tháng/quý/năm) + chuyển kỳ trước/sau. Toàn bộ là liên kết nên trang vẫn render ở server.
+// Hàng tab chọn 1 trong 8 báo cáo (mục 4.7) — mỗi báo cáo tự chọn bộ lọc mặc định của mình khi vừa chuyển sang (không mang
+// theo tuần/tháng/kỳ của báo cáo trước, vì 2 nhóm điều khiển "theo thời gian" và "theo kỳ" không tương thích nhau).
+export function TabBaoCao({ active }: { active: KhoaBaoCao }) {
+  return (
+    <nav aria-label="Chọn báo cáo" className="-mx-1 flex gap-1 overflow-x-auto px-1 pb-1">
+      {BAO_CAO.map((b) => (
+        <Link key={b.khoa} href={hrefBaoCao({ bc: b.khoa })} className={pill(b.khoa === active)} aria-current={b.khoa === active ? "page" : undefined}>
+          {b.nhan}
+        </Link>
+      ))}
+    </nav>
+  );
+}
+
+// Khung thời gian (tuần/tháng/quý/năm) + chuyển kỳ trước/sau — báo cáo #3, #4, #5, #8 (lượt 1). Toàn liên kết, render ở server.
 export function ThanhDieuKhien({ bc, khoang, vt }: { bc: KhoaBaoCao; khoang: KhoangBaoCao; vt?: string }) {
   const truoc = hrefBaoCao({ bc, kt: khoang.khung, moc: khoang.truoc, vt });
   const sau = khoang.sau ? hrefBaoCao({ bc, kt: khoang.khung, moc: khoang.sau, vt }) : null;
   return (
     <div className="grid gap-3">
-      <nav aria-label="Chọn báo cáo" className="-mx-1 flex gap-1 overflow-x-auto px-1 pb-1">
-        {BAO_CAO.map((b) => (
-          <Link key={b.khoa} href={hrefBaoCao({ bc: b.khoa, kt: khoang.khung, moc: khoang.laHienTai ? undefined : khoang.tu })} className={pill(b.khoa === bc)} aria-current={b.khoa === bc ? "page" : undefined}>
-            {b.nhan}
-          </Link>
-        ))}
-      </nav>
+      <TabBaoCao active={bc} />
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div role="group" aria-label="Khung thời gian" className="flex gap-1 rounded-full">
           {KHUNG_THOI_GIAN.map((k) => (

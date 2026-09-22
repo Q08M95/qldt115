@@ -2,6 +2,7 @@ import "server-only";
 
 import { createClient } from "@/lib/supabase/server";
 import type { CanhBaoPool, DongLop, DongSanLuong, DongTyLe, VanHanhDangKy } from "./types";
+import type { A4Row, DeXuatThongKe, KpiKyRow, KpiTheoKyRow } from "@/types/database";
 
 const num = (v: unknown) => Number(v ?? 0);
 
@@ -96,4 +97,70 @@ export async function getNguongPool(): Promise<number> {
   const supabase = await createClient();
   const { data } = await supabase.from("cau_hinh_he_thong").select("gia_tri").eq("khoa", "canh_bao_pool_nho").maybeSingle();
   return Number(data?.gia_tri ?? 3);
+}
+
+// ===== Lượt 2: báo cáo theo kỳ đánh giá (mục 4.7) =====
+const num2 = (v: unknown) => (v === null || v === undefined ? null : Number(v));
+const obj2 = (o: unknown) => (o ?? {}) as Record<string, number>;
+
+// Báo cáo #1: KPI tổng hợp toàn đơn vị của 1 kỳ — cột nhóm chỉ có giá trị với Admin/Quản lý lớp (hàm SQL tự ẩn)
+export async function getKpiTongHop(kyId: string): Promise<KpiKyRow[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("bc_kpi_tong_hop", { p_ky: kyId });
+  if (error) throw new Error(`Không đọc được báo cáo KPI tổng hợp: ${error.message}`);
+  return ((data ?? []) as Record<string, unknown>[]).map((r) => ({
+    user_id: r.user_id as string,
+    ho_ten: r.ho_ten as string,
+    avatar_url: (r.avatar_url as string | null) ?? null,
+    vai_tro: (r.vai_tro as KpiKyRow["vai_tro"]) ?? null,
+    nhom: (r.nhom as KpiKyRow["nhom"]) ?? null,
+    kpi: Number(r.kpi),
+    hang: Number(r.hang),
+    diem_nhom: obj2(r.diem_nhom),
+    gia_tri: obj2(r.gia_tri),
+    trong_so_hieu_luc: obj2(r.trong_so_hieu_luc),
+    gio_thuc: Number(r.gio_thuc),
+    gio_quy_doi: Number(r.gio_quy_doi),
+    so_bai: Number(r.so_bai),
+    so_lop: Number(r.so_lop),
+    a4_ky: Number(r.a4_ky),
+    a4_luy_ke: Number(r.a4_luy_ke),
+    che_do_a1: (r.che_do_a1 as KpiKyRow["che_do_a1"]) ?? null,
+    percentile: num2(r.percentile),
+  }));
+}
+
+// Báo cáo #2: xu hướng KPI trung bình toàn đơn vị qua nhiều kỳ gần nhất (cũ -> mới)
+export async function getKpiTheoKy(gioiHan = 8): Promise<KpiTheoKyRow[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("bc_kpi_theo_ky", { p_gioi_han: gioiHan });
+  if (error) throw new Error(`Không đọc được xu hướng KPI: ${error.message}`);
+  return ((data ?? []) as Record<string, unknown>[]).map((r) => ({
+    ky_id: r.ky_id as string,
+    ten: r.ten as string,
+    tu: r.tu as string,
+    den: r.den as string,
+    trang_thai: r.trang_thai as KpiTheoKyRow["trang_thai"],
+    kpi_tb: num2(r.kpi_tb),
+    kpi_tb_gv: num2(r.kpi_tb_gv),
+    kpi_tb_tg: num2(r.kpi_tb_tg),
+    so_nguoi: Number(r.so_nguoi),
+  }));
+}
+
+// Báo cáo #6: A4 — đóng góp lớp không kinh phí (a4_ky theo kỳ đang xem, a4_luy_ke luôn tính đến hiện tại)
+export async function getA4(kyId: string): Promise<A4Row[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("bc_a4", { p_ky: kyId });
+  if (error) throw new Error(`Không đọc được báo cáo A4: ${error.message}`);
+  return ((data ?? []) as A4Row[]).map((r) => ({ ...r, a4_ky: Number(r.a4_ky), a4_luy_ke: Number(r.a4_luy_ke) }));
+}
+
+// Báo cáo #7: đề xuất nhân sự — số liệu tổng hợp theo loại/kỳ, không lộ ai được đề xuất gì
+export async function getDeXuatThongKe(kyId: string): Promise<DeXuatThongKe> {
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("bc_de_xuat", { p_ky: kyId });
+  if (error) throw new Error(`Không đọc được báo cáo đề xuất nhân sự: ${error.message}`);
+  const j = (data ?? { theo_loai: [], cho_duyet: 0, da_duyet: 0, bo_qua: 0 }) as DeXuatThongKe;
+  return j;
 }

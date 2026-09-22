@@ -293,6 +293,45 @@ export interface CauHinhKpi {
 }
 
 // 1 dòng kết quả KPI của 1 người trong 1 kỳ (kỳ đã đóng: bản khóa; kỳ đang mở/chờ duyệt: tính trực tiếp)
+// Báo cáo #2 — KPI trung bình toàn đơn vị của 1 kỳ (null = kỳ đó chưa ai có kết quả)
+export interface KpiTheoKyRow {
+  ky_id: string;
+  ten: string;
+  tu: string;
+  den: string;
+  trang_thai: TrangThaiKy;
+  kpi_tb: number | null;
+  kpi_tb_gv: number | null;
+  kpi_tb_tg: number | null;
+  so_nguoi: number;
+}
+
+// Báo cáo #6 — A4 theo người: a4_ky theo kỳ đang xem, a4_luy_ke luôn tính đến hiện tại (không phụ thuộc kỳ)
+export interface A4Row {
+  user_id: string;
+  ho_ten: string;
+  avatar_url: string | null;
+  vai_tro: VaiTroGiangDay | null;
+  dang_tham_gia: boolean;
+  a4_ky: number;
+  a4_luy_ke: number;
+}
+
+// Báo cáo #7 — chỉ số liệu tổng hợp theo loại/trạng thái, không lộ ai được đề xuất gì (mục 4.7)
+export interface DeXuatThongKeLoai {
+  loai: LoaiDeXuat;
+  cho_duyet: number;
+  da_duyet: number;
+  bo_qua: number;
+}
+
+export interface DeXuatThongKe {
+  theo_loai: DeXuatThongKeLoai[];
+  cho_duyet: number;
+  da_duyet: number;
+  bo_qua: number;
+}
+
 export interface KpiKyRow {
   user_id: string;
   ho_ten: string;
@@ -311,6 +350,8 @@ export interface KpiKyRow {
   a4_luy_ke: number;
   che_do_a1: "percentile" | "lich_su" | null;
   percentile: number | null;
+  // Chỉ có ở báo cáo #1 (Giai đoạn 10): undefined ở nơi khác (màn hình Cấu hình > Kỳ đánh giá) — null với GV/TG (ẩn nhãn nhóm, mục 4.7)
+  nhom?: NhomNhanSu | null;
 }
 
 // ---------- Đánh giá chất lượng (Giai đoạn 7) ----------

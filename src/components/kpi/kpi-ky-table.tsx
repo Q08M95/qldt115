@@ -4,7 +4,7 @@ import { EmptyState } from "@/components/empty-state";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { UserAvatar } from "@/components/user-avatar";
-import { VAI_TRO_LABEL } from "@/lib/nhan-su/labels";
+import { NHOM_LABEL, VAI_TRO_LABEL } from "@/lib/nhan-su/labels";
 import type { KpiKyRow } from "@/types/database";
 
 const so = (n: number | undefined, toiDa = 2) =>
@@ -27,7 +27,9 @@ function ChiTiet({ r }: { r: KpiKyRow }) {
   );
 }
 
-// Bảng KPI cả đơn vị của 1 kỳ — dành cho Admin/Quản lý lớp xem trước khi công bố (báo cáo KPI đầy đủ: Giai đoạn 10)
+// Bảng KPI cả đơn vị của 1 kỳ — dùng ở màn hình Cấu hình > Kỳ đánh giá (Admin xem trước khi công bố) và báo cáo #1
+// KPI tổng hợp toàn đơn vị (Giai đoạn 10, mục 4.7, công khai nội bộ). Nhóm (chỉ Admin/Quản lý lớp có dữ liệu) hiển thị
+// thay cho vai trò ngay dưới tên — không thêm cột riêng để bảng không bị tràn ngang.
 export function KpiKyTable({ rows }: { rows: KpiKyRow[] }) {
   if (rows.length === 0) {
     return (
@@ -37,6 +39,9 @@ export function KpiKyTable({ rows }: { rows: KpiKyRow[] }) {
       />
     );
   }
+
+  // Cột Nhóm chỉ xuất hiện khi hàm SQL có trả (Admin/Quản lý lớp) — GV/TG nhận nhom = null nên không thêm cột (mục 4.7/3)
+  const coNhom = rows.some((r) => r.nhom !== undefined && r.nhom !== null);
 
   return (
     <>
@@ -66,7 +71,8 @@ export function KpiKyTable({ rows }: { rows: KpiKyRow[] }) {
                       <Link href={`/nhan-su/${r.user_id}`} className="font-semibold hover:underline">
                         {r.ho_ten}
                       </Link>
-                      {r.vai_tro && <span className="ml-2 text-xs text-muted-foreground">{VAI_TRO_LABEL[r.vai_tro]}</span>}
+                      {/* Admin/Quản lý lớp thấy nhóm (thay cho vai trò, vì tên nhóm đã bao hàm vai trò); GV/TG chỉ thấy vai trò (mục 4.7/3) */}
+                      <span className="ml-2 text-xs text-muted-foreground">{coNhom && r.nhom ? NHOM_LABEL[r.nhom] : r.vai_tro && VAI_TRO_LABEL[r.vai_tro]}</span>
                       <ChiTiet r={r} />
                     </div>
                   </div>
@@ -99,7 +105,7 @@ export function KpiKyTable({ rows }: { rows: KpiKyRow[] }) {
                 <Link href={`/nhan-su/${r.user_id}`} className="block truncate font-semibold hover:underline">
                   {r.ho_ten}
                 </Link>
-                {r.vai_tro && <span className="text-xs text-muted-foreground">{VAI_TRO_LABEL[r.vai_tro]}</span>}
+                <span className="text-xs text-muted-foreground">{coNhom && r.nhom ? NHOM_LABEL[r.nhom] : r.vai_tro && VAI_TRO_LABEL[r.vai_tro]}</span>
               </div>
               <span className="text-xl font-bold tabular-nums">{so(r.kpi)}</span>
             </div>
