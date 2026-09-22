@@ -10,7 +10,8 @@ import { BaoCaoVanHanhDangKy } from "@/components/bao-cao/bc-van-hanh-dang-ky";
 import { BaoCaoVanHanhLop } from "@/components/bao-cao/bc-van-hanh-lop";
 import { BaoCaoXuHuongKpi } from "@/components/bao-cao/bc-xu-huong-kpi";
 import { BoLocKy } from "@/components/bao-cao/chon-ky";
-import { MucBaoCao, MucLuc } from "@/components/bao-cao/muc-bao-cao";
+import { MucBaoCao } from "@/components/bao-cao/muc-bao-cao";
+import { MucLuc } from "@/components/bao-cao/muc-luc";
 import { ChuyenNhomBaoCao, BoLocThoiGian } from "@/components/bao-cao/thanh-dieu-khien";
 import { XuatBaoCao } from "@/components/bao-cao/xuat-bao-cao";
 import { laKhung, tinhKhoang, type KhungThoiGian } from "@/lib/bao-cao/khoang";
@@ -165,7 +166,7 @@ export default async function DesignBaoCaoPage(props: { searchParams: Promise<{ 
   const dieu = chonKy(KY_LIST, ky)!;
 
   const boLoc = nhom === "ky" ? <BoLocKy list={KY_LIST} hienTai={dieu.hienTai} truoc={dieu.truoc} sau={dieu.sau} kt={kt} /> : <BoLocThoiGian khoang={khoang} ky={dieu.hienTai.id} vt={vtParam} />;
-  const mucLuc = <MucLuc items={nhom === "ky" ? BAO_CAO_KY : BAO_CAO_THOI_GIAN} />;
+  const mucLuc = <MucLuc key={nhom} items={nhom === "ky" ? BAO_CAO_KY : BAO_CAO_THOI_GIAN} />;
   const noiDung =
     nhom === "ky" ? (
       <div className="grid gap-8">

@@ -10,7 +10,8 @@ import { BaoCaoVanHanhLop } from "@/components/bao-cao/bc-van-hanh-lop";
 import { BaoCaoXuHuongKpi } from "@/components/bao-cao/bc-xu-huong-kpi";
 import { BoLocKy } from "@/components/bao-cao/chon-ky";
 import { EmptyState } from "@/components/empty-state";
-import { MucBaoCao, MucLuc } from "@/components/bao-cao/muc-bao-cao";
+import { MucBaoCao } from "@/components/bao-cao/muc-bao-cao";
+import { MucLuc } from "@/components/bao-cao/muc-luc";
 import { ChuyenNhomBaoCao, BoLocThoiGian } from "@/components/bao-cao/thanh-dieu-khien";
 import { XuatBaoCao } from "@/components/bao-cao/xuat-bao-cao";
 import { requireSession } from "@/lib/auth/session";
@@ -66,7 +67,7 @@ export default async function BaoCaoPage(props: PageProps<"/bao-cao">) {
       const { hienTai, truoc, sau } = dieuKy;
       const [kpiRows, xuHuongKy, a4Rows, deXuat] = await Promise.all([getKpiTongHop(hienTai.id), getKpiTheoKy(8), getA4(hienTai.id), getDeXuatThongKe(hienTai.id)]);
       boLoc = <BoLocKy list={kyList} hienTai={hienTai} truoc={truoc} sau={sau} kt={kt} moc={mocParam} vt={vtParam} />;
-      mucLuc = <MucLuc items={BAO_CAO_KY} />;
+      mucLuc = <MucLuc key={nhom} items={BAO_CAO_KY} />;
       noiDung = (
         <div className="grid gap-8">
           <MucBaoCao id="kpi-tong-hop" nhan="KPI tổng hợp">
@@ -97,7 +98,7 @@ export default async function BaoCaoPage(props: PageProps<"/bao-cao">) {
       getLopTrongKhoang(khoang.tu, khoang.den),
     ]);
     boLoc = <BoLocThoiGian khoang={khoang} ky={dieuKy?.hienTai.id} vt={vtParam} />;
-    mucLuc = <MucLuc items={BAO_CAO_THOI_GIAN} />;
+    mucLuc = <MucLuc key={nhom} items={BAO_CAO_THOI_GIAN} />;
     noiDung = (
       <div className="grid gap-8">
         <MucBaoCao id="san-luong" nhan="Sản lượng giảng dạy">
