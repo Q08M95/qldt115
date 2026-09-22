@@ -31,7 +31,7 @@ export function BoLocKy({
 }) {
   const router = useRouter();
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3">
+    <div className="flex flex-wrap items-center gap-3">
       <NativeSelect
         aria-label="Chọn kỳ đánh giá"
         className="w-auto min-w-52"

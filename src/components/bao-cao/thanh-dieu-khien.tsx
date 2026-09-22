@@ -8,7 +8,9 @@ import { cn } from "@/lib/utils";
 export const pill = (dang: boolean) =>
   cn(
     "inline-flex h-9 items-center rounded-full border px-3.5 text-sm font-medium whitespace-nowrap transition-colors duration-150 sm:px-4",
-    dang ? "border-primary bg-card text-primary" : "border-transparent text-muted-foreground hover:text-foreground",
+    dang
+      ? "border-primary bg-card text-primary shadow-[0_1px_2px_rgba(16,24,40,0.06)]"
+      : "border-transparent text-muted-foreground hover:text-foreground",
   );
 
 export const nutTron = "flex size-9 items-center justify-center rounded-full border bg-card text-muted-foreground transition-colors hover:text-foreground";

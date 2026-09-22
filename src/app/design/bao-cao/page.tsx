@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { AppShell } from "@/components/app-shell/app-shell";
+import { Card } from "@/components/ui/card";
 import { BaoCaoA4 } from "@/components/bao-cao/bc-a4";
 import { BaoCaoDeXuat } from "@/components/bao-cao/bc-de-xuat";
 import { BaoCaoKpiTongHop } from "@/components/bao-cao/bc-kpi-tong-hop";
@@ -163,11 +164,11 @@ export default async function DesignBaoCaoPage(props: { searchParams: Promise<{ 
   const vtParam = loc === "tat-ca" ? undefined : loc;
   const dieu = chonKy(KY_LIST, ky)!;
 
+  const boLoc = nhom === "ky" ? <BoLocKy list={KY_LIST} hienTai={dieu.hienTai} truoc={dieu.truoc} sau={dieu.sau} kt={kt} /> : <BoLocThoiGian khoang={khoang} ky={dieu.hienTai.id} vt={vtParam} />;
+  const mucLuc = <MucLuc items={nhom === "ky" ? BAO_CAO_KY : BAO_CAO_THOI_GIAN} />;
   const noiDung =
     nhom === "ky" ? (
       <div className="grid gap-8">
-        <BoLocKy list={KY_LIST} hienTai={dieu.hienTai} truoc={dieu.truoc} sau={dieu.sau} kt={kt} />
-        <MucLuc items={BAO_CAO_KY} />
         <MucBaoCao id="kpi-tong-hop" so={1} nhan="KPI tổng hợp">
           <BaoCaoKpiTongHop
             ky={dieu.hienTai}
@@ -187,8 +188,6 @@ export default async function DesignBaoCaoPage(props: { searchParams: Promise<{ 
       </div>
     ) : (
       <div className="grid gap-8">
-        <BoLocThoiGian khoang={khoang} ky={dieu.hienTai.id} vt={vtParam} />
-        <MucLuc items={BAO_CAO_THOI_GIAN} />
         <MucBaoCao id="san-luong" so={3} nhan="Sản lượng giảng dạy">
           <BaoCaoSanLuong rows={trong ? [] : SAN_LUONG} rowsTruoc={SAN_LUONG_TRUOC} loc={loc} khoang={khoang} ky={dieu.hienTai.id} />
         </MucBaoCao>
@@ -212,10 +211,14 @@ export default async function DesignBaoCaoPage(props: { searchParams: Promise<{ 
   return (
     <AppShell user={{ name: "Nguyễn Hoàng Tú Minh", email: "minh@example.com" }} isQuanTri period={{ name: "Quý 3/2026", daysLeft: 11 }} unreadCount={3} activeHref="/bao-cao">
       <div className="grid gap-6">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <ChuyenNhomBaoCao nhom={nhom} ky={dieu.hienTai.id} kt={kt} vt={vtParam} />
-          {!gvtg && <XuatBaoCao ky={dieu.hienTai.id} kt={kt} moc={khoang.tu} />}
-        </div>
+        <Card className="gap-0 py-0">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-4 py-3.5 sm:px-5">
+            <ChuyenNhomBaoCao nhom={nhom} ky={dieu.hienTai.id} kt={kt} vt={vtParam} />
+            {!gvtg && <XuatBaoCao ky={dieu.hienTai.id} kt={kt} moc={khoang.tu} />}
+          </div>
+          <div className="border-b border-border px-4 py-3.5 sm:px-5">{boLoc}</div>
+          <div className="px-4 py-3 sm:px-5">{mucLuc}</div>
+        </Card>
         {noiDung}
       </div>
     </AppShell>

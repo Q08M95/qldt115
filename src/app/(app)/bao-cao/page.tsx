@@ -1,4 +1,5 @@
 import { Info } from "lucide-react";
+import { Card } from "@/components/ui/card";
 import { BaoCaoA4 } from "@/components/bao-cao/bc-a4";
 import { BaoCaoDeXuat } from "@/components/bao-cao/bc-de-xuat";
 import { BaoCaoKpiTongHop } from "@/components/bao-cao/bc-kpi-tong-hop";
@@ -55,6 +56,8 @@ export default async function BaoCaoPage(props: PageProps<"/bao-cao">) {
   const kyList = await getKyList();
   const dieuKy = chonKy(kyList, first(sp.ky));
 
+  let boLoc: React.ReactNode = null;
+  let mucLuc: React.ReactNode = null;
   let noiDung: React.ReactNode;
   if (nhom === "ky") {
     if (!dieuKy) {
@@ -62,10 +65,10 @@ export default async function BaoCaoPage(props: PageProps<"/bao-cao">) {
     } else {
       const { hienTai, truoc, sau } = dieuKy;
       const [kpiRows, xuHuongKy, a4Rows, deXuat] = await Promise.all([getKpiTongHop(hienTai.id), getKpiTheoKy(8), getA4(hienTai.id), getDeXuatThongKe(hienTai.id)]);
+      boLoc = <BoLocKy list={kyList} hienTai={hienTai} truoc={truoc} sau={sau} kt={kt} moc={mocParam} vt={vtParam} />;
+      mucLuc = <MucLuc items={BAO_CAO_KY} />;
       noiDung = (
         <div className="grid gap-8">
-          <BoLocKy list={kyList} hienTai={hienTai} truoc={truoc} sau={sau} kt={kt} moc={mocParam} vt={vtParam} />
-          <MucLuc items={BAO_CAO_KY} />
           <MucBaoCao id="kpi-tong-hop" so={1} nhan="KPI tổng hợp">
             <BaoCaoKpiTongHop ky={hienTai} rows={kpiRows} isQuanTri={isQuanTri} />
           </MucBaoCao>
@@ -93,10 +96,10 @@ export default async function BaoCaoPage(props: PageProps<"/bao-cao">) {
       getNguongPool(),
       getLopTrongKhoang(khoang.tu, khoang.den),
     ]);
+    boLoc = <BoLocThoiGian khoang={khoang} ky={dieuKy?.hienTai.id} vt={vtParam} />;
+    mucLuc = <MucLuc items={BAO_CAO_THOI_GIAN} />;
     noiDung = (
       <div className="grid gap-8">
-        <BoLocThoiGian khoang={khoang} ky={dieuKy?.hienTai.id} vt={vtParam} />
-        <MucLuc items={BAO_CAO_THOI_GIAN} />
         <MucBaoCao id="san-luong" so={3} nhan="Sản lượng giảng dạy">
           <BaoCaoSanLuong rows={sl} rowsTruoc={slTruoc} loc={loc} khoang={khoang} ky={dieuKy?.hienTai.id} />
         </MucBaoCao>
@@ -115,10 +118,14 @@ export default async function BaoCaoPage(props: PageProps<"/bao-cao">) {
 
   return (
     <div className="grid gap-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <ChuyenNhomBaoCao nhom={nhom} ky={dieuKy?.hienTai.id} kt={kt} moc={mocParam} vt={vtParam} />
-        {isQuanTri && dieuKy && <XuatBaoCao ky={dieuKy.hienTai.id} kt={kt} moc={khoang.tu} />}
-      </div>
+      <Card className="gap-0 py-0">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-4 py-3.5 sm:px-5">
+          <ChuyenNhomBaoCao nhom={nhom} ky={dieuKy?.hienTai.id} kt={kt} moc={mocParam} vt={vtParam} />
+          {isQuanTri && dieuKy && <XuatBaoCao ky={dieuKy.hienTai.id} kt={kt} moc={khoang.tu} />}
+        </div>
+        {boLoc && <div className="border-b border-border px-4 py-3.5 sm:px-5">{boLoc}</div>}
+        {mucLuc && <div className="px-4 py-3 sm:px-5">{mucLuc}</div>}
+      </Card>
       {noiDung}
     </div>
   );
