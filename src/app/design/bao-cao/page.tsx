@@ -169,32 +169,32 @@ export default async function DesignBaoCaoPage(props: { searchParams: Promise<{ 
   const noiDung =
     nhom === "ky" ? (
       <div className="grid gap-8">
-        <MucBaoCao id="kpi-tong-hop" so={1} nhan="KPI tổng hợp">
+        <MucBaoCao id="kpi-tong-hop" nhan="KPI tổng hợp">
           <BaoCaoKpiTongHop
             ky={dieu.hienTai}
             rows={trong ? [] : dieu.hienTai.id === "k5" && !gvtg ? [KPI_TONG_HOP[0]] : dieu.hienTai.id === "k5" ? [] : gvtg ? KPI_TONG_HOP.map((r) => ({ ...r, nhom: null })) : KPI_TONG_HOP}
             isQuanTri={!gvtg}
           />
         </MucBaoCao>
-        <MucBaoCao id="xu-huong-kpi" so={2} nhan="Xu hướng KPI">
+        <MucBaoCao id="xu-huong-kpi" nhan="Xu hướng KPI">
           <BaoCaoXuHuongKpi ky={trong ? [] : KPI_THEO_KY} />
         </MucBaoCao>
-        <MucBaoCao id="a4" so={6} nhan="A4 — Lớp không kinh phí">
+        <MucBaoCao id="a4" nhan="A4 — Lớp không kinh phí">
           <BaoCaoA4 ky={dieu.hienTai} rows={trong ? [] : A4} />
         </MucBaoCao>
-        <MucBaoCao id="de-xuat" so={7} nhan="Đề xuất nhân sự">
+        <MucBaoCao id="de-xuat" nhan="Đề xuất nhân sự">
           <BaoCaoDeXuat ky={dieu.hienTai} data={trong ? { theo_loai: [], cho_duyet: 0, da_duyet: 0, bo_qua: 0 } : DE_XUAT} />
         </MucBaoCao>
       </div>
     ) : (
       <div className="grid gap-8">
-        <MucBaoCao id="san-luong" so={3} nhan="Sản lượng giảng dạy">
+        <MucBaoCao id="san-luong" nhan="Sản lượng giảng dạy">
           <BaoCaoSanLuong rows={trong ? [] : SAN_LUONG} rowsTruoc={SAN_LUONG_TRUOC} loc={loc} khoang={khoang} ky={dieu.hienTai.id} />
         </MucBaoCao>
-        <MucBaoCao id="ty-le-dang-ky" so={4} nhan="Tự đăng ký & nhận lời mời">
+        <MucBaoCao id="ty-le-dang-ky" nhan="Tự đăng ký & nhận lời mời">
           <BaoCaoTyLe rows={trong ? [] : TY_LE} rowsTruoc={TY_LE_TRUOC} loc={loc} khoang={khoang} ky={dieu.hienTai.id} />
         </MucBaoCao>
-        <MucBaoCao id="van-hanh-dang-ky" so={5} nhan="Vận hành đăng ký">
+        <MucBaoCao id="van-hanh-dang-ky" nhan="Vận hành đăng ký">
           <BaoCaoVanHanhDangKy
             hienTai={trong ? { ...VAN_HANH, slot_tong: 0, slot_da_phan_cong: 0, gio_lap_tb: null, so_slot_do_duyet: 0, serie: SERIE.map((s) => ({ ...s, phan_cong: 0 })) } : VAN_HANH}
             truoc={VAN_HANH_TRUOC}
@@ -202,7 +202,7 @@ export default async function DesignBaoCaoPage(props: { searchParams: Promise<{ 
             nguongPool={3}
           />
         </MucBaoCao>
-        <MucBaoCao id="van-hanh-lop" so={8} nhan="Vận hành lớp học">
+        <MucBaoCao id="van-hanh-lop" nhan="Vận hành lớp học">
           <BaoCaoVanHanhLop rows={trong ? [] : LOP} />
         </MucBaoCao>
       </div>
@@ -216,9 +216,9 @@ export default async function DesignBaoCaoPage(props: { searchParams: Promise<{ 
             <ChuyenNhomBaoCao nhom={nhom} ky={dieu.hienTai.id} kt={kt} vt={vtParam} />
             {!gvtg && <XuatBaoCao ky={dieu.hienTai.id} kt={kt} moc={khoang.tu} />}
           </div>
-          <div className="border-b border-border px-4 py-3.5 sm:px-5">{boLoc}</div>
-          <div className="px-4 py-3 sm:px-5">{mucLuc}</div>
+          <div className="px-4 py-3.5 sm:px-5">{boLoc}</div>
         </Card>
+        <div className="sticky top-16 z-10 rounded-2xl border border-border bg-card/95 px-4 py-2.5 shadow-card backdrop-blur-sm sm:px-5 md:top-[88px]">{mucLuc}</div>
         {noiDung}
       </div>
     </AppShell>

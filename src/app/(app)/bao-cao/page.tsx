@@ -69,16 +69,16 @@ export default async function BaoCaoPage(props: PageProps<"/bao-cao">) {
       mucLuc = <MucLuc items={BAO_CAO_KY} />;
       noiDung = (
         <div className="grid gap-8">
-          <MucBaoCao id="kpi-tong-hop" so={1} nhan="KPI tổng hợp">
+          <MucBaoCao id="kpi-tong-hop" nhan="KPI tổng hợp">
             <BaoCaoKpiTongHop ky={hienTai} rows={kpiRows} isQuanTri={isQuanTri} />
           </MucBaoCao>
-          <MucBaoCao id="xu-huong-kpi" so={2} nhan="Xu hướng KPI">
+          <MucBaoCao id="xu-huong-kpi" nhan="Xu hướng KPI">
             <BaoCaoXuHuongKpi ky={xuHuongKy} />
           </MucBaoCao>
-          <MucBaoCao id="a4" so={6} nhan="A4 — Lớp không kinh phí">
+          <MucBaoCao id="a4" nhan="A4 — Lớp không kinh phí">
             <BaoCaoA4 ky={hienTai} rows={a4Rows} />
           </MucBaoCao>
-          <MucBaoCao id="de-xuat" so={7} nhan="Đề xuất nhân sự">
+          <MucBaoCao id="de-xuat" nhan="Đề xuất nhân sự">
             <BaoCaoDeXuat ky={hienTai} data={deXuat} />
           </MucBaoCao>
         </div>
@@ -100,16 +100,16 @@ export default async function BaoCaoPage(props: PageProps<"/bao-cao">) {
     mucLuc = <MucLuc items={BAO_CAO_THOI_GIAN} />;
     noiDung = (
       <div className="grid gap-8">
-        <MucBaoCao id="san-luong" so={3} nhan="Sản lượng giảng dạy">
+        <MucBaoCao id="san-luong" nhan="Sản lượng giảng dạy">
           <BaoCaoSanLuong rows={sl} rowsTruoc={slTruoc} loc={loc} khoang={khoang} ky={dieuKy?.hienTai.id} />
         </MucBaoCao>
-        <MucBaoCao id="ty-le-dang-ky" so={4} nhan="Tự đăng ký & nhận lời mời">
+        <MucBaoCao id="ty-le-dang-ky" nhan="Tự đăng ký & nhận lời mời">
           <BaoCaoTyLe rows={tl} rowsTruoc={tlTruoc} loc={loc} khoang={khoang} ky={dieuKy?.hienTai.id} />
         </MucBaoCao>
-        <MucBaoCao id="van-hanh-dang-ky" so={5} nhan="Vận hành đăng ký">
+        <MucBaoCao id="van-hanh-dang-ky" nhan="Vận hành đăng ký">
           <BaoCaoVanHanhDangKy hienTai={vh} truoc={vhTruoc} canhBao={canhBao} nguongPool={nguong} />
         </MucBaoCao>
-        <MucBaoCao id="van-hanh-lop" so={8} nhan="Vận hành lớp học">
+        <MucBaoCao id="van-hanh-lop" nhan="Vận hành lớp học">
           <BaoCaoVanHanhLop rows={lop} />
         </MucBaoCao>
       </div>
@@ -123,9 +123,15 @@ export default async function BaoCaoPage(props: PageProps<"/bao-cao">) {
           <ChuyenNhomBaoCao nhom={nhom} ky={dieuKy?.hienTai.id} kt={kt} moc={mocParam} vt={vtParam} />
           {isQuanTri && dieuKy && <XuatBaoCao ky={dieuKy.hienTai.id} kt={kt} moc={khoang.tu} />}
         </div>
-        {boLoc && <div className="border-b border-border px-4 py-3.5 sm:px-5">{boLoc}</div>}
-        {mucLuc && <div className="px-4 py-3 sm:px-5">{mucLuc}</div>}
+        {boLoc && <div className="px-4 py-3.5 sm:px-5">{boLoc}</div>}
       </Card>
+      {/* Sticky ngay dưới topbar (mục 8.5b) — giữ mục lục luôn trong tầm tay khi cuộn qua các báo cáo, không phải kéo
+          ngược lên đầu trang để đổi mục xem (phản hồi người dùng). */}
+      {mucLuc && (
+        <div className="sticky top-16 z-10 rounded-2xl border border-border bg-card/95 px-4 py-2.5 shadow-card backdrop-blur-sm sm:px-5 md:top-[88px]">
+          {mucLuc}
+        </div>
+      )}
       {noiDung}
     </div>
   );
