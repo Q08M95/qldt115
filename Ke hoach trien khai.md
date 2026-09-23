@@ -26,7 +26,7 @@
 | 7 | Module Đánh giá chất lượng (4.4) | ✅ Xong (nhắc check-in bằng thông báo ở Giai đoạn 8; thông báo/Nhật ký khi sửa điểm danh ở Giai đoạn 8-9) | 100% |
 | 8 | Module Thông báo (4.5) | ✅ Xong (đã chạy migration + test trên Supabase thật, pg_cron/pg_net bật, webhook push đã cấu hình; còn thử nhận push thật trên thiết bị của người dùng) | 100% |
 | 9 | Nhật ký hệ thống (4.6) | ✅ Xong (đã chạy migration + test 34/34 trên Supabase thật) | 100% |
-| 10 | Báo cáo (4.7) + Tổng quan (4.7b) | 🟨 Gần xong (còn bổ sung Tổng quan vào bản PDF xuất báo cáo) | 90% |
+| 10 | Báo cáo (4.7) + Tổng quan (4.7b) | 🟨 Gần xong (còn bổ sung Tổng quan vào bản PDF xuất báo cáo) | 95% |
 | 11 | Cấu hình hệ thống — hoàn thiện (4.8) | ⬜ Chưa bắt đầu | 0% |
 | 12 | Responsive/Mobile polish (8.9) | ⬜ Chưa bắt đầu | 0% |
 | 13 | QA, kiểm thử, deploy production | ⬜ Chưa bắt đầu | 0% |
@@ -243,10 +243,10 @@ Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / 
 
 *Tham chiếu: mục 4.7, 4.7b*
 
-- [ ] 8 báo cáo theo danh sách mục 4.7 (bảng/chart tương ứng từng báo cáo), đúng khung thời gian cho phép (tuần/tháng/quý/năm cho #3,4,5,8; chỉ theo kỳ cho #1,2,6,7)
-- [ ] Nguyên tắc realtime vs snapshot: báo cáo kỳ đã đóng dùng đúng snapshot đã khóa
-- [ ] Ẩn nhãn nhóm khỏi GV/TG xuyên suốt báo cáo
-- [ ] Xuất Excel/PDF cho báo cáo #1,3,6,7 — giới hạn quyền xuất cho Admin/Quyền Quản lý lớp
+- [x] 8 báo cáo theo danh sách mục 4.7 (bảng/chart tương ứng từng báo cáo), đúng khung thời gian cho phép (tuần/tháng/quý/năm cho #3,4,5,8; chỉ theo kỳ cho #1,2,6,7)
+- [x] Nguyên tắc realtime vs snapshot: báo cáo kỳ đã đóng dùng đúng snapshot đã khóa
+- [x] Ẩn nhãn nhóm khỏi GV/TG xuyên suốt báo cáo
+- [x] Xuất Excel/PDF cho báo cáo #1,3,6,7 — giới hạn quyền xuất cho Admin/Quyền Quản lý lớp
 - [x] Trang Tổng quan Admin/Quản lý lớp: KPI stat card + sparkline, bảng việc cần duyệt, area/bar/donut/gauge theo spec 4.7b
 - [x] Trang Tổng quan GV/TG: tổng quan toàn đơn vị (không chỉ cá nhân), lịch dạy sắp tới dạng timeline, progress KPI cá nhân rút gọn, thông báo mới nhất, thẻ gợi ý lớp
 - [x] Người giữ Quyền Quản lý lớp thấy cả 2 bộ widget cùng lúc
