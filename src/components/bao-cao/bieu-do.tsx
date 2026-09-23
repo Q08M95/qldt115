@@ -216,6 +216,76 @@ export function Sparkline({ gia_tri, className, nhan }: { gia_tri: number[]; cla
   );
 }
 
+// ===== Scatter (tương quan 2 chỉ số, vd Giờ dạy × KPI) — đường trung vị chia 4 góc phần tư để đọc tương quan nhanh =====
+export interface DiemXY {
+  khoa: string;
+  nhan: string;
+  x: number;
+  y: number;
+  nhom: string;
+  mau: MauBieuDo;
+}
+
+export function ScatterXY({ diem, nhanX, nhanY, yMax = 100, className }: { diem: DiemXY[]; nhanX: string; nhanY: string; yMax?: number; className?: string }) {
+  const W = 480;
+  const H = 280;
+  const L = 40;
+  const R = 14;
+  const T = 14;
+  const B = 34;
+  if (diem.length === 0) return null;
+  const xMax = Math.max(...diem.map((d) => d.x), 1) * 1.08;
+  const px = (x: number) => L + (x / xMax) * (W - L - R);
+  const py = (y: number) => T + (H - T - B) * (1 - Math.min(1, y / yMax));
+  const trungViX = [...diem.map((d) => d.x)].sort((a, b) => a - b)[Math.floor((diem.length - 1) / 2)];
+  const trungViY = [...diem.map((d) => d.y)].sort((a, b) => a - b)[Math.floor((diem.length - 1) / 2)];
+  const nhomMau = new Map(diem.map((d) => [d.nhom, d.mau]));
+
+  return (
+    <div className={className}>
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`Tương quan ${nhanX} và ${nhanY}`} className="w-full">
+        <defs>
+          {(Object.keys(CSS_MAU) as MauBieuDo[]).map((m) => (
+            <radialGradient key={m} id={`sc-${m}`}>
+              <stop offset="0%" stopColor={CSS_MAU[m].tu} />
+              <stop offset="100%" stopColor={CSS_MAU[m].den} />
+            </radialGradient>
+          ))}
+        </defs>
+        {[0, 0.25, 0.5, 0.75, 1].map((t) => (
+          <line key={t} x1={L} x2={W - R} y1={T + (H - T - B) * (1 - t)} y2={T + (H - T - B) * (1 - t)} stroke="var(--border)" strokeWidth="1" opacity="0.6" />
+        ))}
+        <line x1={px(trungViX)} x2={px(trungViX)} y1={T} y2={H - B} stroke="var(--muted-foreground)" strokeWidth="1" strokeDasharray="3 3" opacity="0.6" />
+        <line x1={L} x2={W - R} y1={py(trungViY)} y2={py(trungViY)} stroke="var(--muted-foreground)" strokeWidth="1" strokeDasharray="3 3" opacity="0.6" />
+        <line x1={L} x2={L} y1={T} y2={H - B} stroke="var(--border)" strokeWidth="1.5" />
+        <line x1={L} x2={W - R} y1={H - B} y2={H - B} stroke="var(--border)" strokeWidth="1.5" />
+        {[0, 0.5, 1].map((t) => (
+          <text key={t} x={L - 6} y={T + (H - T - B) * (1 - t) + 3} textAnchor="end" fontSize="9.5" fill="var(--muted-foreground)">
+            {Math.round(yMax * t)}
+          </text>
+        ))}
+        <text x={(L + W - R) / 2} y={H - 6} textAnchor="middle" fontSize="10" fill="var(--muted-foreground)">
+          {nhanX}
+        </text>
+        {diem.map((d) => (
+          <circle key={d.khoa} cx={px(d.x)} cy={py(d.y)} r="5.5" fill={`url(#sc-${d.mau})`} stroke="var(--card)" strokeWidth="1.5" opacity="0.88">
+            <title>{`${d.nhan}: ${d.x} · ${nhanY} ${d.y}`}</title>
+          </circle>
+        ))}
+      </svg>
+      <p className="mt-1 text-center text-[10.5px] text-muted-foreground">Đường đứt nét = trung vị — 4 góc chia nhóm {nhanX.toLowerCase()} thấp/cao × {nhanY.toLowerCase()} thấp/cao</p>
+      <ul className="mt-2 flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs">
+        {[...nhomMau.entries()].map(([nhom, mau]) => (
+          <li key={nhom} className="flex items-center gap-1.5 text-muted-foreground">
+            <span className="size-2.5 shrink-0 rounded-full" style={{ backgroundImage: gradientCss(mau) }} aria-hidden />
+            {nhom}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 // ===== Cột theo thời gian (kiểu "Weekly Revenue" trong ảnh mẫu): cột xám nhạt, cột lớn nhất nổi bật gradient + bong bóng trắng =====
 export interface CotThoiGian {
   nhan: string;

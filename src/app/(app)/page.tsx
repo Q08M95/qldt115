@@ -1,43 +1,40 @@
-import { AlertTriangle, ClipboardCheck, GraduationCap, Users } from "lucide-react";
+import { Activity, GraduationCap, Scale, Users, Workflow } from "lucide-react";
 import { CheckInBanner } from "@/components/danh-gia/check-in-banner";
-import { AreaXuHuong, DongHoBanNguyet } from "@/components/danh-gia/kpi-charts";
+import { AreaXuHuong, DongHoBanNguyet, RadarNhom } from "@/components/danh-gia/kpi-charts";
 import { DashboardLayout, StatRow } from "@/components/dashboard-layout";
 import { StatTile } from "@/components/stat-tile";
-import { Sparkline, ThanhNgang, Donut, ChuThichDonut, type MauBieuDo } from "@/components/bao-cao/bieu-do";
+import { Sparkline, ThanhNgang, Donut, ChuThichDonut, ScatterXY, type MauBieuDo } from "@/components/bao-cao/bieu-do";
 import { MAU_TRANG_THAI } from "@/components/bao-cao/bc-van-hanh-lop";
-import { GoiYLop } from "@/components/tong-quan/goi-y-lop";
 import { KpiRutGon } from "@/components/tong-quan/kpi-rut-gon";
 import { LichSapToi } from "@/components/tong-quan/lich-sap-toi";
-import { ThongBaoMoiNhat } from "@/components/tong-quan/thong-bao-moi-nhat";
-import { ViecCanDuyet } from "@/components/tong-quan/viec-can-duyet";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { requireSession } from "@/lib/auth/session";
-import { getBaiCanCheckIn } from "@/lib/danh-gia/queries";
-import { getKpiCaNhan } from "@/lib/danh-gia/queries";
+import { getBaiCanCheckIn, getKpiCaNhan } from "@/lib/danh-gia/queries";
 import { getViecCuaToi } from "@/lib/dang-ky/queries";
 import { TRANG_THAI_LOP_LABEL } from "@/lib/lop-hoc/labels";
-import { getThongBao } from "@/lib/thong-bao/queries";
-import { getChungTongQuan, getThongKeAdmin, getVieccanDuyetAdmin } from "@/lib/tong-quan/queries";
+import { getChungTongQuan, getThongKeAdmin } from "@/lib/tong-quan/queries";
 import type { KpiTheoKyRow } from "@/types/database";
 
 const MAU_NHOM_LOP: MauBieuDo[] = ["blue", "navy", "teal", "green"];
 
 // Tổng quan (4.7b, trang chủ khi đăng nhập) — liên kết chặt nhưng không gộp với Báo cáo (4.7): số liệu "toàn đơn vị"
 // tái dùng thẳng (getChungTongQuan) nhưng rút gọn, không lọc theo khung thời gian — luôn là ảnh chụp HIỆN TẠI.
-// Người giữ Quyền Quản lý lớp (isQuanTri + có hồ sơ GV/TG) thấy CẢ 2 bộ widget cùng lúc, không phải chọn 1 trong 2.
+// Không lặp lại danh sách bản ghi thô đã có sẵn ở module khác (đăng ký/đề xuất chờ duyệt ở /dang-ky và
+// /nhan-su/de-xuat, thông báo ở /thong-bao, lớp đang mở ở /lop-hoc) — phần "toàn đơn vị" chỉ còn lại các biểu đồ
+// PHÂN TÍCH (tương quan, phân bố, độ công bằng), hiện đúng 1 LẦN dù người xem có cả 2 vai trò (không lặp 2 khối).
+// Người giữ Quyền Quản lý lớp (isQuanTri + có hồ sơ GV/TG) thấy CẢ 2 khối riêng vai trò cùng lúc.
 export default async function HomePage() {
   const { profile, isQuanTri } = await requireSession();
   const laAdmin = isQuanTri;
   const laGvTg = !!profile.vai_tro_giang_day;
 
-  const [baiCheckIn, chung, thongKeAdmin, vieccanDuyet, viecCuaToi, kpiCaNhan, thongBao] = await Promise.all([
+  const [baiCheckIn, chung, thongKeAdmin, viecCuaToi, kpiCaNhan] = await Promise.all([
     getBaiCanCheckIn(),
     laAdmin || laGvTg ? getChungTongQuan() : null,
     laAdmin ? getThongKeAdmin() : null,
-    laAdmin ? getVieccanDuyetAdmin(profile.id) : null,
     laGvTg ? getViecCuaToi(profile.id, false) : null,
     laGvTg ? getKpiCaNhan(profile.id) : null,
-    laGvTg ? getThongBao("tat-ca", 0) : null,
   ]);
 
   const kpiCoDuLieu = (chung?.kpiXuHuong ?? []).filter((k): k is KpiTheoKyRow & { kpi_tb: number } => k.kpi_tb !== null);
@@ -53,7 +50,7 @@ export default async function HomePage() {
     <div className="grid gap-6">
       <CheckInBanner items={baiCheckIn} />
 
-      {laAdmin && chung && thongKeAdmin && vieccanDuyet && (
+      {laAdmin && thongKeAdmin && chung && (
         <DashboardLayout
           main={
             <>
@@ -64,18 +61,21 @@ export default async function HomePage() {
                 <StatTile icon={GraduationCap} label="Lớp đang mở" value={thongKeAdmin.lopDangMo.tong}>
                   <Sparkline gia_tri={thongKeAdmin.lopDangMo.xuHuong} className="mt-3 h-8 w-full" nhan="Lớp mới theo ngày" />
                 </StatTile>
-                <StatTile icon={ClipboardCheck} label="Slot còn trống" value={thongKeAdmin.slotTrong.tong}>
+                <StatTile icon={Workflow} label="Slot còn trống" value={thongKeAdmin.slotTrong.tong}>
                   <Sparkline gia_tri={thongKeAdmin.slotTrong.xuHuong} className="mt-3 h-8 w-full" nhan="Slot được phân công theo ngày" />
                 </StatTile>
               </StatRow>
 
-              <ViecCanDuyet items={vieccanDuyet} canhBaoPool={thongKeAdmin.canhBaoPool} />
-
               <Card className="gap-4 px-0">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <AlertTriangle className="size-5 text-slate-500" strokeWidth={1.75} aria-hidden /> Tỷ lệ lấp đầy slot — lớp đang mở
-                  </CardTitle>
+                  <CardTitle>Tỷ lệ lấp đầy slot — lớp đang mở</CardTitle>
+                  {thongKeAdmin.canhBaoPool > 0 && (
+                    <CardAction>
+                      <Badge variant="warning" title="Số Bài đang mở có pool ứng viên dưới ngưỡng cảnh báo — xem chi tiết ở Báo cáo #5">
+                        {thongKeAdmin.canhBaoPool} cảnh báo pool nhỏ
+                      </Badge>
+                    </CardAction>
+                  )}
                 </CardHeader>
                 <CardContent>
                   {chung.lapDaySlot.length === 0 ? (
@@ -92,19 +92,6 @@ export default async function HomePage() {
           }
           aside={
             <>
-              <Card className="gap-4 px-0">
-                <CardHeader>
-                  <CardTitle>Xu hướng KPI toàn đơn vị</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {kpiCoDuLieu.length < 2 ? (
-                    <p className="py-6 text-center text-sm text-muted-foreground">Cần từ 2 kỳ có dữ liệu.</p>
-                  ) : (
-                    <AreaXuHuong diem={kpiCoDuLieu.map((k) => ({ nhan: k.ten, gia_tri: k.kpi_tb }))} className="h-auto w-full" />
-                  )}
-                </CardContent>
-              </Card>
-
               <Card className="gap-4 px-0">
                 <CardHeader>
                   <CardTitle>Lớp theo trạng thái</CardTitle>
@@ -147,19 +134,16 @@ export default async function HomePage() {
             <>
               <StatRow>
                 <StatTile icon={GraduationCap} label="Lớp đang mở" value={chung.dsLopDangMo.length} />
-                <StatTile icon={ClipboardCheck} label="Tỷ lệ lấp đầy TB" value={chung.tyLeDangKyTrungBinh === null ? "–" : `${chung.tyLeDangKyTrungBinh}%`} />
+                <StatTile icon={Workflow} label="Tỷ lệ lấp đầy TB" value={chung.tyLeDangKyTrungBinh === null ? "–" : `${chung.tyLeDangKyTrungBinh}%`} />
                 <StatTile icon={Users} label="Số kỳ có KPI" value={kpiCoDuLieu.length} />
               </StatRow>
 
               <LichSapToi items={viecCuaToi.da_phan_cong} dangCho={viecCuaToi.dang_cho.length} />
-
-              <GoiYLop items={chung.dsLopDangMo} />
             </>
           }
           aside={
             <>
               <KpiRutGon data={kpiCaNhan} />
-              <ThongBaoMoiNhat items={thongBao ?? []} />
               <Card className="gap-4 px-0">
                 <CardHeader>
                   <CardTitle>Lớp theo nhóm lớp</CardTitle>
@@ -180,6 +164,91 @@ export default async function HomePage() {
             </>
           }
         />
+      )}
+
+      {/* Phân tích toàn đơn vị — dùng chung cho cả 2 vai trò, chỉ hiện ĐÚNG 1 LẦN dù người xem có cả 2 khối trên */}
+      {chung && (chung.tuongQuan.length > 0 || kpiCoDuLieu.length > 0 || chung.doDongDeu !== null) && (
+        <>
+          <h2 className="flex items-center gap-2.5 text-xl font-semibold tracking-tight text-foreground">
+            <span aria-hidden className="h-5 w-1 shrink-0 rounded-full bg-brand-gradient" />
+            Phân tích toàn đơn vị{chung.ky ? ` · ${chung.ky.ten}` : ""}
+          </h2>
+          <DashboardLayout
+            main={
+              <>
+                <Card className="gap-4 px-0">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Activity className="size-5 text-slate-500" strokeWidth={1.75} aria-hidden /> Tương quan Giờ dạy × KPI
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {chung.tuongQuan.length < 3 ? (
+                      <p className="py-6 text-center text-sm text-muted-foreground">Cần ít nhất 3 người có KPI trong kỳ để vẽ tương quan.</p>
+                    ) : (
+                      <ScatterXY diem={chung.tuongQuan} nhanX="Giờ đã dạy" nhanY="KPI" />
+                    )}
+                  </CardContent>
+                </Card>
+
+                <Card className="gap-4 px-0">
+                  <CardHeader>
+                    <CardTitle>Điểm trung bình theo nhóm tiêu chí</CardTitle>
+                  </CardHeader>
+                  <CardContent className="flex justify-center">
+                    {chung.radarTrungBinh.every((t) => t.gia_tri === null) ? (
+                      <p className="py-6 text-center text-sm text-muted-foreground">Chưa có ai có KPI trong kỳ này.</p>
+                    ) : (
+                      <RadarNhom truc={chung.radarTrungBinh} className="h-auto w-full max-w-sm" />
+                    )}
+                  </CardContent>
+                </Card>
+              </>
+            }
+            aside={
+              <>
+                <Card className="gap-4 px-0">
+                  <CardHeader>
+                    <CardTitle>Xu hướng KPI toàn đơn vị</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {kpiCoDuLieu.length < 2 ? (
+                      <p className="py-6 text-center text-sm text-muted-foreground">Cần từ 2 kỳ có dữ liệu.</p>
+                    ) : (
+                      <AreaXuHuong diem={kpiCoDuLieu.map((k) => ({ nhan: k.ten, gia_tri: k.kpi_tb }))} className="h-auto w-full" />
+                    )}
+                  </CardContent>
+                </Card>
+
+                <Card className="gap-3 px-0">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Scale className="size-5 text-slate-500" strokeWidth={1.75} aria-hidden /> Độ đồng đều sản lượng
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="grid gap-3">
+                    {chung.doDongDeu === null ? (
+                      <p className="py-6 text-center text-sm text-muted-foreground">Cần ít nhất 2 người có giờ dạy trong kỳ.</p>
+                    ) : (
+                      <>
+                        <DongHoBanNguyet phanTram={chung.doDongDeu} so={`${chung.doDongDeu}/100`} nhan="Chỉ số đồng đều" className="mx-auto w-48" />
+                        <p className="text-center text-sm text-muted-foreground">
+                          {chung.doDongDeu >= 75 ? "Khối lượng giảng dạy phân bổ khá đều." : chung.doDongDeu >= 50 ? "Có chênh lệch giữa những người dạy nhiều và ít." : "Khối lượng đang dồn về một số ít người."}
+                          {chung.top20 !== null && (
+                            <>
+                              {" "}
+                              20% người dạy nhiều nhất đảm nhiệm <span className="font-medium text-foreground">{chung.top20}%</span> tổng giờ.
+                            </>
+                          )}
+                        </p>
+                      </>
+                    )}
+                  </CardContent>
+                </Card>
+              </>
+            }
+          />
+        </>
       )}
     </div>
   );

@@ -1,17 +1,22 @@
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";
-import { getCanhBaoPool, getKpiTheoKy, getVanHanhDangKy } from "@/lib/bao-cao/queries";
-import { phanTram, tongHopLop } from "@/lib/bao-cao/tinh-toan";
+import { getCanhBaoPool, getKpiTongHop, getKpiTheoKy, getSanLuong, getVanHanhDangKy } from "@/lib/bao-cao/queries";
+import { chonKy } from "@/lib/bao-cao/ky";
+import { phanTram, tongHopLop, tongHopSanLuong } from "@/lib/bao-cao/tinh-toan";
+import type { DiemXY } from "@/components/bao-cao/bieu-do";
 import type { DongLop } from "@/lib/bao-cao/types";
+import type { TrucRadar } from "@/components/danh-gia/kpi-charts";
 import { getLopList } from "@/lib/lop-hoc/queries";
-import { getDeXuatList } from "@/lib/nhan-su/queries";
-import { LOAI_DE_XUAT_LABEL, VAI_TRO_LABEL } from "@/lib/nhan-su/labels";
-import { getViecCuaToi } from "@/lib/dang-ky/queries";
-import type { KpiTheoKyRow, LopHocTongHop } from "@/types/database";
+import { VAI_TRO_LABEL } from "@/lib/nhan-su/labels";
+import { getKyList } from "@/lib/kpi/queries";
+import type { KpiTheoKyRow, KyDanhGia, LopHocTongHop } from "@/types/database";
 
 // Trang Tổng quan (4.7b) — số liệu "toàn đơn vị" tái dùng thẳng từ Báo cáo (4.7) nhưng rút gọn, không lọc theo khung
-// thời gian (khác 4.7): mọi thứ ở đây là ảnh chụp HIỆN TẠI, trả lời "hôm nay cần làm/biết gì".
+// thời gian (khác 4.7): mọi thứ ở đây là ảnh chụp HIỆN TẠI, trả lời "hôm nay cần làm/biết gì". Không lặp lại các
+// danh sách bản ghi thô đã có sẵn ở module khác (đăng ký chờ duyệt ở /dang-ky, đề xuất ở /nhan-su/de-xuat, thông báo
+// ở /thong-bao, lớp đang mở ở /lop-hoc) — Tổng quan chỉ hiện PHÂN TÍCH (tương quan, phân bố, độ công bằng) mà các
+// module con không có chỗ nào hiện sẵn (phản hồi người dùng, xem quyết định ở CLAUDE.md mục 4.7b).
 const SO_NGAY_XU_HUONG = 14;
 
 // Xuất để trang demo /design/tong-quan dùng lại đúng 1 cách quy đổi, không lặp logic.
@@ -59,11 +64,17 @@ export interface ChungTongQuan {
   tongHop: ReturnType<typeof tongHopLop>;
   tyLeDangKyTrungBinh: number | null;
   dsLopDangMo: LopHocTongHop[];
+  // Phân tích cho kỳ đánh giá hiện tại (null nếu hệ thống chưa có kỳ nào) — thay cho các danh sách bản ghi thô đã bỏ
+  ky: KyDanhGia | null;
+  doDongDeu: number | null;
+  top20: number | null;
+  tuongQuan: DiemXY[];
+  radarTrungBinh: TrucRadar[];
 }
 
 // Số liệu "toàn đơn vị" dùng chung cho cả Admin và GV/TG (mục 4.7b: GV/TG cũng xem được, không chỉ Admin).
 export async function getChungTongQuan(): Promise<ChungTongQuan> {
-  const [kpiXuHuong, lopListGoc] = await Promise.all([getKpiTheoKy(6), getLopList()]);
+  const [kpiXuHuong, lopListGoc, kyList] = await Promise.all([getKpiTheoKy(6), getLopList(), getKyList()]);
   const lopList = lopListGoc.map(sangDongLop);
   const tongHop = tongHopLop(lopList.filter((l) => l.trang_thai_hien_thi !== "da_huy" && l.trang_thai_hien_thi !== "nhap"));
   const dangMo = lopListGoc.filter((l) => l.trang_thai_hien_thi === "dang_mo");
@@ -77,12 +88,46 @@ export async function getChungTongQuan(): Promise<ChungTongQuan> {
     .sort((a, b) => a.phanTram - b.phanTram)
     .slice(0, 6);
 
+  const dieuKy = chonKy(kyList, undefined);
+  let doDongDeu: number | null = null;
+  let top20: number | null = null;
+  let tuongQuan: DiemXY[] = [];
+  let radarTrungBinh: TrucRadar[] = [];
+  if (dieuKy) {
+    const [slRows, kpiRows] = await Promise.all([getSanLuong(dieuKy.hienTai.tu, dieuKy.hienTai.den), getKpiTongHop(dieuKy.hienTai.id)]);
+    const tongHopSl = tongHopSanLuong(slRows, "tat-ca");
+    doDongDeu = tongHopSl.chiSoDongDeu;
+    top20 = tongHopSl.top20;
+    tuongQuan = kpiRows.map((r) => ({
+      khoa: r.user_id,
+      nhan: r.ho_ten,
+      x: r.gio_thuc,
+      y: r.kpi,
+      nhom: r.vai_tro ? VAI_TRO_LABEL[r.vai_tro] : "Khác",
+      mau: r.vai_tro === "tro_giang" ? "teal" : "blue",
+    }));
+    const tb = (ma: string) => {
+      const gt = kpiRows.map((r) => r.diem_nhom[ma]).filter((v): v is number => typeof v === "number");
+      return gt.length ? Math.round((gt.reduce((s, v) => s + v, 0) / gt.length) * 10) / 10 : null;
+    };
+    radarTrungBinh = [
+      { nhan: "Sản lượng", gia_tri: tb("A") },
+      { nhan: "Chuyên cần", gia_tri: tb("B") },
+      { nhan: "Chất lượng", gia_tri: tb("C") },
+    ];
+  }
+
   return {
     kpiXuHuong,
     lapDaySlot,
     tongHop,
     tyLeDangKyTrungBinh: phanTram(tongHop.slotDaPhanCong, tongHop.slotTong),
     dsLopDangMo: dangMo,
+    ky: dieuKy?.hienTai ?? null,
+    doDongDeu,
+    top20,
+    tuongQuan,
+    radarTrungBinh,
   };
 }
 
@@ -93,8 +138,7 @@ export interface ThongKeAdmin {
   canhBaoPool: number;
 }
 
-// Hàng 3 thẻ stat đầu trang Tổng quan Admin (mục 4.7b) + số cảnh báo pool nhỏ (gộp vào thẻ "Việc cần duyệt" thay vì
-// thêm thẻ thứ 4 — StatRow cố định 3 cột theo đúng ảnh mẫu, mục 8.5b).
+// Hàng 3 thẻ stat đầu trang Tổng quan Admin (mục 4.7b).
 export async function getThongKeAdmin(): Promise<ThongKeAdmin> {
   const supabase = await createClient();
   const tuNgay = new Date();
@@ -126,36 +170,4 @@ export async function getThongKeAdmin(): Promise<ThongKeAdmin> {
     slotTrong: { tong: slotTrongTong, xuHuong: vanHanh.serie.map((s) => s.phan_cong) },
     canhBaoPool: canhBao.length,
   };
-}
-
-export interface MucCanDuyet {
-  id: string;
-  loai: "dang_ky" | "de_xuat";
-  tieuDe: string;
-  phu: string;
-  href: string;
-  created_at: string;
-}
-
-// Bảng việc cần duyệt (mục 4.7b, Admin/Quản lý lớp): gộp đăng ký tự do đang chờ + đề xuất nhân sự đang chờ, mới nhất
-// trước, rút gọn 8 dòng — xem đầy đủ ở /dang-ky và /nhan-su/de-xuat.
-export async function getVieccanDuyetAdmin(userId: string): Promise<MucCanDuyet[]> {
-  const [viec, deXuat] = await Promise.all([getViecCuaToi(userId, true), getDeXuatList("cho_duyet")]);
-  const tuDangKy: MucCanDuyet[] = viec.can_duyet.map((d) => ({
-    id: d.id,
-    loai: "dang_ky",
-    tieuDe: d.ho_ten,
-    phu: `${VAI_TRO_LABEL[d.vai_tro]} · ${d.bai.ten} · ${d.bai.lop_ten}`,
-    href: `/lop-hoc/${d.bai.lop_id}`,
-    created_at: d.created_at,
-  }));
-  const tuDeXuat: MucCanDuyet[] = deXuat.map((d) => ({
-    id: d.id,
-    loai: "de_xuat",
-    tieuDe: d.ho_ten,
-    phu: LOAI_DE_XUAT_LABEL[d.loai],
-    href: "/nhan-su/de-xuat",
-    created_at: d.created_at,
-  }));
-  return [...tuDangKy, ...tuDeXuat].sort((a, b) => b.created_at.localeCompare(a.created_at)).slice(0, 8);
 }
