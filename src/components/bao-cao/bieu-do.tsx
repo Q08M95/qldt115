@@ -232,7 +232,7 @@ export function ScatterXY({ diem, nhanX, nhanY, yMax = 100, className }: { diem:
   const L = 40;
   const R = 14;
   const T = 14;
-  const B = 34;
+  const B = 42;
   if (diem.length === 0) return null;
   const xMax = Math.max(...diem.map((d) => d.x), 1) * 1.08;
   const px = (x: number) => L + (x / xMax) * (W - L - R);
@@ -264,7 +264,12 @@ export function ScatterXY({ diem, nhanX, nhanY, yMax = 100, className }: { diem:
             {Math.round(yMax * t)}
           </text>
         ))}
-        <text x={(L + W - R) / 2} y={H - 6} textAnchor="middle" fontSize="10" fill="var(--muted-foreground)">
+        {[0, 0.5, 1].map((t) => (
+          <text key={t} x={px(xMax * t)} y={H - B + 14} textAnchor={t === 0 ? "start" : t === 1 ? "end" : "middle"} fontSize="9.5" fill="var(--muted-foreground)">
+            {Math.round(xMax * t)}
+          </text>
+        ))}
+        <text x={(L + W - R) / 2} y={H - 4} textAnchor="middle" fontSize="10" fill="var(--muted-foreground)">
           {nhanX}
         </text>
         {diem.map((d) => (

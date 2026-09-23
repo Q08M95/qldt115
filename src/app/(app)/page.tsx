@@ -18,6 +18,13 @@ import type { KpiTheoKyRow } from "@/types/database";
 
 const MAU_NHOM_LOP: MauBieuDo[] = ["blue", "navy", "teal", "green"];
 
+// Rút gọn tên kỳ cho nhãn trục biểu đồ (vd "Quý 3/2026" -> "Q3/2026") — tên kỳ demo/tùy chỉnh có thể dài hơn nhiều so
+// với tên kỳ thật, không rút gọn sẽ tràn/chồng chữ trên trục ngang (đúng cách báo cáo #2 đã xử lý).
+function tenNganKy(ten: string) {
+  const m = /Quý\s*(\d)\s*\/\s*(\d{4})/i.exec(ten);
+  return m ? `Q${m[1]}/${m[2]}` : ten.length > 10 ? `${ten.slice(0, 9)}…` : ten;
+}
+
 // Tổng quan (4.7b, trang chủ khi đăng nhập) — liên kết chặt nhưng không gộp với Báo cáo (4.7): số liệu "toàn đơn vị"
 // tái dùng thẳng (getChungTongQuan) nhưng rút gọn, không lọc theo khung thời gian — luôn là ảnh chụp HIỆN TẠI.
 // Không lặp lại danh sách bản ghi thô đã có sẵn ở module khác (đăng ký/đề xuất chờ duyệt ở /dang-ky và
@@ -215,7 +222,7 @@ export default async function HomePage() {
                     {kpiCoDuLieu.length < 2 ? (
                       <p className="py-6 text-center text-sm text-muted-foreground">Cần từ 2 kỳ có dữ liệu.</p>
                     ) : (
-                      <AreaXuHuong diem={kpiCoDuLieu.map((k) => ({ nhan: k.ten, gia_tri: k.kpi_tb }))} className="h-auto w-full" />
+                      <AreaXuHuong diem={kpiCoDuLieu.map((k) => ({ nhan: tenNganKy(k.ten), gia_tri: k.kpi_tb }))} className="h-auto w-full" />
                     )}
                   </CardContent>
                 </Card>

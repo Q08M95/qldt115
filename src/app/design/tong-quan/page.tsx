@@ -18,6 +18,11 @@ import type { KpiCaNhan, LopHocTongHop } from "@/types/database";
 
 // Trang demo Tổng quan (4.7b) với dữ liệu giả — đối chiếu giao diện với ảnh mẫu trước khi nối dữ liệu thật.
 // ?v=admin|gvtg|ql|trong (ql = Quyền Quản lý lớp, thấy cả 2 bộ widget; trong = mọi danh sách rỗng)
+function tenNganKy(ten: string) {
+  const m = /Quý\s*(\d)\s*\/\s*(\d{4})/i.exec(ten);
+  return m ? `Q${m[1]}/${m[2]}` : ten.length > 10 ? `${ten.slice(0, 9)}…` : ten;
+}
+
 const NHOM_LOP = ["ABCDE", "ACLS", "BLS", "SCC-LX", "SCC-CĐ"];
 const TEN = ["Nguyễn Văn An", "Trần Thị Bình", "Lê Hoàng Cường", "Phạm Minh Đức", "Võ Thu Hà", "Đặng Quốc Huy", "Bùi Lan Khanh", "Hoàng Gia Long", "Ngô Thanh Mai", "Đỗ Anh Nam", "Phan Thị Oanh", "Lý Quang Phúc"];
 
@@ -325,7 +330,7 @@ export default async function DesignTongQuanPage(props: { searchParams: Promise<
                       {kpiCoDuLieu.length < 2 ? (
                         <p className="py-6 text-center text-sm text-muted-foreground">Cần từ 2 kỳ có dữ liệu.</p>
                       ) : (
-                        <AreaXuHuong diem={kpiCoDuLieu.map((k) => ({ nhan: k.ten, gia_tri: k.kpi_tb }))} className="h-auto w-full" />
+                        <AreaXuHuong diem={kpiCoDuLieu.map((k) => ({ nhan: tenNganKy(k.ten), gia_tri: k.kpi_tb }))} className="h-auto w-full" />
                       )}
                     </CardContent>
                   </Card>
