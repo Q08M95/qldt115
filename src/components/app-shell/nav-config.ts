@@ -54,7 +54,7 @@ export const NAV_GROUPS: NavGroup[] = [
 // Bottom tab bar mobile (mục 8.9): 4 mục GV/TG dùng nhiều nhất. "Lịch dạy" là lối vào Lớp học + Đăng ký trên mobile.
 export const MOBILE_TABS: NavItem[] = [
   { href: "/", label: "Trang chủ", icon: LayoutDashboard },
-  { href: "/lop-hoc", label: "Lịch dạy", icon: CalendarDays },
+  { href: "/dang-ky#lich", label: "Lịch dạy", icon: CalendarDays },
   { href: "/thong-bao", label: "Thông báo", icon: Bell },
   { href: "/ho-so", label: "Hồ sơ", icon: User },
 ];
@@ -79,5 +79,5 @@ export const SEGMENT_LABELS: Record<string, string> = {
 };
 
 export function isActive(pathname: string, href: string) {
-  return href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(href + "/");
+  return href === "/" ? pathname === "/" : pathname === href.split("#")[0] || pathname.startsWith(href.split("#")[0] + "/");
 }

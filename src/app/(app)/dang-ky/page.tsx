@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LichThang } from "@/components/tong-quan/lich-thang";
 import { ClipboardCheck, Inbox, MailQuestion, Hourglass } from "lucide-react";
 import { NutDuyet, NutPhanHoiMoi, NutRut } from "@/components/dang-ky/dang-ky-controls";
 import { EmptyState } from "@/components/empty-state";
@@ -6,7 +7,7 @@ import { UserAvatar } from "@/components/user-avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { requireSession } from "@/lib/auth/session";
-import { getViecCuaToi, type ViecCuaToi } from "@/lib/dang-ky/queries";
+import { getLichCuaToi, getViecCuaToi, type ViecCuaToi } from "@/lib/dang-ky/queries";
 import { fmtDate, fmtTime } from "@/lib/format";
 import { VAI_TRO_LABEL } from "@/lib/nhan-su/labels";
 
@@ -42,12 +43,18 @@ function Khung({ icon: Icon, tieuDe, dem, children }: { icon: typeof Inbox; tieu
 // Đây là nơi tập trung "việc của tôi": lời mời cần phản hồi, đăng ký đang chờ, lịch được phân công; Admin thêm hàng đợi cần duyệt.
 export default async function DangKyPage() {
   const { profile, isQuanTri } = await requireSession();
-  const v = await getViecCuaToi(profile.id, isQuanTri);
+  const [v, lich] = await Promise.all([getViecCuaToi(profile.id, isQuanTri), profile.vai_tro_giang_day ? getLichCuaToi(profile.id) : null]);
   const loiMoi = v.dang_cho.filter((d) => d.loai === "duoc_moi");
   const dangKy = v.dang_cho.filter((d) => d.loai === "tu_dang_ky");
 
   return (
     <div className="grid gap-5 lg:grid-cols-2">
+      {lich && (
+        <div className="lg:col-span-2">
+          <LichThang items={lich} />
+        </div>
+      )}
+
       {isQuanTri && (
         <div className="lg:col-span-2">
           <Khung icon={ClipboardCheck} tieuDe="Đăng ký chờ duyệt" dem={v.can_duyet.length}>

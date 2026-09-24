@@ -121,7 +121,13 @@ function chuanBai(b: BaiLop | BaiLop[] | null) {
 
 export type BaiLich = ViecCuaToi["da_phan_cong"][number];
 
-// Lịch tháng của tôi (Tổng quan): mọi Bài đã phân công, không kể lớp đã hủy, từ 6 tháng trước đến 12 tháng sau —
+// Bài sắp diễn ra (chưa kết thúc) của tôi, cho khung gọn ở Tổng quan
+export async function getLichSapToi(userId: string): Promise<BaiLich[]> {
+  const now = Date.now();
+  return (await getLichCuaToi(userId)).filter((s) => Date.parse(s.bai.ket_thuc) >= now);
+}
+
+// Lịch tháng của tôi (trang Đăng ký giảng dạy): mọi Bài đã phân công, không kể lớp đã hủy, từ 6 tháng trước đến 12 tháng sau —
 // gửi hết cho component client để chuyển tháng không cần gọi lại máy chủ.
 export async function getLichCuaToi(userId: string): Promise<BaiLich[]> {
   const supabase = await createClient();

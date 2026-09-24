@@ -160,7 +160,7 @@ export function Topbar({
         </Button>
 
         <Button asChild variant="outline" size="icon" className="hidden rounded-full border-transparent shadow-card md:inline-flex">
-          <Link href="/#lich" aria-label="Lịch dạy của tôi">
+          <Link href="/dang-ky#lich" aria-label="Lịch dạy của tôi">
             <CalendarDays />
           </Link>
         </Button>

@@ -9,7 +9,7 @@ import { TieuChiSoSanh } from "@/components/danh-gia/kpi-so-sanh";
 import { StatTile } from "@/components/stat-tile";
 import { Sparkline, ThanhNgang, Donut, ChuThichDonut, type DongThanh, type MauBieuDo } from "@/components/bao-cao/bieu-do";
 import { MAU_TRANG_THAI } from "@/components/bao-cao/bc-van-hanh-lop";
-import { LichThang } from "@/components/tong-quan/lich-thang";
+import { LichSapToi } from "@/components/tong-quan/lich-sap-toi";
 import { UserAvatar } from "@/components/user-avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -320,7 +320,7 @@ export default async function DesignTongQuanPage(props: { searchParams: Promise<
                 {/* Đã hiện ở khối Admin phía trên rồi thì không lặp lại (người có Quyền Quản lý lớp, v=ql) */}
                 {!laAdmin && <StatRowChung thongKe={THONG_KE} trong={trong} />}
 
-                <LichThang items={trong ? [] : VIEC_CUA_TOI.da_phan_cong} />
+                <LichSapToi items={trong ? [] : VIEC_CUA_TOI.da_phan_cong} />
 
                 <KpiCaNhanBoard data={trong ? null : KPI_CA_NHAN} tieuDe="KPI của tôi" />
               </>

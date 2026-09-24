@@ -8,13 +8,13 @@ import { DashboardLayout, StatRow } from "@/components/dashboard-layout";
 import { StatTile } from "@/components/stat-tile";
 import { Sparkline, ThanhNgang, Donut, ChuThichDonut, type MauBieuDo } from "@/components/bao-cao/bieu-do";
 import { MAU_TRANG_THAI } from "@/components/bao-cao/bc-van-hanh-lop";
-import { LichThang } from "@/components/tong-quan/lich-thang";
+import { LichSapToi } from "@/components/tong-quan/lich-sap-toi";
 import { UserAvatar } from "@/components/user-avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { requireSession } from "@/lib/auth/session";
 import { getBaiCanCheckIn, getKpiCaNhan } from "@/lib/danh-gia/queries";
-import { getLichCuaToi } from "@/lib/dang-ky/queries";
+import { getLichSapToi } from "@/lib/dang-ky/queries";
 import { hrefBaoCao } from "@/lib/bao-cao/url";
 import { TRANG_THAI_LOP_LABEL } from "@/lib/lop-hoc/labels";
 import { VAI_TRO_LABEL } from "@/lib/nhan-su/labels";
@@ -86,7 +86,7 @@ export default async function HomePage() {
     getBaiCanCheckIn(),
     laAdmin || laGvTg ? getChungTongQuan() : null,
     laAdmin || laGvTg ? getThongKeChung() : null,
-    laGvTg ? getLichCuaToi(profile.id) : null,
+    laGvTg ? getLichSapToi(profile.id) : null,
     laGvTg ? getKpiCaNhan(profile.id) : null,
   ]);
 
@@ -162,7 +162,7 @@ export default async function HomePage() {
               {/* Đã hiện ở khối Admin phía trên rồi thì không lặp lại (người có Quyền Quản lý lớp) */}
               {!laAdmin && <StatRowChung thongKe={thongKe} />}
 
-              <LichThang items={lichCuaToi} />
+              <LichSapToi items={lichCuaToi} />
 
               <KpiCaNhanBoard data={kpiCaNhan} tieuDe="KPI của tôi" />
             </>
