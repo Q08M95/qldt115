@@ -324,13 +324,14 @@ Module này từng bị thiếu trong danh sách 4.1-4.8 ở bản nháp đầu,
 - **Giảng viên/Trợ giảng:**
   - Hàng KPI stat card rút gọn: lớp đang mở, tỷ lệ lấp đầy TB, số kỳ có KPI
   - **Lịch dạy sắp tới** dạng timeline trực quan (không phải danh sách text), các Bài đã được phân công, kèm badge số lời mời/đăng ký đang chờ phản hồi của bản thân
-  - **Progress bar/gauge** điểm KPI cá nhân rút gọn kỳ hiện tại (link tới Bảng KPI đầy đủ, mục 4.4)
+  - **Bảng KPI cá nhân ĐẦY ĐỦ** (đã chốt sau phản hồi người dùng, xem quyết định triển khai ở mục 6 — không còn bản rút gọn `KpiRutGon`): tái dùng nguyên component `KpiCaNhanBoard` + `TieuChiSoSanh` vốn dựng cho `/danh-gia` (mục 4.4) — gồm KPI kỳ hiện tại + trend, Giờ dạy, Số Bài, Xu hướng qua các kỳ, Điểm theo nhóm và tiêu chí (radar + danh sách A1-C3), Vị trí top so với đồng nghiệp (hoặc so với lịch sử bản thân nếu fallback), Lớp không kinh phí (A4), Từng tiêu chí so với kỳ trước. Đây là ngoại lệ có chủ đích với nguyên tắc "không lặp nội dung module khác" ở trên — dữ liệu KPI là CỦA CHÍNH NGƯỜI XEM (không phải bản ghi thô của người khác), nên xem đầy đủ ngay ở trang chủ hợp lý hơn phải sang `/danh-gia`
   - **Donut chart** phân bố lớp theo nhóm lớp (khác góc nhìn với donut theo trạng thái của Admin — không phải lặp lại)
+  - **Donut chart** phân bố lớp theo trạng thái — cùng 1 component `CardLopTheoTrangThai` dùng chung với khối Admin, hiện thêm ở đây theo yêu cầu người dùng để GV/TG cũng thấy được góc nhìn vận hành chung
 - **Phân tích toàn đơn vị (dùng chung cho cả 2 vai trò, hiện ĐÚNG 1 LẦN dù người xem có cả 2 khối trên — không lặp 2 khối giống nhau khi có Quyền Quản lý lớp):**
-  - **Scatter "Tương quan Giờ dạy × KPI"** của kỳ đánh giá hiện tại — mỗi điểm 1 người (có tên, đúng nguyên tắc công khai nội bộ mục 3), màu theo vai trò, có đường trung vị chia 4 góc phần tư để đọc nhanh ai vừa dạy nhiều vừa KPI cao/thấp
+  - **Area chart** xu hướng KPI toàn đơn vị rút gọn (vài kỳ gần nhất, không gắn tên cá nhân, link báo cáo #2) — đặt ở cột chính (main)
   - **Radar** điểm trung bình toàn đơn vị theo 3 nhóm tiêu chí A/B/C (Sản lượng/Chuyên cần/Chất lượng) — thấy ngay điểm mạnh/yếu chung của cả đơn vị, khác với radar cá nhân ở Bảng KPI (mục 4.4)
-  - **Area chart** xu hướng KPI toàn đơn vị rút gọn (vài kỳ gần nhất, không gắn tên cá nhân, link báo cáo #2)
   - **Gauge** độ đồng đều sản lượng (chỉ số công bằng dựa trên hệ số Gini, tái dùng từ báo cáo #3) — cho biết matching-score (mục 4.3) có đang phân bổ khối lượng công bằng hay không, kèm tỷ lệ % do 20% người dạy nhiều nhất đảm nhiệm
+  - ~~Scatter "Tương quan Giờ dạy × KPI"~~ — đã bỏ theo phản hồi người dùng (xem quyết định triển khai ở mục 6), thay bằng đưa Area chart xu hướng lên vị trí cột chính
 
 ### 4.8 CẤU HÌNH HỆ THỐNG
 Tất cả các giá trị sau **phải cấu hình qua giao diện, không hardcode** (xem kiến trúc ở mục 7):
@@ -539,6 +540,12 @@ Vì bộ tiêu chí/trọng số **sẽ còn thay đổi**, công thức phải 
   2. **`RadarNhom`** (tái dùng từ `kpi-charts.tsx`, vốn dùng cho radar cá nhân) — điểm TRUNG BÌNH TOÀN ĐƠN VỊ theo 3 nhóm tiêu chí A/B/C, tính từ `diem_nhom` của `bc_kpi_tong_hop`.
   3. **Gauge "Độ đồng đều sản lượng"** — tái dùng thẳng `chiSoDongDeu`/`top20` (Gini) đã có ở báo cáo #3 (`tongHopSanLuong`, khoảng thời gian = kỳ đánh giá hiện tại) thay vì chỉ hiện ở báo cáo #3, đưa lên Tổng quan vì đây chính là "mối liên quan" cho biết matching-score (mục 4.3) có đang công bằng hay không — đúng tinh thần phân tích hơn là liệt kê.
 - **`getChungTongQuan()`** giờ tự tìm kỳ đánh giá hiện tại (`chonKy`, không cần tham số) và trả thêm `ky`/`doDongDeu`/`top20`/`tuongQuan`/`radarTrungBinh` — không cần RPC/bảng mới, chỉ gọi thêm `getSanLuong(ky.tu, ky.den)` + `getKpiTongHop(ky.id)` (cả 2 đã có sẵn từ báo cáo #1/#3).
+
+**Điều chỉnh Tổng quan lần 2 sau phản hồi người dùng (đã chốt) — KPI cá nhân đầy đủ ở GV/TG, đổi biểu đồ phân tích, thêm donut trạng thái cho GV/TG:**
+- **KPI cá nhân đầy đủ thay cho bản rút gọn:** người dùng liệt kê đúng 8 mục muốn thấy ở Tổng quan (KPI kỳ hiện tại, Giờ dạy, Số Bài, Xu hướng qua các kỳ, Điểm theo nhóm và tiêu chí, Vị trí top so với đồng nghiệp, Lớp không kinh phí, Từng tiêu chí so với kỳ trước) — đúng bằng toàn bộ nội dung `KpiCaNhanBoard` + thẻ "Từng tiêu chí so với kỳ trước" đã dựng sẵn cho `/danh-gia` (mục 4.4), nên dùng thẳng lại 2 component đó thay vì mở rộng `KpiRutGon`. Đã xóa hẳn `src/components/tong-quan/kpi-rut-gon.tsx` (không còn nơi nào dùng). Tách thẻ "Từng tiêu chí so với kỳ trước" ra khỏi `KpiSoSanhCards` thành component riêng `TieuChiSoSanh` (`src/components/danh-gia/kpi-so-sanh.tsx`) để dùng lại được ở Tổng quan mà không kéo theo thẻ "Sản lượng · Chuyên cần · Chất lượng qua kỳ" (không nằm trong 8 mục người dùng yêu cầu). `KpiCaNhanBoard` đặt ở cột chính (main, đủ rộng cho layout 3 cột số + radar/danh sách tiêu chí), `TieuChiSoSanh` đặt ở cột phụ (aside, đúng vị trí nó vốn có ở `/danh-gia`).
+- **Ngoại lệ có chủ đích với nguyên tắc "không lặp nội dung module khác":** khác với "Bảng việc cần duyệt"/"Thẻ gợi ý lớp"/"Danh sách thông báo" (bản sao 1-1 dữ liệu người KHÁC, đã bỏ ở lượt trước) — KPI cá nhân là dữ liệu CỦA CHÍNH NGƯỜI XEM, nên xem đầy đủ ngay ở trang chủ là hợp lý dù trùng nội dung với `/danh-gia`.
+- **Bỏ hẳn Scatter "Tương quan Giờ dạy × KPI"** khỏi "Phân tích toàn đơn vị" theo yêu cầu người dùng — xóa luôn `ScatterXY`/`DiemXY` khỏi `src/components/bao-cao/bieu-do.tsx` và trường `tuongQuan` khỏi `ChungTongQuan`/`getChungTongQuan()` (không dùng ở đâu khác, không giữ lại dạng chết). Vị trí cột chính (main) vừa bỏ trống được thay bằng **Area chart "Xu hướng KPI toàn đơn vị"** (chuyển từ cột phụ sang) — khối "Phân tích toàn đơn vị" còn lại: Area chart + Radar A/B/C (main), Gauge độ đồng đều sản lượng (aside, chỉ còn 1 thẻ).
+- **Thêm donut "Lớp theo trạng thái" vào khối GV/TG** (trước đây chỉ Admin có) — tách phần JSX donut trạng thái thành component dùng chung `CardLopTheoTrangThai` (khai báo cục bộ trong `src/app/(app)/page.tsx`, không export) để cả khối Admin lẫn khối GV/TG cùng gọi, tránh lặp JSX thay vì lặp nội dung nghiệp vụ.
 
 ---
 

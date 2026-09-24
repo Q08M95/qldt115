@@ -1,12 +1,13 @@
 import { notFound } from "next/navigation";
-import { Activity, GraduationCap, Scale, Users, Workflow } from "lucide-react";
+import { GraduationCap, Scale, Users, Workflow } from "lucide-react";
 import { AppShell } from "@/components/app-shell/app-shell";
 import { DashboardLayout, StatRow } from "@/components/dashboard-layout";
+import { KpiCaNhanBoard } from "@/components/danh-gia/kpi-ca-nhan";
 import { AreaXuHuong, DongHoBanNguyet, RadarNhom } from "@/components/danh-gia/kpi-charts";
+import { TieuChiSoSanh } from "@/components/danh-gia/kpi-so-sanh";
 import { StatTile } from "@/components/stat-tile";
-import { Sparkline, ThanhNgang, Donut, ChuThichDonut, ScatterXY, type DiemXY, type MauBieuDo } from "@/components/bao-cao/bieu-do";
+import { Sparkline, ThanhNgang, Donut, ChuThichDonut, type MauBieuDo } from "@/components/bao-cao/bieu-do";
 import { MAU_TRANG_THAI } from "@/components/bao-cao/bc-van-hanh-lop";
-import { KpiRutGon } from "@/components/tong-quan/kpi-rut-gon";
 import { LichSapToi } from "@/components/tong-quan/lich-sap-toi";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -23,8 +24,30 @@ function tenNganKy(ten: string) {
   return m ? `Q${m[1]}/${m[2]}` : ten.length > 10 ? `${ten.slice(0, 9)}…` : ten;
 }
 
+// Donut "Lớp theo trạng thái" — dùng lại cho cả khối Admin và khối GV/TG (mục 4.7b, sau phản hồi người dùng).
+function CardLopTheoTrangThai({ lat, tong }: { lat: { khoa: string; nhan: string; so: number; mau: MauBieuDo }[]; tong: number }) {
+  return (
+    <Card className="gap-4 px-0">
+      <CardHeader>
+        <CardTitle>Lớp theo trạng thái</CardTitle>
+      </CardHeader>
+      <CardContent>
+        {lat.length === 0 ? (
+          <p className="py-6 text-center text-sm text-muted-foreground">Chưa có lớp nào.</p>
+        ) : (
+          <div className="@container">
+            <div className="grid items-center gap-4 @[22rem]:grid-cols-[auto_1fr]">
+              <Donut lat={lat} giua={String(tong)} phu="lớp" className="mx-auto size-32" />
+              <ChuThichDonut lat={lat} />
+            </div>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
 const NHOM_LOP = ["ABCDE", "ACLS", "BLS", "SCC-LX", "SCC-CĐ"];
-const TEN = ["Nguyễn Văn An", "Trần Thị Bình", "Lê Hoàng Cường", "Phạm Minh Đức", "Võ Thu Hà", "Đặng Quốc Huy", "Bùi Lan Khanh", "Hoàng Gia Long", "Ngô Thanh Mai", "Đỗ Anh Nam", "Phan Thị Oanh", "Lý Quang Phúc"];
 
 function lop(i: number, trangThai: LopHocTongHop["trang_thai_hien_thi"], gvTong: number, gvXong: number, tgTong: number, tgXong: number): LopHocTongHop {
   return {
@@ -65,16 +88,6 @@ const DS_LOP: LopHocTongHop[] = [
   lop(5, "da_huy", 1, 0, 2, 0),
 ];
 
-// Tương quan Giờ dạy × KPI — trải đều để nhìn rõ 4 góc phần tư (vài người dạy nhiều+KPI cao, vài người dạy ít+KPI thấp...)
-const TUONG_QUAN: DiemXY[] = TEN.map((ten, i) => ({
-  khoa: `u${i}`,
-  nhan: ten,
-  x: Math.max(0, 22 - i * 1.8 + (i % 3 === 0 ? 4 : -2)),
-  y: Math.max(20, Math.min(98, 40 + i * 3.5 + (i % 4 === 0 ? -12 : 6))),
-  nhom: i % 3 === 2 ? "Trợ giảng" : "Giảng viên",
-  mau: (i % 3 === 2 ? "teal" : "blue") as MauBieuDo,
-}));
-
 const CHUNG: ChungTongQuan = (() => {
   const dongLop = DS_LOP.map(sangDongLop);
   const tongHop = tongHopLop(dongLop.filter((l) => l.trang_thai_hien_thi !== "da_huy" && l.trang_thai_hien_thi !== "nhap"));
@@ -97,7 +110,6 @@ const CHUNG: ChungTongQuan = (() => {
     ky: { id: "k4", ten: "Quý 3/2026", tu: "2026-07-01", den: "2026-09-30", trang_thai: "dang_mo", dong_luc: null },
     doDongDeu: 61,
     top20: 47,
-    tuongQuan: TUONG_QUAN,
     radarTrungBinh: [
       { nhan: "Sản lượng", gia_tri: 68 },
       { nhan: "Chuyên cần", gia_tri: 84 },
@@ -133,8 +145,40 @@ const VIEC_CUA_TOI: ViecCuaToi = {
 
 const KPI_CA_NHAN: KpiCaNhan = {
   ky: [
-    { ky_id: "k3", ten: "Quý 2/2026", tu: "2026-04-01", den: "2026-06-30", trang_thai: "da_dong", kpi: 78.4, diem_nhom: { A: 74, B: 88, C: 76 }, gia_tri: {}, trong_so_hieu_luc: {}, gio_thuc: 18, gio_quy_doi: 20, so_bai: 7, so_lop: 3, che_do_a1: "percentile", percentile: 72 },
-    { ky_id: "k4", ten: "Quý 3/2026", tu: "2026-07-01", den: "2026-09-30", trang_thai: "dang_mo", kpi: 82.1, diem_nhom: { A: 78, B: 90, C: 80 }, gia_tri: {}, trong_so_hieu_luc: {}, gio_thuc: 20, gio_quy_doi: 22, so_bai: 8, so_lop: 3, che_do_a1: "percentile", percentile: 78 },
+    {
+      ky_id: "k3",
+      ten: "Quý 2/2026",
+      tu: "2026-04-01",
+      den: "2026-06-30",
+      trang_thai: "da_dong",
+      kpi: 78.4,
+      diem_nhom: { A: 74, B: 88, C: 76 },
+      gia_tri: { A1: 70, A2: 82, A3: 75, B1: 88, C1: 80, C2: 68, C3: 78 },
+      trong_so_hieu_luc: { A1: 12.5, A2: 6.25, A3: 6.25, B1: 30, C1: 11.25, C2: 18, C3: 15.75 },
+      gio_thuc: 18,
+      gio_quy_doi: 20,
+      so_bai: 7,
+      so_lop: 3,
+      che_do_a1: "percentile",
+      percentile: 72,
+    },
+    {
+      ky_id: "k4",
+      ten: "Quý 3/2026",
+      tu: "2026-07-01",
+      den: "2026-09-30",
+      trang_thai: "dang_mo",
+      kpi: 82.1,
+      diem_nhom: { A: 78, B: 90, C: 80 },
+      gia_tri: { A1: 76, A2: 85, A3: 78, B1: 90, C1: 84, C2: 72, C3: 82 },
+      trong_so_hieu_luc: { A1: 12.5, A2: 6.25, A3: 6.25, B1: 30, C1: 11.25, C2: 18, C3: 15.75 },
+      gio_thuc: 20,
+      gio_quy_doi: 22,
+      so_bai: 8,
+      so_lop: 3,
+      che_do_a1: "percentile",
+      percentile: 78,
+    },
   ],
   a4_tong: 3,
   so_ky_fallback: 3,
@@ -153,7 +197,7 @@ export default async function DesignTongQuanPage(props: { searchParams: Promise<
   const laGvTg = gvtg || ql;
 
   const chung = trong
-    ? { ...CHUNG, kpiXuHuong: [], lapDaySlot: [], dsLopDangMo: [], tyLeDangKyTrungBinh: null, tongHop: { ...CHUNG.tongHop, tong: 0, theoTrangThai: [], theoNhomLop: [] }, doDongDeu: null, top20: null, tuongQuan: [], radarTrungBinh: CHUNG.radarTrungBinh.map((t) => ({ ...t, gia_tri: null })) }
+    ? { ...CHUNG, kpiXuHuong: [], lapDaySlot: [], dsLopDangMo: [], tyLeDangKyTrungBinh: null, tongHop: { ...CHUNG.tongHop, tong: 0, theoTrangThai: [], theoNhomLop: [] }, doDongDeu: null, top20: null, radarTrungBinh: CHUNG.radarTrungBinh.map((t) => ({ ...t, gia_tri: null })) }
     : CHUNG;
   const kpiCoDuLieu = chung.kpiXuHuong.filter((k): k is typeof k & { kpi_tb: number } => k.kpi_tb !== null);
   const lat = chung.tongHop.theoTrangThai.map((t) => ({
@@ -213,23 +257,7 @@ export default async function DesignTongQuanPage(props: { searchParams: Promise<
             }
             aside={
               <>
-                <Card className="gap-4 px-0">
-                  <CardHeader>
-                    <CardTitle>Lớp theo trạng thái</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    {lat.length === 0 ? (
-                      <p className="py-6 text-center text-sm text-muted-foreground">Chưa có lớp nào.</p>
-                    ) : (
-                      <div className="@container">
-                        <div className="grid items-center gap-4 @[22rem]:grid-cols-[auto_1fr]">
-                          <Donut lat={lat} giua={String(chung.tongHop.tong)} phu="lớp" className="mx-auto size-32" />
-                          <ChuThichDonut lat={lat} />
-                        </div>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
+                <CardLopTheoTrangThai lat={lat} tong={chung.tongHop.tong} />
 
                 <Card className="gap-4 px-0">
                   <CardHeader>
@@ -255,11 +283,14 @@ export default async function DesignTongQuanPage(props: { searchParams: Promise<
                 </StatRow>
 
                 <LichSapToi items={trong ? [] : VIEC_CUA_TOI.da_phan_cong} dangCho={trong ? 0 : VIEC_CUA_TOI.dang_cho.length} />
+
+                <KpiCaNhanBoard data={trong ? null : KPI_CA_NHAN} tieuDe="KPI của tôi" />
               </>
             }
             aside={
               <>
-                <KpiRutGon data={trong ? null : KPI_CA_NHAN} />
+                <TieuChiSoSanh data={trong ? null : KPI_CA_NHAN} />
+
                 <Card className="gap-4 px-0">
                   <CardHeader>
                     <CardTitle>Lớp theo nhóm lớp</CardTitle>
@@ -277,12 +308,14 @@ export default async function DesignTongQuanPage(props: { searchParams: Promise<
                     )}
                   </CardContent>
                 </Card>
+
+                <CardLopTheoTrangThai lat={lat} tong={chung.tongHop.tong} />
               </>
             }
           />
         )}
 
-        {(chung.tuongQuan.length > 0 || kpiCoDuLieu.length > 0 || chung.doDongDeu !== null) && (
+        {(chung.radarTrungBinh.length > 0 || kpiCoDuLieu.length > 0 || chung.doDongDeu !== null) && (
           <>
             <h2 className="flex items-center gap-2.5 text-xl font-semibold tracking-tight text-foreground">
               <span aria-hidden className="h-5 w-1 shrink-0 rounded-full bg-brand-gradient" />
@@ -293,15 +326,13 @@ export default async function DesignTongQuanPage(props: { searchParams: Promise<
                 <>
                   <Card className="gap-4 px-0">
                     <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <Activity className="size-5 text-slate-500" strokeWidth={1.75} aria-hidden /> Tương quan Giờ dạy × KPI
-                      </CardTitle>
+                      <CardTitle>Xu hướng KPI toàn đơn vị</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      {chung.tuongQuan.length < 3 ? (
-                        <p className="py-6 text-center text-sm text-muted-foreground">Cần ít nhất 3 người có KPI trong kỳ để vẽ tương quan.</p>
+                      {kpiCoDuLieu.length < 2 ? (
+                        <p className="py-6 text-center text-sm text-muted-foreground">Cần từ 2 kỳ có dữ liệu.</p>
                       ) : (
-                        <ScatterXY diem={chung.tuongQuan} nhanX="Giờ đã dạy" nhanY="KPI" />
+                        <AreaXuHuong diem={kpiCoDuLieu.map((k) => ({ nhan: tenNganKy(k.ten), gia_tri: k.kpi_tb }))} className="h-auto w-full" />
                       )}
                     </CardContent>
                   </Card>
@@ -321,46 +352,31 @@ export default async function DesignTongQuanPage(props: { searchParams: Promise<
                 </>
               }
               aside={
-                <>
-                  <Card className="gap-4 px-0">
-                    <CardHeader>
-                      <CardTitle>Xu hướng KPI toàn đơn vị</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      {kpiCoDuLieu.length < 2 ? (
-                        <p className="py-6 text-center text-sm text-muted-foreground">Cần từ 2 kỳ có dữ liệu.</p>
-                      ) : (
-                        <AreaXuHuong diem={kpiCoDuLieu.map((k) => ({ nhan: tenNganKy(k.ten), gia_tri: k.kpi_tb }))} className="h-auto w-full" />
-                      )}
-                    </CardContent>
-                  </Card>
-
-                  <Card className="gap-3 px-0">
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <Scale className="size-5 text-slate-500" strokeWidth={1.75} aria-hidden /> Độ đồng đều sản lượng
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="grid gap-3">
-                      {chung.doDongDeu === null ? (
-                        <p className="py-6 text-center text-sm text-muted-foreground">Cần ít nhất 2 người có giờ dạy trong kỳ.</p>
-                      ) : (
-                        <>
-                          <DongHoBanNguyet phanTram={chung.doDongDeu} so={`${chung.doDongDeu}/100`} nhan="Chỉ số đồng đều" className="mx-auto w-48" />
-                          <p className="text-center text-sm text-muted-foreground">
-                            {chung.doDongDeu >= 75 ? "Khối lượng giảng dạy phân bổ khá đều." : chung.doDongDeu >= 50 ? "Có chênh lệch giữa những người dạy nhiều và ít." : "Khối lượng đang dồn về một số ít người."}
-                            {chung.top20 !== null && (
-                              <>
-                                {" "}
-                                20% người dạy nhiều nhất đảm nhiệm <span className="font-medium text-foreground">{chung.top20}%</span> tổng giờ.
-                              </>
-                            )}
-                          </p>
-                        </>
-                      )}
-                    </CardContent>
-                  </Card>
-                </>
+                <Card className="gap-3 px-0">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Scale className="size-5 text-slate-500" strokeWidth={1.75} aria-hidden /> Độ đồng đều sản lượng
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="grid gap-3">
+                    {chung.doDongDeu === null ? (
+                      <p className="py-6 text-center text-sm text-muted-foreground">Cần ít nhất 2 người có giờ dạy trong kỳ.</p>
+                    ) : (
+                      <>
+                        <DongHoBanNguyet phanTram={chung.doDongDeu} so={`${chung.doDongDeu}/100`} nhan="Chỉ số đồng đều" className="mx-auto w-48" />
+                        <p className="text-center text-sm text-muted-foreground">
+                          {chung.doDongDeu >= 75 ? "Khối lượng giảng dạy phân bổ khá đều." : chung.doDongDeu >= 50 ? "Có chênh lệch giữa những người dạy nhiều và ít." : "Khối lượng đang dồn về một số ít người."}
+                          {chung.top20 !== null && (
+                            <>
+                              {" "}
+                              20% người dạy nhiều nhất đảm nhiệm <span className="font-medium text-foreground">{chung.top20}%</span> tổng giờ.
+                            </>
+                          )}
+                        </p>
+                      </>
+                    )}
+                  </CardContent>
+                </Card>
               }
             />
           </>

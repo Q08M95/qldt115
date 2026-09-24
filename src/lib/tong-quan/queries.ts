@@ -4,18 +4,16 @@ import { createClient } from "@/lib/supabase/server";
 import { getCanhBaoPool, getKpiTongHop, getKpiTheoKy, getSanLuong, getVanHanhDangKy } from "@/lib/bao-cao/queries";
 import { chonKy } from "@/lib/bao-cao/ky";
 import { phanTram, tongHopLop, tongHopSanLuong } from "@/lib/bao-cao/tinh-toan";
-import type { DiemXY } from "@/components/bao-cao/bieu-do";
 import type { DongLop } from "@/lib/bao-cao/types";
 import type { TrucRadar } from "@/components/danh-gia/kpi-charts";
 import { getLopList } from "@/lib/lop-hoc/queries";
-import { VAI_TRO_LABEL } from "@/lib/nhan-su/labels";
 import { getKyList } from "@/lib/kpi/queries";
 import type { KpiTheoKyRow, KyDanhGia, LopHocTongHop } from "@/types/database";
 
 // Trang Tổng quan (4.7b) — số liệu "toàn đơn vị" tái dùng thẳng từ Báo cáo (4.7) nhưng rút gọn, không lọc theo khung
 // thời gian (khác 4.7): mọi thứ ở đây là ảnh chụp HIỆN TẠI, trả lời "hôm nay cần làm/biết gì". Không lặp lại các
 // danh sách bản ghi thô đã có sẵn ở module khác (đăng ký chờ duyệt ở /dang-ky, đề xuất ở /nhan-su/de-xuat, thông báo
-// ở /thong-bao, lớp đang mở ở /lop-hoc) — Tổng quan chỉ hiện PHÂN TÍCH (tương quan, phân bố, độ công bằng) mà các
+// ở /thong-bao, lớp đang mở ở /lop-hoc) — Tổng quan chỉ hiện PHÂN TÍCH (xu hướng, phân bố, độ công bằng) mà các
 // module con không có chỗ nào hiện sẵn (phản hồi người dùng, xem quyết định ở CLAUDE.md mục 4.7b).
 const SO_NGAY_XU_HUONG = 14;
 
@@ -68,7 +66,6 @@ export interface ChungTongQuan {
   ky: KyDanhGia | null;
   doDongDeu: number | null;
   top20: number | null;
-  tuongQuan: DiemXY[];
   radarTrungBinh: TrucRadar[];
 }
 
@@ -91,21 +88,12 @@ export async function getChungTongQuan(): Promise<ChungTongQuan> {
   const dieuKy = chonKy(kyList, undefined);
   let doDongDeu: number | null = null;
   let top20: number | null = null;
-  let tuongQuan: DiemXY[] = [];
   let radarTrungBinh: TrucRadar[] = [];
   if (dieuKy) {
     const [slRows, kpiRows] = await Promise.all([getSanLuong(dieuKy.hienTai.tu, dieuKy.hienTai.den), getKpiTongHop(dieuKy.hienTai.id)]);
     const tongHopSl = tongHopSanLuong(slRows, "tat-ca");
     doDongDeu = tongHopSl.chiSoDongDeu;
     top20 = tongHopSl.top20;
-    tuongQuan = kpiRows.map((r) => ({
-      khoa: r.user_id,
-      nhan: r.ho_ten,
-      x: r.gio_thuc,
-      y: r.kpi,
-      nhom: r.vai_tro ? VAI_TRO_LABEL[r.vai_tro] : "Khác",
-      mau: r.vai_tro === "tro_giang" ? "teal" : "blue",
-    }));
     const tb = (ma: string) => {
       const gt = kpiRows.map((r) => r.diem_nhom[ma]).filter((v): v is number => typeof v === "number");
       return gt.length ? Math.round((gt.reduce((s, v) => s + v, 0) / gt.length) * 10) / 10 : null;
@@ -126,7 +114,6 @@ export async function getChungTongQuan(): Promise<ChungTongQuan> {
     ky: dieuKy?.hienTai ?? null,
     doDongDeu,
     top20,
-    tuongQuan,
     radarTrungBinh,
   };
 }
