@@ -234,38 +234,19 @@ export default async function HomePage() {
                 <Card className="gap-4 px-0">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      Bảng xếp hạng các lớp không kinh phí <Badge variant="teal">Top 5</Badge>
+                      Giờ dạy theo người <Badge variant="teal">Top 5</Badge>
                     </CardTitle>
                     <CardAction>
-                      <Link href={`${hrefBaoCao({ nhom: "ky", ky: chung.ky?.id })}#a4`} className="text-xs font-medium text-muted-foreground hover:underline">
+                      <Link href={`${hrefBaoCao({ nhom: "thoi-gian" })}#san-luong`} className="text-xs font-medium text-muted-foreground hover:underline">
                         Xem đầy đủ
                       </Link>
                     </CardAction>
                   </CardHeader>
                   <CardContent>
-                    {chung.a4Top5.length === 0 ? (
-                      <p className="py-6 text-center text-sm text-muted-foreground">Chưa có ai tham gia dạy lớp không kinh phí.</p>
+                    {chung.gioTop5.length === 0 ? (
+                      <p className="py-6 text-center text-sm text-muted-foreground">Chưa có ai dạy trong kỳ này.</p>
                     ) : (
-                      <ul className="divide-y">
-                        {chung.a4Top5.map((r, i) => (
-                          <li key={r.user_id} className="flex items-center gap-3 py-2.5 text-sm">
-                            <span className="w-5 text-center text-xs text-muted-foreground tabular-nums">{i + 1}</span>
-                            <UserAvatar name={r.ho_ten} src={r.avatar_url} className="size-8" />
-                            <div className="min-w-0 flex-1">
-                              <p className="truncate font-medium">{r.ho_ten}</p>
-                              <p className="text-xs text-muted-foreground">
-                                {r.vai_tro && VAI_TRO_LABEL[r.vai_tro]}
-                                {!r.dang_tham_gia && " · đã nghỉ"}
-                              </p>
-                            </div>
-                            {i < 3 && <Trophy className="size-4 shrink-0 text-hue-green" aria-hidden />}
-                            <span className="shrink-0 text-right">
-                              <span className="block text-base font-semibold tabular-nums">{r.a4_luy_ke}</span>
-                              <span className="block text-[11px] text-muted-foreground">lớp</span>
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
+                      <ThanhNgang dong={chung.gioTop5} />
                     )}
                   </CardContent>
                 </Card>
@@ -302,19 +283,38 @@ export default async function HomePage() {
                 <Card className="gap-4 px-0">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      Giờ dạy theo người <Badge variant="teal">Top 5</Badge>
+                      Bảng xếp hạng các lớp không kinh phí <Badge variant="teal">Top 5</Badge>
                     </CardTitle>
                     <CardAction>
-                      <Link href={`${hrefBaoCao({ nhom: "thoi-gian" })}#san-luong`} className="text-xs font-medium text-muted-foreground hover:underline">
+                      <Link href={`${hrefBaoCao({ nhom: "ky", ky: chung.ky?.id })}#a4`} className="text-xs font-medium text-muted-foreground hover:underline">
                         Xem đầy đủ
                       </Link>
                     </CardAction>
                   </CardHeader>
                   <CardContent>
-                    {chung.gioTop5.length === 0 ? (
-                      <p className="py-6 text-center text-sm text-muted-foreground">Chưa có ai dạy trong kỳ này.</p>
+                    {chung.a4Top5.length === 0 ? (
+                      <p className="py-6 text-center text-sm text-muted-foreground">Chưa có ai tham gia dạy lớp không kinh phí.</p>
                     ) : (
-                      <ThanhNgang dong={chung.gioTop5} />
+                      <ul className="divide-y">
+                        {chung.a4Top5.map((r, i) => (
+                          <li key={r.user_id} className="flex items-center gap-3 py-2.5 text-sm">
+                            <span className="w-5 text-center text-xs text-muted-foreground tabular-nums">{i + 1}</span>
+                            <UserAvatar name={r.ho_ten} src={r.avatar_url} className="size-8" />
+                            <div className="min-w-0 flex-1">
+                              <p className="truncate font-medium">{r.ho_ten}</p>
+                              <p className="text-xs text-muted-foreground">
+                                {r.vai_tro && VAI_TRO_LABEL[r.vai_tro]}
+                                {!r.dang_tham_gia && " · đã nghỉ"}
+                              </p>
+                            </div>
+                            {i < 3 && <Trophy className="size-4 shrink-0 text-hue-green" aria-hidden />}
+                            <span className="shrink-0 text-right">
+                              <span className="block text-base font-semibold tabular-nums">{r.a4_luy_ke}</span>
+                              <span className="block text-[11px] text-muted-foreground">lớp</span>
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
                     )}
                   </CardContent>
                 </Card>
