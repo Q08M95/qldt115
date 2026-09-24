@@ -17,10 +17,10 @@ const THU = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
 const ngayVN = (d: Date | string) => new Date(d).toLocaleDateString("en-CA", { timeZone: VN_TZ }); // YYYY-MM-DD
 // Mỗi lớp 1 màu trong 4 màu gốc (theo mã lớp, ổn định giữa các lần xem) để nhìn lịch biết ngay Bài nào cùng lớp
 const HUE = [
-  { nen: "bg-grad-blue", chu: "text-[var(--hue-blue-on)]", vien: "border-[var(--hue-blue)]" },
-  { nen: "bg-grad-navy", chu: "text-[var(--hue-navy-on)]", vien: "border-[var(--hue-navy)]" },
-  { nen: "bg-grad-teal", chu: "text-[var(--hue-teal-on)]", vien: "border-[var(--hue-teal)]" },
-  { nen: "bg-grad-green", chu: "text-[var(--hue-green-on)]", vien: "border-[var(--hue-green)]" },
+  { nen: "bg-grad-blue", vien: "border-[var(--hue-blue)]" },
+  { nen: "bg-grad-navy", vien: "border-[var(--hue-navy)]" },
+  { nen: "bg-grad-teal", vien: "border-[var(--hue-teal)]" },
+  { nen: "bg-grad-green", vien: "border-[var(--hue-green)]" },
 ] as const;
 const hueLop = (lopId: string) => HUE[[...lopId].reduce((a, c) => a + c.charCodeAt(0), 0) % 4];
 const pad = (n: number) => String(n).padStart(2, "0");
@@ -97,7 +97,6 @@ export function LichThang({ items }: { items: BaiLich[] }) {
             const ds = theoNgay.get(o.khoa) ?? [];
             const laHomNay = o.khoa === homNay;
             const dangChon = o.khoa === chon;
-            const hue = ds.length ? hueLop(ds[0].bai.lop_id) : null;
             return (
               <button
                 key={o.khoa}
@@ -107,9 +106,9 @@ export function LichThang({ items }: { items: BaiLich[] }) {
                 aria-label={`${o.ngay}/${o.khoa.slice(5, 7)}${ds.length ? `, ${ds.length} Bài` : ""}`}
                 className={cn(
                   "flex min-h-11 flex-col items-center justify-center gap-0.5 rounded-xl border-2 border-transparent py-1 text-sm transition-all duration-150 sm:min-h-14",
-                  hue ? `${hue.nen} ${hue.chu} font-semibold hover:brightness-95` : "hover:bg-muted",
-                  !o.trongThang && (hue ? "opacity-50" : "text-muted-foreground/50"),
-                  dangChon && "border-primary shadow-card",
+                  "hover:bg-muted",
+                  !o.trongThang && "text-muted-foreground/50",
+                  dangChon && "border-primary bg-primary/5",
                 )}
               >
                 <span
@@ -122,7 +121,7 @@ export function LichThang({ items }: { items: BaiLich[] }) {
                 </span>
                 <span className="flex h-2 items-center gap-0.5" aria-hidden>
                   {ds.slice(0, 3).map((s) => (
-                    <span key={s.slot_id} className={cn("size-1.5 rounded-full ring-2 ring-white/90", hueLop(s.bai.lop_id).nen)} />
+                    <span key={s.slot_id} className={cn("size-2 rounded-full", hueLop(s.bai.lop_id).nen)} />
                   ))}
                   {ds.length > 3 && <span className="text-[10px] leading-none text-muted-foreground">+</span>}
                 </span>

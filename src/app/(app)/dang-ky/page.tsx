@@ -49,12 +49,6 @@ export default async function DangKyPage() {
 
   return (
     <div className="grid gap-5 lg:grid-cols-2">
-      {lich && (
-        <div className="lg:col-span-2">
-          <LichThang items={lich} />
-        </div>
-      )}
-
       {isQuanTri && (
         <div className="lg:col-span-2">
           <Khung icon={ClipboardCheck} tieuDe="Đăng ký chờ duyệt" dem={v.can_duyet.length}>
@@ -115,6 +109,12 @@ export default async function DangKyPage() {
           </ul>
         )}
       </Khung>
+
+      {lich && (
+        <div className="lg:col-span-2">
+          <LichThang items={lich} />
+        </div>
+      )}
     </div>
   );
 }
