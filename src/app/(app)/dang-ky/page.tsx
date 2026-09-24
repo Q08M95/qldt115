@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CalendarCheck, ClipboardCheck, Inbox, MailQuestion, Hourglass } from "lucide-react";
+import { ClipboardCheck, Inbox, MailQuestion, Hourglass } from "lucide-react";
 import { NutDuyet, NutPhanHoiMoi, NutRut } from "@/components/dang-ky/dang-ky-controls";
 import { EmptyState } from "@/components/empty-state";
 import { UserAvatar } from "@/components/user-avatar";
@@ -45,7 +45,6 @@ export default async function DangKyPage() {
   const v = await getViecCuaToi(profile.id, isQuanTri);
   const loiMoi = v.dang_cho.filter((d) => d.loai === "duoc_moi");
   const dangKy = v.dang_cho.filter((d) => d.loai === "tu_dang_ky");
-  const sapToi = v.da_phan_cong;
 
   return (
     <div className="grid gap-5 lg:grid-cols-2">
@@ -109,23 +108,6 @@ export default async function DangKyPage() {
           </ul>
         )}
       </Khung>
-
-      <div className="lg:col-span-2">
-        <Khung icon={CalendarCheck} tieuDe="Lịch sắp diễn ra của tôi" dem={sapToi.length}>
-          {sapToi.length === 0 ? (
-            <EmptyState icon={CalendarCheck} title="Bạn chưa có Bài nào sắp diễn ra. Các Bài đã dạy xem ở Lịch sử giảng dạy trong hồ sơ." />
-          ) : (
-            <ul className="divide-y">
-              {sapToi.map((s) => (
-                <li key={s.slot_id} className="flex flex-wrap items-center gap-3 py-3 text-sm">
-                  <BaiInfo bai={s.bai} />
-                  <Badge variant="success">{VAI_TRO_LABEL[s.vai_tro]}</Badge>
-                </li>
-              ))}
-            </ul>
-          )}
-        </Khung>
-      </div>
     </div>
   );
 }

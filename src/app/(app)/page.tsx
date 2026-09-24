@@ -8,13 +8,13 @@ import { DashboardLayout, StatRow } from "@/components/dashboard-layout";
 import { StatTile } from "@/components/stat-tile";
 import { Sparkline, ThanhNgang, Donut, ChuThichDonut, type MauBieuDo } from "@/components/bao-cao/bieu-do";
 import { MAU_TRANG_THAI } from "@/components/bao-cao/bc-van-hanh-lop";
-import { LichSapToi } from "@/components/tong-quan/lich-sap-toi";
+import { LichThang } from "@/components/tong-quan/lich-thang";
 import { UserAvatar } from "@/components/user-avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { requireSession } from "@/lib/auth/session";
 import { getBaiCanCheckIn, getKpiCaNhan } from "@/lib/danh-gia/queries";
-import { getViecCuaToi } from "@/lib/dang-ky/queries";
+import { getLichCuaToi } from "@/lib/dang-ky/queries";
 import { hrefBaoCao } from "@/lib/bao-cao/url";
 import { TRANG_THAI_LOP_LABEL } from "@/lib/lop-hoc/labels";
 import { VAI_TRO_LABEL } from "@/lib/nhan-su/labels";
@@ -82,11 +82,11 @@ export default async function HomePage() {
   const laAdmin = isQuanTri;
   const laGvTg = !!profile.vai_tro_giang_day;
 
-  const [baiCheckIn, chung, thongKe, viecCuaToi, kpiCaNhan] = await Promise.all([
+  const [baiCheckIn, chung, thongKe, lichCuaToi, kpiCaNhan] = await Promise.all([
     getBaiCanCheckIn(),
     laAdmin || laGvTg ? getChungTongQuan() : null,
     laAdmin || laGvTg ? getThongKeChung() : null,
-    laGvTg ? getViecCuaToi(profile.id, false) : null,
+    laGvTg ? getLichCuaToi(profile.id) : null,
     laGvTg ? getKpiCaNhan(profile.id) : null,
   ]);
 
@@ -155,14 +155,14 @@ export default async function HomePage() {
         />
       )}
 
-      {laGvTg && chung && viecCuaToi && thongKe && (
+      {laGvTg && chung && lichCuaToi && thongKe && (
         <DashboardLayout
           main={
             <>
               {/* Đã hiện ở khối Admin phía trên rồi thì không lặp lại (người có Quyền Quản lý lớp) */}
               {!laAdmin && <StatRowChung thongKe={thongKe} />}
 
-              <LichSapToi items={viecCuaToi.da_phan_cong} dangCho={viecCuaToi.dang_cho.length} />
+              <LichThang items={lichCuaToi} />
 
               <KpiCaNhanBoard data={kpiCaNhan} tieuDe="KPI của tôi" />
             </>

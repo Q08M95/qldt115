@@ -119,6 +119,22 @@ function chuanBai(b: BaiLop | BaiLop[] | null) {
   };
 }
 
+export type BaiLich = ViecCuaToi["da_phan_cong"][number];
+
+// Lịch tháng của tôi (Tổng quan): mọi Bài đã phân công, không kể lớp đã hủy, từ 6 tháng trước đến 12 tháng sau —
+// gửi hết cho component client để chuyển tháng không cần gọi lại máy chủ.
+export async function getLichCuaToi(userId: string): Promise<BaiLich[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase.from("slot_giang_day").select(`id, vai_tro, ${BAI_SELECT}`).eq("nguoi_phan_cong", userId);
+  if (error) throw new Error(`Không đọc được lịch của tôi: ${error.message}`);
+  const tu = Date.now() - 183 * 86400000;
+  const den = Date.now() + 366 * 86400000;
+  return ((data ?? []) as unknown as { id: string; vai_tro: VaiTroGiangDay; bai_hoc: BaiLop | BaiLop[] | null }[])
+    .map((r) => ({ slot_id: r.id, vai_tro: r.vai_tro, bai: chuanBai(r.bai_hoc) }))
+    .filter((r) => r.bai.lop_trang_thai !== "da_huy" && Date.parse(r.bai.bat_dau) >= tu && Date.parse(r.bai.bat_dau) <= den)
+    .sort((a, b) => a.bai.bat_dau.localeCompare(b.bai.bat_dau));
+}
+
 // Trang "Đăng ký giảng dạy": việc của tôi + (người quản trị) hàng đợi cần duyệt
 export async function getViecCuaToi(userId: string, isQuanTri: boolean): Promise<ViecCuaToi> {
   const supabase = await createClient();
