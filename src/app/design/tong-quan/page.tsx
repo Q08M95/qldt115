@@ -440,7 +440,7 @@ export default async function DesignTongQuanPage(props: { searchParams: Promise<
                   <Card className="gap-4 px-0">
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
-                        Bảng xếp hạng các lớp không kinh phí <Badge variant="teal">Top 5</Badge>
+                        Top Lớp không kinh phí <Badge variant="teal">Top 5</Badge>
                       </CardTitle>
                       <CardAction>
                         <Link href={`${hrefBaoCao({ nhom: "ky", ky: chung.ky?.id })}#a4`} className="text-xs font-medium text-muted-foreground hover:underline">
