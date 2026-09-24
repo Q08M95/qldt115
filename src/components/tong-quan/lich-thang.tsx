@@ -105,16 +105,15 @@ export function LichThang({ items }: { items: BaiLich[] }) {
                 aria-pressed={dangChon}
                 aria-label={`${o.ngay}/${o.khoa.slice(5, 7)}${ds.length ? `, ${ds.length} Bài` : ""}`}
                 className={cn(
-                  "flex min-h-11 flex-col items-center justify-center gap-0.5 rounded-xl border-2 border-transparent py-1 text-sm transition-all duration-150 sm:min-h-14",
+                  "flex min-h-11 flex-col items-center justify-center gap-0.5 rounded-xl py-1 text-sm transition-all duration-150 sm:min-h-14",
                   "hover:bg-muted",
                   !o.trongThang && "text-muted-foreground/50",
-                  dangChon && "border-primary bg-primary/5",
-                )}
+                                )}
               >
                 <span
                   className={cn(
                     "flex size-7 items-center justify-center rounded-full tabular-nums",
-                    laHomNay && "bg-card font-bold text-primary ring-2 ring-primary",
+                    dangChon ? "bg-brand-gradient font-semibold text-white" : laHomNay && "font-bold text-primary ring-2 ring-primary/40",
                   )}
                 >
                   {o.ngay}
