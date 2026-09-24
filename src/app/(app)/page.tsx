@@ -1,4 +1,5 @@
-import { GraduationCap, Scale, Users, Workflow } from "lucide-react";
+import Link from "next/link";
+import { GraduationCap, Scale, Trophy, Users, Workflow } from "lucide-react";
 import { CheckInBanner } from "@/components/danh-gia/check-in-banner";
 import { KpiCaNhanBoard } from "@/components/danh-gia/kpi-ca-nhan";
 import { AreaXuHuong, DongHoBanNguyet, RadarNhom } from "@/components/danh-gia/kpi-charts";
@@ -8,13 +9,16 @@ import { StatTile } from "@/components/stat-tile";
 import { Sparkline, ThanhNgang, Donut, ChuThichDonut, type MauBieuDo } from "@/components/bao-cao/bieu-do";
 import { MAU_TRANG_THAI } from "@/components/bao-cao/bc-van-hanh-lop";
 import { LichSapToi } from "@/components/tong-quan/lich-sap-toi";
+import { UserAvatar } from "@/components/user-avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { requireSession } from "@/lib/auth/session";
 import { getBaiCanCheckIn, getKpiCaNhan } from "@/lib/danh-gia/queries";
 import { getViecCuaToi } from "@/lib/dang-ky/queries";
+import { hrefBaoCao } from "@/lib/bao-cao/url";
 import { TRANG_THAI_LOP_LABEL } from "@/lib/lop-hoc/labels";
-import { getChungTongQuan, getThongKeAdmin } from "@/lib/tong-quan/queries";
+import { VAI_TRO_LABEL } from "@/lib/nhan-su/labels";
+import { getChungTongQuan, getThongKeChung, type ThongKeChung } from "@/lib/tong-quan/queries";
 import type { KpiTheoKyRow } from "@/types/database";
 
 const MAU_NHOM_LOP: MauBieuDo[] = ["blue", "navy", "teal", "green"];
@@ -24,6 +28,24 @@ const MAU_NHOM_LOP: MauBieuDo[] = ["blue", "navy", "teal", "green"];
 function tenNganKy(ten: string) {
   const m = /Quý\s*(\d)\s*\/\s*(\d{4})/i.exec(ten);
   return m ? `Q${m[1]}/${m[2]}` : ten.length > 10 ? `${ten.slice(0, 9)}…` : ten;
+}
+
+// Hàng 3 thẻ stat Nhân sự/Lớp đang mở/Slot còn trống kèm sparkline — dùng chung cho cả khối Admin và khối GV/TG (mục
+// 4.7b, sau phản hồi người dùng: bỏ "Tỷ lệ lấp đầy TB"/"Số kỳ có KPI" ở GV/TG, thay bằng đúng 3 thẻ này).
+function StatRowChung({ thongKe }: { thongKe: ThongKeChung }) {
+  return (
+    <StatRow>
+      <StatTile icon={Users} label="Nhân sự" value={thongKe.nhanSu.tong}>
+        <Sparkline gia_tri={thongKe.nhanSu.xuHuong} className="mt-3 h-8 w-full" nhan="Nhân sự mới theo ngày" />
+      </StatTile>
+      <StatTile icon={GraduationCap} label="Lớp đang mở" value={thongKe.lopDangMo.tong}>
+        <Sparkline gia_tri={thongKe.lopDangMo.xuHuong} className="mt-3 h-8 w-full" nhan="Lớp mới theo ngày" />
+      </StatTile>
+      <StatTile icon={Workflow} label="Slot còn trống" value={thongKe.slotTrong.tong}>
+        <Sparkline gia_tri={thongKe.slotTrong.xuHuong} className="mt-3 h-8 w-full" nhan="Slot được phân công theo ngày" />
+      </StatTile>
+    </StatRow>
+  );
 }
 
 // Donut "Lớp theo trạng thái" — dùng lại cho cả khối Admin và khối GV/TG (mục 4.7b, sau phản hồi người dùng).
@@ -60,10 +82,10 @@ export default async function HomePage() {
   const laAdmin = isQuanTri;
   const laGvTg = !!profile.vai_tro_giang_day;
 
-  const [baiCheckIn, chung, thongKeAdmin, viecCuaToi, kpiCaNhan] = await Promise.all([
+  const [baiCheckIn, chung, thongKe, viecCuaToi, kpiCaNhan] = await Promise.all([
     getBaiCanCheckIn(),
     laAdmin || laGvTg ? getChungTongQuan() : null,
-    laAdmin ? getThongKeAdmin() : null,
+    laAdmin || laGvTg ? getThongKeChung() : null,
     laGvTg ? getViecCuaToi(profile.id, false) : null,
     laGvTg ? getKpiCaNhan(profile.id) : null,
   ]);
@@ -81,29 +103,19 @@ export default async function HomePage() {
     <div className="grid gap-6">
       <CheckInBanner items={baiCheckIn} />
 
-      {laAdmin && thongKeAdmin && chung && (
+      {laAdmin && thongKe && chung && (
         <DashboardLayout
           main={
             <>
-              <StatRow>
-                <StatTile icon={Users} label="Nhân sự" value={thongKeAdmin.nhanSu.tong}>
-                  <Sparkline gia_tri={thongKeAdmin.nhanSu.xuHuong} className="mt-3 h-8 w-full" nhan="Nhân sự mới theo ngày" />
-                </StatTile>
-                <StatTile icon={GraduationCap} label="Lớp đang mở" value={thongKeAdmin.lopDangMo.tong}>
-                  <Sparkline gia_tri={thongKeAdmin.lopDangMo.xuHuong} className="mt-3 h-8 w-full" nhan="Lớp mới theo ngày" />
-                </StatTile>
-                <StatTile icon={Workflow} label="Slot còn trống" value={thongKeAdmin.slotTrong.tong}>
-                  <Sparkline gia_tri={thongKeAdmin.slotTrong.xuHuong} className="mt-3 h-8 w-full" nhan="Slot được phân công theo ngày" />
-                </StatTile>
-              </StatRow>
+              <StatRowChung thongKe={thongKe} />
 
               <Card className="gap-4 px-0">
                 <CardHeader>
                   <CardTitle>Tỷ lệ lấp đầy slot — lớp đang mở</CardTitle>
-                  {thongKeAdmin.canhBaoPool > 0 && (
+                  {thongKe.canhBaoPool > 0 && (
                     <CardAction>
                       <Badge variant="warning" title="Số Bài đang mở có pool ứng viên dưới ngưỡng cảnh báo — xem chi tiết ở Báo cáo #5">
-                        {thongKeAdmin.canhBaoPool} cảnh báo pool nhỏ
+                        {thongKe.canhBaoPool} cảnh báo pool nhỏ
                       </Badge>
                     </CardAction>
                   )}
@@ -143,15 +155,12 @@ export default async function HomePage() {
         />
       )}
 
-      {laGvTg && chung && viecCuaToi && (
+      {laGvTg && chung && viecCuaToi && thongKe && (
         <DashboardLayout
           main={
             <>
-              <StatRow>
-                <StatTile icon={GraduationCap} label="Lớp đang mở" value={chung.dsLopDangMo.length} />
-                <StatTile icon={Workflow} label="Tỷ lệ lấp đầy TB" value={chung.tyLeDangKyTrungBinh === null ? "–" : `${chung.tyLeDangKyTrungBinh}%`} />
-                <StatTile icon={Users} label="Số kỳ có KPI" value={kpiCoDuLieu.length} />
-              </StatRow>
+              {/* Đã hiện ở khối Admin phía trên rồi thì không lặp lại (người có Quyền Quản lý lớp) */}
+              {!laAdmin && <StatRowChung thongKe={thongKe} />}
 
               <LichSapToi items={viecCuaToi.da_phan_cong} dangCho={viecCuaToi.dang_cho.length} />
 
@@ -221,34 +230,95 @@ export default async function HomePage() {
                     )}
                   </CardContent>
                 </Card>
+
+                <Card className="gap-4 px-0">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      Bảng xếp hạng các lớp không kinh phí <Badge variant="teal">Top 5</Badge>
+                    </CardTitle>
+                    <CardAction>
+                      <Link href={`${hrefBaoCao({ nhom: "ky", ky: chung.ky?.id })}#a4`} className="text-xs font-medium text-muted-foreground hover:underline">
+                        Xem đầy đủ
+                      </Link>
+                    </CardAction>
+                  </CardHeader>
+                  <CardContent>
+                    {chung.a4Top5.length === 0 ? (
+                      <p className="py-6 text-center text-sm text-muted-foreground">Chưa có ai tham gia dạy lớp không kinh phí.</p>
+                    ) : (
+                      <ul className="divide-y">
+                        {chung.a4Top5.map((r, i) => (
+                          <li key={r.user_id} className="flex items-center gap-3 py-2.5 text-sm">
+                            <span className="w-5 text-center text-xs text-muted-foreground tabular-nums">{i + 1}</span>
+                            <UserAvatar name={r.ho_ten} src={r.avatar_url} className="size-8" />
+                            <div className="min-w-0 flex-1">
+                              <p className="truncate font-medium">{r.ho_ten}</p>
+                              <p className="text-xs text-muted-foreground">
+                                {r.vai_tro && VAI_TRO_LABEL[r.vai_tro]}
+                                {!r.dang_tham_gia && " · đã nghỉ"}
+                              </p>
+                            </div>
+                            {i < 3 && <Trophy className="size-4 shrink-0 text-hue-green" aria-hidden />}
+                            <span className="shrink-0 text-right">
+                              <span className="block text-base font-semibold tabular-nums">{r.a4_luy_ke}</span>
+                              <span className="block text-[11px] text-muted-foreground">lớp</span>
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </CardContent>
+                </Card>
               </>
             }
             aside={
-              <Card className="gap-3 px-0">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Scale className="size-5 text-slate-500" strokeWidth={1.75} aria-hidden /> Độ đồng đều sản lượng
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="grid gap-3">
-                  {chung.doDongDeu === null ? (
-                    <p className="py-6 text-center text-sm text-muted-foreground">Cần ít nhất 2 người có giờ dạy trong kỳ.</p>
-                  ) : (
-                    <>
-                      <DongHoBanNguyet phanTram={chung.doDongDeu} so={`${chung.doDongDeu}/100`} nhan="Chỉ số đồng đều" className="mx-auto w-48" />
-                      <p className="text-center text-sm text-muted-foreground">
-                        {chung.doDongDeu >= 75 ? "Khối lượng giảng dạy phân bổ khá đều." : chung.doDongDeu >= 50 ? "Có chênh lệch giữa những người dạy nhiều và ít." : "Khối lượng đang dồn về một số ít người."}
-                        {chung.top20 !== null && (
-                          <>
-                            {" "}
-                            20% người dạy nhiều nhất đảm nhiệm <span className="font-medium text-foreground">{chung.top20}%</span> tổng giờ.
-                          </>
-                        )}
-                      </p>
-                    </>
-                  )}
-                </CardContent>
-              </Card>
+              <>
+                <Card className="gap-3 px-0">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Scale className="size-5 text-slate-500" strokeWidth={1.75} aria-hidden /> Độ đồng đều sản lượng
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="grid gap-3">
+                    {chung.doDongDeu === null ? (
+                      <p className="py-6 text-center text-sm text-muted-foreground">Cần ít nhất 2 người có giờ dạy trong kỳ.</p>
+                    ) : (
+                      <>
+                        <DongHoBanNguyet phanTram={chung.doDongDeu} so={`${chung.doDongDeu}/100`} nhan="Chỉ số đồng đều" className="mx-auto w-48" />
+                        <p className="text-center text-sm text-muted-foreground">
+                          {chung.doDongDeu >= 75 ? "Khối lượng giảng dạy phân bổ khá đều." : chung.doDongDeu >= 50 ? "Có chênh lệch giữa những người dạy nhiều và ít." : "Khối lượng đang dồn về một số ít người."}
+                          {chung.top20 !== null && (
+                            <>
+                              {" "}
+                              20% người dạy nhiều nhất đảm nhiệm <span className="font-medium text-foreground">{chung.top20}%</span> tổng giờ.
+                            </>
+                          )}
+                        </p>
+                      </>
+                    )}
+                  </CardContent>
+                </Card>
+
+                <Card className="gap-4 px-0">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      Giờ dạy theo người <Badge variant="teal">Top 5</Badge>
+                    </CardTitle>
+                    <CardAction>
+                      <Link href={`${hrefBaoCao({ nhom: "thoi-gian" })}#san-luong`} className="text-xs font-medium text-muted-foreground hover:underline">
+                        Xem đầy đủ
+                      </Link>
+                    </CardAction>
+                  </CardHeader>
+                  <CardContent>
+                    {chung.gioTop5.length === 0 ? (
+                      <p className="py-6 text-center text-sm text-muted-foreground">Chưa có ai dạy trong kỳ này.</p>
+                    ) : (
+                      <ThanhNgang dong={chung.gioTop5} />
+                    )}
+                  </CardContent>
+                </Card>
+              </>
             }
           />
         </>

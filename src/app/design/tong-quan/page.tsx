@@ -1,27 +1,48 @@
 import { notFound } from "next/navigation";
-import { GraduationCap, Scale, Users, Workflow } from "lucide-react";
+import Link from "next/link";
+import { GraduationCap, Scale, Trophy, Users, Workflow } from "lucide-react";
 import { AppShell } from "@/components/app-shell/app-shell";
 import { DashboardLayout, StatRow } from "@/components/dashboard-layout";
 import { KpiCaNhanBoard } from "@/components/danh-gia/kpi-ca-nhan";
 import { AreaXuHuong, DongHoBanNguyet, RadarNhom } from "@/components/danh-gia/kpi-charts";
 import { TieuChiSoSanh } from "@/components/danh-gia/kpi-so-sanh";
 import { StatTile } from "@/components/stat-tile";
-import { Sparkline, ThanhNgang, Donut, ChuThichDonut, type MauBieuDo } from "@/components/bao-cao/bieu-do";
+import { Sparkline, ThanhNgang, Donut, ChuThichDonut, type DongThanh, type MauBieuDo } from "@/components/bao-cao/bieu-do";
 import { MAU_TRANG_THAI } from "@/components/bao-cao/bc-van-hanh-lop";
 import { LichSapToi } from "@/components/tong-quan/lich-sap-toi";
+import { UserAvatar } from "@/components/user-avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { hrefBaoCao } from "@/lib/bao-cao/url";
 import { tongHopLop } from "@/lib/bao-cao/tinh-toan";
 import { TRANG_THAI_LOP_LABEL } from "@/lib/lop-hoc/labels";
-import { sangDongLop, type ChungTongQuan, type ThongKeAdmin } from "@/lib/tong-quan/queries";
+import { VAI_TRO_LABEL } from "@/lib/nhan-su/labels";
+import { sangDongLop, type ChungTongQuan, type ThongKeChung } from "@/lib/tong-quan/queries";
 import type { ViecCuaToi } from "@/lib/dang-ky/queries";
-import type { KpiCaNhan, LopHocTongHop } from "@/types/database";
+import type { A4Row, KpiCaNhan, LopHocTongHop } from "@/types/database";
 
 // Trang demo Tổng quan (4.7b) với dữ liệu giả — đối chiếu giao diện với ảnh mẫu trước khi nối dữ liệu thật.
 // ?v=admin|gvtg|ql|trong (ql = Quyền Quản lý lớp, thấy cả 2 bộ widget; trong = mọi danh sách rỗng)
 function tenNganKy(ten: string) {
   const m = /Quý\s*(\d)\s*\/\s*(\d{4})/i.exec(ten);
   return m ? `Q${m[1]}/${m[2]}` : ten.length > 10 ? `${ten.slice(0, 9)}…` : ten;
+}
+
+// Hàng 3 thẻ stat Nhân sự/Lớp đang mở/Slot còn trống kèm sparkline — dùng chung cho cả khối Admin và khối GV/TG.
+function StatRowChung({ thongKe, trong }: { thongKe: ThongKeChung; trong: boolean }) {
+  return (
+    <StatRow>
+      <StatTile icon={Users} label="Nhân sự" value={trong ? 0 : thongKe.nhanSu.tong}>
+        <Sparkline gia_tri={thongKe.nhanSu.xuHuong} className="mt-3 h-8 w-full" nhan="Nhân sự mới theo ngày" />
+      </StatTile>
+      <StatTile icon={GraduationCap} label="Lớp đang mở" value={trong ? 0 : thongKe.lopDangMo.tong}>
+        <Sparkline gia_tri={thongKe.lopDangMo.xuHuong} className="mt-3 h-8 w-full" nhan="Lớp mới theo ngày" />
+      </StatTile>
+      <StatTile icon={Workflow} label="Slot còn trống" value={trong ? 0 : thongKe.slotTrong.tong}>
+        <Sparkline gia_tri={thongKe.slotTrong.xuHuong} className="mt-3 h-8 w-full" nhan="Slot được phân công theo ngày" />
+      </StatTile>
+    </StatRow>
+  );
 }
 
 // Donut "Lớp theo trạng thái" — dùng lại cho cả khối Admin và khối GV/TG (mục 4.7b, sau phản hồi người dùng).
@@ -88,6 +109,22 @@ const DS_LOP: LopHocTongHop[] = [
   lop(5, "da_huy", 1, 0, 2, 0),
 ];
 
+const GIO_TOP5: DongThanh[] = [
+  { khoa: "u1", nhan: "Nguyễn Văn An", phu: "Giảng viên", avatar: { ten: "Nguyễn Văn An", src: null }, href: "/nhan-su/u1", gia_tri: 28, hien_thi: "28h" },
+  { khoa: "u2", nhan: "Trần Thị Bình", phu: "Trợ giảng", avatar: { ten: "Trần Thị Bình", src: null }, href: "/nhan-su/u2", gia_tri: 24, hien_thi: "24h" },
+  { khoa: "u3", nhan: "Lê Hoàng Cường", phu: "Giảng viên", avatar: { ten: "Lê Hoàng Cường", src: null }, href: "/nhan-su/u3", gia_tri: 21, hien_thi: "21h" },
+  { khoa: "u4", nhan: "Phạm Minh Đức", phu: "Trợ giảng · đã nghỉ", avatar: { ten: "Phạm Minh Đức", src: null }, href: "/nhan-su/u4", gia_tri: 18, hien_thi: "18h" },
+  { khoa: "u5", nhan: "Võ Thu Hà", phu: "Giảng viên", avatar: { ten: "Võ Thu Hà", src: null }, href: "/nhan-su/u5", gia_tri: 15, hien_thi: "15h" },
+];
+
+const A4_TOP5: A4Row[] = [
+  { user_id: "u6", ho_ten: "Đặng Quốc Huy", avatar_url: null, vai_tro: "giang_vien", dang_tham_gia: true, a4_ky: 1, a4_luy_ke: 6 },
+  { user_id: "u7", ho_ten: "Bùi Lan Khanh", avatar_url: null, vai_tro: "tro_giang", dang_tham_gia: true, a4_ky: 0, a4_luy_ke: 5 },
+  { user_id: "u8", ho_ten: "Hoàng Gia Long", avatar_url: null, vai_tro: "giang_vien", dang_tham_gia: true, a4_ky: 2, a4_luy_ke: 4 },
+  { user_id: "u9", ho_ten: "Ngô Thanh Mai", avatar_url: null, vai_tro: "tro_giang", dang_tham_gia: true, a4_ky: 1, a4_luy_ke: 3 },
+  { user_id: "u10", ho_ten: "Đỗ Anh Nam", avatar_url: null, vai_tro: "giang_vien", dang_tham_gia: false, a4_ky: 0, a4_luy_ke: 2 },
+];
+
 const CHUNG: ChungTongQuan = (() => {
   const dongLop = DS_LOP.map(sangDongLop);
   const tongHop = tongHopLop(dongLop.filter((l) => l.trang_thai_hien_thi !== "da_huy" && l.trang_thai_hien_thi !== "nhap"));
@@ -115,10 +152,12 @@ const CHUNG: ChungTongQuan = (() => {
       { nhan: "Chuyên cần", gia_tri: 84 },
       { nhan: "Chất lượng", gia_tri: 73 },
     ],
+    gioTop5: GIO_TOP5,
+    a4Top5: A4_TOP5,
   };
 })();
 
-const THONG_KE_ADMIN: ThongKeAdmin = {
+const THONG_KE: ThongKeChung = {
   nhanSu: { tong: 62, xuHuong: [0, 1, 0, 0, 2, 0, 1, 0, 0, 0, 1, 0, 0, 1] },
   lopDangMo: { tong: 14, xuHuong: [0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1] },
   slotTrong: { tong: 37, xuHuong: [2, 0, 3, 1, 4, 0, 2, 5, 1, 0, 3, 2, 1, 4] },
@@ -197,7 +236,19 @@ export default async function DesignTongQuanPage(props: { searchParams: Promise<
   const laGvTg = gvtg || ql;
 
   const chung = trong
-    ? { ...CHUNG, kpiXuHuong: [], lapDaySlot: [], dsLopDangMo: [], tyLeDangKyTrungBinh: null, tongHop: { ...CHUNG.tongHop, tong: 0, theoTrangThai: [], theoNhomLop: [] }, doDongDeu: null, top20: null, radarTrungBinh: CHUNG.radarTrungBinh.map((t) => ({ ...t, gia_tri: null })) }
+    ? {
+        ...CHUNG,
+        kpiXuHuong: [],
+        lapDaySlot: [],
+        dsLopDangMo: [],
+        tyLeDangKyTrungBinh: null,
+        tongHop: { ...CHUNG.tongHop, tong: 0, theoTrangThai: [], theoNhomLop: [] },
+        doDongDeu: null,
+        top20: null,
+        radarTrungBinh: CHUNG.radarTrungBinh.map((t) => ({ ...t, gia_tri: null })),
+        gioTop5: [],
+        a4Top5: [],
+      }
     : CHUNG;
   const kpiCoDuLieu = chung.kpiXuHuong.filter((k): k is typeof k & { kpi_tb: number } => k.kpi_tb !== null);
   const lat = chung.tongHop.theoTrangThai.map((t) => ({
@@ -221,24 +272,14 @@ export default async function DesignTongQuanPage(props: { searchParams: Promise<
           <DashboardLayout
             main={
               <>
-                <StatRow>
-                  <StatTile icon={Users} label="Nhân sự" value={trong ? 0 : THONG_KE_ADMIN.nhanSu.tong}>
-                    <Sparkline gia_tri={THONG_KE_ADMIN.nhanSu.xuHuong} className="mt-3 h-8 w-full" nhan="Nhân sự mới theo ngày" />
-                  </StatTile>
-                  <StatTile icon={GraduationCap} label="Lớp đang mở" value={trong ? 0 : THONG_KE_ADMIN.lopDangMo.tong}>
-                    <Sparkline gia_tri={THONG_KE_ADMIN.lopDangMo.xuHuong} className="mt-3 h-8 w-full" nhan="Lớp mới theo ngày" />
-                  </StatTile>
-                  <StatTile icon={Workflow} label="Slot còn trống" value={trong ? 0 : THONG_KE_ADMIN.slotTrong.tong}>
-                    <Sparkline gia_tri={THONG_KE_ADMIN.slotTrong.xuHuong} className="mt-3 h-8 w-full" nhan="Slot được phân công theo ngày" />
-                  </StatTile>
-                </StatRow>
+                <StatRowChung thongKe={THONG_KE} trong={trong} />
 
                 <Card className="gap-4 px-0">
                   <CardHeader>
                     <CardTitle>Tỷ lệ lấp đầy slot — lớp đang mở</CardTitle>
-                    {THONG_KE_ADMIN.canhBaoPool > 0 && !trong && (
+                    {THONG_KE.canhBaoPool > 0 && !trong && (
                       <CardAction>
-                        <Badge variant="warning">{THONG_KE_ADMIN.canhBaoPool} cảnh báo pool nhỏ</Badge>
+                        <Badge variant="warning">{THONG_KE.canhBaoPool} cảnh báo pool nhỏ</Badge>
                       </CardAction>
                     )}
                   </CardHeader>
@@ -276,11 +317,8 @@ export default async function DesignTongQuanPage(props: { searchParams: Promise<
           <DashboardLayout
             main={
               <>
-                <StatRow>
-                  <StatTile icon={GraduationCap} label="Lớp đang mở" value={trong ? 0 : chung.dsLopDangMo.length} />
-                  <StatTile icon={Workflow} label="Tỷ lệ lấp đầy TB" value={chung.tyLeDangKyTrungBinh === null ? "–" : `${chung.tyLeDangKyTrungBinh}%`} />
-                  <StatTile icon={Users} label="Số kỳ có KPI" value={kpiCoDuLieu.length} />
-                </StatRow>
+                {/* Đã hiện ở khối Admin phía trên rồi thì không lặp lại (người có Quyền Quản lý lớp, v=ql) */}
+                {!laAdmin && <StatRowChung thongKe={THONG_KE} trong={trong} />}
 
                 <LichSapToi items={trong ? [] : VIEC_CUA_TOI.da_phan_cong} dangCho={trong ? 0 : VIEC_CUA_TOI.dang_cho.length} />
 
@@ -349,34 +387,95 @@ export default async function DesignTongQuanPage(props: { searchParams: Promise<
                       )}
                     </CardContent>
                   </Card>
+
+                  <Card className="gap-4 px-0">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        Bảng xếp hạng các lớp không kinh phí <Badge variant="teal">Top 5</Badge>
+                      </CardTitle>
+                      <CardAction>
+                        <Link href={`${hrefBaoCao({ nhom: "ky", ky: chung.ky?.id })}#a4`} className="text-xs font-medium text-muted-foreground hover:underline">
+                          Xem đầy đủ
+                        </Link>
+                      </CardAction>
+                    </CardHeader>
+                    <CardContent>
+                      {chung.a4Top5.length === 0 ? (
+                        <p className="py-6 text-center text-sm text-muted-foreground">Chưa có ai tham gia dạy lớp không kinh phí.</p>
+                      ) : (
+                        <ul className="divide-y">
+                          {chung.a4Top5.map((r, i) => (
+                            <li key={r.user_id} className="flex items-center gap-3 py-2.5 text-sm">
+                              <span className="w-5 text-center text-xs text-muted-foreground tabular-nums">{i + 1}</span>
+                              <UserAvatar name={r.ho_ten} src={r.avatar_url} className="size-8" />
+                              <div className="min-w-0 flex-1">
+                                <p className="truncate font-medium">{r.ho_ten}</p>
+                                <p className="text-xs text-muted-foreground">
+                                  {r.vai_tro && VAI_TRO_LABEL[r.vai_tro]}
+                                  {!r.dang_tham_gia && " · đã nghỉ"}
+                                </p>
+                              </div>
+                              {i < 3 && <Trophy className="size-4 shrink-0 text-hue-green" aria-hidden />}
+                              <span className="shrink-0 text-right">
+                                <span className="block text-base font-semibold tabular-nums">{r.a4_luy_ke}</span>
+                                <span className="block text-[11px] text-muted-foreground">lớp</span>
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </CardContent>
+                  </Card>
                 </>
               }
               aside={
-                <Card className="gap-3 px-0">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Scale className="size-5 text-slate-500" strokeWidth={1.75} aria-hidden /> Độ đồng đều sản lượng
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="grid gap-3">
-                    {chung.doDongDeu === null ? (
-                      <p className="py-6 text-center text-sm text-muted-foreground">Cần ít nhất 2 người có giờ dạy trong kỳ.</p>
-                    ) : (
-                      <>
-                        <DongHoBanNguyet phanTram={chung.doDongDeu} so={`${chung.doDongDeu}/100`} nhan="Chỉ số đồng đều" className="mx-auto w-48" />
-                        <p className="text-center text-sm text-muted-foreground">
-                          {chung.doDongDeu >= 75 ? "Khối lượng giảng dạy phân bổ khá đều." : chung.doDongDeu >= 50 ? "Có chênh lệch giữa những người dạy nhiều và ít." : "Khối lượng đang dồn về một số ít người."}
-                          {chung.top20 !== null && (
-                            <>
-                              {" "}
-                              20% người dạy nhiều nhất đảm nhiệm <span className="font-medium text-foreground">{chung.top20}%</span> tổng giờ.
-                            </>
-                          )}
-                        </p>
-                      </>
-                    )}
-                  </CardContent>
-                </Card>
+                <>
+                  <Card className="gap-3 px-0">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Scale className="size-5 text-slate-500" strokeWidth={1.75} aria-hidden /> Độ đồng đều sản lượng
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="grid gap-3">
+                      {chung.doDongDeu === null ? (
+                        <p className="py-6 text-center text-sm text-muted-foreground">Cần ít nhất 2 người có giờ dạy trong kỳ.</p>
+                      ) : (
+                        <>
+                          <DongHoBanNguyet phanTram={chung.doDongDeu} so={`${chung.doDongDeu}/100`} nhan="Chỉ số đồng đều" className="mx-auto w-48" />
+                          <p className="text-center text-sm text-muted-foreground">
+                            {chung.doDongDeu >= 75 ? "Khối lượng giảng dạy phân bổ khá đều." : chung.doDongDeu >= 50 ? "Có chênh lệch giữa những người dạy nhiều và ít." : "Khối lượng đang dồn về một số ít người."}
+                            {chung.top20 !== null && (
+                              <>
+                                {" "}
+                                20% người dạy nhiều nhất đảm nhiệm <span className="font-medium text-foreground">{chung.top20}%</span> tổng giờ.
+                              </>
+                            )}
+                          </p>
+                        </>
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  <Card className="gap-4 px-0">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        Giờ dạy theo người <Badge variant="teal">Top 5</Badge>
+                      </CardTitle>
+                      <CardAction>
+                        <Link href={`${hrefBaoCao({ nhom: "thoi-gian" })}#san-luong`} className="text-xs font-medium text-muted-foreground hover:underline">
+                          Xem đầy đủ
+                        </Link>
+                      </CardAction>
+                    </CardHeader>
+                    <CardContent>
+                      {chung.gioTop5.length === 0 ? (
+                        <p className="py-6 text-center text-sm text-muted-foreground">Chưa có ai dạy trong kỳ này.</p>
+                      ) : (
+                        <ThanhNgang dong={chung.gioTop5} />
+                      )}
+                    </CardContent>
+                  </Card>
+                </>
               }
             />
           </>

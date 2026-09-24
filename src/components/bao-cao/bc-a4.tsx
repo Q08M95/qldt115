@@ -30,7 +30,7 @@ export function BaoCaoA4({ ky, rows }: { ky: KyDanhGia; rows: A4Row[] }) {
           <Card className="gap-4 px-0">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                Bảng xếp hạng A4 lũy kế <Badge variant="teal">{rows.length} người</Badge>
+                Bảng xếp hạng các lớp không kinh phí <Badge variant="teal">{rows.length} người</Badge>
               </CardTitle>
             </CardHeader>
             <CardContent>

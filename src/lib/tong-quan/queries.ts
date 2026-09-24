@@ -1,14 +1,18 @@
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";
-import { getCanhBaoPool, getKpiTongHop, getKpiTheoKy, getSanLuong, getVanHanhDangKy } from "@/lib/bao-cao/queries";
+import { getA4, getCanhBaoPool, getKpiTongHop, getKpiTheoKy, getSanLuong, getVanHanhDangKy } from "@/lib/bao-cao/queries";
 import { chonKy } from "@/lib/bao-cao/ky";
 import { phanTram, tongHopLop, tongHopSanLuong } from "@/lib/bao-cao/tinh-toan";
 import type { DongLop } from "@/lib/bao-cao/types";
+import type { DongThanh } from "@/components/bao-cao/bieu-do";
 import type { TrucRadar } from "@/components/danh-gia/kpi-charts";
 import { getLopList } from "@/lib/lop-hoc/queries";
+import { VAI_TRO_LABEL } from "@/lib/nhan-su/labels";
 import { getKyList } from "@/lib/kpi/queries";
-import type { KpiTheoKyRow, KyDanhGia, LopHocTongHop } from "@/types/database";
+import type { A4Row, KpiTheoKyRow, KyDanhGia, LopHocTongHop } from "@/types/database";
+
+const gioFmt = (n: number) => `${n.toLocaleString("vi-VN", { maximumFractionDigits: 1 })}h`;
 
 // Trang Tổng quan (4.7b) — số liệu "toàn đơn vị" tái dùng thẳng từ Báo cáo (4.7) nhưng rút gọn, không lọc theo khung
 // thời gian (khác 4.7): mọi thứ ở đây là ảnh chụp HIỆN TẠI, trả lời "hôm nay cần làm/biết gì". Không lặp lại các
@@ -67,6 +71,8 @@ export interface ChungTongQuan {
   doDongDeu: number | null;
   top20: number | null;
   radarTrungBinh: TrucRadar[];
+  gioTop5: DongThanh[];
+  a4Top5: A4Row[];
 }
 
 // Số liệu "toàn đơn vị" dùng chung cho cả Admin và GV/TG (mục 4.7b: GV/TG cũng xem được, không chỉ Admin).
@@ -89,8 +95,14 @@ export async function getChungTongQuan(): Promise<ChungTongQuan> {
   let doDongDeu: number | null = null;
   let top20: number | null = null;
   let radarTrungBinh: TrucRadar[] = [];
+  let gioTop5: DongThanh[] = [];
+  let a4Top5: A4Row[] = [];
   if (dieuKy) {
-    const [slRows, kpiRows] = await Promise.all([getSanLuong(dieuKy.hienTai.tu, dieuKy.hienTai.den), getKpiTongHop(dieuKy.hienTai.id)]);
+    const [slRows, kpiRows, a4Rows] = await Promise.all([
+      getSanLuong(dieuKy.hienTai.tu, dieuKy.hienTai.den),
+      getKpiTongHop(dieuKy.hienTai.id),
+      getA4(dieuKy.hienTai.id),
+    ]);
     const tongHopSl = tongHopSanLuong(slRows, "tat-ca");
     doDongDeu = tongHopSl.chiSoDongDeu;
     top20 = tongHopSl.top20;
@@ -103,6 +115,22 @@ export async function getChungTongQuan(): Promise<ChungTongQuan> {
       { nhan: "Chuyên cần", gia_tri: tb("B") },
       { nhan: "Chất lượng", gia_tri: tb("C") },
     ];
+    gioTop5 = [...tongHopSl.nguoi]
+      .sort((a, b) => b.gio_thuc - a.gio_thuc || a.ho_ten.localeCompare(b.ho_ten, "vi"))
+      .slice(0, 5)
+      .map((r) => ({
+        khoa: r.user_id,
+        nhan: r.ho_ten,
+        phu: `${VAI_TRO_LABEL[r.vai_tro]}${r.dang_tham_gia ? "" : " · đã nghỉ"}`,
+        avatar: { ten: r.ho_ten, src: r.avatar_url },
+        href: `/nhan-su/${r.user_id}`,
+        gia_tri: r.gio_thuc,
+        hien_thi: gioFmt(r.gio_thuc),
+      }));
+    a4Top5 = [...a4Rows]
+      .filter((r) => r.a4_luy_ke > 0)
+      .sort((a, b) => b.a4_luy_ke - a.a4_luy_ke || a.ho_ten.localeCompare(b.ho_ten, "vi"))
+      .slice(0, 5);
   }
 
   return {
@@ -115,18 +143,22 @@ export async function getChungTongQuan(): Promise<ChungTongQuan> {
     doDongDeu,
     top20,
     radarTrungBinh,
+    gioTop5,
+    a4Top5,
   };
 }
 
-export interface ThongKeAdmin {
+export interface ThongKeChung {
   nhanSu: { tong: number; xuHuong: number[] };
   lopDangMo: { tong: number; xuHuong: number[] };
   slotTrong: { tong: number; xuHuong: number[] };
   canhBaoPool: number;
 }
 
-// Hàng 3 thẻ stat đầu trang Tổng quan Admin (mục 4.7b).
-export async function getThongKeAdmin(): Promise<ThongKeAdmin> {
+// Hàng 3 thẻ stat đầu trang Tổng quan (Nhân sự/Lớp đang mở/Slot còn trống) — dùng chung cho cả khối Admin và khối
+// GV/TG (mục 4.7b, sau phản hồi người dùng: GV/TG cũng cần xem số liệu vận hành toàn đơn vị này kèm sparkline, không
+// chỉ Admin). Mọi bảng/RPC đọc ở đây đều công khai nội bộ (RLS cho phép mọi người đăng nhập), an toàn để mở rộng.
+export async function getThongKeChung(): Promise<ThongKeChung> {
   const supabase = await createClient();
   const tuNgay = new Date();
   tuNgay.setUTCDate(tuNgay.getUTCDate() - (SO_NGAY_XU_HUONG - 1));
