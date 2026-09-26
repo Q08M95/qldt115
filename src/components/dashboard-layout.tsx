@@ -1,3 +1,5 @@
+import { Children, cloneElement, isValidElement } from "react";
+import type { MauSo } from "@/components/stat-tile";
 import { cn } from "@/lib/utils";
 
 // Bố cục dashboard theo ảnh mẫu: cột chính (~64%) chứa hàng thẻ stat nhỏ + các khối lớn,
@@ -22,5 +24,11 @@ export function DashboardLayout({
 
 // Hàng thẻ stat: 3 thẻ nhỏ bằng nhau nằm trong cột chính; mobile vẫn 1 hàng 3 thẻ (thẻ thu gọn) thay vì xếp dọc chiếm màn hình
 export function StatRow({ children }: { children: React.ReactNode }) {
-  return <div className="grid grid-cols-3 gap-2 sm:gap-4">{children}</div>;
+  // Số của từng thẻ luân phiên qua các màu gốc (thẻ nào tự truyền `mau` thì giữ nguyên)
+  const thuTu: MauSo[] = ["navy", "teal", "green", "blue"];
+  return (
+    <div className="grid grid-cols-3 gap-2 sm:gap-4">
+      {Children.map(children, (c, i) => (isValidElement<{ mau?: MauSo }>(c) && c.props.mau === undefined ? cloneElement(c, { mau: thuTu[i % thuTu.length] }) : c))}
+    </div>
+  );
 }

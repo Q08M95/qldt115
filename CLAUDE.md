@@ -725,7 +725,7 @@ Toàn bộ spec ở 8.1-8.8 mặc định cho desktop — dưới đây là các
 
 **Drawer/Modal → Popup giữa màn hình (đã chốt sau phản hồi người dùng, thay cho "overlay toàn màn hình"):** Drawer 480-560px bên phải chỉ dùng trên desktop — dưới `md` chuyển thành **popup căn giữa**, rộng gần hết chiều ngang (lề 16px), cao tối đa `100dvh − 2rem`, tiêu đề + nút đóng cố định trên, nút Lưu cố định dưới, nội dung cuộn bên trong; hộp xác nhận ngắn dùng chung kiểu này (tự co theo nội dung). Chuông thông báo trên mobile cũng là popup giữa (desktop giữ panel thả xuống).
 
-**KPI Stat Card row (đã chốt sau phản hồi người dùng):** vẫn **1 hàng 3 thẻ** trên mobile (thẻ thu gọn: chữ/số nhỏ hơn, nhãn xuống dòng), không xếp dọc và không carousel; **thẻ số không có chevron ">"** ở mọi cỡ màn hình vì không bấm được.
+**KPI Stat Card row (đã chốt sau phản hồi người dùng):** vẫn **1 hàng 3 thẻ** trên mobile, bố cục **căn giữa** như thẻ "KPI của tôi" (icon + nhãn tối đa 2 dòng, số lớn, trend/chú thích dưới số, các thẻ cùng chiều cao), không xếp dọc và không carousel; **số liệu trong thẻ (mọi cỡ màn hình) tô lần lượt navy → xanh ngọc → xanh lá → xanh dương** (prop `mau`, `StatRow` tự luân phiên, dùng biến `--hue-*` nên hợp dark mode); **thẻ số không có chevron ">"** ở mọi cỡ màn hình vì không bấm được.
 
 **Danh sách/bảng dài trên mobile (đã chốt):** mỗi dòng thu gọn còn 1 hàng (chi tiết mở bằng nhấn vào dòng, trừ dòng có nút thao tác như Đề xuất) và chỉ hiện **5 dòng đầu** kèm nút "Xem thêm N" (`ThuGonDanhSach`), tránh phải cuộn hết bảng mới tới nội dung bên dưới.
 
