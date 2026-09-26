@@ -19,9 +19,12 @@ function PopoverContent({
   ...props
 }: React.ComponentProps<typeof PopoverPrimitive.Content>) {
   return (
-    <PopoverPrimitive.Portal>
-      {/* Làm mờ nền phía sau khi panel mở (mọi cỡ màn hình); bấm vào vùng mờ để đóng */}
-      <div data-slot="menu-overlay" aria-hidden className="fixed inset-0 z-40 bg-black/40 duration-150 animate-in fade-in-0" />
+    <>
+      {/* Làm mờ nền phía sau khi mở (mọi cỡ màn hình); bấm vào vùng mờ để đóng. Portal riêng vì Portal của Radix chỉ nhận 1 phần tử con */}
+      <PopoverPrimitive.Portal>
+        <div data-slot="menu-overlay" aria-hidden className="fixed inset-0 z-40 bg-black/40 duration-150 animate-in fade-in-0" />
+      </PopoverPrimitive.Portal>
+      <PopoverPrimitive.Portal>
       <PopoverPrimitive.Content
         data-slot="popover-content"
         align={align}
@@ -32,7 +35,8 @@ function PopoverContent({
         )}
         {...props}
       />
-    </PopoverPrimitive.Portal>
+      </PopoverPrimitive.Portal>
+    </>
   )
 }
 
