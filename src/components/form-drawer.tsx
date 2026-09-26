@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import type { ActionState } from "@/lib/nhan-su/actions";
 
-// Drawer chứa form (mục 8.5: Drawer trượt từ phải cho xem/sửa nhanh, toàn màn hình trên mobile).
+// Drawer chứa form (mục 8.5: Drawer trượt từ phải cho xem/sửa nhanh; trên mobile là popup giữa màn hình, tiêu đề + nút Lưu cố định, nội dung cuộn).
 // Nội dung chỉ mount khi mở -> mỗi lần mở là form mới, trạng thái lỗi/thành công của lần trước không còn.
 export function FormDrawer({
   trigger,

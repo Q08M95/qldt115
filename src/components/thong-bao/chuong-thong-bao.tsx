@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Bell, BellOff, CheckCheck } from "lucide-react";
+import { Bell, BellOff, CheckCheck, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { createClient } from "@/lib/supabase/client";
+import { useMobile } from "@/lib/use-mobile";
 import { SU_KIEN_THONG_BAO_DOI } from "@/lib/thong-bao/hien-thi";
 import type { ThongBao } from "@/types/database";
 import { ThongBaoItem } from "./thong-bao-item";
@@ -18,6 +20,7 @@ const SO_TRONG_CHUONG = 10;
 // Cập nhật tức thời qua Supabase Realtime; ngoài ra làm mới khi quay lại tab và khi nơi khác đánh dấu đã đọc.
 export function ChuongThongBao({ userId, soChuaDocBanDau }: { userId: string; soChuaDocBanDau: number }) {
   const router = useRouter();
+  const mobile = useMobile();
   const [mo, setMo] = useState(false);
   const [dem, setDem] = useState(soChuaDocBanDau);
   const [ds, setDs] = useState<ThongBao[] | null>(null);
@@ -62,50 +65,90 @@ export function ChuongThongBao({ userId, soChuaDocBanDau }: { userId: string; so
     if (tb.lien_ket) router.push(tb.lien_ket);
   }
 
+  const nutChuong = (
+    <Button variant="outline" size="icon" className="relative rounded-full border-transparent shadow-card" aria-label={`Thông báo${dem ? `, ${dem} chưa đọc` : ""}`} onClick={mobile ? () => khiMo(true) : undefined}>
+      <Bell />
+      {dem > 0 && (
+        <span className="absolute -top-1.5 -right-1.5 flex size-4 items-center justify-center rounded-full bg-grad-danger-solid text-[10px] font-medium text-white tabular-nums">
+          {dem > 9 ? "9+" : dem}
+        </span>
+      )}
+    </Button>
+  );
+
+  const nutDanhDau =
+    dem > 0 ? (
+      <Button variant="ghost" size="sm" onClick={() => void danhDauTatCaDaDoc()}>
+        <CheckCheck /> Đánh dấu đã đọc
+      </Button>
+    ) : null;
+
+  const danhSach = (
+    <div className="min-h-0 flex-1 overflow-y-auto px-2 pb-2">
+      {ds === null ? (
+        <p className="px-3 py-8 text-center text-sm text-muted-foreground">Đang tải...</p>
+      ) : ds.length === 0 ? (
+        <div className="flex flex-col items-center gap-2 px-3 py-10 text-center text-sm text-muted-foreground">
+          <BellOff className="size-10 opacity-40" aria-hidden />
+          Chưa có thông báo nào
+        </div>
+      ) : (
+        <ul className="grid gap-0.5">
+          {ds.map((tb) => (
+            <li key={tb.id}>
+              <ThongBaoItem tb={tb} onChon={chon} />
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+
+  const chanTrang = (
+    <div className="border-t px-4 py-3">
+      <Button asChild className="w-full" onClick={() => khiMo(false)}>
+        <Link href="/thong-bao">Xem tất cả thông báo</Link>
+      </Button>
+    </div>
+  );
+
+  // Mobile: popup giữa màn hình (rộng gần hết chiều ngang, cao tối đa ~80%); desktop: panel thả xuống dưới chuông
+  if (mobile) {
+    return (
+      <>
+        {nutChuong}
+        <Dialog open={mo} onOpenChange={khiMo}>
+          <DialogContent showCloseButton={false} className="flex max-h-[80dvh] flex-col gap-0 overflow-hidden p-0">
+            <div className="flex items-center justify-between gap-2 px-4 pt-3 pb-2">
+              <DialogTitle className="text-[17px] font-semibold">Thông báo</DialogTitle>
+              <DialogDescription className="sr-only">Danh sách thông báo mới nhất</DialogDescription>
+              <span className="flex items-center gap-1">
+                {nutDanhDau}
+                <DialogClose asChild>
+                  <Button variant="ghost" size="icon" aria-label="Đóng">
+                    <X />
+                  </Button>
+                </DialogClose>
+              </span>
+            </div>
+            {danhSach}
+            {chanTrang}
+          </DialogContent>
+        </Dialog>
+      </>
+    );
+  }
+
   return (
     <Popover open={mo} onOpenChange={khiMo}>
-      <PopoverTrigger asChild>
-        <Button variant="outline" size="icon" className="relative rounded-full border-transparent shadow-card" aria-label={`Thông báo${dem ? `, ${dem} chưa đọc` : ""}`}>
-          <Bell />
-          {dem > 0 && (
-            <span className="absolute -top-1.5 -right-1.5 flex size-4 items-center justify-center rounded-full bg-grad-danger-solid text-[10px] font-medium text-white tabular-nums">
-              {dem > 9 ? "9+" : dem}
-            </span>
-          )}
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-[min(24rem,calc(100vw-1.5rem))] p-0">
+      <PopoverTrigger asChild>{nutChuong}</PopoverTrigger>
+      <PopoverContent className="flex max-h-[min(34rem,80vh)] w-[min(24rem,calc(100vw-1.5rem))] flex-col p-0">
         <div className="flex items-center justify-between gap-2 px-4 pt-4 pb-2">
           <h2 className="text-[17px] font-semibold">Thông báo</h2>
-          {dem > 0 && (
-            <Button variant="ghost" size="sm" onClick={() => void danhDauTatCaDaDoc()}>
-              <CheckCheck /> Đánh dấu đã đọc
-            </Button>
-          )}
+          {nutDanhDau}
         </div>
-        <div className="max-h-[min(28rem,65vh)] overflow-y-auto px-2 pb-2">
-          {ds === null ? (
-            <p className="px-3 py-8 text-center text-sm text-muted-foreground">Đang tải...</p>
-          ) : ds.length === 0 ? (
-            <div className="flex flex-col items-center gap-2 px-3 py-10 text-center text-sm text-muted-foreground">
-              <BellOff className="size-10 opacity-40" aria-hidden />
-              Chưa có thông báo nào
-            </div>
-          ) : (
-            <ul className="grid gap-0.5">
-              {ds.map((tb) => (
-                <li key={tb.id}>
-                  <ThongBaoItem tb={tb} onChon={chon} />
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-        <div className="border-t px-4 py-3">
-          <Button asChild size="sm" className="w-full" onClick={() => khiMo(false)}>
-            <Link href="/thong-bao">Xem tất cả thông báo</Link>
-          </Button>
-        </div>
+        {danhSach}
+        {chanTrang}
       </PopoverContent>
     </Popover>
   );

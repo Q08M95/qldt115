@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { BarChart3 } from "lucide-react";
+import { BarChart3, ChevronDown } from "lucide-react";
 import { EmptyState } from "@/components/empty-state";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { ThuGonDanhSach } from "@/components/thu-gon-danh-sach";
 import { UserAvatar } from "@/components/user-avatar";
 import { NHOM_LABEL, VAI_TRO_LABEL } from "@/lib/nhan-su/labels";
 import type { KpiKyRow } from "@/types/database";
@@ -95,30 +96,37 @@ export function KpiKyTable({ rows }: { rows: KpiKyRow[] }) {
         </Table>
       </div>
 
-      <ul className="grid gap-3 px-3 pb-4 md:hidden">
-        {rows.map((r) => (
-          <li key={r.user_id} className="grid gap-2 rounded-xl border p-3 text-sm">
-            <div className="flex items-center gap-3">
-              <span className="w-6 text-center text-xs tabular-nums text-muted-foreground">{r.hang}</span>
-              <UserAvatar name={r.ho_ten} src={r.avatar_url} />
-              <div className="min-w-0 flex-1">
-                <Link href={`/nhan-su/${r.user_id}`} className="block truncate font-semibold hover:underline">
-                  {r.ho_ten}
-                </Link>
-                <span className="text-xs text-muted-foreground">{coNhom && r.nhom ? NHOM_LABEL[r.nhom] : r.vai_tro && VAI_TRO_LABEL[r.vai_tro]}</span>
-              </div>
-              <span className="text-xl font-bold tabular-nums">{so(r.kpi)}</span>
-            </div>
-            <div className="flex flex-wrap gap-1.5">
-              <Badge variant="outline">A {so(r.diem_nhom.A, 1)}</Badge>
-              <Badge variant="outline">B {so(r.diem_nhom.B, 1)}</Badge>
-              <Badge variant="outline">C {so(r.diem_nhom.C, 1)}</Badge>
-              <Badge variant="outline">{so(r.gio_thuc, 1)} giờ</Badge>
-              <Badge variant="outline">{r.so_bai} Bài</Badge>
-            </div>
-            <ChiTiet r={r} />
-          </li>
-        ))}
+      <ul className="grid gap-2 px-3 pb-4 md:hidden">
+        <ThuGonDanhSach soDau={5}>
+          {rows.map((r) => (
+            <li key={r.user_id}>
+              <details className="group rounded-xl border text-sm">
+                <summary className="flex cursor-pointer list-none items-center gap-3 p-3 [&::-webkit-details-marker]:hidden">
+                  <span className="w-5 text-center text-xs tabular-nums text-muted-foreground">{r.hang}</span>
+                  <UserAvatar name={r.ho_ten} src={r.avatar_url} />
+                  <div className="min-w-0 flex-1">
+                    <Link href={`/nhan-su/${r.user_id}`} className="block truncate font-semibold hover:underline">
+                      {r.ho_ten}
+                    </Link>
+                    <span className="block truncate text-xs text-muted-foreground">{coNhom && r.nhom ? NHOM_LABEL[r.nhom] : r.vai_tro && VAI_TRO_LABEL[r.vai_tro]}</span>
+                  </div>
+                  <span className="text-xl font-bold tabular-nums">{so(r.kpi)}</span>
+                  <ChevronDown className="size-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden />
+                </summary>
+                <div className="grid gap-2 px-3 pb-3">
+                  <div className="flex flex-wrap gap-1.5">
+                    <Badge variant="outline">A {so(r.diem_nhom.A, 1)}</Badge>
+                    <Badge variant="outline">B {so(r.diem_nhom.B, 1)}</Badge>
+                    <Badge variant="outline">C {so(r.diem_nhom.C, 1)}</Badge>
+                    <Badge variant="outline">{so(r.gio_thuc, 1)} giờ</Badge>
+                    <Badge variant="outline">{r.so_bai} Bài</Badge>
+                  </div>
+                  <ChiTiet r={r} />
+                </div>
+              </details>
+            </li>
+          ))}
+        </ThuGonDanhSach>
       </ul>
     </>
   );

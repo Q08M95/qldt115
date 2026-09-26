@@ -1,6 +1,7 @@
 // Biểu đồ dùng chung cho các báo cáo (mục 4.7/8.6) — SVG/CSS thuần, không thêm thư viện.
 // Mọi vùng màu đều là gradient theo 4 màu gốc (xanh dương, navy, xanh ngọc, xanh lá) hoặc gradient thương hiệu; nền cột thường xám rất nhạt như ảnh mẫu.
 import Link from "next/link";
+import { ThuGonDanhSach } from "@/components/thu-gon-danh-sach";
 import { UserAvatar } from "@/components/user-avatar";
 import { cn } from "@/lib/utils";
 
@@ -43,7 +44,7 @@ export interface DongThanh {
   hien_thi_phu?: string;
 }
 
-export function ThanhNgang({ dong, toiDa, chuThichThem }: { dong: DongThanh[]; toiDa?: number; chuThichThem?: string }) {
+export function ThanhNgang({ dong, toiDa, chuThichThem, thuGonMobile }: { dong: DongThanh[]; toiDa?: number; chuThichThem?: string; thuGonMobile?: number }) {
   const max = Math.max(toiDa ?? 0, ...dong.map((d) => d.gia_tri + (d.gia_tri_them ?? 0)), 0.0001);
   const pct = (v: number) => Math.min(100, (v / max) * 100);
   return (
@@ -59,6 +60,7 @@ export function ThanhNgang({ dong, toiDa, chuThichThem }: { dong: DongThanh[]; t
         </p>
       )}
       <ul className="grid gap-0.5">
+        <ThuGonDanhSach soDau={thuGonMobile ?? Number.MAX_SAFE_INTEGER}>
         {dong.map((d) => {
           const p1 = pct(d.gia_tri);
           const p2 = pct(d.gia_tri + (d.gia_tri_them ?? 0));
@@ -98,6 +100,7 @@ export function ThanhNgang({ dong, toiDa, chuThichThem }: { dong: DongThanh[]; t
             </li>
           );
         })}
+        </ThuGonDanhSach>
       </ul>
     </div>
   );

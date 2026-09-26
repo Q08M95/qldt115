@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { HandHeart, MailCheck, Users } from "lucide-react";
 import { DongHoBanNguyet } from "@/components/danh-gia/kpi-charts";
+import { ThuGonDanhSach } from "@/components/thu-gon-danh-sach";
 import { EmptyState } from "@/components/empty-state";
 import { DashboardLayout, StatRow } from "@/components/dashboard-layout";
 import { StatTile } from "@/components/stat-tile";
@@ -96,6 +97,7 @@ export function BaoCaoTyLe({
                     <span className="flex-1">Nhận lời mời (A3)</span>
                   </div>
                   <ul className="grid gap-0.5">
+                    <ThuGonDanhSach soDau={8}>
                     {dong.map((r) => (
                       <li key={r.user_id} className={HANG}>
                         <Nguoi r={r} />
@@ -103,6 +105,7 @@ export function BaoCaoTyLe({
                         <OTyLe nhan="Nhận lời mời (A3)" v={r.a3} chu={`${r.so_moi_dong_y}/${r.soMoi} lời mời`} />
                       </li>
                     ))}
+                    </ThuGonDanhSach>
                   </ul>
                 </div>
               )}

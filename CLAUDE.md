@@ -723,9 +723,11 @@ Toàn bộ spec ở 8.1-8.8 mặc định cho desktop — dưới đây là các
 
 **Data table → Card list:** bảng nhiều cột **không dùng cuộn ngang** trên mobile (trải nghiệm kém) — dưới `md`, tự động chuyển mỗi hàng thành **1 card dọc** hiển thị 2-3 trường quan trọng nhất (vd tên + trạng thái + 1 số liệu chính), tap để xem đầy đủ.
 
-**Drawer → Full-screen overlay:** Drawer 480-560px bên phải chỉ dùng trên desktop — dưới `md` chuyển thành **overlay toàn màn hình** (100% width/height), có nút back/close rõ ràng ở trên cùng.
+**Drawer/Modal → Popup giữa màn hình (đã chốt sau phản hồi người dùng, thay cho "overlay toàn màn hình"):** Drawer 480-560px bên phải chỉ dùng trên desktop — dưới `md` chuyển thành **popup căn giữa**, rộng gần hết chiều ngang (lề 16px), cao tối đa `100dvh − 2rem`, tiêu đề + nút đóng cố định trên, nút Lưu cố định dưới, nội dung cuộn bên trong; hộp xác nhận ngắn dùng chung kiểu này (tự co theo nội dung). Chuông thông báo trên mobile cũng là popup giữa (desktop giữ panel thả xuống).
 
-**KPI Stat Card row → Carousel vuốt ngang** hoặc xếp dọc 1 cột (ưu tiên carousel để giữ cảm giác "hàng số liệu nhanh" giống desktop, vuốt ngón tay thay vì cuộn dọc dài).
+**KPI Stat Card row (đã chốt sau phản hồi người dùng):** vẫn **1 hàng 3 thẻ** trên mobile (thẻ thu gọn: chữ/số nhỏ hơn, nhãn xuống dòng), không xếp dọc và không carousel; **thẻ số không có chevron ">"** ở mọi cỡ màn hình vì không bấm được.
+
+**Danh sách/bảng dài trên mobile (đã chốt):** mỗi dòng thu gọn còn 1 hàng (chi tiết mở bằng nhấn vào dòng) và chỉ hiện 5-8 dòng đầu kèm nút "Xem thêm N" (`ThuGonDanhSach`), tránh phải cuộn hết bảng mới tới nội dung bên dưới.
 
 **Chart trên mobile:** co giãn full-width, ẩn bớt gridline/label phụ. **Riêng Radar chart** (breakdown A/B/C, mục 4.4) khó đọc trên màn hình hẹp → đổi thành **3 progress bar ngang xếp dọc** trên mobile thay vì giữ dạng radar.
 

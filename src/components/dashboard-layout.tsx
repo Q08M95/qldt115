@@ -20,7 +20,7 @@ export function DashboardLayout({
   );
 }
 
-// Hàng thẻ stat: 3 thẻ nhỏ bằng nhau nằm trong cột chính
+// Hàng thẻ stat: 3 thẻ nhỏ bằng nhau nằm trong cột chính; mobile vẫn 1 hàng 3 thẻ (thẻ thu gọn) thay vì xếp dọc chiếm màn hình
 export function StatRow({ children }: { children: React.ReactNode }) {
-  return <div className="grid gap-4 sm:grid-cols-3">{children}</div>;
+  return <div className="grid grid-cols-3 gap-2 sm:gap-4">{children}</div>;
 }

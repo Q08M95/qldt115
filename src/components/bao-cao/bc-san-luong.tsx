@@ -70,8 +70,8 @@ export function BaoCaoSanLuong({
               {dong.length === 0 ? (
                 <EmptyState icon={Users} title="Chưa có nhân sự nào để thống kê trong khoảng thời gian này" />
               ) : (
-                <div className="max-h-[560px] overflow-y-auto pr-1">
-                  <ThanhNgang dong={dong} chuThichThem={coHapSap ? "Đã phân công, chưa diễn ra" : undefined} />
+                <div className="md:max-h-[560px] md:overflow-y-auto md:pr-1">
+                  <ThanhNgang dong={dong} chuThichThem={coHapSap ? "Đã phân công, chưa diễn ra" : undefined} thuGonMobile={8} />
                 </div>
               )}
             </CardContent>
