@@ -82,7 +82,7 @@ export function BaoCaoTyLe({
               <CardTitle className="flex items-center gap-2">
                 Theo từng người <span className="text-sm font-normal text-muted-foreground">· {t.soNguoi} người</span>
               </CardTitle>
-              <CardAction>
+              <CardAction className="max-md:col-start-1 max-md:row-span-1 max-md:row-start-2 max-md:mt-1 max-md:justify-self-start">
                 <LocVaiTroLinks anchor="ty-le-dang-ky" khoang={khoang} ky={ky} vt={loc} />
               </CardAction>
             </CardHeader>

@@ -62,7 +62,7 @@ export function BaoCaoSanLuong({
                 Giờ dạy theo người
                 <span className="text-sm font-normal text-muted-foreground">· {t.nguoi.length} người</span>
               </CardTitle>
-              <CardAction className="flex items-center gap-2">
+              <CardAction className="flex items-center gap-2 max-md:col-start-1 max-md:row-span-1 max-md:row-start-2 max-md:mt-1 max-md:justify-self-start">
                 <LocVaiTroLinks anchor="san-luong" khoang={khoang} ky={ky} vt={loc} />
               </CardAction>
             </CardHeader>
