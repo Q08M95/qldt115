@@ -294,6 +294,15 @@ Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / 
 
 ---
 
+## Tài liệu hướng dẫn sử dụng (làm song song các giai đoạn)
+
+- [x] Bản nháp `huong dan su dung.pdf` (~57 trang, 7 chương + 4 phụ lục: làm quen, bắt đầu, hướng dẫn GV/TG, KPI có ví dụ tính, hướng dẫn Admin/Quản lý lớp, tình huống, hỏi đáp; dựng từ `docs/huong-dan/nguon/*.md` bằng `node docs/huong-dan/build.mjs`)
+- [ ] Chụp và thêm 25 ảnh minh họa (danh sách ở `docs/huong-dan/README.md`) sau khi web hoàn chỉnh
+- [ ] Bổ sung tên đơn vị, logo, thông tin liên hệ hỗ trợ lên bìa và mục "Cần giúp đỡ" (chờ người dùng cung cấp)
+- [ ] Rà lại toàn bộ tài liệu theo giao diện cuối sau Giai đoạn 12–13; tách bản rút gọn theo vai trò nếu cần
+
+---
+
 ## Giai đoạn 13 — QA, kiểm thử, deploy production
 
 *Tham chiếu: mục 2 (quy trình phát triển & triển khai)*
