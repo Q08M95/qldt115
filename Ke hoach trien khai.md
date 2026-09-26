@@ -28,7 +28,7 @@
 | 9 | Nhật ký hệ thống (4.6) | ✅ Xong (đã chạy migration + test 34/34 trên Supabase thật) | 100% |
 | 10 | Báo cáo (4.7) + Tổng quan (4.7b) | 🟨 Gần xong (còn bổ sung Tổng quan vào bản PDF xuất báo cáo) | 95% |
 | 11 | Cấu hình hệ thống — hoàn thiện (4.8) | ✅ Xong (bổ sung màn hình Đăng ký & matching; chưa thử lưu bằng tài khoản Admin thật) | 100% |
-| 12 | Responsive/Mobile polish (8.9) | 🟡 Đang làm (đã sửa thẻ số, bảng dài, chuông, popup, nút 44px, tiêu đề topbar; còn rà các màn hình cần đăng nhập + test điện thoại thật) | 80% |
+| 12 | Responsive/Mobile polish (8.9) | 🟡 Đang làm (đã sửa thẻ số, bảng dài, chuông, popup, ; đã thử nút 44px và tiêu đề topbar 2 dòng nhưng người dùng không thích nên hoàn lại; còn rà thẻ số, menu avatar, các màn hình cần đăng nhập + test điện thoại thật) | 70% |
 | 13 | QA, kiểm thử, deploy production | ⬜ Chưa bắt đầu | 0% |
 
 Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / ✅ Xong / ⏸️ Tạm hoãn.
@@ -286,7 +286,7 @@ Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / 
 - [x] KPI Stat Card row: 1 hàng 3 thẻ thu gọn trên mobile, bỏ chevron (thay cho carousel theo yêu cầu người dùng)
 - [ ] Radar chart → 3 progress bar dọc trên mobile
 - [ ] Lịch dạy → list "Hôm nay/Ngày mai/Tuần này" trên mobile
-- [x] Touch target tối thiểu 44×44px toàn bộ nút mobile (nút cỡ sm/xs/icon-sm/icon-xs nâng lên 44px dưới md)
+- [ ] Touch target tối thiểu 44×44px toàn bộ nút mobile — đã thử nâng nút sm/xs/icon nhỏ lên 44px dưới md nhưng người dùng thấy không đẹp, hoàn lại (chỉ nút cỡ thường và icon đã 44px); cân nhắc lại từng chỗ khi có ảnh thực tế
 - [ ] Banner/FAB check-in nổi bật đầu Trang chủ khi có Bài trong khung giờ check-in
 - [ ] Test thật trên điện thoại qua Preview Deployment (không chỉ giả lập DevTools)
 

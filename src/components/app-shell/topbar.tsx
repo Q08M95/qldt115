@@ -147,7 +147,7 @@ export function Topbar({
 
         <div className="min-w-0 flex-1">
           <Breadcrumb crumbs={crumbs} />
-          <h1 className="line-clamp-2 min-h-7 text-base leading-tight font-semibold md:min-h-9 md:truncate md:text-[28px] md:leading-normal">{title}</h1>
+          <h1 className="min-h-7 truncate text-lg font-semibold md:min-h-9 md:text-[28px]">{title}</h1>
         </div>
 
         {/* Ô tìm kiếm toàn cục — desktop; mobile thu về icon kính lúp */}
