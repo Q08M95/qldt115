@@ -20,6 +20,8 @@ function PopoverContent({
 }: React.ComponentProps<typeof PopoverPrimitive.Content>) {
   return (
     <PopoverPrimitive.Portal>
+      {/* Làm mờ nền phía sau khi panel mở (mọi cỡ màn hình); bấm vào vùng mờ để đóng */}
+      <div data-slot="menu-overlay" aria-hidden className="fixed inset-0 z-40 bg-black/40 duration-150 animate-in fade-in-0" />
       <PopoverPrimitive.Content
         data-slot="popover-content"
         align={align}

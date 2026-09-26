@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
-import { createPortal } from "react-dom";
 import { useTheme } from "next-themes";
 import { Bell, CalendarDays, ChevronDown, ChevronLeft, ChevronRight, LogOut, Menu, Moon, Search, Sun, User, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -70,7 +69,6 @@ function Breadcrumb({ crumbs }: { crumbs: { label: string; href: string }[] }) {
 function UserMenu({ user }: { user: ShellUser }) {
   const router = useRouter();
   const { resolvedTheme, setTheme } = useTheme();
-  const [mo, setMo] = useState(false);
 
   async function signOut() {
     await fetch("/auth/signout", { method: "POST" });
@@ -79,10 +77,7 @@ function UserMenu({ user }: { user: ShellUser }) {
   }
 
   return (
-    <DropdownMenu open={mo} onOpenChange={setMo}>
-      {/* Mobile: làm mờ nền phía sau khi menu mở (bấm vào vùng mờ để đóng) */}
-      {/* Đưa ra <body>: header có backdrop-blur nên phần tử fixed bên trong sẽ chỉ phủ đúng thanh header */}
-      {mo && createPortal(<div className="fixed inset-0 z-40 bg-black/40 md:hidden" aria-hidden />, document.body)}
+    <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button
           type="button"

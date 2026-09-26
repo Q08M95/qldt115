@@ -38,6 +38,8 @@ function DropdownMenuContent({
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Content>) {
   return (
     <DropdownMenuPrimitive.Portal>
+      {/* Làm mờ nền phía sau khi menu mở (mọi cỡ màn hình); bấm vào vùng mờ để đóng */}
+      <div data-slot="menu-overlay" aria-hidden className="fixed inset-0 z-40 bg-black/40 duration-150 animate-in fade-in-0" />
       <DropdownMenuPrimitive.Content
         data-slot="dropdown-menu-content"
         sideOffset={sideOffset}

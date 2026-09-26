@@ -690,6 +690,7 @@ Phong cách tham khảo: **"Soft SaaS Dashboard"** (xem file `tham khao theme.jp
 - **Bell icon** góc phải topbar + badge đỏ tròn nhỏ hiện số chưa đọc (đúng mẫu tham khảo)
 - Click mở **dropdown panel**: mỗi item = icon theo loại sự kiện + nội dung + thời gian tương đối ("5 phút trước"); item "cần hành động" (mục 4.5) có viền trái `brand` để nổi bật hơn item "thông tin"
 - Push notification (trình duyệt) dùng giao diện native của trình duyệt, không custom
+- **Mọi panel nổi (dropdown menu, popover như chuông thông báo/menu avatar, drawer, modal) đều làm mờ nền phía sau** ở mọi cỡ màn hình (đã chốt sau phản hồi người dùng) — lớp mờ đặt sẵn trong `DropdownMenuContent`/`PopoverContent` (`src/components/ui`), bấm vào vùng mờ để đóng; menu con không thêm lớp mờ riêng
 - Motion: transition 150-200ms ease-out cho hover/focus/mở drawer — không dùng animation trang trí, chỉ phục vụ tương tác
 
 ### 8.8 Áp dụng cụ thể theo từng module
