@@ -1,5 +1,6 @@
 import { HeartHandshake, Trophy } from "lucide-react";
 import { EmptyState } from "@/components/empty-state";
+import { ThuGonDanhSach } from "@/components/thu-gon-danh-sach";
 import { DashboardLayout, StatRow } from "@/components/dashboard-layout";
 import { StatTile } from "@/components/stat-tile";
 import { Badge } from "@/components/ui/badge";
@@ -38,7 +39,8 @@ export function BaoCaoA4({ ky, rows }: { ky: KyDanhGia; rows: A4Row[] }) {
                 <EmptyState icon={HeartHandshake} title="Chưa có ai tham gia dạy lớp không kinh phí" />
               ) : (
                 <ul className="divide-y">
-                  {dan.map((r, i) => (
+                  <ThuGonDanhSach soDau={5}>
+{dan.map((r, i) => (
                     <li key={r.user_id} className="flex items-center gap-3 py-2.5 text-sm">
                       <span className="w-6 text-center text-xs text-muted-foreground tabular-nums">{i + 1}</span>
                       <UserAvatar name={r.ho_ten} src={r.avatar_url} className="size-8" />
@@ -62,6 +64,7 @@ export function BaoCaoA4({ ky, rows }: { ky: KyDanhGia; rows: A4Row[] }) {
                       </div>
                     </li>
                   ))}
+</ThuGonDanhSach>
                 </ul>
               )}
             </CardContent>

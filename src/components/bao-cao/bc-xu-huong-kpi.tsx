@@ -1,6 +1,7 @@
 import { LineChart, TrendingUp, Users } from "lucide-react";
 import { AreaXuHuong, DongHoBanNguyet } from "@/components/danh-gia/kpi-charts";
 import { EmptyState } from "@/components/empty-state";
+import { ThuGonDanhSach } from "@/components/thu-gon-danh-sach";
 import { DashboardLayout, StatRow } from "@/components/dashboard-layout";
 import { StatTile } from "@/components/stat-tile";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -80,7 +81,8 @@ export function BaoCaoXuHuongKpi({ ky }: { ky: KpiTheoKyRow[] }) {
                   </table>
                 </div>
                 <ul className="grid gap-2 @[30rem]:hidden">
-                  {[...ky].reverse().map((k) => (
+                  <ThuGonDanhSach soDau={5}>
+{[...ky].reverse().map((k) => (
                     <li key={k.ky_id} className="grid gap-2 rounded-xl border p-3 text-sm">
                       <div className="flex items-center justify-between">
                         <span className="font-medium">{k.ten}</span>
@@ -99,6 +101,7 @@ export function BaoCaoXuHuongKpi({ ky }: { ky: KpiTheoKyRow[] }) {
                       </div>
                     </li>
                   ))}
+</ThuGonDanhSach>
                 </ul>
               </div>
             </CardContent>

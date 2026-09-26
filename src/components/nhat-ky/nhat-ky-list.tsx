@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, ScrollText } from "lucide-react";
 import { EmptyState } from "@/components/empty-state";
+import { ThuGonDanhSach } from "@/components/thu-gon-danh-sach";
 import { Badge } from "@/components/ui/badge";
 import { UserAvatar } from "@/components/user-avatar";
 import { fmtDateTime } from "@/lib/format";
@@ -101,9 +102,11 @@ export function NhatKyList({ rows }: { rows: NhatKy[] }) {
         <span>Nội dung</span>
       </div>
       <ul>
-        {rows.map((r) => (
-          <Dong key={r.id} r={r} />
-        ))}
+        <ThuGonDanhSach soDau={5}>
+          {rows.map((r) => (
+            <Dong key={r.id} r={r} />
+          ))}
+        </ThuGonDanhSach>
       </ul>
     </div>
   );

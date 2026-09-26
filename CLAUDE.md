@@ -727,7 +727,7 @@ Toàn bộ spec ở 8.1-8.8 mặc định cho desktop — dưới đây là các
 
 **KPI Stat Card row (đã chốt sau phản hồi người dùng):** vẫn **1 hàng 3 thẻ** trên mobile (thẻ thu gọn: chữ/số nhỏ hơn, nhãn xuống dòng), không xếp dọc và không carousel; **thẻ số không có chevron ">"** ở mọi cỡ màn hình vì không bấm được.
 
-**Danh sách/bảng dài trên mobile (đã chốt):** mỗi dòng thu gọn còn 1 hàng (chi tiết mở bằng nhấn vào dòng) và chỉ hiện 5-8 dòng đầu kèm nút "Xem thêm N" (`ThuGonDanhSach`), tránh phải cuộn hết bảng mới tới nội dung bên dưới.
+**Danh sách/bảng dài trên mobile (đã chốt):** mỗi dòng thu gọn còn 1 hàng (chi tiết mở bằng nhấn vào dòng, trừ dòng có nút thao tác như Đề xuất) và chỉ hiện **5 dòng đầu** kèm nút "Xem thêm N" (`ThuGonDanhSach`), tránh phải cuộn hết bảng mới tới nội dung bên dưới.
 
 **Chart trên mobile:** co giãn full-width, ẩn bớt gridline/label phụ. **Riêng Radar chart** (breakdown A/B/C, mục 4.4) khó đọc trên màn hình hẹp → đổi thành **3 progress bar ngang xếp dọc** trên mobile thay vì giữ dạng radar.
 

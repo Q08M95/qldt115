@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { HandHeart, MailCheck, Users } from "lucide-react";
+import { ChevronDown, HandHeart, MailCheck, Users } from "lucide-react";
 import { DongHoBanNguyet } from "@/components/danh-gia/kpi-charts";
 import { ThuGonDanhSach } from "@/components/thu-gon-danh-sach";
 import { EmptyState } from "@/components/empty-state";
@@ -96,8 +96,7 @@ export function BaoCaoTyLe({
                     <span className="flex-1">Tự đăng ký (A2)</span>
                     <span className="flex-1">Nhận lời mời (A3)</span>
                   </div>
-                  <ul className="grid gap-0.5">
-                    <ThuGonDanhSach soDau={8}>
+                  <ul className="hidden gap-0.5 sm:grid">
                     {dong.map((r) => (
                       <li key={r.user_id} className={HANG}>
                         <Nguoi r={r} />
@@ -105,6 +104,34 @@ export function BaoCaoTyLe({
                         <OTyLe nhan="Nhận lời mời (A3)" v={r.a3} chu={`${r.so_moi_dong_y}/${r.soMoi} lời mời`} />
                       </li>
                     ))}
+                  </ul>
+                  {/* Mobile: mỗi người 1 dòng (tên + A2 · A3), bấm mở thanh chi tiết; chỉ hiện 5 người đầu */}
+                  <ul className="grid gap-2 sm:hidden">
+                    <ThuGonDanhSach soDau={5}>
+                      {dong.map((r) => (
+                        <li key={r.user_id}>
+                          <details className="group rounded-xl border text-sm">
+                            <summary className="flex cursor-pointer list-none items-center gap-3 p-3 [&::-webkit-details-marker]:hidden">
+                              <UserAvatar name={r.ho_ten} src={r.avatar_url} className="size-8 shrink-0 text-xs" />
+                              <span className="min-w-0 flex-1">
+                                <Link href={`/nhan-su/${r.user_id}`} className="block truncate font-medium hover:underline">
+                                  {r.ho_ten}
+                                </Link>
+                                <span className="block text-xs text-muted-foreground">{VAI_TRO_LABEL[r.vai_tro]}</span>
+                              </span>
+                              <span className="shrink-0 text-right text-xs text-muted-foreground tabular-nums">
+                                <span className="block">A2 <b className="text-sm font-semibold text-foreground">{pt(r.a2)}</b></span>
+                                <span className="block">A3 <b className="text-sm font-semibold text-foreground">{pt(r.a3)}</b></span>
+                              </span>
+                              <ChevronDown className="size-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden />
+                            </summary>
+                            <div className="grid gap-3 px-3 pb-3">
+                              <OTyLe nhan="Tự đăng ký (A2)" v={r.a2} chu={`${r.so_tu_dang_ky}/${r.so_bai_da_day} Bài đã dạy`} />
+                              <OTyLe nhan="Nhận lời mời (A3)" v={r.a3} chu={`${r.so_moi_dong_y}/${r.soMoi} lời mời`} />
+                            </div>
+                          </details>
+                        </li>
+                      ))}
                     </ThuGonDanhSach>
                   </ul>
                 </div>

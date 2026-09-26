@@ -28,7 +28,7 @@
 | 9 | Nhật ký hệ thống (4.6) | ✅ Xong (đã chạy migration + test 34/34 trên Supabase thật) | 100% |
 | 10 | Báo cáo (4.7) + Tổng quan (4.7b) | 🟨 Gần xong (còn bổ sung Tổng quan vào bản PDF xuất báo cáo) | 95% |
 | 11 | Cấu hình hệ thống — hoàn thiện (4.8) | ✅ Xong (bổ sung màn hình Đăng ký & matching; chưa thử lưu bằng tài khoản Admin thật) | 100% |
-| 12 | Responsive/Mobile polish (8.9) | 🟡 Đang làm (đã kiểm kê; sửa thẻ số, bảng dài, chuông, popup; còn nút 44px, tiêu đề topbar, test điện thoại thật) | 40% |
+| 12 | Responsive/Mobile polish (8.9) | 🟡 Đang làm (đã sửa thẻ số, bảng dài, chuông, popup, nút 44px, tiêu đề topbar; còn rà các màn hình cần đăng nhập + test điện thoại thật) | 80% |
 | 13 | QA, kiểm thử, deploy production | ⬜ Chưa bắt đầu | 0% |
 
 Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / ✅ Xong / ⏸️ Tạm hoãn.
@@ -281,12 +281,12 @@ Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / 
 
 *Tham chiếu: mục 8.9 — nhiều phần đã làm nền từ giai đoạn 2, giai đoạn này rà soát toàn bộ module đã xong*
 
-- [ ] Data table → card list dưới `md` cho toàn bộ màn hình danh sách
+- [x] Data table → card list dưới `md` (dòng thu gọn, chỉ hiện 5 dòng đầu + "Xem thêm N") cho Nhân sự, Đề xuất, Nhật ký, KPI theo kỳ, A4, Giờ dạy, Tự đăng ký
 - [x] Drawer/Modal → popup giữa màn hình dưới `md` (thay cho full-screen theo yêu cầu người dùng), chuông thông báo cũng popup giữa
 - [x] KPI Stat Card row: 1 hàng 3 thẻ thu gọn trên mobile, bỏ chevron (thay cho carousel theo yêu cầu người dùng)
 - [ ] Radar chart → 3 progress bar dọc trên mobile
 - [ ] Lịch dạy → list "Hôm nay/Ngày mai/Tuần này" trên mobile
-- [ ] Touch target tối thiểu 44×44px toàn bộ nút mobile
+- [x] Touch target tối thiểu 44×44px toàn bộ nút mobile (nút cỡ sm/xs/icon-sm/icon-xs nâng lên 44px dưới md)
 - [ ] Banner/FAB check-in nổi bật đầu Trang chủ khi có Bài trong khung giờ check-in
 - [ ] Test thật trên điện thoại qua Preview Deployment (không chỉ giả lập DevTools)
 

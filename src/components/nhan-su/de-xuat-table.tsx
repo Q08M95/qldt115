@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Lightbulb } from "lucide-react";
 import { EmptyState } from "@/components/empty-state";
+import { ThuGonDanhSach } from "@/components/thu-gon-danh-sach";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { DuyetButtons } from "@/components/nhan-su/de-xuat-ui";
@@ -62,7 +63,8 @@ export function DeXuatTable({ rows, choDuyet }: { rows: DeXuatNhanSu[]; choDuyet
       </div>
 
       <ul className="grid gap-3 px-5 pb-5 md:hidden">
-        {rows.map((r) => (
+        <ThuGonDanhSach soDau={5}>
+{rows.map((r) => (
           <li key={r.id} className="grid gap-2 rounded-xl border p-3 text-sm">
             <div className="flex items-start justify-between gap-2">
               <Link href={`/nhan-su/${r.user_id}`} className="font-semibold hover:underline">
@@ -81,6 +83,7 @@ export function DeXuatTable({ rows, choDuyet }: { rows: DeXuatNhanSu[]; choDuyet
             )}
           </li>
         ))}
+</ThuGonDanhSach>
       </ul>
     </>
   );

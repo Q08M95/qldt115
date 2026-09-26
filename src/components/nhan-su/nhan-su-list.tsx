@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ChevronRight, Users } from "lucide-react";
 import { EmptyState } from "@/components/empty-state";
+import { ThuGonDanhSach } from "@/components/thu-gon-danh-sach";
 import { UserAvatar } from "@/components/user-avatar";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -75,7 +76,8 @@ export function NhanSuList({ rows, isQuanTri }: { rows: NhanSuRow[]; isQuanTri: 
       </div>
 
       <ul className="grid gap-3 px-5 pb-5 md:hidden">
-        {rows.map((r) => (
+        <ThuGonDanhSach soDau={5}>
+{rows.map((r) => (
           <li key={r.id}>
             <Link
               href={`/nhan-su/${r.id}`}
@@ -95,6 +97,7 @@ export function NhanSuList({ rows, isQuanTri }: { rows: NhanSuRow[]; isQuanTri: 
             </Link>
           </li>
         ))}
+</ThuGonDanhSach>
       </ul>
     </>
   );
