@@ -27,7 +27,7 @@
 | 8 | Module Thông báo (4.5) | ✅ Xong (đã chạy migration + test trên Supabase thật, pg_cron/pg_net bật, webhook push đã cấu hình; còn thử nhận push thật trên thiết bị của người dùng) | 100% |
 | 9 | Nhật ký hệ thống (4.6) | ✅ Xong (đã chạy migration + test 34/34 trên Supabase thật) | 100% |
 | 10 | Báo cáo (4.7) + Tổng quan (4.7b) | 🟨 Gần xong (còn bổ sung Tổng quan vào bản PDF xuất báo cáo) | 95% |
-| 11 | Cấu hình hệ thống — hoàn thiện (4.8) | ⬜ Chưa bắt đầu | 0% |
+| 11 | Cấu hình hệ thống — hoàn thiện (4.8) | ✅ Xong (bổ sung màn hình Đăng ký & matching; chưa thử lưu bằng tài khoản Admin thật) | 100% |
 | 12 | Responsive/Mobile polish (8.9) | ⬜ Chưa bắt đầu | 0% |
 | 13 | QA, kiểm thử, deploy production | ⬜ Chưa bắt đầu | 0% |
 
@@ -248,7 +248,7 @@ Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / 
 - [x] Ẩn nhãn nhóm khỏi GV/TG xuyên suốt báo cáo
 - [x] Xuất Excel/PDF cho báo cáo #1,3,6,7 — giới hạn quyền xuất cho Admin/Quyền Quản lý lớp
 - [x] Trang Tổng quan Admin/Quản lý lớp: KPI stat card + sparkline, bảng việc cần duyệt, area/bar/donut/gauge theo spec 4.7b
-- [x] Trang Tổng quan GV/TG: tổng quan toàn đơn vị (không chỉ cá nhân), lịch dạy sắp tới dạng timeline, progress KPI cá nhân rút gọn, thông báo mới nhất, thẻ gợi ý lớp
+- [x] Trang Tổng quan GV/TG: tổng quan toàn đơn vị, lịch dạy sắp tới (timeline gọn 4 Bài, lịch tháng ở `/dang-ky#lich`), KPI cá nhân đầy đủ, biểu đồ phân tích (đã bỏ thông báo mới nhất/thẻ gợi ý lớp/bảng việc cần duyệt vì trùng module khác)
 - [x] Người giữ Quyền Quản lý lớp thấy cả 2 bộ widget cùng lúc
 - [ ] Bổ sung Tổng quan vào bản PDF xuất báo cáo (đã ghi rõ "chưa có" trong Phụ lục PDF, làm sau khi Tổng quan được xác nhận ổn định)
 
@@ -262,16 +262,16 @@ Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / 
 
 *Tham chiếu: mục 4.8 (nhiều mục đã dựng rải rác ở các giai đoạn trước — giai đoạn này gom lại thành 1 màn hình thống nhất)*
 
-- [ ] Màn hình "Hệ số độ khó" gộp D1 (bảng con theo nhóm lớp) + D2 + D3 trên cùng 1 màn hình
-- [ ] Ngưỡng tối đa chấm B1, khung giờ check-in
-- [ ] Rubric C2 (mô tả 4 mức)
-- [ ] Toàn bộ danh mục: chuyên môn, loại chứng chỉ, nhóm lớp (kèm D1), loại kinh phí
-- [ ] Kỳ đánh giá (đã dựng ở giai đoạn 6, kiểm tra lại UI đúng vị trí này)
-- [ ] Ngưỡng đổi nhóm theo KPI (X/Y)
-- [ ] Ngưỡng tối thiểu nhóm để dùng percentile A1
-- [ ] Ngưỡng cảnh báo dồn tải, ngưỡng cảnh báo pool nhỏ, tỷ trọng matching-score 80/20
-- [ ] Phương pháp gộp C1/C2/C3 (đơn giản/theo trọng số buổi dạy)
-- [ ] Form chia section/tab, nút Lưu sticky, validate realtime tổng trọng số = 100%
+- [x] Hệ số độ khó D1/D2/D3 — giữ như hiện tại theo quyết định người dùng: D2/D3 và D1 chỉnh trong `/cau-hinh/kpi`, danh mục nhóm lớp (kèm D1) ở `/cau-hinh/danh-muc`
+- [x] Ngưỡng tối đa chấm B1, khung giờ check-in (`/cau-hinh/kpi`)
+- [x] Rubric C2 (mô tả 4 mức) (`/cau-hinh/kpi`)
+- [x] Toàn bộ danh mục: chuyên môn, loại chứng chỉ, nhóm lớp (kèm D1) (`/cau-hinh/danh-muc`)
+- [x] Kỳ đánh giá (`/cau-hinh/ky-danh-gia`)
+- [x] Ngưỡng đổi nhóm theo KPI (X/Y) (`/cau-hinh/kpi`)
+- [x] Ngưỡng tối thiểu nhóm để dùng percentile A1 (`/cau-hinh/kpi`)
+- [x] Ngưỡng cảnh báo dồn tải, pool nhỏ, tỷ trọng matching-score 80/20 + mức hạ điểm cùng lớp — **màn hình mới `/cau-hinh/dang-ky`** (trước đây chỉ sửa được bằng SQL)
+- [x] Phương pháp gộp C1/C3 (đơn giản/theo trọng số buổi dạy) (`/cau-hinh/kpi`)
+- [x] Form chia section, nút Lưu sticky, validate realtime (từng trang cấu hình; **không gộp tab 1 trang** — người dùng chọn giữ các trang riêng)
 
 **Điều kiện hoàn thành:** đổi 1 giá trị bất kỳ trong màn hình này → toàn hệ thống dùng giá trị mới ngay từ kỳ tiếp theo, không cần sửa code.
 

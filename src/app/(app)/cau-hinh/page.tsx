@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { CalendarRange, ChevronRight, ListChecks, SlidersHorizontal } from "lucide-react";
+import { CalendarRange, ChevronRight, ListChecks, SlidersHorizontal, UserCheck } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { requireQuanTri } from "@/lib/auth/session";
 
-// Trang Cấu hình hệ thống — Danh mục, Cấu hình KPI, Kỳ đánh giá; các ngưỡng còn lại (matching-score, check-in...) bổ sung ở Giai đoạn 11.
+// Trang Cấu hình hệ thống — Danh mục, Cấu hình KPI, Đăng ký & matching, Kỳ đánh giá.
 export default async function CauHinhPage() {
   await requireQuanTri();
 
@@ -32,6 +32,20 @@ export default async function CauHinhPage() {
             <span className="min-w-0 flex-1">
               <span className="block font-semibold">Cấu hình KPI</span>
               <span className="block text-sm text-muted-foreground">Trọng số tiêu chí, hệ số độ khó D, ngưỡng đổi nhóm</span>
+            </span>
+            <ChevronRight className="size-4 text-muted-foreground" aria-hidden />
+          </CardContent>
+        </Card>
+      </Link>
+      <Link href="/cau-hinh/dang-ky" className="group">
+        <Card className="transition-shadow group-hover:shadow-[0_8px_24px_rgba(16,24,40,0.10)]">
+          <CardContent className="flex items-center gap-3">
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-grad-green text-hue-green-on">
+              <UserCheck className="size-5" aria-hidden />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block font-semibold">Đăng ký &amp; matching</span>
+              <span className="block text-sm text-muted-foreground">Cảnh báo pool nhỏ, dồn tải, tỷ trọng matching-score</span>
             </span>
             <ChevronRight className="size-4 text-muted-foreground" aria-hidden />
           </CardContent>
