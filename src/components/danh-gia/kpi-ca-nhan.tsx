@@ -148,7 +148,7 @@ function OMucTieu({ td }: { td: NonNullable<KpiCaNhan["tien_do"]> }) {
 }
 
 // Bảng KPI cá nhân (mục 4.4/8.8): số liệu + biểu đồ là chính, chữ tối thiểu. Bố cục co theo bề rộng của chính thẻ (container query)
-// nên dùng được cả ở cột hẹp của hồ sơ nhân sự lẫn trang /danh-gia. Radar giữ nguyên ở mọi cỡ màn hình.
+// nên dùng được cả ở cột hẹp của hồ sơ nhân sự lẫn trang /danh-gia. Dưới md, radar đổi thành 3 thanh tiến độ A/B/C (mục 8.9).
 export function KpiCaNhanBoard({ data, tieuDe = "Bảng KPI cá nhân" }: { data: KpiCaNhan | null; tieuDe?: string }) {
   const coDuLieu = (data?.ky ?? []).filter((k) => k.kpi !== null);
   const hienTai = coDuLieu.at(-1);
@@ -222,7 +222,16 @@ export function KpiCaNhanBoard({ data, tieuDe = "Bảng KPI cá nhân" }: { data
       <Muc tieuDe={`Điểm theo nhóm và tiêu chí — ${tenNganKy(hienTai)}`}>
         <div className="grid items-center gap-x-6 gap-y-4 @lg:grid-cols-2">
           <div className="flex justify-center">
-            <RadarNhom truc={nhomDiem.map((n) => ({ nhan: n.nhan, gia_tri: n.gia_tri }))} className="h-auto w-full max-w-xs" />
+            <RadarNhom truc={nhomDiem.map((n) => ({ nhan: n.nhan, gia_tri: n.gia_tri }))} className="hidden h-auto w-full max-w-xs md:block" />
+            <ul className="grid w-full gap-2.5 md:hidden">
+              {nhomDiem.map((n) => (
+                <li key={n.ma} className="grid grid-cols-[6.75rem_minmax(0,1fr)_2.25rem] items-center gap-2.5 text-sm">
+                  <span className="truncate font-medium">{n.nhan}</span>
+                  <ThanhTienDo phanTram={n.gia_tri} />
+                  <span className="text-right font-semibold tabular-nums">{so(n.gia_tri, 0)}</span>
+                </li>
+              ))}
+            </ul>
           </div>
           <ul className="grid gap-2.5">
             {tieuChi.map((t) => (
