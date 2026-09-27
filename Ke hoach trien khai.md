@@ -286,13 +286,13 @@ Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / 
 - [x] KPI Stat Card row: 1 hàng 3 thẻ thu gọn trên mobile, bỏ chevron (thay cho carousel theo yêu cầu người dùng)
 - [x] Radar chart giữ nguyên trên mobile (đã thử đổi thành 3 thanh tiến độ A/B/C nhưng người dùng thấy không đẹp, hoàn lại; danh sách thanh tiến độ từng tiêu chí bên dưới radar vẫn có)
 - [x] Lịch dạy: Tổng quan là timeline dạng danh sách; lưới tháng ở `/dang-ky#lich` giữ nguyên trên mobile theo yêu cầu người dùng
-- [ ] Touch target tối thiểu 44×44px toàn bộ nút mobile — đã thử nâng nút sm/xs/icon nhỏ lên 44px dưới md nhưng người dùng thấy không đẹp, hoàn lại (chỉ nút cỡ thường và icon đã 44px); cân nhắc lại từng chỗ khi có ảnh thực tế
+- [x] ~~Touch target tối thiểu 44×44px toàn bộ nút mobile~~ — bỏ qua theo quyết định người dùng (đã thử nâng nút sm/xs/icon nhỏ lên 44px dưới md nhưng thấy không đẹp, hoàn lại; chỉ nút cỡ thường và icon đã 44px)
 - [x] Banner check-in nổi bật đầu Trang chủ khi có Bài trong khung giờ check-in (`CheckInBanner`, làm từ GĐ7/8)
 - [x] Trang đăng nhập 1 cột, nền gradient thương hiệu, thẻ form ở giữa + ô "Đi nhanh tới…" (Ctrl+K) thay ô tìm kiếm trang trí trên topbar
-- [x] Quên mật khẩu qua email (`/login` + `/dat-lai-mat-khau`); đổi tên ngắn sidebar/PWA thành QLĐKGD 115. Người dùng đã cấu hình Supabase: URL Configuration + SMTP (Gmail) — chưa tự kiểm thử gửi email thật
-- [ ] Test thật trên điện thoại qua Preview Deployment (không chỉ giả lập DevTools)
+- [x] Quên mật khẩu qua email (`/login` + `/dat-lai-mat-khau`); đổi tên ngắn sidebar/PWA thành QLĐKGD 115. Người dùng đã cấu hình và xác nhận Supabase (URL Configuration + SMTP Gmail) chạy được
+- [x] Test thật trên điện thoại qua Preview Deployment — người dùng xác nhận ổn
 
-**Điều kiện hoàn thành:** dùng thử toàn bộ luồng chính (đăng ký slot, check-in, xem thông báo, xem KPI) trên điện thoại thật, không gặp vỡ layout hay thao tác khó bấm.
+**Điều kiện hoàn thành: ĐÃ ĐẠT.** Toàn bộ luồng chính (đăng ký slot, check-in, xem thông báo, xem KPI) đã dùng thử trên điện thoại thật, không gặp vỡ layout hay thao tác khó bấm.
 
 ---
 
