@@ -227,8 +227,8 @@ export function KpiCaNhanBoard({ data, tieuDe = "Bảng KPI cá nhân" }: { data
               {nhomDiem.map((n) => (
                 <li key={n.ma} className="grid grid-cols-[6.75rem_minmax(0,1fr)_2.25rem] items-center gap-2.5 text-sm">
                   <span className="truncate font-medium">{n.nhan}</span>
-                  <ThanhTienDo phanTram={n.gia_tri} />
-                  <span className="text-right font-semibold tabular-nums">{so(n.gia_tri, 0)}</span>
+                  <ThanhTienDo phanTram={n.gia_tri ?? 0} />
+                  <span className="text-right font-semibold tabular-nums">{n.gia_tri === null ? "–" : so(n.gia_tri, 0)}</span>
                 </li>
               ))}
             </ul>
