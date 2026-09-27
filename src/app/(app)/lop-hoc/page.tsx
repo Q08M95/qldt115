@@ -1,5 +1,6 @@
 import { LopFormDrawer } from "@/components/lop-hoc/lop-form-drawer";
 import { LopListView } from "@/components/lop-hoc/lop-list-view";
+import { NhapCsvLopDrawer } from "@/components/lop-hoc/nhap-csv-lop-drawer";
 import { requireSession } from "@/lib/auth/session";
 import { getLopList, getNhomLop } from "@/lib/lop-hoc/queries";
 import { sapXepLop } from "@/lib/lop-hoc/sap-xep";
@@ -47,7 +48,14 @@ export default async function LopHocPage(props: PageProps<"/lop-hoc">) {
       nhomLop={nhomLop.filter((n) => n.dang_dung).map((n) => ({ id: n.id, ten: n.ten }))}
       isQuanTri={isQuanTri}
       hrefFor={(l) => `/lop-hoc/${l.id}`}
-      action={isQuanTri ? <LopFormDrawer nhomLop={nhomLop} loaiChungChi={loaiChungChi} /> : undefined}
+      action={
+        isQuanTri ? (
+          <>
+            <NhapCsvLopDrawer />
+            <LopFormDrawer nhomLop={nhomLop} loaiChungChi={loaiChungChi} />
+          </>
+        ) : undefined
+      }
     />
   );
 }

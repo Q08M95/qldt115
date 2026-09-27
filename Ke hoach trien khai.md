@@ -296,6 +296,17 @@ Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / 
 
 ---
 
+## Cải tiến sau GĐ12 (theo yêu cầu người dùng, ngoài phạm vi từng giai đoạn cố định)
+
+- [x] Trang đăng nhập viết lại theo phản hồi người dùng: 1 cột, nền gradient thương hiệu, thẻ form ở giữa (đã bỏ 2 cột và mô tả/nhãn điểm nổi bật ban đầu)
+- [x] Ô "Đi nhanh tới…" (`TimNhanh`, Ctrl+K) thay ô tìm kiếm trang trí trên topbar — nhảy tới Trang/Lớp/Nhân sự, không lọc danh sách
+- [x] Quên mật khẩu qua email (`/login` + `/dat-lai-mat-khau`) — người dùng đã cấu hình và xác nhận chạy được (Supabase URL Configuration + SMTP Gmail)
+- [x] Đổi tên hiển thị web thành "QUẢN LÝ ĐĂNG KÝ GIẢNG DẠY"; tên ngắn sidebar/PWA đổi thành "QLĐKGD 115"
+- [x] Thanh tiến độ phân công (mục 4.2): bỏ kiểu hiện thẳng tên khi 1 người đảm nhiệm toàn bộ, luôn hiện dạng thanh để đồng nhất
+- [x] Nhập nhanh nhiều lớp + Bài từ CSV theo kế hoạch năm đã có sẵn (`NhapCsvLopDrawer`, `src/lib/lop-hoc/csv.ts`, file mẫu `mau tao lop.xlsx` dựng bằng `scripts/tao-mau-lop.mjs`) — đã kiểm thử trực tiếp logic parse/resolve + gọi RPC thật (tạo và xóa lớp test), chưa kiểm thử luồng bấm trong giao diện Sheet do công cụ tự động click gặp vấn đề (ảnh chụp tĩnh xác nhận nút hiển thị đúng)
+
+---
+
 ## Tài liệu hướng dẫn sử dụng (làm song song các giai đoạn)
 
 - [x] Bản nháp `huong dan su dung.pdf` (~57 trang, 7 chương + 4 phụ lục: làm quen, bắt đầu, hướng dẫn GV/TG, KPI có ví dụ tính, hướng dẫn Admin/Quản lý lớp, tình huống, hỏi đáp; dựng từ `docs/huong-dan/nguon/*.md` bằng `node docs/huong-dan/build.mjs`)

@@ -4,8 +4,11 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireQuanTri } from "@/lib/auth/session";
 import { localInputToIso } from "@/lib/format";
+import { parseLopHocCsv, resolveLopHocCsv } from "@/lib/lop-hoc/csv";
+import { getNhomLop } from "@/lib/lop-hoc/queries";
 import { chuanHoaThongBao } from "@/lib/lop-hoc/thong-bao";
 import type { ActionState } from "@/lib/nhan-su/actions";
+import { getDanhMuc } from "@/lib/nhan-su/queries";
 import { createClient } from "@/lib/supabase/server";
 import type { DoiTuongLop, LoaiKinhPhi, NhomNhanSu, TrangThaiLop } from "@/types/database";
 
@@ -148,6 +151,101 @@ export async function xoaBaiHoc(id: string, lopId: string): Promise<ActionState>
 
   revalidateLop(lopId);
   return { ok: true };
+}
+
+// ---------- Nhập nhiều lớp + Bài từ CSV (kế hoạch năm đã có sẵn) ----------
+const MAX_CSV_BAI = 500;
+const MAX_CSV_LOP = 50;
+
+export interface KetQuaLopCsv {
+  maLop: string;
+  dong: number;
+  ten: string;
+  ok: boolean;
+  soBai: number;
+  thongBao: string;
+}
+
+export type NhapNhieuLopState = { error?: string; ketQua?: KetQuaLopCsv[] } | null;
+
+export async function nhapNhieuLopHoc(_prev: NhapNhieuLopState, fd: FormData): Promise<NhapNhieuLopState> {
+  await requireQuanTri();
+  const raw = str(fd, "csv") || (fd.get("csv") as string) || "";
+
+  const rows = parseLopHocCsv(raw);
+  if (rows.length === 0) return { error: "Chưa có dòng dữ liệu nào." };
+  if (rows.length > MAX_CSV_BAI) return { error: `Tối đa ${MAX_CSV_BAI} dòng Bài mỗi lần (hiện ${rows.length}). Hãy chia nhỏ danh sách.` };
+
+  const [nhomLop, chungChi] = await Promise.all([getNhomLop(), getDanhMuc("danh_muc_loai_chung_chi")]);
+  const nhoms = resolveLopHocCsv(rows, { nhomLop, chungChi });
+  if (nhoms.length > MAX_CSV_LOP) return { error: `Tối đa ${MAX_CSV_LOP} lớp mỗi lần (hiện ${nhoms.length}). Hãy chia nhỏ danh sách.` };
+
+  const supabase = await createClient();
+  const ketQua: KetQuaLopCsv[] = [];
+
+  for (const n of nhoms) {
+    const base = { maLop: n.maLop, dong: n.dongDauTien, ten: n.ten || n.maLop };
+    if (n.loi) {
+      ketQua.push({ ...base, ok: false, soBai: 0, thongBao: n.loi });
+      continue;
+    }
+    const baiLoi = n.bai.find((b) => b.loi);
+    if (baiLoi) {
+      ketQua.push({ ...base, ok: false, soBai: 0, thongBao: `Dòng ${baiLoi.dong} (${baiLoi.ten || "Bài"}): ${baiLoi.loi}` });
+      continue;
+    }
+
+    const ngayBatDau = n.bai.reduce((min, b) => (b.batDauIso! < min ? b.batDauIso! : min), n.bai[0].batDauIso!).slice(0, 10);
+    const ngayKetThuc = n.bai.reduce((max, b) => (b.ketThucIso! > max ? b.ketThucIso! : max), n.bai[0].ketThucIso!).slice(0, 10);
+
+    const { data: lopId, error: eLop } = await supabase.rpc("luu_lop_hoc", {
+      p_id: null,
+      p_ten: n.ten,
+      p_nhom_lop: n.nhomLopId,
+      p_doi_tuong: n.doiTuong,
+      p_loai_kinh_phi: n.loaiKinhPhi,
+      p_ngay_bat_dau: ngayBatDau,
+      p_ngay_ket_thuc: ngayKetThuc,
+      p_dia_diem: n.diaDiem || null,
+      p_cong_khai_som: n.congKhaiSom,
+      p_nhom_du_dieu_kien: n.nhomDuDieuKien,
+      p_chung_chi: n.chungChiIds,
+    });
+    if (eLop) {
+      ketQua.push({ ...base, ok: false, soBai: 0, thongBao: fail(eLop)?.error ?? "Không tạo được lớp." });
+      continue;
+    }
+
+    let soBaiTao = 0;
+    let loiBai: string | null = null;
+    for (const b of n.bai) {
+      const { error: eBai } = await supabase.rpc("luu_bai_hoc", {
+        p_id: null,
+        p_lop: lopId as string,
+        p_ten: b.ten,
+        p_bat_dau: b.batDauIso,
+        p_ket_thuc: b.ketThucIso,
+        p_so_gv: b.soGv,
+        p_so_tg: b.soTg,
+      });
+      if (eBai) {
+        loiBai = `Dòng ${b.dong} (${b.ten}): ${fail(eBai)?.error ?? "Không tạo được Bài."}`;
+        break;
+      }
+      soBaiTao++;
+    }
+
+    if (loiBai) {
+      // Rollback: xóa cả lớp (cascade xóa các Bài đã lỡ tạo) để không để lại lớp thiếu Bài
+      await supabase.rpc("xoa_lop_hoc", { p_lop: lopId as string });
+      ketQua.push({ ...base, ok: false, soBai: 0, thongBao: loiBai });
+      continue;
+    }
+    ketQua.push({ ...base, ok: true, soBai: soBaiTao, thongBao: `Đã tạo lớp và ${soBaiTao} Bài` });
+  }
+
+  revalidateLop();
+  return { ketQua };
 }
 
 // ---------- Kết quả C1 / C3, khảo sát ----------

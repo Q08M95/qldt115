@@ -38,6 +38,17 @@ Muốn đổi thông tin sau này, vào chi tiết lớp và bấm **Sửa lớp
 
 ![Ảnh 5.2 — Cửa sổ Tạo lớp học](5.2)
 
+### Tạo nhanh nhiều lớp cùng lúc từ kế hoạch năm
+
+Nếu đơn vị đã có sẵn kế hoạch đào tạo (biết trước tháng nào mở lớp gì, gồm cả danh sách Bài), bấm **Nhập từ CSV** (cạnh nút Tạo lớp) để tạo hàng loạt lớp kèm Bài trong một lần, thay vì tạo tay từng lớp:
+
+1. Tải file mẫu **"mau tao lop.xlsx"** (ở gốc dự án) để biết đúng các cột cần điền và xem danh mục nhóm lớp/nhóm nhân sự/chứng chỉ hiện có.
+2. Điền vào sheet "Mẫu tạo lớp": mỗi dòng là 1 Bài. Các cột của lớp (tên, nhóm lớp, đối tượng, loại kinh phí…) chỉ cần điền ở dòng Bài **đầu tiên** của mỗi "mã lớp" — dòng sau để trống là tự lấy lại.
+3. Dán nội dung (hoặc chọn file .csv) vào ô nhập, bấm **Tạo lớp và Bài**.
+4. Xem kết quả theo từng lớp: lớp nào lỗi (tên nhóm lớp/chứng chỉ gõ sai, giờ Bài không hợp lệ…) sẽ không được tạo, báo rõ dòng lỗi để sửa và nhập lại.
+
+Lớp tạo từ CSV cũng ở trạng thái **Dự kiến** như tạo tay — hãy rà lại trước khi mở đăng ký.
+
 ## 5.3 Thêm các Bài vào lớp
 
 Lớp chưa có Bài thì chưa có slot. Ở trang chi tiết lớp, bấm **Thêm Bài** và điền:
