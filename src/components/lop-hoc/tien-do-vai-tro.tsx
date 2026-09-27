@@ -1,9 +1,8 @@
-import { CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { hienThiTienDo, type TienDoVaiTro } from "@/lib/lop-hoc/tien-do";
 
-// Tiến độ phân công của 1 vai trò (CLAUDE.md mục 4.2): nhãn "X/Y lượt phân công" + "Z nhân sự khác nhau tham gia";
-// nếu toàn bộ slot của vai trò do đúng 1 người đảm nhiệm thì hiện thẳng tên người đó (không dùng progress bar).
+// Tiến độ phân công của 1 vai trò (CLAUDE.md mục 4.2): nhãn "X/Y lượt phân công" + "Z nhân sự khác nhau tham gia".
+// Luôn hiện dạng thanh, kể cả khi chỉ 1 người đảm nhiệm toàn bộ — đồng nhất với các thanh tiến độ khác.
 export function TienDoVaiTroRow({
   label,
   tien,
@@ -15,19 +14,6 @@ export function TienDoVaiTroRow({
 }) {
   const h = hienThiTienDo(tien);
   if (h.kieu === "khong_can") return null;
-
-  if (h.kieu === "mot_nguoi") {
-    return (
-      <div className={cn("flex items-center justify-between gap-3 text-sm", className)}>
-        <span className="font-medium">{label}</span>
-        <span className="flex min-w-0 items-center gap-1.5 text-success">
-          <CheckCircle2 className="size-4 shrink-0" aria-hidden />
-          <span className="truncate font-medium">{h.ten}</span>
-          <span className="shrink-0 text-xs font-normal">— Đã đủ</span>
-        </span>
-      </div>
-    );
-  }
 
   return (
     <div className={cn("grid gap-1.5", className)}>
@@ -61,24 +47,16 @@ export function TienDoLop({
     gv_tong: number;
     gv_da_phan_cong: number;
     gv_nhan_su: number;
-    gv_ten_duy_nhat: string | null;
     tg_tong: number;
     tg_da_phan_cong: number;
     tg_nhan_su: number;
-    tg_ten_duy_nhat: string | null;
   };
   className?: string;
 }) {
   return (
     <div className={cn("grid gap-3", className)}>
-      <TienDoVaiTroRow
-        label="Giảng viên"
-        tien={{ tong: lop.gv_tong, da: lop.gv_da_phan_cong, nhanSu: lop.gv_nhan_su, tenDuyNhat: lop.gv_ten_duy_nhat }}
-      />
-      <TienDoVaiTroRow
-        label="Trợ giảng"
-        tien={{ tong: lop.tg_tong, da: lop.tg_da_phan_cong, nhanSu: lop.tg_nhan_su, tenDuyNhat: lop.tg_ten_duy_nhat }}
-      />
+      <TienDoVaiTroRow label="Giảng viên" tien={{ tong: lop.gv_tong, da: lop.gv_da_phan_cong, nhanSu: lop.gv_nhan_su }} />
+      <TienDoVaiTroRow label="Trợ giảng" tien={{ tong: lop.tg_tong, da: lop.tg_da_phan_cong, nhanSu: lop.tg_nhan_su }} />
     </div>
   );
 }

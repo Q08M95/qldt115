@@ -8,21 +8,17 @@ export interface TienDoVaiTro {
   da: number;
   // Số nhân sự khác nhau đang đảm nhiệm (Z ≤ X)
   nhanSu: number;
-  // Tên người đảm nhiệm nếu toàn bộ slot do đúng 1 người (view trả sẵn), ngược lại null
-  tenDuyNhat: string | null;
 }
 
 export type HienThiTienDo =
   // Lớp không cần vai trò này -> không hiển thị
   | { kieu: "khong_can" }
-  // Mọi slot của vai trò do đúng 1 người đảm nhiệm và đã đủ -> hiện thẳng tên, không dùng progress bar
-  | { kieu: "mot_nguoi"; ten: string }
-  // Trường hợp còn lại: progress bar "X/Y lượt phân công" + "Z nhân sự khác nhau"
+  // Luôn hiện dạng thanh "X/Y lượt phân công" + "Z nhân sự khác nhau", kể cả khi chỉ 1 người đảm nhiệm toàn bộ
+  // (đã bỏ kiểu hiện thẳng tên theo phản hồi người dùng: giữ đồng nhất với các thanh tiến độ khác)
   | { kieu: "thanh"; da: number; tong: number; nhanSu: number; phanTram: number; du: boolean };
 
 export function hienThiTienDo(t: TienDoVaiTro): HienThiTienDo {
   if (t.tong <= 0) return { kieu: "khong_can" };
-  if (t.da === t.tong && t.nhanSu === 1 && t.tenDuyNhat) return { kieu: "mot_nguoi", ten: t.tenDuyNhat };
   return {
     kieu: "thanh",
     da: t.da,
