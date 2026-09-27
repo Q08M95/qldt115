@@ -724,7 +724,7 @@ Toàn bộ spec ở 8.1-8.8 mặc định cho desktop — dưới đây là các
 
 **Topbar mobile:** thu gọn còn hamburger (trái) — tên trang, có nút back thay breadcrumb dài (giữa) — bell + avatar (phải). Ô "Đi nhanh tới…" thu về 1 icon kính lúp, bấm mới mở hộp tìm nhanh (cùng component `TimNhanh`).
 
-**Trang đăng nhập (`/login`):** desktop chia 2 cột — trái là nền gradient thương hiệu (tên **QUẢN LÝ ĐĂNG KÝ GIẢNG DẠY**, 3 điểm nổi bật: đăng ký dạy nhanh / lịch dạy và check-in / KPI minh bạch), phải là form; mobile: tên ở trên, form ở giữa, nền gradient rất nhạt. Form có nút hiện/ẩn mật khẩu, trạng thái đang đăng nhập, lỗi tiếng Việt (phân biệt sai thông tin và lỗi hệ thống), "Quên mật khẩu?" chỉ dẫn liên hệ Admin (chưa có khôi phục qua email), nút đổi sáng/tối. Chưa có logo (bỏ qua theo yêu cầu người dùng).
+**Trang đăng nhập (`/login`):** một cột ở mọi cỡ màn hình (đã bỏ bố cục 2 cột theo phản hồi người dùng): nền chuyển sắc gradient trong tone thương hiệu, tên **QUẢN LÝ ĐĂNG KÝ GIẢNG DẠY** + mô tả ngắn ở trên, thẻ form trắng ở giữa, 3 nhãn điểm nổi bật (chỉ từ `sm`) và dòng hỗ trợ ở dưới. Form có nút hiện/ẩn mật khẩu, trạng thái đang đăng nhập, lỗi tiếng Việt (phân biệt sai thông tin và lỗi hệ thống), "Quên mật khẩu?" chỉ dẫn liên hệ Admin (chưa có khôi phục qua email), nút đổi sáng/tối. Chưa có logo (bỏ qua theo yêu cầu người dùng).
 
 **Data table → Card list:** bảng nhiều cột **không dùng cuộn ngang** trên mobile (trải nghiệm kém) — dưới `md`, tự động chuyển mỗi hàng thành **1 card dọc** hiển thị 2-3 trường quan trọng nhất (vd tên + trạng thái + 1 số liệu chính), tap để xem đầy đủ.
 
