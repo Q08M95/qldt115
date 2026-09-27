@@ -288,6 +288,7 @@ Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / 
 - [x] Lịch dạy: Tổng quan là timeline dạng danh sách; lưới tháng ở `/dang-ky#lich` giữ nguyên trên mobile theo yêu cầu người dùng
 - [ ] Touch target tối thiểu 44×44px toàn bộ nút mobile — đã thử nâng nút sm/xs/icon nhỏ lên 44px dưới md nhưng người dùng thấy không đẹp, hoàn lại (chỉ nút cỡ thường và icon đã 44px); cân nhắc lại từng chỗ khi có ảnh thực tế
 - [x] Banner check-in nổi bật đầu Trang chủ khi có Bài trong khung giờ check-in (`CheckInBanner`, làm từ GĐ7/8)
+- [x] Trang đăng nhập 2 cột + ô "Đi nhanh tới…" (Ctrl+K) thay ô tìm kiếm trang trí trên topbar
 - [ ] Test thật trên điện thoại qua Preview Deployment (không chỉ giả lập DevTools)
 
 **Điều kiện hoàn thành:** dùng thử toàn bộ luồng chính (đăng ký slot, check-in, xem thông báo, xem KPI) trên điện thoại thật, không gặp vỡ layout hay thao tác khó bấm.

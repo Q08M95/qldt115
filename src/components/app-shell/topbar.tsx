@@ -4,9 +4,8 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { useTheme } from "next-themes";
-import { Bell, CalendarDays, ChevronDown, ChevronLeft, ChevronRight, LogOut, Menu, Moon, Search, Sun, User, X } from "lucide-react";
+import { Bell, CalendarDays, ChevronDown, ChevronLeft, ChevronRight, LogOut, Menu, Moon, Sun, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,6 +17,7 @@ import {
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { ChuongThongBao } from "@/components/thong-bao/chuong-thong-bao";
 import { UserAvatar } from "@/components/user-avatar";
+import { TimNhanh } from "./tim-nhanh";
 import { usePageLabels } from "./page-labels";
 import { BrandLogo, NavList } from "./sidebar";
 import { SEGMENT_LABELS } from "./nav-config";
@@ -130,7 +130,6 @@ export function Topbar({
   const router = useRouter();
   const { crumbs, title } = useBreadcrumb();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
 
   return (
     <>
@@ -150,14 +149,8 @@ export function Topbar({
           <h1 className="min-h-7 truncate text-lg font-semibold md:min-h-9 md:text-[28px]">{title}</h1>
         </div>
 
-        {/* Ô tìm kiếm toàn cục — desktop; mobile thu về icon kính lúp */}
-        <div className="relative hidden w-64 md:block">
-          <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
-          <Input type="search" placeholder="Tìm lớp, nhân sự, mã lớp..." className="border-transparent pl-9 shadow-card" aria-label="Tìm kiếm" />
-        </div>
-        <Button variant="ghost" size="icon" className="md:hidden" aria-label="Tìm kiếm" onClick={() => setSearchOpen(true)}>
-          <Search />
-        </Button>
+        {/* Đi nhanh tới lớp / người / trang (desktop: khung + Ctrl K; mobile: icon kính lúp) */}
+        <TimNhanh isQuanTri={isQuanTri} />
 
         <Button asChild variant="outline" size="icon" className="hidden rounded-full border-transparent shadow-card md:inline-flex">
           <Link href="/dang-ky#lich" aria-label="Lịch dạy của tôi">
@@ -197,19 +190,6 @@ export function Topbar({
           </div>
         </SheetContent>
       </Sheet>
-
-      {/* Tìm kiếm mobile: overlay toàn màn hình */}
-      {searchOpen && (
-        <div className="fixed inset-0 z-50 flex flex-col gap-4 bg-background p-4 md:hidden" role="dialog" aria-label="Tìm kiếm">
-          <div className="flex items-center gap-2">
-            <Input autoFocus type="search" placeholder="Tìm lớp, nhân sự, mã lớp..." aria-label="Tìm kiếm" />
-            <Button variant="ghost" size="icon" aria-label="Đóng tìm kiếm" onClick={() => setSearchOpen(false)}>
-              <X />
-            </Button>
-          </div>
-          <p className="text-sm text-muted-foreground">Kết quả sẽ gộp theo loại: Lớp / Nhân sự.</p>
-        </div>
-      )}
     </>
   );
 }

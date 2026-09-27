@@ -4,7 +4,8 @@
 
 1. Mở địa chỉ trang web mà Admin gửi cho bạn.
 2. Nhập **Email** và **Mật khẩu** do Admin cấp rồi bấm **Đăng nhập**.
-3. Nếu nhập sai, trang hiện dòng "Email hoặc mật khẩu không đúng". Hãy kiểm tra lại chữ hoa, chữ thường và dấu cách thừa.
+3. Bấm biểu tượng **con mắt** cuối ô mật khẩu để xem hoặc ẩn mật khẩu đang gõ. Ở góc trên của trang có nút đổi **chế độ sáng/tối**.
+4. Nếu nhập sai, trang hiện dòng "Email hoặc mật khẩu không đúng". Hãy kiểm tra lại chữ hoa, chữ thường và dấu cách thừa. Nếu bạn quên mật khẩu, bấm **Quên mật khẩu?** để xem hướng dẫn (hiện phải nhờ Admin đặt lại).
 
 ![Ảnh 2.1 — Màn hình đăng nhập](2.1)
 
@@ -72,7 +73,11 @@ Bấm vào ảnh đại diện ở góc trên bên phải. Menu có:
 
 ## 2.6 Tìm kiếm
 
-Ở từng trang danh sách có **ô tìm kiếm riêng**, ví dụ:
+Có **hai loại ô tìm** với hai việc khác nhau.
+
+**1. Ô "Đi nhanh tới…" trên thanh trên cùng** giúp bạn **nhảy thẳng** tới một trang, một lớp hoặc một người từ bất kỳ đâu. Trên máy tính, bấm vào ô hoặc nhấn **Ctrl + K**. Trên điện thoại, bấm biểu tượng **kính lúp**. Gõ ít nhất 2 ký tự (tên lớp, địa điểm, tên hoặc email nhân sự, tên trang), kết quả gộp theo nhóm **Trang / Lớp học / Nhân sự**. Bấm vào một kết quả để mở ngay, hoặc dùng phím mũi tên và **Enter**. Khi chưa gõ gì, ô hiện các mục bạn vừa mở gần đây. Bạn chỉ thấy những lớp mà bạn có quyền xem.
+
+**2. Ô tìm kiếm riêng ở từng trang danh sách** giúp **thu hẹp danh sách** đang xem, ví dụ:
 
 - Trang **Lớp học**: tìm theo tên lớp hoặc địa điểm.
 - Trang **Nhân sự**: tìm theo tên hoặc email.
@@ -80,7 +85,7 @@ Bấm vào ảnh đại diện ở góc trên bên phải. Menu có:
 
 Sau khi nhập từ khóa và chọn bộ lọc (nếu cần), bấm **Tìm** hoặc **Lọc**.
 
-> **Chưa có:** Ô "Tìm lớp, nhân sự, mã lớp…" trên **thanh trên cùng** hiện **chưa hoạt động**. Hãy dùng ô tìm kiếm nằm trong từng trang danh sách.
+> **Mẹo:** Muốn mở đúng một lớp hay một người, dùng ô **Đi nhanh tới…**. Muốn xem nhiều lớp cùng loại rồi lọc thêm theo trạng thái, nhóm lớp…, dùng ô lọc trong trang.
 
 ## 2.7 Thứ tự các bước cho người mới
 

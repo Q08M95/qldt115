@@ -62,7 +62,7 @@
 | Tình huống | Cách xử lý |
 |---|---|
 | Trang trông lạ hoặc hiện lỗi | Tải lại trang. Nếu vẫn lỗi, đăng xuất rồi đăng nhập lại. Vẫn không được thì chụp màn hình gửi Admin. |
-| Ô tìm kiếm trên thanh trên cùng không phản ứng | Ô này **chưa hoạt động**. Dùng ô tìm kiếm trong từng trang danh sách (Lớp học, Nhân sự, Nhật ký). |
+| Muốn tìm nhanh một lớp hoặc một người | Bấm ô **Đi nhanh tới…** trên thanh trên cùng (máy tính: **Ctrl + K**; điện thoại: biểu tượng kính lúp). Gõ ít nhất 2 ký tự. |
 | Muốn nền tối | Bấm ảnh đại diện → **Chế độ tối**. |
 | Màn hình điện thoại hiển thị khác máy tính | Đây là thiết kế: bố cục tự thu gọn cho dễ dùng. Xem bảng ở mục 2.3. |
 

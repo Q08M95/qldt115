@@ -672,7 +672,7 @@ Phong cách tham khảo: **"Soft SaaS Dashboard"** (xem file `tham khao theme.jp
 
 **Topbar (trên cùng, cố định):**
 - Trái: tiêu đề trang hiện tại + **breadcrumb** khi vào trang con (vd `Lớp học › Lớp ACLS-08 › Bài 3`) — chưa được đặc tả ở đâu trước đó, cần thêm vì hệ thống có nhiều cấp lồng nhau (Lớp → Bài → Slot)
-- Giữa/phải: **ô tìm kiếm toàn cục** (đúng mẫu ảnh) — tìm theo tên lớp, tên nhân sự, mã lớp; kết quả gộp nhóm theo loại (Lớp / Nhân sự) trong dropdown
+- Giữa/phải: **ô "Đi nhanh tới…" (`TimNhanh`, Ctrl+K)** — nhảy thẳng tới Trang / Lớp học / Nhân sự (mỗi nhóm tối đa 5 kết quả, gõ từ 2 ký tự, chưa gõ thì hiện mục truy cập gần đây), KHÔNG lọc danh sách (việc đó thuộc ô lọc trong từng trang). Đọc qua trình duyệt nên RLS lo việc ẩn lớp Dự kiến; không hiện nhãn nhóm. Mở bằng hộp thoại giữa màn hình, nền mờ
 - Icon lịch (calendar) — shortcut mở nhanh Lịch dạy cá nhân (mục 4.7b Tổng quan)
 - Bell thông báo (đã có ở 8.7)
 - Avatar + tên + email góc phải — click mở menu nhỏ (Hồ sơ của tôi / Đăng xuất / Toggle dark mode)
@@ -722,7 +722,9 @@ Toàn bộ spec ở 8.1-8.8 mặc định cho desktop — dưới đây là các
 - **Bottom tab bar** (cố định đáy màn hình, 4 icon lớn dễ bấm ngón cái) cho 4 mục dùng nhiều nhất của GV/TG: Trang chủ / **Lịch dạy** (gộp cả xem lịch cá nhân lẫn xem slot trống/đăng ký — tức lối vào chính của Lớp học 4.2 và Đăng ký giảng dạy 4.3 trên mobile, không tách riêng tab) / Thông báo / Hồ sơ
 - **Hamburger menu (☰)** ở topbar mobile mở drawer full-height chứa **toàn bộ menu còn lại** (Lớp học — chế độ xem đầy đủ cho Admin quản lý toàn bộ lớp thay vì chỉ lịch cá nhân, Nhân sự, Đánh giá chất lượng, Báo cáo, Nhật ký hệ thống, Cấu hình hệ thống — các mục Admin dùng nhiều hơn, chấp nhận vào sâu hơn 1 cấp trên mobile)
 
-**Topbar mobile:** thu gọn còn hamburger (trái) — tên trang, có nút back thay breadcrumb dài (giữa) — bell + avatar (phải). Ô tìm kiếm toàn cục thu về 1 icon kính lúp, bấm mới mở overlay tìm kiếm toàn màn hình.
+**Topbar mobile:** thu gọn còn hamburger (trái) — tên trang, có nút back thay breadcrumb dài (giữa) — bell + avatar (phải). Ô "Đi nhanh tới…" thu về 1 icon kính lúp, bấm mới mở hộp tìm nhanh (cùng component `TimNhanh`).
+
+**Trang đăng nhập (`/login`):** desktop chia 2 cột — trái là nền gradient thương hiệu (tên **QUẢN LÝ ĐĂNG KÝ GIẢNG DẠY**, 3 điểm nổi bật: đăng ký dạy nhanh / lịch dạy và check-in / KPI minh bạch), phải là form; mobile: tên ở trên, form ở giữa, nền gradient rất nhạt. Form có nút hiện/ẩn mật khẩu, trạng thái đang đăng nhập, lỗi tiếng Việt (phân biệt sai thông tin và lỗi hệ thống), "Quên mật khẩu?" chỉ dẫn liên hệ Admin (chưa có khôi phục qua email), nút đổi sáng/tối. Chưa có logo (bỏ qua theo yêu cầu người dùng).
 
 **Data table → Card list:** bảng nhiều cột **không dùng cuộn ngang** trên mobile (trải nghiệm kém) — dưới `md`, tự động chuyển mỗi hàng thành **1 card dọc** hiển thị 2-3 trường quan trọng nhất (vd tên + trạng thái + 1 số liệu chính), tap để xem đầy đủ.
 
