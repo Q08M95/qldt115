@@ -4,7 +4,7 @@ import type { MetadataRoute } from "next";
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "QUẢN LÝ ĐĂNG KÝ GIẢNG DẠY",
-    short_name: "QLĐT",
+    short_name: "QLĐKGD 115",
     description: "Quản lý nhân sự giảng dạy, lớp học, đăng ký và đánh giá chất lượng",
     start_url: "/",
     scope: "/",

@@ -18,7 +18,7 @@ export function BrandLogo() {
       <span className="flex size-8 items-center justify-center rounded-lg bg-brand-gradient text-primary-foreground">
         <GraduationCap className="size-[18px]" aria-hidden />
       </span>
-      <span className="text-lg font-semibold tracking-tight">QLĐT</span>
+      <span className="text-lg font-semibold tracking-tight">QLĐKGD 115</span>
     </Link>
   );
 }

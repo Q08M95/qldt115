@@ -5,7 +5,7 @@
 | Tình huống | Cách xử lý |
 |---|---|
 | Không đăng nhập được, báo "Email hoặc mật khẩu không đúng" | Kiểm tra lại email (chữ thường), mật khẩu (chữ hoa/thường, dấu cách thừa). Nếu vẫn sai, nhờ Admin **đặt lại mật khẩu**. |
-| Quên mật khẩu | Chức năng tự khôi phục qua email **chưa có**. Liên hệ Admin để được đặt mật khẩu mới, rồi **đổi lại** ngay khi đăng nhập. |
+| Quên mật khẩu | Bấm **Quên mật khẩu?** ở trang đăng nhập, nhập email và làm theo liên kết gửi về (mục 2.1, phần Quên mật khẩu). Không thấy email thì kiểm tra thư rác, thử lại sau vài phút, hoặc nhờ Admin đặt lại mật khẩu. |
 | Muốn đổi email đăng nhập | Chỉ Admin đổi được. Bạn không tự đổi. |
 | Muốn đổi mật khẩu | **Hồ sơ của tôi → Đổi mật khẩu** (cần nhập mật khẩu hiện tại). |
 | Được nhắc "chưa được xếp nhóm" | Hồ sơ của bạn chưa có nhóm, nên chưa đăng ký lớp được. Nhờ Admin xếp nhóm. |

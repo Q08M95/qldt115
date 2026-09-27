@@ -5,13 +5,21 @@
 1. Mở địa chỉ trang web mà Admin gửi cho bạn.
 2. Nhập **Email** và **Mật khẩu** do Admin cấp rồi bấm **Đăng nhập**.
 3. Bấm biểu tượng **con mắt** cuối ô mật khẩu để xem hoặc ẩn mật khẩu đang gõ. Ở góc trên của trang có nút đổi **chế độ sáng/tối**.
-4. Nếu nhập sai, trang hiện dòng "Email hoặc mật khẩu không đúng". Hãy kiểm tra lại chữ hoa, chữ thường và dấu cách thừa. Nếu bạn quên mật khẩu, bấm **Quên mật khẩu?** để xem hướng dẫn (hiện phải nhờ Admin đặt lại).
+4. Nếu nhập sai, trang hiện dòng "Email hoặc mật khẩu không đúng". Hãy kiểm tra lại chữ hoa, chữ thường và dấu cách thừa. Nếu bạn quên mật khẩu, xem phần **Quên mật khẩu** ngay bên dưới.
 
 ![Ảnh 2.1 — Màn hình đăng nhập](2.1)
 
 > **Quan trọng:** Bạn **không tự đăng ký tài khoản** được. Tài khoản do Admin tạo. Mật khẩu ban đầu là mật khẩu tạm, bạn nên đổi ngay sau lần đăng nhập đầu tiên (mục 2.2).
 
-> **Chưa có:** Chức năng "Quên mật khẩu" tự động qua email hiện **chưa có**. Nếu quên mật khẩu, hãy liên hệ Admin để được đặt lại mật khẩu mới.
+
+### Quên mật khẩu
+
+1. Ở trang đăng nhập, bấm **Quên mật khẩu?**.
+2. Nhập **email đăng nhập** của bạn rồi bấm **Gửi liên kết đặt lại**.
+3. Mở hộp thư (nhớ xem cả thư rác), bấm vào liên kết trong email. **Hãy mở liên kết trên cùng thiết bị và trình duyệt** bạn vừa dùng để yêu cầu.
+4. Nhập **mật khẩu mới** (tối thiểu 8 ký tự) hai lần rồi bấm **Lưu mật khẩu mới**. Bạn được đăng nhập luôn.
+
+Hệ thống luôn báo "đã gửi" dù email có tài khoản hay không, để không lộ ai có tài khoản. Nếu vài phút sau vẫn không thấy email, hoặc liên kết báo hết hạn, hãy yêu cầu lại hoặc nhờ Admin đặt lại mật khẩu cho bạn.
 
 ## 2.2 Đổi mật khẩu và xem hồ sơ của bạn
 

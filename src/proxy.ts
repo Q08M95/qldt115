@@ -7,6 +7,7 @@ import { NextResponse, type NextRequest } from "next/server";
 // tự xác thực bằng khóa chia sẻ PUSH_WEBHOOK_SECRET.
 const PUBLIC_PATHS = [
   "/login",
+  "/dat-lai-mat-khau",
   "/khao-sat",
   "/manifest.webmanifest",
   "/sw.js",

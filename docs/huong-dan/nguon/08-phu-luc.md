@@ -83,7 +83,6 @@ Hệ số Bài = lớn nhất giữa (D1 của nhóm lớp, D2 nếu lớp khôn
 
 Tài liệu này ghi lại các điểm **chưa có** để bạn không mất công tìm:
 
-- **Quên mật khẩu tự động qua email:** chưa có. Admin đặt lại mật khẩu thay thế.
 - **PDF xuất báo cáo chưa gồm trang Tổng quan.**
 - **Tài khoản cho học viên:** không có và không dự định. Học viên chỉ trả lời khảo sát qua link ẩn danh.
 - **Tính lương, chấm công:** ngoài phạm vi. Đã có hệ thống khác quản lý.
