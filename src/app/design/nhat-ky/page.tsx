@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { AppShell } from "@/components/app-shell/app-shell";
 import { NhatKyFilters } from "@/components/nhat-ky/nhat-ky-filters";
 import { NhatKyList } from "@/components/nhat-ky/nhat-ky-list";
-import { PhanTrang } from "@/components/nhat-ky/phan-trang";
+import { PhanTrang } from "@/components/phan-trang";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import type { NhatKy } from "@/types/database";

@@ -186,13 +186,22 @@ export async function countDeXuatChoDuyet(): Promise<number> {
   return count ?? 0;
 }
 
-// Lịch sử giảng dạy của 1 người: mọi Bài đã/đang được phân công (RLS tự ẩn Bài của lớp Dự kiến chưa công khai)
+// Trần số Bài lấy về cho 1 người — tránh phải tải cả sự nghiệp (nhiều năm) mỗi lần mở hồ sơ. Đủ dùng cho
+// người dạy nhiều năm liên tục (khối, giờ tổng, A4 hiển thị ở đầu thẻ tính từ đúng ngần này Bài gần nhất,
+// không phải toàn bộ sự nghiệp nếu vượt trần — chấp nhận được vì rất hiếm người vượt qua mốc này).
+const TRAN_LICH_SU_GIANG_DAY = 300;
+
+// Lịch sử giảng dạy của 1 người: các Bài gần nhất đã/đang được phân công (RLS tự ẩn Bài của lớp Dự kiến chưa công khai)
 export async function getLichSuGiangDay(userId: string): Promise<LichSuBai[]> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("slot_giang_day")
-    .select("id, vai_tro, bai_hoc(id, ten, bat_dau, ket_thuc, lop_hoc(id, ten, loai_kinh_phi, trang_thai))")
-    .eq("nguoi_phan_cong", userId);
+    // !inner để ORDER BY theo bai_hoc.bat_dau thực sự sắp lại slot_giang_day (embed thường chỉ ảnh hưởng
+    // mảng lồng, không sắp bảng cha, nếu thiếu !inner)
+    .select("id, vai_tro, bai_hoc!inner(id, ten, bat_dau, ket_thuc, lop_hoc(id, ten, loai_kinh_phi, trang_thai))")
+    .eq("nguoi_phan_cong", userId)
+    .order("bat_dau", { referencedTable: "bai_hoc", ascending: false })
+    .limit(TRAN_LICH_SU_GIANG_DAY);
   if (error) throw new Error(`Không đọc được lịch sử giảng dạy: ${error.message}`);
 
   type Lop = { id: string; ten: string; loai_kinh_phi: LichSuBai["loai_kinh_phi"]; trang_thai: LichSuBai["lop_trang_thai"] };

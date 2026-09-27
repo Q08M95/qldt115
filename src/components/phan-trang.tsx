@@ -2,7 +2,8 @@ import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-// Phân trang dạng ‹ 1 2 3 … › (mục 8.5): giữ nguyên các tham số lọc trong URL
+// Phân trang dạng ‹ 1 2 3 … › (mục 8.5): giữ nguyên các tham số lọc trong URL. Dùng chung cho mọi danh sách
+// có phân trang (Nhật ký hệ thống, Lớp học...).
 export function PhanTrang({ trang, tongTrang, hrefTrang }: { trang: number; tongTrang: number; hrefTrang: (t: number) => string }) {
   if (tongTrang <= 1) return null;
   const hien = new Set([1, tongTrang, trang - 1, trang, trang + 1]);

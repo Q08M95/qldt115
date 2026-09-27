@@ -1,6 +1,6 @@
 import { NhatKyFilters } from "@/components/nhat-ky/nhat-ky-filters";
 import { NhatKyList } from "@/components/nhat-ky/nhat-ky-list";
-import { PhanTrang } from "@/components/nhat-ky/phan-trang";
+import { PhanTrang } from "@/components/phan-trang";
 import { Download } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

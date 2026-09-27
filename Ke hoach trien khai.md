@@ -304,6 +304,7 @@ Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / 
 - [x] Đổi tên hiển thị web thành "QUẢN LÝ ĐĂNG KÝ GIẢNG DẠY"; tên ngắn sidebar/PWA đổi thành "QLĐKGD 115"
 - [x] Thanh tiến độ phân công (mục 4.2): bỏ kiểu hiện thẳng tên khi 1 người đảm nhiệm toàn bộ, luôn hiện dạng thanh để đồng nhất
 - [x] Nhập nhanh nhiều lớp + Bài từ CSV theo kế hoạch năm đã có sẵn (`NhapCsvLopDrawer`, `src/lib/lop-hoc/csv.ts`, file mẫu `mau tao lop.xlsx` dựng bằng `scripts/tao-mau-lop.mjs`) — đã kiểm thử trực tiếp logic parse/resolve + gọi RPC thật (tạo và xóa lớp test), chưa kiểm thử luồng bấm trong giao diện Sheet do công cụ tự động click gặp vấn đề (ảnh chụp tĩnh xác nhận nút hiển thị đúng)
+- [x] Hiệu năng khi dữ liệu tăng theo thời gian (theo thảo luận với người dùng về dung lượng/tốc độ Supabase): phân trang danh sách Lớp học (`getLopListTrang`, 24 lớp/trang, `PhanTrang` chuyển sang `src/components/phan-trang.tsx` dùng chung với Nhật ký) thay vì tải toàn bộ lịch sử mỗi lần vào trang; giới hạn `getLichSuGiangDay` (hồ sơ nhân sự) còn tối đa 300 Bài gần nhất thay vì cả sự nghiệp. Đã kiểm thử bằng đăng nhập thật kèm vài trường hợp lọc sai giá trị (phát hiện và sửa 1 lỗi: `.eq()` trên cột uuid/enum ném lỗi 500 nếu URL bị sửa tay giá trị không hợp lệ, đã thêm kiểm tra trước khi lọc)
 
 ---
 

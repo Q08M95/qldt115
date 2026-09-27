@@ -125,7 +125,7 @@ Phạm vi: hồ sơ nhân sự, trạng thái tham gia giảng dạy, lịch s�
 
 - **Trạng thái tham gia giảng dạy:** Đang tham gia / Tạm ngừng tham gia / Không còn tham gia — phản ánh việc có đang hoạt động trong hệ thống đăng ký/giảng dạy này hay không, **không phải trạng thái lao động/hợp đồng** (do hệ thống nhân sự khác quản lý, mục 1). Khi không "Đang tham gia": ẩn khỏi danh sách đăng ký slot mới và matching-score, nhưng **giữ nguyên lịch sử KPI/hồ sơ** để tra cứu sau này
 
-- **Lịch sử giảng dạy:** các lớp đã dạy, số tiết, số giờ/buổi, thời gian, tần suất — ghi chi tiết hoạt động giảng dạy của từng người; lịch sử thay đổi nhóm (nhóm cũ/mới, ngày hiệu lực, người duyệt — mục 3); A4 lũy kế (số lớp không kinh phí đã nhận, theo kỳ và toàn thời gian — mục 6, dùng cho tie-break khen thưởng/vinh danh/matching-score)
+- **Lịch sử giảng dạy:** các lớp đã dạy, số tiết, số giờ/buổi, thời gian, tần suất — ghi chi tiết hoạt động giảng dạy của từng người; lịch sử thay đổi nhóm (nhóm cũ/mới, ngày hiệu lực, người duyệt — mục 3); A4 lũy kế (số lớp không kinh phí đã nhận, theo kỳ và toàn thời gian — mục 6, dùng cho tie-break khen thưởng/vinh danh/matching-score). `getLichSuGiangDay` chỉ lấy tối đa 300 Bài gần nhất (`bai_hoc!inner` + order theo `bat_dau` để `!inner` mới sắp được bảng cha) thay vì cả sự nghiệp — số liệu tổng (giờ, số lớp, A4) trên thẻ tính từ đúng ngần này Bài, chỉ "gần đúng" nếu 1 người vượt mốc 300 Bài (rất hiếm ở quy mô hiện tại)
 
 - **Đánh giá hiệu suất (KPI):** xem mục 6
 
@@ -148,6 +148,7 @@ Phạm vi: quản lý lớp học (không phải nền tảng học online).
 
 - **Không có 1 con số "số nhân sự cần cho lớp" duy nhất** — vì mỗi Bài có yêu cầu khác nhau. Thay vào đó, dùng **progress bar riêng theo từng vai trò**, đặt ở 2 nơi:
   - **Danh sách lớp:** mỗi thẻ/dòng lớp hiển thị progress bar mini theo vai trò — lướt nhanh toàn danh sách để biết lớp nào đang thiếu người gấp
+  - **Phân trang** (`getLopListTrang`, `SO_DONG_LOP = 24`, khác `getLopList()` lấy hết dùng cho Tổng quan gộp số liệu): tránh phải tải toàn bộ lịch sử nhiều năm mỗi lần vào trang. Thứ tự ưu tiên theo trạng thái (`sapXepLop`) trộn 2 chiều nên không diễn tả được bằng 1 cột ORDER BY ở database — chỉ tải tối đa 500 lớp gần nhất (đã qua các bộ lọc khác) rồi mới sắp xếp/lọc bỏ dấu/cắt trang ở JS; hiện dòng nhắc nhỏ nếu chạm ngưỡng này. Lọc theo nhóm lớp/trạng thái/đối tượng/loại kinh phí đẩy hẳn xuống database (`.eq()`), có kiểm tra giá trị hợp lệ trước khi lọc (tránh lỗi ép kiểu uuid/enum khi URL bị sửa tay)
   - **Trang chi tiết lớp học:** progress bar đầy đủ ở đầu trang, bên dưới hiển thị toàn bộ Bài trong lớp kèm nhân sự đảm nhiệm vai trò gì ở từng Bài
 
   **Tránh hiểu lầm số slot = số người** (đã giải quyết): vì 1 người có thể đảm nhiệm nhiều Bài, con số "Giảng viên: 4/4" không có nghĩa là 4 giảng viên khác nhau — có thể chỉ 1 người dạy cả 4 Bài. Xử lý ở tầng hiển thị + tầng logic:
