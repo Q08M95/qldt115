@@ -284,10 +284,10 @@ Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / 
 - [x] Data table → card list dưới `md` (dòng thu gọn, chỉ hiện 5 dòng đầu + "Xem thêm N") cho Nhân sự, Đề xuất, Nhật ký, KPI theo kỳ, A4, Giờ dạy, Tự đăng ký
 - [x] Drawer/Modal → popup giữa màn hình dưới `md` (thay cho full-screen theo yêu cầu người dùng), chuông thông báo cũng popup giữa
 - [x] KPI Stat Card row: 1 hàng 3 thẻ thu gọn trên mobile, bỏ chevron (thay cho carousel theo yêu cầu người dùng)
-- [ ] Radar chart → 3 progress bar dọc trên mobile
-- [ ] Lịch dạy → list "Hôm nay/Ngày mai/Tuần này" trên mobile
+- [x] Radar chart → 3 progress bar dọc trên mobile (Bảng KPI cá nhân)
+- [x] Lịch dạy: Tổng quan là timeline dạng danh sách; lưới tháng ở `/dang-ky#lich` giữ nguyên trên mobile theo yêu cầu người dùng
 - [ ] Touch target tối thiểu 44×44px toàn bộ nút mobile — đã thử nâng nút sm/xs/icon nhỏ lên 44px dưới md nhưng người dùng thấy không đẹp, hoàn lại (chỉ nút cỡ thường và icon đã 44px); cân nhắc lại từng chỗ khi có ảnh thực tế
-- [ ] Banner/FAB check-in nổi bật đầu Trang chủ khi có Bài trong khung giờ check-in
+- [x] Banner check-in nổi bật đầu Trang chủ khi có Bài trong khung giờ check-in (`CheckInBanner`, làm từ GĐ7/8)
 - [ ] Test thật trên điện thoại qua Preview Deployment (không chỉ giả lập DevTools)
 
 **Điều kiện hoàn thành:** dùng thử toàn bộ luồng chính (đăng ký slot, check-in, xem thông báo, xem KPI) trên điện thoại thật, không gặp vỡ layout hay thao tác khó bấm.
