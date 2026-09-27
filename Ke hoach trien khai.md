@@ -284,7 +284,7 @@ Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / 
 - [x] Data table → card list dưới `md` (dòng thu gọn, chỉ hiện 5 dòng đầu + "Xem thêm N") cho Nhân sự, Đề xuất, Nhật ký, KPI theo kỳ, A4, Giờ dạy, Tự đăng ký
 - [x] Drawer/Modal → popup giữa màn hình dưới `md` (thay cho full-screen theo yêu cầu người dùng), chuông thông báo cũng popup giữa
 - [x] KPI Stat Card row: 1 hàng 3 thẻ thu gọn trên mobile, bỏ chevron (thay cho carousel theo yêu cầu người dùng)
-- [x] Radar chart → 3 progress bar dọc trên mobile (Bảng KPI cá nhân)
+- [x] Radar chart giữ nguyên trên mobile (đã thử đổi thành 3 thanh tiến độ A/B/C nhưng người dùng thấy không đẹp, hoàn lại; danh sách thanh tiến độ từng tiêu chí bên dưới radar vẫn có)
 - [x] Lịch dạy: Tổng quan là timeline dạng danh sách; lưới tháng ở `/dang-ky#lich` giữ nguyên trên mobile theo yêu cầu người dùng
 - [ ] Touch target tối thiểu 44×44px toàn bộ nút mobile — đã thử nâng nút sm/xs/icon nhỏ lên 44px dưới md nhưng người dùng thấy không đẹp, hoàn lại (chỉ nút cỡ thường và icon đã 44px); cân nhắc lại từng chỗ khi có ảnh thực tế
 - [x] Banner check-in nổi bật đầu Trang chủ khi có Bài trong khung giờ check-in (`CheckInBanner`, làm từ GĐ7/8)
