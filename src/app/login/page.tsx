@@ -97,12 +97,7 @@ export default function LoginPage() {
               <span className="flex size-12 items-center justify-center rounded-2xl bg-brand-gradient text-primary-foreground shadow-card">
                 <GraduationCap className="size-6" aria-hidden />
               </span>
-              <p className="text-base leading-snug font-semibold tracking-wide text-balance">
-                {TEN_APP}
-              </p>
-              <h1 className="text-sm font-medium text-muted-foreground">
-                Đăng nhập
-              </h1>
+              <h1 className="text-base leading-snug font-semibold tracking-wide text-balance">{TEN_APP}</h1>
             </div>
 
             <div className="space-y-1.5">

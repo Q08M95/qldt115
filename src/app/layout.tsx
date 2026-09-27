@@ -10,7 +10,7 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Quản lý Nhân sự Giảng dạy",
+  title: "QUẢN LÝ ĐĂNG KÝ GIẢNG DẠY",
   description: "Web app nội bộ quản lý giảng viên, trợ giảng và lớp học",
 };
 

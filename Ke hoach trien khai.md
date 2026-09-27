@@ -1,4 +1,4 @@
-# Kế hoạch triển khai — Dự án Quản lý Nhân sự Giảng dạy
+# Kế hoạch triển khai — Dự án QUẢN LÝ ĐĂNG KÝ GIẢNG DẠY
 
 > Dựa trên `CLAUDE.md` (tài liệu định hướng nghiệp vụ/thiết kế đã chốt). File này là **kế hoạch thi công theo giai đoạn** — dùng để bám tiến độ qua từng buổi làm việc.
 

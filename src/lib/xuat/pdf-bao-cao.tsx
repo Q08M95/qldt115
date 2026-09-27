@@ -174,12 +174,12 @@ export async function taoFileBaoCaoPdf(d: DuLieuBaoCaoPdf): Promise<Buffer> {
   const layDaySlot = d.lopTong.slotTong > 0 ? (d.lopTong.slotDaPhanCong / d.lopTong.slotTong) * 100 : null;
 
   const doc = (
-    <Document title={`Báo cáo tổng hợp — ${d.ky.ten}`} author="Hệ thống Quản lý Nhân sự Giảng dạy">
+    <Document title={`Báo cáo tổng hợp — ${d.ky.ten}`} author="Hệ thống QUẢN LÝ ĐĂNG KÝ GIẢNG DẠY">
       {/* ===== Trang bìa ===== */}
       <Page size="A4" style={s.page}>
         <View style={{ marginTop: 140, alignItems: "center" }}>
           <Text style={{ fontSize: 26, fontWeight: 700, textAlign: "center", marginBottom: 10 }}>Báo cáo tổng hợp</Text>
-          <Text style={{ fontSize: 13, color: MAU.chuPhu, textAlign: "center", marginBottom: 30 }}>Tổ đào tạo — Quản lý Nhân sự Giảng dạy</Text>
+          <Text style={{ fontSize: 13, color: MAU.chuPhu, textAlign: "center", marginBottom: 30 }}>Tổ đào tạo — QUẢN LÝ ĐĂNG KÝ GIẢNG DẠY</Text>
           <View style={{ borderWidth: 1, borderColor: MAU.vien, borderRadius: 10, padding: 16, width: 320 }}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 6 }}>
               <Text style={s.nhoXam}>Kỳ đánh giá (báo cáo #1, #6, #7)</Text>

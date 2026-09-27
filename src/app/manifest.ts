@@ -3,7 +3,7 @@ import type { MetadataRoute } from "next";
 // PWA tối thiểu để iPhone/iPad "Thêm vào Màn hình chính" và nhận Web Push (mục 4.5). Màu theo brand (mục 8.1).
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Quản lý Nhân sự Giảng dạy",
+    name: "QUẢN LÝ ĐĂNG KÝ GIẢNG DẠY",
     short_name: "QLĐT",
     description: "Quản lý nhân sự giảng dạy, lớp học, đăng ký và đánh giá chất lượng",
     start_url: "/",

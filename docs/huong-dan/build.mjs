@@ -215,7 +215,7 @@ function docHtml({ body, mucLuc, soTrang }) {
 <section class="bia">
   <div class="nhan">TÀI LIỆU HƯỚNG DẪN</div>
   <h1 class="tt">Hướng dẫn sử dụng</h1>
-  <div class="ph">Hệ thống Quản lý Nhân sự Giảng dạy</div>
+  <div class="ph">Hệ thống QUẢN LÝ ĐĂNG KÝ GIẢNG DẠY</div>
   <div class="dt">Dành cho: giảng viên, trợ giảng, người giữ Quyền Quản lý lớp và Admin<br>Phiên bản ${PHIEN_BAN} · cập nhật ngày ${NGAY}<br>Tài liệu đang hoàn thiện — ảnh chụp minh họa sẽ được bổ sung sau</div>
   <div class="ft">Nội dung ghi theo giao diện và quy định đang áp dụng của hệ thống.</div>
 </section>
@@ -255,7 +255,7 @@ async function inPdf(htmlPath, pdfPath) {
       paperWidth: 8.27,
       paperHeight: 11.69,
       headerTemplate: "<span></span>",
-      footerTemplate: `<div style="width:100%;font-size:8px;color:#8a8a92;font-family:Arial,sans-serif;text-align:center"><span class="pageNumber"></span> / <span class="totalPages"></span> &nbsp;·&nbsp; Hướng dẫn sử dụng hệ thống Quản lý Nhân sự Giảng dạy</div>`,
+      footerTemplate: `<div style="width:100%;font-size:8px;color:#8a8a92;font-family:Arial,sans-serif;text-align:center"><span class="pageNumber"></span> / <span class="totalPages"></span> &nbsp;·&nbsp; Hướng dẫn sử dụng hệ thống QUẢN LÝ ĐĂNG KÝ GIẢNG DẠY</div>`,
     });
     if (r.error) throw new Error(JSON.stringify(r.error));
     fs.writeFileSync(pdfPath, Buffer.from(r.result.data, "base64"));

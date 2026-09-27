@@ -1,4 +1,4 @@
-# CLAUDE.md — Dự án Quản lý Nhân sự Giảng dạy (Nhân sự + Lớp học)
+# CLAUDE.md — Dự án QUẢN LÝ ĐĂNG KÝ GIẢNG DẠY (Nhân sự + Lớp học)
 
 > Tài liệu định hướng dự án cho Claude Code / Antigravity khi làm việc trên codebase này.
 > Trạng thái: **Phạm vi nghiệp vụ hoàn chỉnh** — sẵn sàng cho bước thiết kế schema Supabase/wireframe.
