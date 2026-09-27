@@ -4,11 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import {
-  CalendarCheck,
-  ClipboardCheck,
   Eye,
   EyeOff,
-  Gauge,
   GraduationCap,
   Info,
   LoaderCircle,
@@ -21,12 +18,6 @@ import { Input } from "@/components/ui/input";
 import { createClient } from "@/lib/supabase/client";
 
 const TEN_APP = "QUẢN LÝ ĐĂNG KÝ GIẢNG DẠY";
-
-const DIEM_NOI_BAT = [
-  { icon: ClipboardCheck, tieu_de: "Đăng ký dạy nhanh" },
-  { icon: CalendarCheck, tieu_de: "Lịch dạy và check-in" },
-  { icon: Gauge, tieu_de: "KPI minh bạch" },
-];
 
 function DoiGiaoDien() {
   const { resolvedTheme, setTheme } = useTheme();
@@ -98,28 +89,20 @@ export default function LoginPage() {
 
       <div className="relative flex flex-1 flex-col items-center justify-center px-4 pb-10 sm:px-8">
         <div className="w-full max-w-md">
-          <div className="mb-7 flex flex-col items-center gap-3 text-center">
-            <span className="flex size-14 items-center justify-center rounded-2xl bg-white/15 ring-1 ring-white/25 backdrop-blur">
-              <GraduationCap className="size-7" aria-hidden />
-            </span>
-            <h2 className="text-xl leading-snug font-semibold text-balance sm:text-2xl">
-              {TEN_APP}
-            </h2>
-            <p className="text-sm text-white/80">
-              Nơi đăng ký dạy, theo dõi lịch và xem kết quả đánh giá của đội ngũ
-              giảng viên, trợ giảng.
-            </p>
-          </div>
-
           <form
             onSubmit={onSubmit}
             className="space-y-5 rounded-3xl bg-card p-6 text-card-foreground shadow-[0_24px_60px_-12px_rgba(8,30,70,0.45)] sm:p-8 dark:border"
           >
-            <div className="space-y-1">
-              <h1 className="text-2xl font-semibold">Đăng nhập</h1>
-              <p className="text-sm text-muted-foreground">
-                Dùng email và mật khẩu do quản trị viên cấp cho bạn.
+            <div className="flex flex-col items-center gap-2.5 pb-1 text-center">
+              <span className="flex size-12 items-center justify-center rounded-2xl bg-brand-gradient text-primary-foreground shadow-card">
+                <GraduationCap className="size-6" aria-hidden />
+              </span>
+              <p className="text-base leading-snug font-semibold tracking-wide text-balance">
+                {TEN_APP}
               </p>
+              <h1 className="text-sm font-medium text-muted-foreground">
+                Đăng nhập
+              </h1>
             </div>
 
             <div className="space-y-1.5">
@@ -207,19 +190,7 @@ export default function LoginPage() {
             </div>
           </form>
 
-          <ul className="mt-7 hidden justify-center gap-2 sm:-mx-12 sm:flex">
-            {DIEM_NOI_BAT.map(({ icon: Icon, tieu_de }) => (
-              <li
-                key={tieu_de}
-                className="flex items-center gap-1.5 rounded-full bg-white/12 px-3 py-1.5 text-xs font-medium ring-1 ring-white/20 backdrop-blur"
-              >
-                <Icon className="size-3.5" aria-hidden />
-                {tieu_de}
-              </li>
-            ))}
-          </ul>
-
-          <p className="mt-6 text-center text-sm text-white/75">
+          <p className="mt-5 text-center text-sm text-white/75">
             Cần hỗ trợ? Liên hệ Admin của đơn vị.
           </p>
         </div>
