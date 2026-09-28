@@ -83,6 +83,5 @@ Hệ số Bài = lớn nhất giữa (D1 của nhóm lớp, D2 nếu lớp khôn
 
 Tài liệu này ghi lại các điểm **chưa có** để bạn không mất công tìm:
 
-- **Xuất PDF:** đã từng có, nhưng **bỏ hẳn** theo phản hồi người dùng (trình bày chưa đẹp, không hiệu quả bằng Excel) — không phải điểm còn thiếu, mà là quyết định không làm nữa. Mọi việc xuất báo cáo dùng **Xuất Excel** hoặc **Xuất dữ liệu chi tiết** (mục 5.11).
 - **Tài khoản cho học viên:** không có và không dự định. Học viên chỉ trả lời khảo sát qua link ẩn danh.
 - **Tính lương, chấm công:** ngoài phạm vi. Đã có hệ thống khác quản lý.

@@ -51,17 +51,6 @@ Trang web có hai cách hiển thị: **máy tính** (màn hình rộng) và **�
 
 ![Ảnh 2.3b — Giao diện trên điện thoại (thanh 4 nút đáy màn hình và nút ☰)](2.3b)
 
-### So sánh nhanh giữa máy tính và điện thoại
-
-| Việc | Máy tính | Điện thoại |
-|---|---|---|
-| Đi đến các mục | Thanh menu bên trái | Thanh 4 nút ở đáy + nút ☰ |
-| Bảng dữ liệu nhiều cột | Hiện đủ cột | Mỗi dòng thành một thẻ gọn. Danh sách dài chỉ hiện **5 dòng đầu**, bấm **"Xem thêm"** để mở tiếp |
-| Form thêm/sửa | Trượt ra từ mép phải màn hình | **Cửa sổ nổi giữa màn hình**, cuộn được, nút Lưu luôn ở dưới cùng |
-| Chuông thông báo | Bảng thả xuống dưới chuông | Cửa sổ nổi giữa màn hình |
-| Ba thẻ số đầu trang Tổng quan | Ba thẻ nằm ngang, bên trái | Ba thẻ nằm ngang, thu gọn và căn giữa |
-| Nền phía sau khi mở menu/cửa sổ nổi | Mờ đi | Mờ đi. Bấm ra vùng mờ để đóng |
-
 ## 2.4 Cài trang web lên điện thoại như một ứng dụng
 
 Trang web dùng được như ứng dụng trên điện thoại, và **bắt buộc làm điều này trên iPhone nếu muốn nhận thông báo đẩy** (xem mục 3.8).
