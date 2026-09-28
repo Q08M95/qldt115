@@ -24,10 +24,10 @@
 | 5 | Module Đăng ký giảng dạy (4.3) | ✅ Xong (trừ thông báo, phụ thuộc Giai đoạn 8) | 95% |
 | 6 | Hệ thống KPI — engine + cấu hình (5/6/7) | ✅ Xong (B1/C2 chỉ có bảng dữ liệu, giao diện nhập ở Giai đoạn 7) | 100% |
 | 7 | Module Đánh giá chất lượng (4.4) | ✅ Xong (nhắc check-in bằng thông báo ở Giai đoạn 8; thông báo/Nhật ký khi sửa điểm danh ở Giai đoạn 8-9) | 100% |
-| 8 | Module Thông báo (4.5) | ✅ Xong (đã chạy migration + test trên Supabase thật, pg_cron/pg_net bật, webhook push đã cấu hình; còn thử nhận push thật trên thiết bị của người dùng) | 100% |
+| 8 | Module Thông báo (4.5) | ✅ Xong (đã chạy migration + test trên Supabase thật, pg_cron/pg_net bật, webhook push đã cấu hình; đã thử nhận push thật trên thiết bị, người dùng xác nhận nhận được) | 100% |
 | 9 | Nhật ký hệ thống (4.6) | ✅ Xong (đã chạy migration + test 34/34 trên Supabase thật) | 100% |
 | 10 | Báo cáo (4.7) + Tổng quan (4.7b) | ✅ Xong (Xuất báo cáo chỉ còn Excel, đủ 8 báo cáo — đã bỏ hẳn bản PDF theo phản hồi người dùng, xem Giai đoạn 11e) | 100% |
-| 11 | Cấu hình hệ thống — hoàn thiện (4.8) | ✅ Xong (bổ sung màn hình Đăng ký & matching; chưa thử lưu bằng tài khoản Admin thật) | 100% |
+| 11 | Cấu hình hệ thống — hoàn thiện (4.8) | ✅ Xong (bổ sung màn hình Đăng ký & matching; đã thử lưu bằng tài khoản Admin gốc thật, người dùng xác nhận ổn) | 100% |
 | 12 | Responsive/Mobile polish (8.9) | ✅ Xong (đã test thật trên điện thoại qua Preview Deployment, người dùng xác nhận ổn — xem điều kiện hoàn thành ở chi tiết Giai đoạn 12) | 100% |
 | 13 | QA, kiểm thử, deploy production | 🟡 Mới bắt đầu (chỉ mới xong cấu hình biến môi trường; còn kiểm thử đầu-cuối, rà RLS, dark mode, tách Supabase production, deploy, seed danh mục, tạo Admin production) | 10% |
 
@@ -208,7 +208,7 @@ Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / 
 - [x] Bảng `thong_bao` (`notifications`), phân loại Cần hành động / Thông tin *(RLS chỉ đọc của mình + đánh dấu đã đọc; ghi chỉ qua trigger/hàm)*
 - [x] Bell icon + badge số chưa đọc + dropdown panel (8.7) *(Popover 10 thông báo mới nhất; Realtime; trang `/thong-bao` lọc Tất cả/Chưa đọc/Cần hành động)*
 - [x] Trigger tạo thông báo cho toàn bộ sự kiện ở 4.5 (Bài trống mới, mời dạy, duyệt/từ chối, đổi lịch/hủy lớp, nhắc check-in, công bố KPI, kết quả đổi nhóm, sửa điểm danh, gán/thu hồi Quyền Quản lý lớp, đề xuất mới cần duyệt, lời mời bị từ chối)
-- [x] Web Push API/PWA — Service Worker, manifest + icon, đăng ký subscription theo thiết bị, webhook `/api/push/gui` gửi push bằng khóa VAPID *(đã kiểm tra: xác thực webhook, manifest, sw.js; **chưa thử nhận push thật trên trình duyệt/điện thoại** vì cần migration chạy trên Supabase thật)*
+- [x] Web Push API/PWA — Service Worker, manifest + icon, đăng ký subscription theo thiết bị, webhook `/api/push/gui` gửi push bằng khóa VAPID *(đã kiểm tra: xác thực webhook, manifest, sw.js; đã thử nhận push thật trên thiết bị, người dùng xác nhận nhận được)*
 - [x] Scheduled job (pg_cron mỗi phút) nhắc check-in trước giờ học + ô cấu hình "nhắc trước N phút" ở Cấu hình KPI
 
 **Điều kiện hoàn thành:** thực hiện 1 hành động (vd duyệt đăng ký) → người liên quan nhận thông báo trong app + push trình duyệt; job nhắc check-in tự chạy đúng giờ đã lên lịch.
