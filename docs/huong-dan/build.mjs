@@ -19,8 +19,9 @@ const RA = path.join(ROOT, "..", "..", "huong dan su dung.pdf");
 const CHROME = process.env.CHROME_PATH || "C:/Program Files/Google/Chrome/Application/chrome.exe";
 const FONT_DIR = path.join(ROOT, "..", "..", "node_modules", "@fontsource", "plus-jakarta-sans", "files");
 
-const PHIEN_BAN = "0.1";
+const PHIEN_BAN = "1.0";
 const NGAY = new Date().toLocaleDateString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" });
+const DON_VI = "Trung tâm Cấp cứu 115 TP.HCM — Tổ đào tạo";
 
 const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 const slug = (s) => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -165,9 +166,11 @@ h1{font-size:24pt;line-height:1.2;color:#14468a;margin:0 0 14pt;font-weight:800;
 h1 .ch{display:block;font-size:10pt;letter-spacing:.14em;color:#0d9488;font-weight:700;margin-bottom:6pt}
 h2{font-size:15pt;color:#14468a;margin:22pt 0 8pt;font-weight:700;break-after:avoid;padding-bottom:4pt;border-bottom:1.5pt solid #c6dcfa}
 h3{font-size:11.5pt;color:#0f5a55;margin:14pt 0 5pt;font-weight:700;break-after:avoid}
-p{margin:0 0 8pt}
+p{margin:0 0 8pt;text-align:justify;text-justify:inter-word}
 ul,ol{margin:0 0 9pt;padding-left:18pt}
-li{margin:0 0 3pt}
+li{margin:0 0 3pt;text-align:justify;text-justify:inter-word}
+h1,h2,h3,th,td,figcaption,.toc li,.bia *{text-align:left}
+figure{text-align:center}
 strong{font-weight:700}
 code{font-family:"PJS",Consolas,monospace;background:#eef2f7;border-radius:3pt;padding:0 3pt;font-size:.95em;color:#14468a;font-weight:600}
 pre{font-family:"PJS",Consolas,monospace;background:#f3f4f1;border:1pt solid #e4e4e7;border-radius:6pt;padding:9pt 11pt;font-size:9.5pt;line-height:1.55;white-space:pre-wrap;margin:0 0 10pt;break-inside:avoid}
@@ -195,7 +198,8 @@ figure.thieu .khung{border:1.5pt dashed #a9c4f2;background:#f5f8fd;border-radius
 .bia{page:bia;height:297mm;padding:0;display:flex;flex-direction:column;justify-content:center;padding:0 22mm;background:linear-gradient(160deg,#166a8c 0%,#14468a 70%);color:#fff;break-after:page;position:relative}
 .bia .nhan{letter-spacing:.2em;font-size:10pt;font-weight:700;color:#a2efc3;margin-bottom:12pt}
 .bia h1.tt{font-size:36pt;color:#fff;margin:0 0 10pt;break-before:auto;line-height:1.15}
-.bia .ph{font-size:15pt;font-weight:600;color:#c6dcfa;margin-bottom:38pt}
+.bia .ph{font-size:15pt;font-weight:600;color:#c6dcfa;margin-bottom:10pt}
+.bia .dv{font-size:12.5pt;font-weight:700;color:#a2efc3;letter-spacing:.02em;margin-bottom:34pt}
 .bia .dt{font-size:11pt;line-height:1.7;color:#e3edfb}
 .bia .ft{position:absolute;left:22mm;bottom:20mm;font-size:9.5pt;color:#a9c4f2}
 .muc-luc h1{break-before:auto}
@@ -216,7 +220,8 @@ function docHtml({ body, mucLuc, soTrang }) {
   <div class="nhan">TÀI LIỆU HƯỚNG DẪN</div>
   <h1 class="tt">Hướng dẫn sử dụng</h1>
   <div class="ph">Hệ thống QUẢN LÝ ĐĂNG KÝ GIẢNG DẠY</div>
-  <div class="dt">Dành cho: giảng viên, trợ giảng, người giữ Quyền Quản lý lớp và Admin<br>Phiên bản ${PHIEN_BAN} · cập nhật ngày ${NGAY}<br>Tài liệu đang hoàn thiện — ảnh chụp minh họa sẽ được bổ sung sau</div>
+  <div class="dv">${esc(DON_VI)}</div>
+  <div class="dt">Dành cho: giảng viên, trợ giảng, người giữ Quyền Quản lý lớp và Admin<br>Phiên bản ${PHIEN_BAN} · cập nhật ngày ${NGAY}</div>
   <div class="ft">Nội dung ghi theo giao diện và quy định đang áp dụng của hệ thống.</div>
 </section>
 <section class="muc-luc"><h1 style="break-before:auto"><span class="ch">MỤC LỤC</span>Bạn cần tìm gì?</h1><ul class="toc">${toc}</ul></section>
@@ -255,7 +260,7 @@ async function inPdf(htmlPath, pdfPath) {
       paperWidth: 8.27,
       paperHeight: 11.69,
       headerTemplate: "<span></span>",
-      footerTemplate: `<div style="width:100%;font-size:8px;color:#8a8a92;font-family:Arial,sans-serif;text-align:center"><span class="pageNumber"></span> / <span class="totalPages"></span> &nbsp;·&nbsp; Hướng dẫn sử dụng hệ thống QUẢN LÝ ĐĂNG KÝ GIẢNG DẠY</div>`,
+      footerTemplate: `<div style="width:100%;font-size:8px;color:#8a8a92;font-family:Arial,sans-serif;text-align:center"><span class="pageNumber"></span> / <span class="totalPages"></span> &nbsp;·&nbsp; Hướng dẫn sử dụng hệ thống QUẢN LÝ ĐĂNG KÝ GIẢNG DẠY &nbsp;·&nbsp; ${esc(DON_VI)}</div>`,
     });
     if (r.error) throw new Error(JSON.stringify(r.error));
     fs.writeFileSync(pdfPath, Buffer.from(r.result.data, "base64"));

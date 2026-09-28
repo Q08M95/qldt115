@@ -257,13 +257,17 @@ Mở chi tiết kỳ, khối **Kiểm tra trước khi đóng kỳ** cho biết:
 
 ## 5.11 Báo cáo và xuất file
 
-Trang **Báo cáo** như mô tả ở mục 3.11. Riêng quản lý thấy thêm **nhãn nhóm** trong bảng KPI tổng hợp, và có nút **Xuất Excel** và **Xuất PDF** ở đầu trang.
+Trang **Báo cáo** như mô tả ở mục 3.11. Riêng quản lý thấy thêm **nhãn nhóm** trong bảng KPI tổng hợp, và có thêm hai nút ở đầu trang: **Xuất Excel** và **Xuất dữ liệu chi tiết**. Cả hai chỉ quản lý xuất được, vì file tải về dễ sao chép, chia sẻ.
 
-- Một lần bấm xuất ra **một file duy nhất** chứa 4 báo cáo chính thức: **KPI tổng hợp, Sản lượng giảng dạy, A4 và Đề xuất nhân sự**, đúng theo kỳ hoặc khung thời gian đang chọn.
-- **Excel** là bảng số nhiều sheet. **PDF** là báo cáo có thiết kế: trang bìa, thẻ số, biểu đồ, bảng top, và trang **Phụ lục** giải thích các chỉ số.
-- Chỉ quản lý xuất được, vì file tải về dễ sao chép, chia sẻ.
+### Xuất Excel — số liệu đã tổng hợp
 
-> **Chưa có:** Bản PDF xuất báo cáo **chưa gồm trang Tổng quan**. Phần này sẽ bổ sung sau.
+Bấm **Xuất Excel** để tải **một file duy nhất**, nhiều sheet, chứa đủ cả **8 báo cáo** đúng như đang xem trên trang (theo kỳ đánh giá hoặc khung thời gian đang chọn): KPI tổng hợp (kèm cột nhóm), Xu hướng KPI, A4, Đề xuất nhân sự, Sản lượng giảng dạy, Tự đăng ký/nhận lời mời, Vận hành đăng ký, Vận hành lớp học. Dùng file này cho **họp xét duyệt định kỳ**.
+
+### Xuất dữ liệu chi tiết — bản ghi thô
+
+Bấm **Xuất dữ liệu chi tiết** để tải một file Excel **khác**, gồm **bản ghi thô chưa qua tính toán** (không phải số liệu đã gộp như Xuất Excel ở trên): danh sách nhân sự, chuyên môn, chứng chỉ, danh mục, kỳ đánh giá, lớp học, Bài học, slot và phân công, đăng ký/lời mời (kể cả bị từ chối hoặc thu hồi), điểm danh, dự giờ, khảo sát C1, đề xuất nhân sự chi tiết và lịch sử đổi nhóm. Dùng file này để **tra cứu hoặc lưu trữ** trước khi dọn dữ liệu cũ, không dùng để họp xét duyệt.
+
+> **Lưu ý:** Không còn xuất được **PDF**. Trước đây có bản PDF nhưng trình bày chưa đẹp và không hiệu quả bằng Excel nên đã bỏ hẳn — dùng **Xuất Excel** cho mọi việc báo cáo.
 
 ## 5.12 Nhật ký hệ thống
 
@@ -337,5 +341,5 @@ Như mục 5.10.
 3. Chuyển kỳ sang **Chờ duyệt**, xem bảng KPI, rà soát các trường hợp bất thường.
 4. **Đóng kỳ** để công bố.
 5. Vào **Đề xuất nhân sự** xử lý các đề xuất đổi nhóm.
-6. Xuất báo cáo Excel/PDF phục vụ họp xét duyệt.
+6. Xuất báo cáo Excel phục vụ họp xét duyệt.
 7. Tạo kỳ đánh giá cho quý tiếp theo.

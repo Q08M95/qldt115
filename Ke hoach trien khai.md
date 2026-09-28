@@ -314,9 +314,11 @@ Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / 
 ## Tài liệu hướng dẫn sử dụng (làm song song các giai đoạn)
 
 - [x] Bản nháp `huong dan su dung.pdf` (~57 trang, 7 chương + 4 phụ lục: làm quen, bắt đầu, hướng dẫn GV/TG, KPI có ví dụ tính, hướng dẫn Admin/Quản lý lớp, tình huống, hỏi đáp; dựng từ `docs/huong-dan/nguon/*.md` bằng `node docs/huong-dan/build.mjs`)
-- [ ] Chụp và thêm 25 ảnh minh họa (danh sách ở `docs/huong-dan/README.md`) sau khi web hoàn chỉnh
-- [ ] Bổ sung tên đơn vị, logo, thông tin liên hệ hỗ trợ lên bìa và mục "Cần giúp đỡ" (chờ người dùng cung cấp)
-- [ ] Rà lại toàn bộ tài liệu theo giao diện cuối sau Giai đoạn 12–13; tách bản rút gọn theo vai trò nếu cần
+- [x] Chụp và thêm 33 ảnh minh họa thật (25 ảnh gốc theo danh sách + 8 ảnh bổ sung, xem `docs/huong-dan/README.md`) — dùng dữ liệu demo riêng dựng trên project dev/staging: 51 nhân sự lấy tên thật theo danh sách nhân sự người dùng cung cấp (bỏ 2 người trùng tên với tài khoản thật đang có), trải đúng 4 quý/12 tháng gần nhất, 3 quý đã đóng bằng ĐÚNG engine KPI thật (không giả lập số) qua RPC `luu_ky`/`doi_trang_thai_ky`, quý hiện tại giữ vài lớp "sống" (đang diễn ra, đang mở, cảnh báo pool nhỏ, đủ đăng ký, dự kiến, đã hủy) để chụp đúng từng tình huống mô tả trong tài liệu. Script tái dùng: `scripts/demo-huong-dan.mjs` (tạo/đóng kỳ/xóa) + `scripts/chup-anh-huong-dan.mjs` (Playwright + Edge, đăng nhập thật 4 vai — Admin demo, GV bác sĩ, TG không bác sĩ, Ban giám đốc để chụp cơ chế fallback percentile). 2 mã ảnh không phải ảnh chụp (1.1 sơ đồ lớp/Bài/slot, 2.4 các bước cài lên iPhone) vẽ bằng HTML tĩnh ở `docs/huong-dan/anh-sinh/`. Dữ liệu demo **chưa xóa** — giữ lại trên dev/staging để còn chụp bổ sung nếu người dùng yêu cầu sửa tài liệu, xóa bằng `node scripts/demo-huong-dan.mjs xoa` sau khi người dùng xác nhận tài liệu đã ổn.
+- [x] Bổ sung tên đơn vị lên bìa và chân trang: "Trung tâm Cấp cứu 115 TP.HCM — Tổ đào tạo" (người dùng xác nhận không cần logo, không cần thông tin liên hệ)
+- [x] Rà lại toàn bộ tài liệu theo giao diện cuối: phát hiện và sửa nội dung lỗi thời về "Xuất PDF" (đã gỡ ở Giai đoạn 11e) còn sót ở mục 3.11/5.11/5.14 và 2 Phụ lục A/D; bổ sung mục "Xuất dữ liệu chi tiết" (Giai đoạn 11c) chưa từng được nhắc tới trong tài liệu
+- [x] Căn chỉnh đều 2 bên (justify) toàn bộ đoạn văn trong PDF (`text-align:justify` ở CSS `build.mjs`)
+- [x] Dựng thêm bản Word `huong dan su dung.docx` (chỉnh sửa tự do) từ ĐÚNG cùng nguồn Markdown + ảnh — script mới `docs/huong-dan/build-docx.mjs` dùng gói `docx` (thêm vào `devDependencies`), có bìa, mục lục tự động (trường Word), bảng/callout/ảnh/danh sách tương đương bản PDF nhưng không cố giữ layout tuyệt đối
 
 ---
 

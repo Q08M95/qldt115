@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8">
+<style>
+  * { box-sizing: border-box; }
+  body { margin:0; padding:40px; font-family: "Segoe UI", Arial, sans-serif; background:#fff; width:1040px; }
+  .lop { border:2px solid #14468A; border-radius:16px; padding:20px; background:#F3F4F1; }
+  .lop-title { font-size:20px; font-weight:800; color:#14468A; margin-bottom:4px; }
+  .lop-sub { font-size:13px; color:#71717A; margin-bottom:18px; }
+  .bai-row { display:flex; gap:20px; }
+  .bai { flex:1; border:2px dashed #A9C4F2; border-radius:12px; padding:16px; background:#fff; }
+  .bai-title { font-size:16px; font-weight:700; color:#0F5A55; margin-bottom:2px; }
+  .bai-sub { font-size:12px; color:#71717A; margin-bottom:12px; }
+  .slot { display:flex; align-items:center; gap:8px; font-size:13px; padding:7px 10px; border-radius:8px; margin-bottom:6px; font-weight:600; }
+  .slot.gv { background:linear-gradient(90deg,#C6DCFA,#A9C4F2); color:#1E3A8A; }
+  .slot.tg { background:linear-gradient(90deg,#A2EFC3,#9FDBE3); color:#0F5A55; }
+  .dot { width:9px; height:9px; border-radius:99px; background:currentColor; }
+  .legend { display:flex; gap:24px; margin-top:24px; font-size:13px; color:#3F3F46; }
+  .legend span { display:inline-flex; align-items:center; gap:6px; }
+  .sw { width:14px; height:14px; border-radius:4px; display:inline-block; }
+</style></head>
+<body>
+  <div class="lop">
+    <div class="lop-title">Lớp học — ví dụ "ACLS khóa 08"</div>
+    <div class="lop-sub">1 lớp gồm nhiều Bài. Mỗi Bài có số slot Giảng viên/Trợ giảng riêng.</div>
+    <div class="bai-row">
+      <div class="bai">
+        <div class="bai-title">Bài 1 — Lý thuyết</div>
+        <div class="bai-sub">08:00 – 11:00</div>
+        <div class="slot gv"><span class="dot"></span> Slot Giảng viên #1</div>
+      </div>
+      <div class="bai">
+        <div class="bai-title">Bài 2 — Thực hành</div>
+        <div class="bai-sub">13:00 – 17:00</div>
+        <div class="slot gv"><span class="dot"></span> Slot Giảng viên #1</div>
+        <div class="slot tg"><span class="dot"></span> Slot Trợ giảng #1</div>
+        <div class="slot tg"><span class="dot"></span> Slot Trợ giảng #2</div>
+        <div class="slot tg"><span class="dot"></span> Slot Trợ giảng #3</div>
+      </div>
+      <div class="bai">
+        <div class="bai-title">Bài 3 — Thực hành</div>
+        <div class="bai-sub">08:00 – 12:00</div>
+        <div class="slot gv"><span class="dot"></span> Slot Giảng viên #1</div>
+        <div class="slot tg"><span class="dot"></span> Slot Trợ giảng #1</div>
+        <div class="slot tg"><span class="dot"></span> Slot Trợ giảng #2</div>
+        <div class="slot tg"><span class="dot"></span> Slot Trợ giảng #3</div>
+      </div>
+    </div>
+    <div class="legend">
+      <span><i class="sw" style="background:linear-gradient(90deg,#C6DCFA,#A9C4F2)"></i> Slot Giảng viên</span>
+      <span><i class="sw" style="background:linear-gradient(90deg,#A2EFC3,#9FDBE3)"></i> Slot Trợ giảng</span>
+      <span>Lớp này có 1 + 4 + 4 = <b>9 slot</b>, mỗi slot lấp riêng — 1 người có thể nhận nhiều slot Giảng viên ở nhiều Bài khác nhau.</span>
+    </div>
+  </div>
+</body></html>

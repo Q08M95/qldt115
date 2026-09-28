@@ -12,7 +12,7 @@ Mọi công việc trên dự án này phải bám sát đồng thời **3 tài 
 - `Ke hoach trien khai.md` — lịch thi công theo giai đoạn; tham chiếu để biết đang ở giai đoạn nào và tiếp theo cần làm gì, cập nhật tick/trạng thái sau mỗi buổi làm việc
 - `tham khao theme.jpeg` — ảnh chụp mẫu giao diện gốc (ProSale Sales Overview), là căn cứ hình ảnh duy nhất cho mục 8 (Thiết kế UI/UX)
 
-**Tài liệu người dùng:** `huong dan su dung.pdf` (dựng từ `docs/huong-dan/`, xem `docs/huong-dan/README.md`) mô tả cách dùng web và cách tính KPI cho người chưa biết gì. **Mỗi khi đổi giao diện (tên nút/menu), quy tắc nghiệp vụ hoặc giá trị khởi điểm, phải rà lại chương liên quan và dựng lại PDF.** Ảnh chụp minh họa sẽ bổ sung sau khi web hoàn chỉnh.
+**Tài liệu người dùng:** `huong dan su dung.pdf` (dựng từ `docs/huong-dan/`, xem `docs/huong-dan/README.md`) mô tả cách dùng web và cách tính KPI cho người chưa biết gì. Có thêm bản `huong dan su dung.docx` (Word, chỉnh sửa tự do) dựng từ cùng nguồn. **Mỗi khi đổi giao diện (tên nút/menu), quy tắc nghiệp vụ hoặc giá trị khởi điểm, phải rà lại chương liên quan và dựng lại cả PDF lẫn Word.** Đã có đủ 33 ảnh chụp minh họa thật (dữ liệu demo 12 tháng, xem `docs/huong-dan/README.md` mục "Dựng lại ảnh minh họa") — chụp lại đúng ảnh liên quan khi giao diện đổi, không cần chụp lại toàn bộ.
 
 **Riêng khi xây dựng bất kỳ màn hình UI/UX nào:** trước khi bắt tay code và sau khi dựng xong, phải **đối chiếu lại trực tiếp với `tham khao theme.jpeg`** (không chỉ đọc mô tả text ở mục 8) để xác nhận màu sắc, gradient, bo góc, shadow, bố cục card, kiểu chart, mật độ thông tin... thực sự đồng bộ với ảnh gốc — tránh tình trạng mô tả ở mục 8 đúng nhưng lúc code lại lệch phong cách so với ảnh mẫu ban đầu (mẫu tham khảo 1 đằng, thiết kế ra 1 nẻo).
 

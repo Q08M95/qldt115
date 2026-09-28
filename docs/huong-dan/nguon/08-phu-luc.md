@@ -10,7 +10,7 @@ Dấu ✓ là làm được, dấu — là không làm được.
 | Xem KPI của mọi người | ✓ | ✓ | ✓ |
 | Xem nhãn nhóm | — | ✓ | ✓ |
 | Xem báo cáo | ✓ (không nhãn nhóm) | ✓ | ✓ |
-| Xuất báo cáo Excel/PDF | — | ✓ | ✓ |
+| Xuất báo cáo Excel; Xuất dữ liệu chi tiết | — | ✓ | ✓ |
 | Xem Nhật ký hệ thống | Chỉ dòng liên quan bản thân | Toàn bộ | Toàn bộ |
 | Sửa hồ sơ của mình | ✓ | ✓ | ✓ |
 | Sửa hồ sơ, chứng chỉ của người khác | — | ✓ | ✓ |
@@ -83,6 +83,6 @@ Hệ số Bài = lớn nhất giữa (D1 của nhóm lớp, D2 nếu lớp khôn
 
 Tài liệu này ghi lại các điểm **chưa có** để bạn không mất công tìm:
 
-- **PDF xuất báo cáo chưa gồm trang Tổng quan.**
+- **Xuất PDF:** đã từng có, nhưng **bỏ hẳn** theo phản hồi người dùng (trình bày chưa đẹp, không hiệu quả bằng Excel) — không phải điểm còn thiếu, mà là quyết định không làm nữa. Mọi việc xuất báo cáo dùng **Xuất Excel** hoặc **Xuất dữ liệu chi tiết** (mục 5.11).
 - **Tài khoản cho học viên:** không có và không dự định. Học viên chỉ trả lời khảo sát qua link ẩn danh.
 - **Tính lương, chấm công:** ngoài phạm vi. Đã có hệ thống khác quản lý.

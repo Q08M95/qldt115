@@ -224,7 +224,7 @@ Trang **Báo cáo** có 8 báo cáo, xếp thành **hai nhóm** trên cùng mộ
 - **Theo kỳ đánh giá** (chọn kỳ ở đầu trang): **KPI tổng hợp** (bảng xếp hạng), **Xu hướng KPI**, **A4 — Lớp không kinh phí**, **Đề xuất nhân sự** (chỉ số liệu tổng hợp).
 - **Theo hoạt động** (chọn Tuần / Tháng / Quý / Năm): **Sản lượng giảng dạy** (giờ dạy theo người), **Tự đăng ký và nhận lời mời** (A2, A3), **Vận hành đăng ký**, **Vận hành lớp học**.
 
-Với giảng viên và trợ giảng, báo cáo là **chỉ xem** và **không hiện nhãn nhóm**. Nút **Xuất Excel / Xuất PDF** chỉ dành cho quản lý. Trên điện thoại, mỗi bảng dài chỉ hiện 5 dòng đầu kèm nút **Xem thêm**.
+Với giảng viên và trợ giảng, báo cáo là **chỉ xem** và **không hiện nhãn nhóm**. Hai nút **Xuất Excel** và **Xuất dữ liệu chi tiết** ở đầu trang chỉ dành cho quản lý (xem mục 5.11). Trên điện thoại, mỗi bảng dài chỉ hiện 5 dòng đầu kèm nút **Xem thêm**.
 
 ![Ảnh 3.11 — Trang Báo cáo](3.11)
 
