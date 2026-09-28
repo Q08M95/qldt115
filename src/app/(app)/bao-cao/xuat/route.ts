@@ -2,10 +2,9 @@ import { NextResponse, type NextRequest } from "next/server";
 import { getSession } from "@/lib/auth/session";
 import type { SheetExcel } from "@/lib/xuat/excel";
 import { taoFileExcelNhieuSheet } from "@/lib/xuat/excel";
-import { taoFileBaoCaoPdf } from "@/lib/xuat/pdf-bao-cao";
 import { laKhung, tinhKhoang } from "@/lib/bao-cao/khoang";
 import { chonKy } from "@/lib/bao-cao/ky";
-import { chuanHoaDeXuat, phanTram, tongHopLop, tongHopSanLuong, tongHopTyLe } from "@/lib/bao-cao/tinh-toan";
+import { chuanHoaDeXuat, phanTram, tongHopSanLuong, tongHopTyLe } from "@/lib/bao-cao/tinh-toan";
 import {
   getA4,
   getCanhBaoPool,
@@ -22,11 +21,14 @@ import { getKyList } from "@/lib/kpi/queries";
 import { TRANG_THAI_KY_LABEL } from "@/lib/kpi/labels";
 import { DOI_TUONG_LABEL, LOAI_KINH_PHI_LABEL, TRANG_THAI_LOP_LABEL } from "@/lib/lop-hoc/labels";
 import { LOAI_DE_XUAT_LABEL, NHOM_LABEL, VAI_TRO_LABEL } from "@/lib/nhan-su/labels";
-import { fmtDate, fmtDateTime } from "@/lib/format";
+import { fmtDate } from "@/lib/format";
 
-// Xuất báo cáo (mục 4.7) — 1 CHỖ DUY NHẤT cho cả module: gộp ĐỦ 8 báo cáo vào 1 file — nhiều sheet (Excel) hoặc nhiều
-// trang có biểu đồ + phụ lục (PDF). CHỈ Admin/Quản lý lớp. Trước đây chỉ gộp #1/#3/#6/#7 ("chính thức cho họp xét
-// duyệt") — mở rộng đủ 8 vì không có lý do để file xuất thiếu đúng những gì đã xem được trên trang /bao-cao.
+// Xuất báo cáo (mục 4.7) — 1 CHỖ DUY NHẤT cho cả module: gộp ĐỦ 8 báo cáo vào 1 file Excel nhiều sheet. CHỈ
+// Admin/Quản lý lớp. Trước đây chỉ gộp #1/#3/#6/#7 ("chính thức cho họp xét duyệt") — mở rộng đủ 8 vì không có lý do
+// để file xuất thiếu đúng những gì đã xem được trên trang /bao-cao (Giai đoạn 11d). Từng có thêm bản PDF (nhiều trang
+// có biểu đồ + phụ lục) nhưng đã gỡ hẳn theo phản hồi người dùng — trình bày chưa đẹp, không hiệu quả bằng Excel
+// (Giai đoạn 11e, xem CLAUDE.md). Sheet "Cảnh báo pool nhỏ" (liệt kê từng Bài) cũng đã bỏ theo yêu cầu — chỉ còn số
+// đếm tổng hợp trong sheet "5. Vận hành đăng ký".
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
@@ -40,8 +42,6 @@ export async function GET(req: NextRequest) {
   if (!phien.isQuanTri) return NextResponse.json({ error: "Chỉ người quản trị được xuất báo cáo" }, { status: 403 });
 
   const sp = req.nextUrl.searchParams;
-  const dinhDang = sp.get("dinh_dang") === "pdf" ? "pdf" : "excel";
-
   const kyList = await getKyList();
   const dieu = chonKy(kyList, sp.get("ky") ?? undefined);
   if (!dieu) return NextResponse.json({ error: "Chưa có kỳ đánh giá nào" }, { status: 404 });
@@ -65,36 +65,10 @@ export async function GET(req: NextRequest) {
   const tyLeSapXep = [...tyLe.dong].sort((a, b) => (b.a2 ?? -1) - (a.a2 ?? -1) || (b.a3 ?? -1) - (a.a3 ?? -1));
   const a4Rows = [...a4Rows0].sort((a, b) => b.a4_luy_ke - a.a4_luy_ke || b.a4_ky - a.a4_ky);
   const deXuat = chuanHoaDeXuat(deXuatTho);
-  const lopTong = tongHopLop(lopRows);
 
   const tenKy = choTenFile(dieu.hienTai.ten);
   const ten = `bao-cao-tong-hop-${tenKy}-${khoang.tu}`;
   const ngay = new Date().toISOString().slice(0, 10);
-
-  if (dinhDang === "pdf") {
-    const buf = await taoFileBaoCaoPdf({
-      xuatLuc: new Date(),
-      ky: dieu.hienTai,
-      khoang,
-      kpiRows,
-      kpiTheoKy,
-      sanLuong: slTong,
-      tyLe,
-      vanHanh,
-      canhBao,
-      nguongPool,
-      a4Rows,
-      deXuat,
-      lopTong,
-    });
-    return new NextResponse(new Uint8Array(buf), {
-      headers: {
-        "Content-Type": "application/pdf",
-        "Content-Disposition": `attachment; filename="${ten}-${ngay}.pdf"`,
-        "Cache-Control": "no-store",
-      },
-    });
-  }
 
   const sheets: SheetExcel[] = [
     {
@@ -213,25 +187,6 @@ export async function GET(req: NextRequest) {
         { nhan: `Số Bài cảnh báo pool nhỏ hiện tại (dưới ${nguongPool} người)`, gia_tri: canhBao.length },
         { nhan: "— trong đó không có ứng viên nào", gia_tri: canhBao.filter((c) => c.so_ung_vien === 0).length },
       ],
-    },
-    {
-      tenSheet: "5b. Cảnh báo pool nhỏ",
-      cot: [
-        { tieu_de: "Lớp", khoa: "lop", rong: 26 },
-        { tieu_de: "Bài", khoa: "bai", rong: 26 },
-        { tieu_de: "Vai trò", khoa: "vai_tro", rong: 14 },
-        { tieu_de: "Slot trống", khoa: "slot_trong", rong: 10 },
-        { tieu_de: "Số ứng viên", khoa: "so_ung_vien", rong: 12 },
-        { tieu_de: "Bắt đầu", khoa: "bat_dau", rong: 18 },
-      ],
-      dong: canhBao.map((c) => ({
-        lop: c.lop_ten,
-        bai: c.bai_ten,
-        vai_tro: vaiTro(c.vai_tro),
-        slot_trong: c.slot_trong,
-        so_ung_vien: c.so_ung_vien,
-        bat_dau: fmtDateTime(c.bat_dau),
-      })),
     },
     {
       tenSheet: `6. A4 ${dieu.hienTai.ten}`,

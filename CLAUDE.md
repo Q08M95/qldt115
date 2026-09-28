@@ -294,7 +294,7 @@ Trong app, **không dùng email**.
 
 **Danh sách báo cáo cụ thể, kèm đề xuất cách hiển thị (tổng hợp từ toàn bộ tài liệu):**
 
-1. **KPI tổng hợp toàn đơn vị theo kỳ** — bảng xếp hạng (data table, sort/filter được); Admin xem đầy đủ kèm cột nhóm, GV/TG xem **ẩn cột nhóm** (theo nguyên tắc dưới); xuất Excel/PDF cho họp xét duyệt định kỳ
+1. **KPI tổng hợp toàn đơn vị theo kỳ** — bảng xếp hạng (data table, sort/filter được); Admin xem đầy đủ kèm cột nhóm, GV/TG xem **ẩn cột nhóm** (theo nguyên tắc dưới); xuất Excel cho họp xét duyệt định kỳ
 2. **Xu hướng KPI theo thời gian** — area/line chart nhiều kỳ (mục 6), realtime cho kỳ đang mở, dùng đúng số liệu snapshot đã khóa cho các kỳ đã đóng (mục 7)
 3. **Sản lượng giảng dạy** — bar chart ngang so sánh theo người/kỳ (không gắn nhãn nhóm) — báo cáo quan trọng nhất để Admin **tự kiểm tra nguyên tắc công bằng của matching-score** (mục 4.3) có thực sự vận hành đúng không
 4. **Tỷ lệ tự đăng ký/nhận lời mời (A2/A3)** — bar chart hoặc % theo người/kỳ (mục 5)
@@ -311,7 +311,7 @@ Trong app, **không dùng email**.
 
 **Quyền xem:** cả 8 báo cáo đều **công khai cho GV/TG xem ở dạng tổng hợp toàn đơn vị** (không giới hạn chỉ cá nhân) — đúng tinh thần minh bạch xuyên suốt tài liệu, để mọi người nắm được tình trạng vận hành chung, biết được đơn vị đang phát triển tới đâu, không chỉ nhìn thấy mỗi góc nhỏ của riêng mình. Chỉ giới hạn 2 việc: **ẩn nhãn nhóm** (theo nguyên tắc trên) và **thao tác quản trị** (duyệt/từ chối cụ thể, chỉnh cấu hình) — vẫn chỉ Admin/Quyền Quản lý lớp thực hiện được, dù ai cũng xem được số liệu.
 
-**Xuất báo cáo:** Excel/PDF cho các báo cáo dùng trong họp xét duyệt (báo cáo 1, 3, 6, 7 ở trên) — **chỉ Admin/Quyền Quản lý lớp xuất được**, dù xem trên màn hình đã công khai cho mọi người; file tải về dễ sao chép/phát tán hơn nên vẫn giới hạn.
+**Xuất báo cáo:** Excel gộp đủ 8 báo cáo ở trên (Giai đoạn 11d) — **chỉ Admin/Quyền Quản lý lớp xuất được**, dù xem trên màn hình đã công khai cho mọi người; file tải về dễ sao chép/phát tán hơn nên vẫn giới hạn. Từng có thêm bản PDF nhưng đã gỡ hẳn theo phản hồi người dùng (Giai đoạn 11e — trình bày chưa đẹp, không hiệu quả bằng Excel).
 
 ### 4.7b TỔNG QUAN (trang chủ khi đăng nhập)
 
@@ -563,13 +563,15 @@ nghìn dòng không hợp trình bày PDF). 14 sheet, chia 3 nhóm lọc:
   thu hồi ngay) — tải file thật, đối chiếu số liệu với Supabase (vd xác nhận cột "Nhóm đủ điều kiện" trống đúng vì
   lớp demo đó thật sự chưa gán nhóm điều kiện, không phải lỗi join).
 
-**Giai đoạn 11d — Mở rộng "Xuất báo cáo" (Excel + PDF) đủ 8 báo cáo (theo phản hồi người dùng):** trước đó "Xuất báo
-cáo" chỉ gộp #1/#3/#6/#7 ("chính thức cho họp xét duyệt") — người dùng chỉ ra không có lý do để file xuất thiếu đúng
-những gì đã xem được trên trang `/bao-cao`, và bản PDF trình bày chưa đẹp. Đã cân nhắc "chụp ảnh chart từ web rồi
-chèn vào PDF" (cần thêm `html2canvas`, đổi kiến trúc trang `/bao-cao` để luôn render ẩn cả 2 nhóm bộ lọc, đổi nút PDF
-sang tải bất đồng bộ) nhưng sau khi rà lại `pdf-bao-cao.tsx` thấy các khối vẽ vector (`ThanhXepHang`, `DonutPdf`,
-`BangDon`, `TheSo`) đã đủ tái dùng cho #2/#4/#5 còn thiếu — chọn vẽ vector tiếp, không chụp ảnh (đơn giản hơn, chữ
-nét khi in, không phụ thuộc theme sáng/tối).
+**Giai đoạn 11d — Mở rộng "Xuất báo cáo" (Excel + PDF) đủ 8 báo cáo (theo phản hồi người dùng):** *(toàn bộ phần PDF
+mô tả dưới đây, và sheet "5b. Cảnh báo pool nhỏ", đã bị gỡ bỏ hẳn ngay sau đó ở **Giai đoạn 11e** — giữ lại nguyên văn
+mục này làm lịch sử/bài học kỹ thuật, không còn đúng với trạng thái hiện tại của code.)* Trước đó "Xuất báo cáo" chỉ
+gộp #1/#3/#6/#7 ("chính thức cho họp xét duyệt") — người dùng chỉ ra không có lý do để file xuất thiếu đúng những gì
+đã xem được trên trang `/bao-cao`, và bản PDF trình bày chưa đẹp. Đã cân nhắc "chụp ảnh chart từ web rồi chèn vào PDF"
+(cần thêm `html2canvas`, đổi kiến trúc trang `/bao-cao` để luôn render ẩn cả 2 nhóm bộ lọc, đổi nút PDF sang tải bất
+đồng bộ) nhưng sau khi rà lại `pdf-bao-cao.tsx` thấy các khối vẽ vector (`ThanhXepHang`, `DonutPdf`, `BangDon`,
+`TheSo`) đã đủ tái dùng cho #2/#4/#5 còn thiếu — chọn vẽ vector tiếp, không chụp ảnh (đơn giản hơn, chữ nét khi in,
+không phụ thuộc theme sáng/tối).
 - **Excel** (`src/app/(app)/bao-cao/xuat/route.ts`): thêm 4 sheet — "2. Xu hướng KPI" (kpi_tb qua các kỳ), "4. Tỷ lệ
   đăng ký" (A2/A3 từng người), "5. Vận hành đăng ký" (10 chỉ số dạng key-value) + "5b. Cảnh báo pool nhỏ" (bảng riêng
   vì khác cấu trúc cột), "8. Vận hành lớp" (danh sách lớp trong khoảng, trước đây dữ liệu `lopTong`/`lopRows` đã tính
@@ -591,6 +593,18 @@ nét khi in, không phụ thuộc theme sáng/tối).
   `pdftotext` hay qua `tsc`/`eslint`/`next build`, chỉ thấy khi nhìn hình ảnh thật).
 - Đã kiểm thử bằng đăng nhập thật (cùng tài khoản demo, cấp tạm quyền rồi thu hồi ngay như Giai đoạn 11c) — cả Excel
   (đủ 9 sheet, dữ liệu đúng) và PDF (đủ 12 trang vật lý, gradient/donut hiển thị đúng sau khi sửa).
+
+**Giai đoạn 11e — Gỡ bỏ hẳn "Xuất PDF" + sheet "5b. Cảnh báo pool nhỏ" (theo phản hồi người dùng):** ngay sau khi
+Giai đoạn 11d hoàn thành, người dùng đánh giá bản PDF "làm không được đẹp mà cũng không hiệu quả" và yêu cầu bỏ hẳn
+(không phải chỉ ẩn nút) — cùng lúc yêu cầu bỏ sheet "5b. Cảnh báo pool nhỏ" khỏi Excel. Xử lý:
+- Xóa hẳn file `src/lib/xuat/pdf-bao-cao.tsx` (không giữ lại dạng chết/tắt).
+- Gỡ 2 gói chỉ phục vụ riêng PDF, không dùng ở đâu khác trong dự án: `@react-pdf/renderer`, `@fontsource/plus-jakarta-sans`
+  (khác với font UI chính load qua `next/font/google`, mục 8.2 — 2 gói này chỉ để nhúng file `.woff` thật vào PDF).
+- `src/app/(app)/bao-cao/xuat/route.ts`: bỏ hẳn nhánh `dinh_dang=pdf`, tham số `dinh_dang` (route giờ luôn trả Excel),
+  và sheet "5b. Cảnh báo pool nhỏ" — số đếm cảnh báo pool nhỏ vẫn còn ở dạng tổng hợp trong sheet "5. Vận hành đăng ký".
+- `src/components/bao-cao/xuat-bao-cao.tsx`: bỏ nút "Xuất PDF", chỉ còn "Xuất Excel" + "Xuất dữ liệu chi tiết".
+- Các bài học kỹ thuật ghi ở Giai đoạn 10/11d (lỗi font `.woff2`, lỗi gradient+transform trên `Circle`...) vẫn giữ lại
+  trong tài liệu làm tham khảo nếu sau này cân nhắc làm lại PDF theo hướng khác — không xóa lịch sử quyết định.
 
 **Giai đoạn 10, lượt 3 — Trang Tổng quan (4.7b, đã chốt):**
 - **Không cần migration:** mọi số liệu lấy từ bảng/view/RPC đã có sẵn từ các giai đoạn trước (`profiles`, `lop_hoc`, `lop_hoc_tong_hop`, `slot_giang_day`, `de_xuat_nhan_su`, RPC `bc_canh_bao_pool`/`bc_van_hanh_dang_ky`/`bc_kpi_theo_ky`) — chỉ viết truy vấn tổng hợp (`src/lib/tong-quan/queries.ts`) và ghép lại component đã có (`DashboardLayout`/`StatRow`/`StatTile` dựng sẵn từ trước, biểu đồ dùng chung `src/components/bao-cao/bieu-do.tsx`, `AreaXuHuong`/`DongHoBanNguyet` từ `kpi-charts.tsx`, `LopCard`, `ThongBaoItem`, `getViecCuaToi`/`getKpiCaNhan`/`getDeXuatList` có sẵn) — giảm tối đa code mới.
