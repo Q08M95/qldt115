@@ -29,7 +29,7 @@
 | 10 | Báo cáo (4.7) + Tổng quan (4.7b) | ✅ Xong (Xuất báo cáo chỉ còn Excel, đủ 8 báo cáo — đã bỏ hẳn bản PDF theo phản hồi người dùng, xem Giai đoạn 11e) | 100% |
 | 11 | Cấu hình hệ thống — hoàn thiện (4.8) | ✅ Xong (bổ sung màn hình Đăng ký & matching; đã thử lưu bằng tài khoản Admin gốc thật, người dùng xác nhận ổn) | 100% |
 | 12 | Responsive/Mobile polish (8.9) | ✅ Xong (đã test thật trên điện thoại qua Preview Deployment, người dùng xác nhận ổn — xem điều kiện hoàn thành ở chi tiết Giai đoạn 12) | 100% |
-| 13 | QA, kiểm thử, deploy production | 🟡 Gần xong (đã xong kiểm thử đầu-cuối + RLS + dark mode + sửa 1 lỗi thật; đã tạo Supabase production, đẩy 25 migration, seed danh mục, tạo Admin, cấu hình Web Push; còn cập nhật env Vercel + vài mục thủ công trên Supabase dashboard mới) | 85% |
+| 13 | QA, kiểm thử, deploy production | ✅ Xong (kiểm thử đầu-cuối + RLS + dark mode, sửa 1 lỗi thật; Supabase production riêng đã lên đủ 25 migration + danh mục + Admin + Web Push; Vercel env tách đúng Production/Preview; SMTP + URL Configuration + tắt đăng ký công khai đã cấu hình) | 100% |
 
 Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / ✅ Xong / ⏸️ Tạm hoãn.
 
@@ -331,11 +331,11 @@ Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / 
 - [x] Migrate/seed dữ liệu danh mục khởi điểm cho môi trường production — xem trên, đã có sẵn từ migration
 - [x] Tạo tài khoản Admin đầu tiên trên production — `nguyenhoangtuminh08@gmail.com`, đã set `phan_quyen = admin`, mật khẩu tạm đã gửi riêng cho người dùng để đổi ngay lần đăng nhập đầu
 - [x] Thiết lập Web Push cho production — dùng chung khóa VAPID với dev (không cần tạo mới, VAPID không gắn với Supabase project), đã lưu `cau_hinh_push` (webhook `/api/push/gui`) trỏ về `https://qldt115.vercel.app`
-- [ ] Merge vào `main`, xác nhận Vercel tự deploy bản production — **còn thiếu:** cập nhật biến môi trường Vercel (Production) sang project mới, xem checklist đưa cho người dùng
+- [x] Merge vào `main`, xác nhận Vercel tự deploy bản production — biến môi trường Vercel đã tách đúng theo Environment: `NEXT_PUBLIC_SUPABASE_URL`/`NEXT_PUBLIC_SUPABASE_ANON_KEY`/`SUPABASE_SERVICE_ROLE_KEY` có 2 dòng riêng (Production → project mới, Preview → project dev/staging cũ, đúng tinh thần tách môi trường); 4 biến Push/VAPID dùng chung 1 giá trị cho cả Production+Preview (không gắn với Supabase project nên không cần tách). Đã Redeploy để nạp env mới.
 - [x] Cấu hình biến môi trường (`.env.local` cho dev, biến môi trường Vercel cho preview/production) — không commit secret
-- [ ] **Còn lại thủ công trên Supabase dashboard (project mới, không làm được qua API):** tắt "Allow new users to sign up"; cấu hình URL Configuration (Redirect URL `/dat-lai-mat-khau`) + SMTP riêng qua Gmail giống project dev; xác nhận extension `pg_cron`/`pg_net` đã bật (Database > Extensions) — di chuyển đã chạy sạch không lỗi nên nhiều khả năng đã bật sẵn, nhưng nên xác nhận trực quan
+- [x] Các mục thủ công trên Supabase dashboard (project mới): tắt "Allow new users to sign up"; thêm Redirect URL `https://qldt115.vercel.app/dat-lai-mat-khau` + đổi Site URL từ `localhost:3000` sang domain thật; cấu hình SMTP riêng qua Gmail (đã lưu, có cảnh báo "personal rather than transactional" từ Supabase — cảnh báo đã biết trước, chấp nhận được ở quy mô nội bộ, giống project dev); xác nhận `pg_cron` + `pg_net` đã bật sẵn (Database > Extensions)
 
-**Điều kiện hoàn thành:** hệ thống chạy ổn định trên URL production, dữ liệu tách biệt hoàn toàn khỏi môi trường dev.
+**Điều kiện hoàn thành: ĐÃ ĐẠT.** Production chạy trên Supabase project riêng (`tsrtmxeophzovnbgkvoj`), tách biệt hoàn toàn khỏi project dev/staging (`zqnnjobkhylfkpvsouam`) — kể cả ở tầng Vercel env (Production vs Preview trỏ 2 project khác nhau). Còn lại duy nhất phần "Tài liệu hướng dẫn sử dụng" (chụp ảnh + bìa/logo, đã bàn ở mục riêng bên dưới) là việc ngoài phạm vi giai đoạn này, làm khi cần bàn giao/công bố.
 
 ---
 
