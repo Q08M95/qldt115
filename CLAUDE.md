@@ -542,6 +542,27 @@ Vì bộ tiêu chí/trọng số **sẽ còn thay đổi**, công thức phải 
 - **Xuất PDF là báo cáo có thiết kế** (không phải bảng số thô như Excel): dùng `@react-pdf/renderer` (không cần headless Chromium, hợp môi trường serverless) — có trang bìa, thẻ số liệu, biểu đồ cột ngang + donut (vẽ tay bằng Svg/Rect/Circle, màu solid 4 màu gốc thay gradient để đơn giản hóa bản in), bảng top 15/kỳ, và **trang Phụ lục** giải thích định nghĩa A1-A4/B1/C1-C3, công thức KPI, cách đọc lũy kế/trong kỳ, trạng thái đề xuất, lý do ẩn nhãn nhóm. **Chưa gồm Tổng quan** (PDF làm trước khi Tổng quan/lượt 3 dựng xong) — đã ghi rõ trong phụ lục, sẽ bổ sung sau khi người dùng xác nhận Tổng quan hiển thị đúng.
 - **2 lỗi kỹ thuật đã gặp khi làm PDF (rút kinh nghiệm cho lần sau):** (1) font Plus Jakarta Sans bản **.woff2** làm fontkit lỗi `RangeError` khi nhúng — phải dùng bản **.woff** (cùng gói `@fontsource/plus-jakarta-sans`, thư mục `files/`, subset "vietnamese"); Helvetica mặc định của react-pdf KHÔNG có dấu tiếng Việt. (2) chữ số nối trực tiếp bằng dấu chấm trong nhiều node JSX (`{so}. {ten}`) bị vỡ glyph — phải gộp thành 1 chuỗi `{`${so}. ${ten}`}`. (3) từ nối bằng "/" không có khoảng trắng (vd "(tuần/tháng/quý/năm)") bị ngắt dòng vỡ chữ dù đã tắt `Font.registerHyphenationCallback` — phải thêm khoảng trắng quanh dấu "/". (4) `Circle` của react-pdf không hỗ trợ `strokeDashoffset` — vẽ donut bằng cách xoay thêm `transform="rotate(...)"` theo độ dài cung trước đó thay vì offset nét đứt.
 
+**Giai đoạn 11c — "Xuất dữ liệu chi tiết" (theo yêu cầu người dùng, phối hợp với "Xuất báo cáo"):** khác hẳn "Xuất báo cáo"
+(số liệu đã tính/tổng hợp) — đây là **bản ghi THÔ**, không tính toán, phục vụ tra cứu/lưu trữ trước khi dọn dữ liệu
+cũ (đã bàn ở phần scaling dữ liệu). Thêm nút thứ 3 **"Xuất dữ liệu chi tiết"** cạnh Xuất Excel/PDF ở đầu `/bao-cao`
+(`src/components/bao-cao/xuat-bao-cao.tsx`), route riêng `/bao-cao/xuat-du-lieu` (`src/lib/bao-cao/xuat-du-lieu.ts`)
+— ra **1 file `.xlsx` riêng** (không gộp vào file "Xuất báo cáo" để tránh phình to lẫn 2 mục đích), dùng CHUNG đúng
+bộ lọc kỳ đánh giá + khung thời gian đang xem (không thêm UI lọc mới). Chỉ Excel, không làm PDF (bảng thô hàng
+nghìn dòng không hợp trình bày PDF). 14 sheet, chia 3 nhóm lọc:
+- **Không lọc thời gian** (luôn toàn bộ hiện tại — hồ sơ/danh mục, không phải "sự kiện xảy ra trong khoảng"):
+  Nhân sự, Chuyên môn, Chứng chỉ, Danh mục (gộp chuyên môn/loại chứng chỉ/nhóm lớp), Kỳ đánh giá.
+- **Theo khung thời gian đang chọn** (giờ Bài bắt đầu, cộng thẳng `+07:00` vì giờ VN không có giờ mùa hè — chính
+  xác như hàm SQL báo cáo, không cần RPC riêng): Lớp học (giao khoảng, kèm nhóm đủ điều kiện + chứng chỉ yêu cầu
+  gộp chuỗi từ 2 bảng phụ), Bài học, Slot & phân công, Đăng ký/lời mời (kể cả bị từ chối/thu hồi), Điểm danh, Dự
+  giờ, Khảo sát C1.
+- **Theo kỳ đánh giá đang chọn**: Đề xuất nhân sự chi tiết (đổi nhóm quy theo `ky_id` sẵn có, loại khác quy theo
+  `created_at` trong khoảng kỳ — cùng quy ước báo cáo #7), Lịch sử đổi nhóm (theo `ngay_hieu_luc` trong kỳ).
+- Cố tình bỏ A4 riêng (trùng lặp — cột loại kinh phí ở sheet Lớp học + người đảm nhiệm ở sheet Slot đã đủ suy ra),
+  bỏ Thông báo/audit_log/cấu hình nội bộ (không phải "dữ liệu nghiệp vụ", Nhật ký đã có nút xuất riêng ở `/nhat-ky`).
+- Đã kiểm thử bằng đăng nhập thật (tài khoản demo `u01@gd10-full-demo.test` cấp tạm Quyền Quản lý lớp để test rồi
+  thu hồi ngay) — tải file thật, đối chiếu số liệu với Supabase (vd xác nhận cột "Nhóm đủ điều kiện" trống đúng vì
+  lớp demo đó thật sự chưa gán nhóm điều kiện, không phải lỗi join).
+
 **Giai đoạn 10, lượt 3 — Trang Tổng quan (4.7b, đã chốt):**
 - **Không cần migration:** mọi số liệu lấy từ bảng/view/RPC đã có sẵn từ các giai đoạn trước (`profiles`, `lop_hoc`, `lop_hoc_tong_hop`, `slot_giang_day`, `de_xuat_nhan_su`, RPC `bc_canh_bao_pool`/`bc_van_hanh_dang_ky`/`bc_kpi_theo_ky`) — chỉ viết truy vấn tổng hợp (`src/lib/tong-quan/queries.ts`) và ghép lại component đã có (`DashboardLayout`/`StatRow`/`StatTile` dựng sẵn từ trước, biểu đồ dùng chung `src/components/bao-cao/bieu-do.tsx`, `AreaXuHuong`/`DongHoBanNguyet` từ `kpi-charts.tsx`, `LopCard`, `ThongBaoItem`, `getViecCuaToi`/`getKpiCaNhan`/`getDeXuatList` có sẵn) — giảm tối đa code mới.
 - **Hiện widget theo 2 điều kiện độc lập** (không phải chọn 1 trong 2): `laAdmin = isQuanTri` (Admin hoặc Quyền Quản lý lớp) hiện bộ widget Admin; `laGvTg = !!profile.vai_tro_giang_day` hiện bộ widget GV/TG — người vừa có Quyền Quản lý lớp vừa có hồ sơ GV/TG thấy cả 2 khối xếp chồng, đúng mục 4.7b.
