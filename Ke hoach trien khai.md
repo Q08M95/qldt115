@@ -29,7 +29,7 @@
 | 10 | Báo cáo (4.7) + Tổng quan (4.7b) | ✅ Xong (Xuất báo cáo chỉ còn Excel, đủ 8 báo cáo — đã bỏ hẳn bản PDF theo phản hồi người dùng, xem Giai đoạn 11e) | 100% |
 | 11 | Cấu hình hệ thống — hoàn thiện (4.8) | ✅ Xong (bổ sung màn hình Đăng ký & matching; đã thử lưu bằng tài khoản Admin gốc thật, người dùng xác nhận ổn) | 100% |
 | 12 | Responsive/Mobile polish (8.9) | ✅ Xong (đã test thật trên điện thoại qua Preview Deployment, người dùng xác nhận ổn — xem điều kiện hoàn thành ở chi tiết Giai đoạn 12) | 100% |
-| 13 | QA, kiểm thử, deploy production | 🟡 Mới bắt đầu (chỉ mới xong cấu hình biến môi trường; còn kiểm thử đầu-cuối, rà RLS, dark mode, tách Supabase production, deploy, seed danh mục, tạo Admin production) | 10% |
+| 13 | QA, kiểm thử, deploy production | 🟡 Đang làm (đã xong kiểm thử đầu-cuối + RLS + dark mode, phát hiện và sửa 1 lỗi thật ở matching-score; còn tách Supabase production, deploy, seed danh mục, tạo Admin production) | 50% |
 
 Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / ✅ Xong / ⏸️ Tạm hoãn.
 
@@ -324,10 +324,10 @@ Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / 
 
 *Tham chiếu: mục 2 (quy trình phát triển & triển khai)*
 
-- [ ] Kiểm thử toàn bộ luồng nghiệp vụ chính đầu-cuối (tạo lớp → tạo Bài → đăng ký/mời → duyệt → check-in → tính KPI → xem báo cáo)
-- [ ] Kiểm tra lại toàn bộ RLS/phân quyền theo mục 3 (đặc biệt: ẩn nhãn nhóm, giới hạn xem Nhật ký hệ thống)
-- [ ] Kiểm tra dark mode toàn bộ màn hình
-- [ ] Tạo project Supabase production riêng (tách khỏi dev/staging)
+- [x] Kiểm thử toàn bộ luồng nghiệp vụ chính đầu-cuối (tạo lớp → tạo Bài → đăng ký/mời → duyệt → check-in → tính KPI → xem báo cáo) — test thật qua trình duyệt headless (Playwright + Edge có sẵn máy, không cần cài Chromium riêng) với 2 tài khoản tạm: tạo kỳ đánh giá → tạo lớp → thêm Bài → mở đăng ký → tự đăng ký (Luồng A) → duyệt → check-in — đối chiếu lại toàn bộ bằng service role (slot đã phân công đúng người, B1=100%, thông báo "Đăng ký được duyệt" + nhắc check-in tự động qua pg_cron + tự đánh dấu đã đọc khi check-in, Nhật ký hệ thống ghi đúng người/hành động/trước-sau) — khớp thiết kế. **Phát hiện 1 lỗi thật nghiêm trọng**: hàm `goi_y_core()` (Giai đoạn 5c) luôn trả nhầm `trang_thai_hien_co = 'dang_ky'` cho MỌI ứng viên khi người xem là Admin/Quản lý lớp, dù chưa hề có đăng ký/lời mời nào (lỗi `CASE dk.loai WHEN 'duoc_moi' THEN ... ELSE 'dang_ky' END` rơi vào ELSE khi LEFT JOIN không khớp/NULL) — khiến nút "Mời" (Luồng B, mục 4.3) không bao giờ hiện được, tồn tại từ Giai đoạn 5c tới nay nhưng không lộ ra vì mọi test trước giờ đều có sẵn 1 bản ghi đăng ký demo che mất lỗi; chỉ lộ ra khi test bằng dữ liệu hoàn toàn trống. Đã sửa bằng migration `20261002100000_giai_doan_13_fix_goi_y_trang_thai.sql` (chỉ `CREATE OR REPLACE FUNCTION`, thêm điều kiện `dk.id is not null`, không đổi schema/dữ liệu) — người dùng đã chạy trên Supabase thật, đã kiểm chứng lại bằng RPC thật (`trang_thai_hien_co` nay đúng là `null` khi chưa có đăng ký) rồi mới push
+- [x] Kiểm tra lại toàn bộ RLS/phân quyền theo mục 3 (đặc biệt: ẩn nhãn nhóm, giới hạn xem Nhật ký hệ thống) — rà trực tiếp SQL: nhãn nhóm chặn thật ở RLS (bảng `nhan_su_nhom` riêng, policy chỉ `is_quan_tri()`), `audit_log` xác nhận chỉ-thêm thật (revoke UPDATE/DELETE khỏi mọi role kể cả service_role) — không phát hiện lỗ hổng
+- [x] Kiểm tra dark mode toàn bộ màn hình — chụp 9 màn hình chính (Tổng quan, Lớp học, Đăng ký, Nhân sự, Đánh giá, Báo cáo, Thông báo, Nhật ký, Cấu hình) cả 2 theme qua trình duyệt thật, 0 lỗi console/page, không vỡ layout/tương phản
+- [ ] Tạo project Supabase production riêng (tách khỏi dev/staging) — **đã chốt: dữ liệu hiện tại (31 nhân sự) vẫn chỉ là thiết lập/thử nghiệm, chưa dùng thật** → tạo 1 project Supabase MỚI hoàn toàn làm production chính thức, seed danh mục sạch từ đầu; project hiện tại lùi xuống làm dev/staging (giữ nguyên, không cần dọn gì thêm)
 - [ ] Merge vào `main`, xác nhận Vercel tự deploy bản production
 - [x] Cấu hình biến môi trường (`.env.local` cho dev, biến môi trường Vercel cho preview/production) — không commit secret
 - [ ] Migrate/seed dữ liệu danh mục khởi điểm (nhóm lớp, chuyên môn, chứng chỉ...) cho môi trường production
