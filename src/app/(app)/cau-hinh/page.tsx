@@ -4,8 +4,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { requireQuanTri } from "@/lib/auth/session";
 
 // Trang Cấu hình hệ thống — Danh mục, Cấu hình KPI, Đăng ký & matching, Kỳ đánh giá.
+// Cấu hình KPI và Đăng ký & matching chỉ Admin gốc sửa được (mục 4.8/Giai đoạn 11b) — Quản lý lớp chỉ còn
+// thấy Danh mục và Kỳ đánh giá, tránh hiện link dẫn tới trang sẽ tự chuyển hướng ra ngay khi bấm vào.
 export default async function CauHinhPage() {
-  await requireQuanTri();
+  const session = await requireQuanTri();
 
   return (
     <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
@@ -23,34 +25,38 @@ export default async function CauHinhPage() {
           </CardContent>
         </Card>
       </Link>
-      <Link href="/cau-hinh/kpi" className="group">
-        <Card className="transition-shadow group-hover:shadow-[0_8px_24px_rgba(16,24,40,0.10)]">
-          <CardContent className="flex items-center gap-3">
-            <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-grad-navy text-hue-navy-on">
-              <SlidersHorizontal className="size-5" aria-hidden />
-            </span>
-            <span className="min-w-0 flex-1">
-              <span className="block font-semibold">Cấu hình KPI</span>
-              <span className="block text-sm text-muted-foreground">Trọng số tiêu chí, hệ số độ khó D, ngưỡng đổi nhóm</span>
-            </span>
-            <ChevronRight className="size-4 text-muted-foreground" aria-hidden />
-          </CardContent>
-        </Card>
-      </Link>
-      <Link href="/cau-hinh/dang-ky" className="group">
-        <Card className="transition-shadow group-hover:shadow-[0_8px_24px_rgba(16,24,40,0.10)]">
-          <CardContent className="flex items-center gap-3">
-            <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-grad-green text-hue-green-on">
-              <UserCheck className="size-5" aria-hidden />
-            </span>
-            <span className="min-w-0 flex-1">
-              <span className="block font-semibold">Đăng ký &amp; matching</span>
-              <span className="block text-sm text-muted-foreground">Cảnh báo pool nhỏ, dồn tải, tỷ trọng matching-score</span>
-            </span>
-            <ChevronRight className="size-4 text-muted-foreground" aria-hidden />
-          </CardContent>
-        </Card>
-      </Link>
+      {session.isAdmin && (
+        <Link href="/cau-hinh/kpi" className="group">
+          <Card className="transition-shadow group-hover:shadow-[0_8px_24px_rgba(16,24,40,0.10)]">
+            <CardContent className="flex items-center gap-3">
+              <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-grad-navy text-hue-navy-on">
+                <SlidersHorizontal className="size-5" aria-hidden />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block font-semibold">Cấu hình KPI</span>
+                <span className="block text-sm text-muted-foreground">Trọng số tiêu chí, hệ số độ khó D, ngưỡng đổi nhóm</span>
+              </span>
+              <ChevronRight className="size-4 text-muted-foreground" aria-hidden />
+            </CardContent>
+          </Card>
+        </Link>
+      )}
+      {session.isAdmin && (
+        <Link href="/cau-hinh/dang-ky" className="group">
+          <Card className="transition-shadow group-hover:shadow-[0_8px_24px_rgba(16,24,40,0.10)]">
+            <CardContent className="flex items-center gap-3">
+              <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-grad-green text-hue-green-on">
+                <UserCheck className="size-5" aria-hidden />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block font-semibold">Đăng ký &amp; matching</span>
+                <span className="block text-sm text-muted-foreground">Cảnh báo pool nhỏ, dồn tải, tỷ trọng matching-score</span>
+              </span>
+              <ChevronRight className="size-4 text-muted-foreground" aria-hidden />
+            </CardContent>
+          </Card>
+        </Link>
+      )}
       <Link href="/cau-hinh/ky-danh-gia" className="group">
         <Card className="transition-shadow group-hover:shadow-[0_8px_24px_rgba(16,24,40,0.10)]">
           <CardContent className="flex items-center gap-3">

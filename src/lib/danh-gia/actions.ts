@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { requireQuanTri, requireSession } from "@/lib/auth/session";
+import { requireAdmin, requireQuanTri, requireSession } from "@/lib/auth/session";
 import type { ActionState } from "@/lib/nhan-su/actions";
 import { createClient } from "@/lib/supabase/server";
 
@@ -91,8 +91,10 @@ export interface CauHinhDiemDanhPayload {
   rubric: Record<string, { ten: string; mo_ta: string }>;
 }
 
+// Chỉ Admin gốc sửa được (theo yêu cầu người dùng, mục 4.8/Giai đoạn 11b) — Quản lý lớp không còn sửa được
+// khung check-in/ngưỡng trễ B1/rubric C2, dù vẫn chinhDiemDanh/luuDuGio (thao tác hằng ngày) ở trên như cũ.
 export async function luuCauHinhDiemDanh(payload: CauHinhDiemDanhPayload): Promise<ActionState> {
-  await requireQuanTri();
+  await requireAdmin();
   const hopLe =
     payload &&
     Number.isFinite(payload.checkin_truoc_phut) &&

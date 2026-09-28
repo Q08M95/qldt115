@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { requireQuanTri } from "@/lib/auth/session";
+import { requireAdmin, requireQuanTri } from "@/lib/auth/session";
 import type { ActionState } from "@/lib/nhan-su/actions";
 import { createClient } from "@/lib/supabase/server";
 import type { TrangThaiKy } from "@/types/database";
@@ -90,8 +90,10 @@ export interface CauHinhKpiPayload {
   tham_so: { min_nhom: number; so_ky_fallback: number; gop_c: number; doi_nhom_x: number; doi_nhom_y: number; giang_nhom_x: number; giang_nhom_y: number };
 }
 
+// Chỉ Admin gốc sửa được Cấu hình KPI (theo yêu cầu người dùng, mục 4.8/Giai đoạn 11b) — Quản lý lớp chỉ còn
+// sửa Danh mục và Kỳ đánh giá (luuKy/xoaKy/doiTrangThaiKy/moLaiKy ở trên vẫn giữ requireQuanTri()).
 export async function luuCauHinhKpi(payload: CauHinhKpiPayload): Promise<ActionState> {
-  await requireQuanTri();
+  await requireAdmin();
   const so = (v: unknown) => typeof v === "number" && Number.isFinite(v);
   const hopLe =
     payload &&

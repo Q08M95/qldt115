@@ -75,7 +75,7 @@ Khuyến nghị **triển khai liên tục ngay từ đầu**, không đợi "l�
 |---|---|
 | **Admin / Quản lý đào tạo** | Toàn quyền: tạo lớp, duyệt đăng ký, duyệt đề xuất nhân sự, xem báo cáo, quản lý hồ sơ, cấu hình hệ thống |
 | **Giảng viên & Trợ giảng** | Ngang quyền: xem slot trống, đăng ký dạy, xem lịch cá nhân, xem điểm đánh giá, cập nhật hồ sơ |
-| **Quyền Quản lý lớp** | Permission Admin gán thêm cho người đang có hồ sơ GV/TG — nhận toàn quyền Admin (trừ chỉnh sửa/build web) song song với hồ sơ GV/TG. Gán được cho nhiều người cùng lúc (hiện tại đơn vị chỉ đang gán cho 1 người) |
+| **Quyền Quản lý lớp** | Permission Admin gán thêm cho người đang có hồ sơ GV/TG — nhận toàn quyền Admin (trừ chỉnh sửa/build web) song song với hồ sơ GV/TG. Gán được cho nhiều người cùng lúc (hiện tại đơn vị chỉ đang gán cho 1 người). **Ngoại lệ (mục 4.8, Giai đoạn 11b):** trong Cấu hình hệ thống chỉ sửa được Danh mục và Kỳ đánh giá — Cấu hình KPI và Đăng ký & matching chỉ Admin gốc sửa được |
 
 **Quyền riêng tư:** hồ sơ và KPI công khai toàn bộ trong nội bộ, không giới hạn chỉ xem của bản thân. **Ngoại lệ duy nhất — nhãn "nhóm" (5 nhóm, mục dưới):** không hiển thị cho GV/TG dù vẫn dùng ngầm cho mọi logic hệ thống (percentile, matching-score, điều kiện đăng ký), chỉ Admin/Quản lý lớp xem được nhãn nhóm đầy đủ — tránh cảm giác bị xếp hạng/phân biệt (chi tiết mục 4.7).
 
@@ -341,6 +341,18 @@ Module này từng bị thiếu trong danh sách 4.1-4.8 ở bản nháp đầu,
 
 ### 4.8 CẤU HÌNH HỆ THỐNG
 Tất cả các giá trị sau **phải cấu hình qua giao diện, không hardcode** (xem kiến trúc ở mục 7):
+
+**Phân quyền trong màn hình này (đã chốt, Giai đoạn 11b):** trang `/cau-hinh` chia 4 mục — Danh mục, Cấu hình
+KPI, Đăng ký & matching, Kỳ đánh giá. **Danh mục và Kỳ đánh giá**: Admin và Quyền Quản lý lớp sửa như nhau
+(`requireQuanTri()`). **Cấu hình KPI** (trọng số, hệ số D, ngưỡng percentile/đổi nhóm, khung check-in, ngưỡng
+trễ B1, rubric C2) và **Đăng ký & matching** (ngưỡng cảnh báo pool nhỏ/dồn tải, tỷ trọng matching-score): **chỉ
+Admin gốc** (`requireAdmin()`, mới thêm cạnh `requireQuanTri()`/`requireSession()` ở `src/lib/auth/session.ts`)
+— Quyền Quản lý lớp không còn thấy 2 link này trên trang chỉ mục, vào thẳng URL cũng bị chuyển hướng ra. Chặn
+2 lớp: Server Component/Server Action (`requireAdmin()`) và database (RLS `cau_hinh_he_thong` + hàm
+`luu_cau_hinh_kpi()`/`luu_cau_hinh_diem_danh()` đổi từ `is_quan_tri()` sang `is_admin()`, migration
+`20261001100000_giai_doan_11b_gioi_han_quyen_cau_hinh.sql`). Hệ số D1 (theo nhóm lớp) vẫn sửa được qua màn
+hình Danh mục > Nhóm lớp (ghi thẳng bảng `danh_muc_nhom_lop`, không qua `luu_cau_hinh_kpi()`) nên Quyền Quản
+lý lớp vẫn đổi được D1 ở đó — chỉ không còn đổi được từ mini-bảng D1 lồng trong màn hình Cấu hình KPI.
 - Trọng số công thức KPI (mọi cấp: 30/45/25 [B1/C/A, cộng thẳng = 100%], 40/35/25 [C2/C3/C1], 50/25/25 [A1/A2/A3] — mục 6)
 - **Hệ số độ khó D — hiển thị/chỉnh sửa chung 1 màn hình "Hệ số độ khó"**, dù dữ liệu D1 vật lý nằm trong bảng nhóm lớp (backend): D2, D3 là ô nhập giá trị đơn ngay trên màn hình này; D1 hiển thị như 1 bảng con ngay trong cùng màn hình (danh sách nhóm lớp kèm ô giá trị D1 tương ứng, sửa trực tiếp tại đây) — Admin **không cần rời sang màn hình "Danh mục nhóm lớp" riêng** chỉ để đổi D1
 - Ngưỡng tối đa chấm điểm B1 (khởi điểm 30 phút — phút trễ vượt mốc này = 0%, giảm tuyến tính trước đó, mục 5), khung giờ được phép check-in quanh giờ học (mục 4.4)

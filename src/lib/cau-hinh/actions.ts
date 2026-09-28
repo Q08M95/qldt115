@@ -1,16 +1,17 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { requireQuanTri } from "@/lib/auth/session";
+import { requireAdmin } from "@/lib/auth/session";
 import type { CauHinhDangKy } from "@/lib/cau-hinh/queries";
 import type { ActionState } from "@/lib/nhan-su/actions";
 import { createClient } from "@/lib/supabase/server";
 
 const trong = (v: unknown, tu: number, den: number) => typeof v === "number" && Number.isFinite(v) && v >= tu && v <= den;
 
-// Lưu ngưỡng cảnh báo + tỷ trọng matching-score. RLS chỉ cho người quản trị sửa; trigger Nhật ký ghi giá trị trước/sau.
+// Lưu ngưỡng cảnh báo + tỷ trọng matching-score. Chỉ Admin gốc sửa được (theo yêu cầu người dùng, mục
+// 4.8/Giai đoạn 11b — Quản lý lớp không còn sửa được). RLS (is_admin()) chặn lại lần nữa; trigger Nhật ký ghi giá trị trước/sau.
 export async function luuCauHinhDangKy(p: CauHinhDangKy): Promise<ActionState> {
-  await requireQuanTri();
+  await requireAdmin();
   const hopLe =
     p &&
     Number.isInteger(p.canh_bao_pool_nho) &&

@@ -1,13 +1,14 @@
 import { CauHinhDiemDanhForm } from "@/components/kpi/cau-hinh-diem-danh-form";
 import { CauHinhKpiForm } from "@/components/kpi/cau-hinh-kpi-form";
-import { requireQuanTri } from "@/lib/auth/session";
+import { requireAdmin } from "@/lib/auth/session";
 import { getCauHinhDiemDanh } from "@/lib/danh-gia/queries";
 import { getCauHinhKpi } from "@/lib/kpi/queries";
 
 // Cấu hình KPI (mục 4.8/7): trọng số, Bật/Tắt tiêu chí, hệ số độ khó D1/D2/D3, ngưỡng percentile và đổi nhóm;
-// kèm cấu hình điểm danh B1 (khung check-in, ngưỡng trễ) và rubric dự giờ C2.
+// kèm cấu hình điểm danh B1 (khung check-in, ngưỡng trễ) và rubric dự giờ C2. Chỉ Admin gốc sửa được — Quản
+// lý lớp chỉ còn sửa Danh mục và Kỳ đánh giá (theo yêu cầu người dùng, mục 4.8/Giai đoạn 11b).
 export default async function CauHinhKpiPage() {
-  const [, cauHinh, diemDanh] = await Promise.all([requireQuanTri(), getCauHinhKpi(), getCauHinhDiemDanh()]);
+  const [, cauHinh, diemDanh] = await Promise.all([requireAdmin(), getCauHinhKpi(), getCauHinhDiemDanh()]);
   return (
     <div className="flex flex-col gap-5">
       <CauHinhKpiForm cauHinh={cauHinh} />

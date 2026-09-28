@@ -53,3 +53,11 @@ export async function requireQuanTri(): Promise<Session> {
   if (!session.isQuanTri) redirect("/");
   return session;
 }
+
+// Riêng cho "Cấu hình KPI" và "Đăng ký & matching" (mục 4.8): Quản lý lớp KHÔNG được sửa 2 nhóm này, chỉ
+// Admin gốc — khác với phần còn lại của Cấu hình hệ thống (Danh mục, Kỳ đánh giá) vẫn dùng requireQuanTri().
+export async function requireAdmin(): Promise<Session> {
+  const session = await requireSession();
+  if (!session.isAdmin) redirect("/cau-hinh");
+  return session;
+}
