@@ -563,6 +563,35 @@ nghìn dòng không hợp trình bày PDF). 14 sheet, chia 3 nhóm lọc:
   thu hồi ngay) — tải file thật, đối chiếu số liệu với Supabase (vd xác nhận cột "Nhóm đủ điều kiện" trống đúng vì
   lớp demo đó thật sự chưa gán nhóm điều kiện, không phải lỗi join).
 
+**Giai đoạn 11d — Mở rộng "Xuất báo cáo" (Excel + PDF) đủ 8 báo cáo (theo phản hồi người dùng):** trước đó "Xuất báo
+cáo" chỉ gộp #1/#3/#6/#7 ("chính thức cho họp xét duyệt") — người dùng chỉ ra không có lý do để file xuất thiếu đúng
+những gì đã xem được trên trang `/bao-cao`, và bản PDF trình bày chưa đẹp. Đã cân nhắc "chụp ảnh chart từ web rồi
+chèn vào PDF" (cần thêm `html2canvas`, đổi kiến trúc trang `/bao-cao` để luôn render ẩn cả 2 nhóm bộ lọc, đổi nút PDF
+sang tải bất đồng bộ) nhưng sau khi rà lại `pdf-bao-cao.tsx` thấy các khối vẽ vector (`ThanhXepHang`, `DonutPdf`,
+`BangDon`, `TheSo`) đã đủ tái dùng cho #2/#4/#5 còn thiếu — chọn vẽ vector tiếp, không chụp ảnh (đơn giản hơn, chữ
+nét khi in, không phụ thuộc theme sáng/tối).
+- **Excel** (`src/app/(app)/bao-cao/xuat/route.ts`): thêm 4 sheet — "2. Xu hướng KPI" (kpi_tb qua các kỳ), "4. Tỷ lệ
+  đăng ký" (A2/A3 từng người), "5. Vận hành đăng ký" (10 chỉ số dạng key-value) + "5b. Cảnh báo pool nhỏ" (bảng riêng
+  vì khác cấu trúc cột), "8. Vận hành lớp" (danh sách lớp trong khoảng, trước đây dữ liệu `lopTong`/`lopRows` đã tính
+  sẵn cho PDF nhưng bị bỏ sót không đưa vào Excel — sửa luôn thiếu sót này). Tổng 9 sheet cho 8 báo cáo.
+- **PDF** (`src/lib/xuat/pdf-bao-cao.tsx`): thêm 3 trang #2/#4/#5 (trước đó PDF đã âm thầm có #8 dạng "bối cảnh bổ
+  sung" nên chỉ thiếu 3 trang này). Thêm gradient nhạt→đậm cùng hue (component `ThanhXepHang` vẽ lại bằng `Svg`/
+  `Rect`/`LinearGradient` thay vì `View` nền phẳng) và chart đường+vùng mới `DuongXuHuongPdf` (dùng cho #2) để đỡ
+  "phẳng" hơn bản cũ, đồng thời thêm viền trái màu nhấn cho `TheSo` (thẻ số liệu) ở thẻ đầu mỗi báo cáo.
+- **Lỗi thật phát hiện khi test:** thử áp gradient cho `DonutPdf` (dùng `stroke="url(#id)"` kết hợp `transform=
+  "rotate()"` để mô phỏng `strokeDashoffset`, giống kỹ thuật `ThanhXepHang`) nhưng khi rasterize PDF thật ra thì
+  donut render toàn màu ĐEN thay vì gradient — react-pdf/pdfkit không xử lý đúng tổ hợp `url(#gradient)` + `transform`
+  trên `Circle`. Đã revert `DonutPdf` về màu phẳng (solid) như bản gốc — đây chính là lý do bản gốc trước đó "cố tình
+  bỏ gradient cho bản in", không phải chỉ đơn giản hóa tùy ý.
+- **Cách kiểm thử PDF (mới, ghi lại vì hữu ích cho lần sau):** do react-pdf không có cách xem trước nhanh, đã dùng
+  `pdftotext -layout` (poppler, có sẵn ở `/mingw64/bin`) để trích chữ kiểm tra không lỗi font/dấu tiếng Việt (raw
+  bytes UTF-8 đúng dù terminal Git Bash hiển thị mojibake — phải đọc qua PowerShell `Get-Content -Encoding UTF8` hoặc
+  kiểm byte bằng `xxd` mới thấy đúng), và Ghostscript (`gswin64c`, có sẵn ở `C:\Program Files\gs\...\bin`) để rasterize
+  từng trang ra PNG rồi xem trực tiếp — cách duy nhất phát hiện được lỗi donut màu đen ở trên (lỗi không lộ ra qua
+  `pdftotext` hay qua `tsc`/`eslint`/`next build`, chỉ thấy khi nhìn hình ảnh thật).
+- Đã kiểm thử bằng đăng nhập thật (cùng tài khoản demo, cấp tạm quyền rồi thu hồi ngay như Giai đoạn 11c) — cả Excel
+  (đủ 9 sheet, dữ liệu đúng) và PDF (đủ 12 trang vật lý, gradient/donut hiển thị đúng sau khi sửa).
+
 **Giai đoạn 10, lượt 3 — Trang Tổng quan (4.7b, đã chốt):**
 - **Không cần migration:** mọi số liệu lấy từ bảng/view/RPC đã có sẵn từ các giai đoạn trước (`profiles`, `lop_hoc`, `lop_hoc_tong_hop`, `slot_giang_day`, `de_xuat_nhan_su`, RPC `bc_canh_bao_pool`/`bc_van_hanh_dang_ky`/`bc_kpi_theo_ky`) — chỉ viết truy vấn tổng hợp (`src/lib/tong-quan/queries.ts`) và ghép lại component đã có (`DashboardLayout`/`StatRow`/`StatTile` dựng sẵn từ trước, biểu đồ dùng chung `src/components/bao-cao/bieu-do.tsx`, `AreaXuHuong`/`DongHoBanNguyet` từ `kpi-charts.tsx`, `LopCard`, `ThongBaoItem`, `getViecCuaToi`/`getKpiCaNhan`/`getDeXuatList` có sẵn) — giảm tối đa code mới.
 - **Hiện widget theo 2 điều kiện độc lập** (không phải chọn 1 trong 2): `laAdmin = isQuanTri` (Admin hoặc Quyền Quản lý lớp) hiện bộ widget Admin; `laGvTg = !!profile.vai_tro_giang_day` hiện bộ widget GV/TG — người vừa có Quyền Quản lý lớp vừa có hồ sơ GV/TG thấy cả 2 khối xếp chồng, đúng mục 4.7b.
