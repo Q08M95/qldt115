@@ -28,8 +28,8 @@
 | 9 | Nhật ký hệ thống (4.6) | ✅ Xong (đã chạy migration + test 34/34 trên Supabase thật) | 100% |
 | 10 | Báo cáo (4.7) + Tổng quan (4.7b) | ✅ Xong (Xuất báo cáo chỉ còn Excel, đủ 8 báo cáo — đã bỏ hẳn bản PDF theo phản hồi người dùng, xem Giai đoạn 11e) | 100% |
 | 11 | Cấu hình hệ thống — hoàn thiện (4.8) | ✅ Xong (bổ sung màn hình Đăng ký & matching; chưa thử lưu bằng tài khoản Admin thật) | 100% |
-| 12 | Responsive/Mobile polish (8.9) | 🟡 Đang làm (đã sửa thẻ số, bảng dài, chuông, popup, ; đã thử nút 44px và tiêu đề topbar 2 dòng nhưng người dùng không thích nên hoàn lại; còn rà thẻ số, menu avatar, các màn hình cần đăng nhập + test điện thoại thật) | 70% |
-| 13 | QA, kiểm thử, deploy production | ⬜ Chưa bắt đầu | 0% |
+| 12 | Responsive/Mobile polish (8.9) | ✅ Xong (đã test thật trên điện thoại qua Preview Deployment, người dùng xác nhận ổn — xem điều kiện hoàn thành ở chi tiết Giai đoạn 12) | 100% |
+| 13 | QA, kiểm thử, deploy production | 🟡 Mới bắt đầu (chỉ mới xong cấu hình biến môi trường; còn kiểm thử đầu-cuối, rà RLS, dark mode, tách Supabase production, deploy, seed danh mục, tạo Admin production) | 10% |
 
 Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / ✅ Xong / ⏸️ Tạm hoãn.
 
