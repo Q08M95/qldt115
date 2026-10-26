@@ -93,7 +93,7 @@ export function ChuongThongBao({ userId, soChuaDocBanDau }: { userId: string; so
           Chưa có thông báo nào
         </div>
       ) : (
-        <ul className="grid gap-0.5">
+        <ul className="grid grid-cols-1 gap-0.5">
           {ds.map((tb) => (
             <li key={tb.id}>
               <ThongBaoItem tb={tb} onChon={chon} />

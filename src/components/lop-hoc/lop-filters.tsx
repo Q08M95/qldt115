@@ -74,7 +74,7 @@ export function LopFilters({
       </div>
       <div className="grid grid-cols-2 gap-3 md:flex md:flex-wrap">
         <NativeSelect name="nhom_lop" defaultValue={values.nhom_lop} onChange={submitOnChange} aria-label="Nhóm lớp" className="md:w-40">
-          <option value="">Mọi nhóm lớp</option>
+          <option value="">Nhóm lớp</option>
           {nhomLop.map((n) => (
             <option key={n.id} value={n.id}>
               {n.ten}
@@ -82,7 +82,7 @@ export function LopFilters({
           ))}
         </NativeSelect>
         <NativeSelect name="trang_thai" defaultValue={values.trang_thai} onChange={submitOnChange} aria-label="Trạng thái lớp" className="md:w-44">
-          <option value="">Mọi trạng thái</option>
+          <option value="">Trạng thái</option>
           {/* "Dự kiến" hiện cho cả GV/TG: lớp Dự kiến đã công khai sớm họ vẫn thấy được (RLS lo phần chưa công khai) */}
           {TRANG_THAI_LOP_OPTIONS.map(([v, l]) => (
             <option key={v} value={v}>
@@ -91,7 +91,7 @@ export function LopFilters({
           ))}
         </NativeSelect>
         <NativeSelect name="doi_tuong" defaultValue={values.doi_tuong} onChange={submitOnChange} aria-label="Đối tượng" className="md:w-40">
-          <option value="">Mọi đối tượng</option>
+          <option value="">Đối tượng</option>
           {Object.entries(DOI_TUONG_LABEL).map(([v, l]) => (
             <option key={v} value={v}>
               {l}
@@ -99,7 +99,7 @@ export function LopFilters({
           ))}
         </NativeSelect>
         <NativeSelect name="kinh_phi" defaultValue={values.kinh_phi} onChange={submitOnChange} aria-label="Loại kinh phí" className="md:w-40">
-          <option value="">Mọi loại kinh phí</option>
+          <option value="">Kinh phí</option>
           {Object.entries(LOAI_KINH_PHI_LABEL).map(([v, l]) => (
             <option key={v} value={v}>
               {l}

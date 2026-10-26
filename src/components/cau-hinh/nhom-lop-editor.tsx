@@ -37,7 +37,7 @@ export function NhomLopEditor({ items }: { items: NhomLop[] }) {
           Loại khóa học (ABCDE, ACLS, BLS...). Mỗi nhóm lớp gắn sẵn hệ số độ khó D1 dùng khi tính KPI — không dùng cho tính lương.
         </p>
       </CardHeader>
-      <CardContent className="grid gap-4">
+      <CardContent className="grid grid-cols-1 gap-4">
         <ul className="divide-y rounded-xl border">
           {items.length === 0 && <li className="p-4 text-sm text-muted-foreground">Chưa có nhóm lớp nào.</li>}
           {items.map((d) => (
@@ -71,7 +71,7 @@ export function NhomLopEditor({ items }: { items: NhomLop[] }) {
                 </>
               ) : (
                 <>
-                  <span className={d.dang_dung ? "flex-1 text-sm font-medium" : "flex-1 text-sm text-muted-foreground line-through"}>
+                  <span className={d.dang_dung ? "min-w-0 flex-1 truncate text-sm font-medium" : "min-w-0 flex-1 truncate text-sm text-muted-foreground line-through"}>
                     {d.ten}
                   </span>
                   <Badge variant="outline" className="tabular-nums">

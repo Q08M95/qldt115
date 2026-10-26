@@ -33,7 +33,7 @@ export function DangKyForm({
           </p>
         )}
         {state?.ketQua && state.ketQua.length > 0 && (
-          <ul className="grid gap-1.5 text-sm">
+          <ul className="grid grid-cols-1 gap-1.5 text-sm">
             {state.ketQua.map((k) => (
               <li key={k.bai_id} className="flex items-start gap-2">
                 {k.ok ? (

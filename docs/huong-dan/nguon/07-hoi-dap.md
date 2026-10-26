@@ -14,7 +14,7 @@
 
 | Tình huống | Cách xử lý |
 |---|---|
-| Không thấy một lớp nào đó | Lớp có thể đang ở trạng thái **Dự kiến** chưa công khai (chỉ quản lý thấy). Hoặc bộ lọc đang chặn, hãy chọn lại **Mọi trạng thái**, **Mọi nhóm lớp**… |
+| Không thấy một lớp nào đó | Lớp có thể đang ở trạng thái **Dự kiến** chưa công khai (chỉ quản lý thấy). Hoặc bộ lọc đang chặn, hãy bấm **Xóa lọc** hoặc chọn lại ô **Nhóm lớp**, **Trạng thái**… về dòng đầu tiên (tất cả). |
 | Thấy lớp nhưng không đăng ký được | Xem lý do ngắn hiện trên dòng Bài (mục 3.4.2): slot đã đủ, Bài đã bắt đầu, trùng lịch, thiếu chứng chỉ, chưa đủ điều kiện nhóm, chưa được xếp nhóm, hoặc trạng thái tham gia không phải "Đang tham gia". |
 | Đăng ký xong nhưng chưa thấy tên trên slot | Đăng ký đang **chờ quản lý duyệt**. Xem ở **Đăng ký giảng dạy → Đăng ký của tôi đang chờ duyệt**. |
 | Muốn hủy đăng ký | **Rút đăng ký** ở trang Đăng ký giảng dạy (chỉ khi còn chờ duyệt). Đã được duyệt rồi thì báo quản lý. |

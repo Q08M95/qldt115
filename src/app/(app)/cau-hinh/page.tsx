@@ -10,7 +10,7 @@ export default async function CauHinhPage() {
   const session = await requireQuanTri();
 
   return (
-    <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+    <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
       <Link href="/cau-hinh/danh-muc" className="group">
         <Card className="transition-shadow group-hover:shadow-[0_8px_24px_rgba(16,24,40,0.10)]">
           <CardContent className="flex items-center gap-3">

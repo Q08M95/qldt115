@@ -93,7 +93,7 @@ export function LopListView({
           <EmptyState icon={GraduationCap} title="Không có lớp nào phù hợp với bộ lọc." />
         </Card>
       ) : (
-        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
           {rows.map((l) => (
             <LopCard key={l.id} lop={l} href={hrefFor(l)} />
           ))}

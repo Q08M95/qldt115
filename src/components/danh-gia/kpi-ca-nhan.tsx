@@ -224,7 +224,7 @@ export function KpiCaNhanBoard({ data, tieuDe = "Bảng KPI cá nhân" }: { data
           <div className="flex justify-center">
             <RadarNhom truc={nhomDiem.map((n) => ({ nhan: n.nhan, gia_tri: n.gia_tri }))} className="h-auto w-full max-w-xs" />
           </div>
-          <ul className="grid gap-2.5">
+          <ul className="grid grid-cols-1 gap-2.5">
             {tieuChi.map((t) => (
               <li
                 key={t.ma}
