@@ -27,7 +27,7 @@ chưa thấy số trang, bấm chuột phải vào mục lục → **Update Fiel
 Hai script trong `scripts/` dùng để tạo lại toàn bộ ảnh chụp màn hình thật (không phải ảnh vẽ tay) khi cần làm mới:
 
 ```
-node scripts/demo-huong-dan.mjs tao        # tạo 51 tài khoản + 12 tháng lớp/Bài/điểm danh trên project dev/staging
+node scripts/demo-huong-dan.mjs tao        # tạo 51 tài khoản + 12 tháng lớp/Bài/điểm danh + ~2 tháng lớp sắp tới trên project dev/staging
 node scripts/demo-huong-dan.mjs dong-ky    # đóng 3 kỳ đã qua bằng đúng engine KPI thật (chạy SAU "tao")
 node scripts/chup-anh-huong-dan.mjs        # đăng nhập thật + chụp toàn bộ ảnh vào docs/huong-dan/anh/
 node scripts/chup-anh-huong-dan.mjs 3.2 3.2b   # chỉ chụp lại vài mã ảnh (dev server khác cổng 3000: đặt BASE_URL)
