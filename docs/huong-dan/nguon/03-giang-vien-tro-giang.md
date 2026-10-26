@@ -38,7 +38,7 @@ Bạn thấy cả lớp **Dự kiến** (chưa mở đăng ký) khi quản lý �
 
 Để biết trước lớp nào rơi vào ngày nào và **chủ động sắp xếp thời gian** trước khi đăng ký, bấm nút **Lịch** (cạnh nút **Danh sách**) ở đầu trang Lớp học:
 
-- **Lưới tháng**: mỗi ngày có Bài hiện **chấm màu**, mỗi màu là một lớp. **Chấm nhạt** là Bài của lớp **sắp mở** (còn Dự kiến). **Vạch đỏ** dưới ngày nghĩa là ngày đó có Bài **còn thiếu người**.
+- **Lưới tháng**: mỗi ngày có Bài hiện **chấm màu**, mỗi màu là một lớp. **Chấm rỗng** (chỉ có viền) là Bài của lớp **sắp mở** (còn Dự kiến). **Vạch đỏ** dưới ngày nghĩa là ngày đó có Bài **còn thiếu người**.
 - Bấm mũi tên **‹ ›** để sang tháng trước/sau, **Hôm nay** để quay lại tháng hiện tại.
 - **Bấm vào một ngày** để xem các Bài trong ngày: tên Bài, lớp, giờ, địa điểm, trạng thái lớp (**Sắp mở**, Đang mở đăng ký…) và số slot đã có người theo vai trò, ví dụ **GV 0/1 · TG 1/3**.
 - Các nhãn riêng của bạn: **Bạn dạy** (Bài bạn đã được phân công), **Trùng lịch của bạn** (giao giờ với Bài bạn đã nhận — không đăng ký được), **Phù hợp với bạn** (bạn đủ điều kiện và Bài còn thiếu người).

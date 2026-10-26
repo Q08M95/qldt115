@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 export interface ChamLich {
   key: string;
   lopId: string;
-  // Bài của lớp chưa mở đăng ký (Dự kiến công khai sớm) — chấm nhạt hơn
+  // Bài của lớp chưa mở đăng ký (Dự kiến công khai sớm) — chấm rỗng (chỉ viền) để không lẫn với màu lớp nhạt
   mo?: boolean;
 }
 
@@ -60,7 +60,7 @@ export function LuoiThang({
             </span>
             <span className="flex h-2 items-center gap-0.5" aria-hidden>
               {ds.slice(0, 3).map((c) => (
-                <span key={c.key} className={cn("size-2 rounded-full", hueLop(c.lopId).nen, c.mo && "opacity-60")} />
+                <span key={c.key} className={cn("size-2 rounded-full", c.mo ? cn("border-[1.5px]", hueLop(c.lopId).vien) : hueLop(c.lopId).nen)} />
               ))}
               {ds.length > 3 && <span className="text-[10px] leading-none text-muted-foreground">+</span>}
             </span>

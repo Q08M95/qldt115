@@ -65,7 +65,10 @@ export function LichLop({
     return [...theoNgay.keys()].filter((k) => k.startsWith(tienTo)).sort()[0] ?? `${tienTo}-01`;
   });
 
-  const soLop = new Set(items.map((b) => b.lop_id)).size;
+  // Chỉ đếm Bài trong tháng đang xem (lưới còn hiện vài ngày mờ của tháng trước/sau)
+  const tienToThang = `${thang.nam}-${String(thang.thang).padStart(2, "0")}`;
+  const trongThang = items.filter((b) => ngayVN(b.bat_dau).startsWith(tienToThang));
+  const soLop = new Set(trongThang.map((b) => b.lop_id)).size;
   const baiCuaNgay = theoNgay.get(chon) ?? [];
   const [cy, cm, cd] = chon.split("-");
 
@@ -98,7 +101,7 @@ export function LichLop({
           <p className="text-center text-sm font-semibold tabular-nums" aria-live="polite">
             Tháng {thang.thang}/{thang.nam}
             <span className="ml-2 font-normal text-muted-foreground">
-              · {items.length} Bài, {soLop} lớp
+              · {trongThang.length} Bài, {soLop} lớp
             </span>
           </p>
           <LuoiThang thang={thang} theoNgay={cham} thieuNguoi={thieuNguoi} chon={chon} onChon={setChon} />
@@ -107,7 +110,7 @@ export function LichLop({
               <span className="size-2 rounded-full bg-grad-teal" aria-hidden /> Mỗi màu 1 lớp
             </li>
             <li className="flex items-center gap-1.5">
-              <span className="size-2 rounded-full bg-grad-teal opacity-60" aria-hidden /> Lớp sắp mở
+              <span className="size-2 rounded-full border-[1.5px] border-[var(--hue-teal)]" aria-hidden /> Lớp sắp mở
             </li>
             <li className="flex items-center gap-1.5">
               <span className="h-0.5 w-4 rounded-full bg-grad-danger-solid" aria-hidden /> Còn thiếu người

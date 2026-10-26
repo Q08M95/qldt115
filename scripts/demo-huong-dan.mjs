@@ -1,7 +1,8 @@
 // Bộ dữ liệu demo để CHỤP ẢNH MINH HỌA cho "huong dan su dung.pdf" (docs/huong-dan/).
 // Chạy: node scripts/demo-huong-dan.mjs tao | dong-ky | xoa | kiemtra
 //   tao      — tạo 51 tài khoản (tên thật theo danh sách nhân sự do người dùng cung cấp) + danh mục + lớp/Bài
-//              trải ĐÚNG 4 quý gần nhất (12 tháng, kết thúc ở quý hiện tại) + 1 tài khoản Admin demo riêng.
+//              trải ĐÚNG 4 quý gần nhất (12 tháng, kết thúc ở quý hiện tại) + ~2 tháng lớp sắp tới cho "Lịch lớp học"
+//              (đang mở đủ/thiếu người, Dự kiến công khai sớm, 1 cặp Bài trùng giờ của Hero GV) + 1 tài khoản Admin demo riêng.
 //   dong-ky  — đóng 3 quý đã qua bằng ĐÚNG RPC thật (doi_trang_thai_ky, không giả lập số) để có KPI/xu hướng thật.
 //              Chạy SAU "tao". Tách riêng vì cần chờ "tao" ghi xong toàn bộ điểm danh mới đóng.
 //   xoa      — xóa sạch (tài khoản domain @huongdan-demo.test, lớp có created_by = Admin demo, các kỳ vừa tạo).
@@ -425,6 +426,31 @@ async function tao() {
   await taoBaiDayXong(lHuy, nHuy, 1, moc(cong(hom, -8), 8), 3, 1, 1);
 
   console.log("Đã tạo các lớp \"sống\" của quý hiện tại (đang diễn ra, đang mở, đủ đăng ký, cảnh báo pool, dự kiến, đã hủy).");
+
+  // ---- ~2 tháng SẮP TỚI cho "Lịch lớp học" (/lop-hoc?xem=lich): lớp đang mở đủ/thiếu người, lớp Dự kiến công khai
+  // sớm ("Sắp mở"), và 1 cặp Bài trùng giờ với Bài HERO_GV đã nhận (nhãn "Trùng lịch của bạn") --------------------
+  const ganNguoi = async (baiId, key, vt) => {
+    const [s] = await rest(`slot_giang_day?select=id&bai_id=eq.${baiId}&vai_tro=eq.${vt}&nguoi_phan_cong=is.null&limit=1`);
+    await rest(`slot_giang_day?id=eq.${s.id}`, { method: "PATCH", body: { trang_thai: "da_phan_cong", nguoi_phan_cong: id[key] } });
+  };
+  for (const [k, d] of [14, 20, 27, 34, 41, 48].entries()) {
+    const thieu = k % 2 === 0; // xen kẽ lớp còn thiếu người / đã đủ
+    const { lop, dsNhom } = await taoLop(k, k === 3 ? "khong_kinh_phi" : "co_kinh_phi", k === 3, "dang_mo", cong(hom, d), cong(hom, d + 1));
+    await taoBaiSapToi(lop, dsNhom, 1, moc(cong(hom, d), 8), 3, 1, thieu ? 1 : 2, 0, thieu ? 1 : 0);
+    await taoBaiSapToi(lop, dsNhom, 2, moc(cong(hom, d + 1), 13), 3, thieu ? 0 : 1, thieu ? 0 : 2, thieu ? 1 : 0, thieu ? 2 : 0);
+  }
+  for (const [k, d] of [31, 45, 58].entries()) {
+    const { lop, dsNhom } = await taoLop(k + 1, "co_kinh_phi", false, "nhap", cong(hom, d), cong(hom, d + 2));
+    await taoBaiSapToi(lop, dsNhom, 1, moc(cong(hom, d), 8), 3, 0, 0, 1, 2);
+    await taoBaiSapToi(lop, dsNhom, 2, moc(cong(hom, d + 2), 8), 3, 0, 0, 1, 2);
+  }
+  const ngayTrung = cong(hom, 17);
+  const { lop: lCuaHero, dsNhom: nCuaHero } = await taoLop(1, "co_kinh_phi", false, "dang_mo", ngayTrung, ngayTrung, { nhom: NHOM_BAC_SI });
+  const baiHero = await taoBaiSapToi(lCuaHero, nCuaHero, 1, moc(ngayTrung, 8), 3, 0, 1, 1, 0);
+  await ganNguoi(baiHero.id, HERO_GV, "giang_vien");
+  const { lop: lTrung, dsNhom: nTrung } = await taoLop(2, "co_kinh_phi", false, "dang_mo", ngayTrung, ngayTrung);
+  await taoBaiSapToi(lTrung, nTrung, 1, moc(ngayTrung, 9), 3, 0, 1, 1, 1);
+  console.log("Đã tạo các lớp sắp tới ~2 tháng (đang mở đủ/thiếu người, 3 lớp Dự kiến công khai sớm, 1 cặp Bài trùng giờ của Hero GV).");
 
   // 5. Đề xuất nhân sự thủ công (khen thưởng/đào tạo/phân công) — đủ trạng thái -------------------
   const hoatDong = NHAN_SU.filter((n) => n.trongSo > 0);
