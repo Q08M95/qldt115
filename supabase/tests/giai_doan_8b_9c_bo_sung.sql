@@ -94,8 +94,8 @@ begin
   res := res || jsonb_build_object('t', '03 Người khác không thấy tùy chọn của a2', 'ok', n = 0);
 
   -- Lớp mở đăng ký: a3 nhận, a2 (đã tắt) không nhận
-  insert into public.lop_hoc (ten, nhom_lop_id, doi_tuong, loai_kinh_phi, ngay_bat_dau, ngay_ket_thuc, trang_thai)
-  values ('ZZ Test8b Lớp mở', nl, 'nhan_vien_y_te', 'co_kinh_phi', current_date + 2, current_date + 9, 'nhap') returning id into lo;
+  insert into public.lop_hoc (ten, nhom_lop_id, doi_tuong, loai_kinh_phi, ngay_bat_dau, ngay_ket_thuc, trang_thai, cong_khai_som)
+  values ('ZZ Test8b Lớp mở', nl, 'nhan_vien_y_te', 'co_kinh_phi', current_date + 2, current_date + 9, 'nhap', false) returning id into lo;
   insert into public.lop_hoc_nhom_du_dieu_kien (lop_id, nhom) values (lo, 'gv_bac_si');
   insert into public.bai_hoc (lop_id, thu_tu, ten, bat_dau, ket_thuc) values (lo, 1, 'Bài 1', now() + interval '2 days', now() + interval '2 days 2 hours') returning id into b1;
   insert into public.slot_giang_day (bai_id, vai_tro, vi_tri) values (b1, 'giang_vien', 1);
@@ -138,8 +138,8 @@ begin
 
   -- ===================== 9c: nhật ký bổ sung =====================
   perform pg_temp.la(a1);
-  insert into public.lop_hoc (ten, nhom_lop_id, doi_tuong, loai_kinh_phi, ngay_bat_dau, ngay_ket_thuc, trang_thai)
-  values ('ZZ Test8b Lớp nhật ký', nl, 'nhan_vien_y_te', 'co_kinh_phi', current_date + 2, current_date + 5, 'nhap') returning id into l1;
+  insert into public.lop_hoc (ten, nhom_lop_id, doi_tuong, loai_kinh_phi, ngay_bat_dau, ngay_ket_thuc, trang_thai, cong_khai_som)
+  values ('ZZ Test8b Lớp nhật ký', nl, 'nhan_vien_y_te', 'co_kinh_phi', current_date + 2, current_date + 5, 'nhap', false) returning id into l1;
   perform pg_temp.ra();
   select count(*) into n from public.audit_log where loai = 'tao_lop' and doi_tuong = 'Lớp ZZ Test8b Lớp nhật ký' and sau ->> 'ten' = 'ZZ Test8b Lớp nhật ký' and created_at >= v_tu;
   res := res || jsonb_build_object('t', '10 Tạo lớp: đúng 1 dòng nhật ký', 'ok', n = 1);

@@ -8,7 +8,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   return (
     <AppShell
-      user={{ id: profile.id, name: profile.ho_ten, email: profile.email, avatarUrl: profile.avatar_url }}
+      user={{ id: profile.id, name: profile.ho_ten, email: profile.email, avatarUrl: profile.avatar_url, coLichCaNhan: !!profile.vai_tro_giang_day }}
       isQuanTri={isQuanTri}
       period={ky}
       unreadCount={soChuaDoc}

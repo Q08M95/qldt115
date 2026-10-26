@@ -1,12 +1,14 @@
 // Chụp ảnh minh họa cho "huong dan su dung.pdf" — dùng dữ liệu demo dựng bởi scripts/demo-huong-dan.mjs.
-// Chạy: node scripts/chup-anh-huong-dan.mjs
+// Chạy: node scripts/chup-anh-huong-dan.mjs [mã ảnh ...]   (không ghi mã = chụp lại tất cả; vd: ... 3.2 3.2b 5.2)
+// Dev server mặc định http://localhost:3000, đổi bằng biến môi trường BASE_URL.
 // Lưu file vào docs/huong-dan/anh/<mã ảnh>.png — chạy lại node docs/huong-dan/build.mjs sau đó để chèn vào PDF.
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright-core";
 
-const BASE = "http://localhost:3000";
+const BASE = process.env.BASE_URL ?? "http://localhost:3000";
+const CHI = process.argv.slice(2);
 const EDGE = "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe";
 const ANH = fileURLToPath(new URL("../docs/huong-dan/anh/", import.meta.url));
 fs.mkdirSync(ANH, { recursive: true });
@@ -48,6 +50,7 @@ async function main() {
   }
 
   async function chup(code, { as: email, path: duongDan, viewport = DESKTOP, dark = false, before, fullPage = false, clip } = {}) {
+    if (CHI.length && !CHI.includes(code)) return;
     try {
       const { page } = await ctxCua(email, viewport);
       await page.goto(`${BASE}${duongDan}`, { waitUntil: "load" });
@@ -70,7 +73,7 @@ async function main() {
   const HERO_BGD = "u01@huongdan-demo.test";
 
   // ---------- Chương 2 ----------
-  {
+  if (!CHI.length || CHI.includes("2.1")) {
     const context = await browser.newContext({ viewport: DESKTOP, locale: "vi-VN" });
     const page = await context.newPage();
     await page.goto(`${BASE}/login`);
@@ -94,6 +97,16 @@ async function main() {
   // ---------- Chương 3 ----------
   await chup("3.1", { as: HERO_GV, path: "/" });
   await chup("3.2", { as: HERO_GV, path: "/lop-hoc" });
+  // Lịch các lớp: chọn ngày có Bài còn thiếu người (ưu tiên), không có thì ngày bất kỳ có Bài
+  await chup("3.2b", {
+    as: HERO_GV,
+    path: "/lop-hoc?xem=lich",
+    before: async (page) => {
+      const thieu = page.locator('button[aria-label*="thiếu người"]');
+      const coBai = page.locator('button[aria-label*="Bài"]');      await ((await thieu.count()) ? thieu.first() : coBai.first()).click();
+      await page.waitForTimeout(300);
+    },
+  });
   await chup("3.3", { as: HERO_GV, path: "/lop-hoc/697b91d0-96bd-4d4c-98a1-c38a5aac5cce" }); // ACLS-126 đã hoàn thành
   await chup("3.4a", {
     as: HERO_TG,

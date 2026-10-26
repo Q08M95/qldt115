@@ -30,7 +30,7 @@ Nếu bạn vừa là quản lý vừa có hồ sơ giảng dạy, trang Tổng 
 | **Nhóm đủ điều kiện đăng ký** | Tick một hoặc nhiều trong 5 nhóm nhân sự. **Chỉ người thuộc các nhóm này mới đăng ký hay được gợi ý.** Ví dụ lớp ACLS chỉ mở cho "Giảng viên là bác sĩ" và "Trợ giảng là bác sĩ". |
 | **Chứng chỉ yêu cầu thêm** (nếu cần) | Lọc thêm bên trong các nhóm đã chọn. |
 | **Ngày bắt đầu, Ngày kết thúc**, **Địa điểm** | |
-| **Công khai sớm khi còn Dự kiến** | Tick nếu muốn giảng viên/trợ giảng nhìn thấy lớp trước khi mở đăng ký. |
+| **Công khai sớm khi còn Dự kiến** | **Bật sẵn.** Giảng viên/trợ giảng thấy lớp và các Bài trên **Lịch** của trang Lớp học trước khi mở đăng ký; người đủ điều kiện nhận thông báo **"Lớp sắp mở đăng ký"** khi lớp có Bài đầu tiên. Bỏ tick nếu chưa muốn công bố lớp. |
 
 3. Bấm **Tạo lớp**. Lớp mới ở trạng thái **Dự kiến**.
 
@@ -47,7 +47,9 @@ Nếu đơn vị đã có sẵn kế hoạch đào tạo (biết trước tháng
 3. Dán nội dung (hoặc chọn file .csv) vào ô nhập, bấm **Tạo lớp và Bài**.
 4. Xem kết quả theo từng lớp: lớp nào lỗi (tên nhóm lớp/chứng chỉ gõ sai, giờ Bài không hợp lệ…) sẽ không được tạo, báo rõ dòng lỗi để sửa và nhập lại.
 
-Lớp tạo từ CSV cũng ở trạng thái **Dự kiến** như tạo tay — hãy rà lại trước khi mở đăng ký.
+Lớp tạo từ CSV cũng ở trạng thái **Dự kiến** như tạo tay — hãy rà lại trước khi mở đăng ký. Cột **công khai sớm** để trống được hiểu là **có** (lớp hiện ngay trên lịch cho mọi người); ghi "không" nếu chưa muốn công bố lớp đó.
+
+> **Mẹo:** Nhập kế hoạch cả năm ngay từ đầu năm giúp giảng viên/trợ giảng thấy trước toàn bộ lịch lớp trên chế độ **Lịch** của trang Lớp học. Quản lý cũng dùng chế độ Lịch để rà nhanh những ngày có **vạch đỏ** (Bài còn thiếu người) mà mời thêm người. Người quản lý không có hồ sơ giảng dạy bấm **biểu tượng lịch** trên thanh trên cùng sẽ mở thẳng lịch các lớp.
 
 ## 5.3 Thêm các Bài vào lớp
 

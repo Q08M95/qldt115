@@ -26,13 +26,28 @@ Bấm **Lớp học** trên menu. Mỗi lớp là một thẻ, cho biết:
 - Thời gian, địa điểm, số Bài, đối tượng (Nhân viên y tế hoặc Cộng đồng), loại kinh phí.
 - **Thanh tiến độ theo vai trò**: một thanh cho **Giảng viên**, một thanh cho **Trợ giảng**, ví dụ **"1/3 lượt phân công"** và dòng nhỏ **"1 nhân sự khác nhau tham gia"**.
 
-> **Lưu ý:** "1/3 lượt phân công" đếm **slot**, không đếm người. Một người dạy 3 Bài sẽ chiếm 3 lượt. Vì vậy "3/3 lượt" có thể chỉ do một người dạy cả ba Bài. Dòng "nhân sự khác nhau" cho bạn biết có bao nhiêu **người thật** tham gia. Nếu tất cả slot của một vai trò do **một người** đảm nhiệm, hệ thống ghi thẳng tên người đó kèm "Đã đủ".
+> **Lưu ý:** "1/3 lượt phân công" đếm **slot**, không đếm người. Một người dạy 3 Bài sẽ chiếm 3 lượt. Vì vậy "3/3 lượt" có thể chỉ do một người dạy cả ba Bài. Dòng "nhân sự khác nhau" cho bạn biết có bao nhiêu **người thật** tham gia. Tên người đảm nhiệm từng slot xem ở trang chi tiết lớp.
 
 **Bộ lọc** ở đầu trang: theo tên hoặc địa điểm, **nhóm lớp**, **trạng thái lớp**, **đối tượng**, **loại kinh phí**. Chọn xong bấm **Tìm**.
 
-Bạn chỉ thấy lớp **Dự kiến** khi quản lý đã bật "Công khai sớm". Lớp Dự kiến chưa công khai chỉ quản lý thấy.
+Bạn thấy cả lớp **Dự kiến** (chưa mở đăng ký) khi quản lý đã bật "Công khai sớm" — lớp mới tạo được bật sẵn, nên phần lớn lớp sắp tới đều hiện ra từ sớm. Lớp Dự kiến chưa công khai chỉ quản lý thấy.
 
 ![Ảnh 3.2 — Danh sách lớp học và bộ lọc](3.2)
+
+### Xem lịch các lớp sắp tới
+
+Để biết trước lớp nào rơi vào ngày nào và **chủ động sắp xếp thời gian** trước khi đăng ký, bấm nút **Lịch** (cạnh nút **Danh sách**) ở đầu trang Lớp học:
+
+- **Lưới tháng**: mỗi ngày có Bài hiện **chấm màu**, mỗi màu là một lớp. **Chấm nhạt** là Bài của lớp **sắp mở** (còn Dự kiến). **Vạch đỏ** dưới ngày nghĩa là ngày đó có Bài **còn thiếu người**.
+- Bấm mũi tên **‹ ›** để sang tháng trước/sau, **Hôm nay** để quay lại tháng hiện tại.
+- **Bấm vào một ngày** để xem các Bài trong ngày: tên Bài, lớp, giờ, địa điểm, trạng thái lớp (**Sắp mở**, Đang mở đăng ký…) và số slot đã có người theo vai trò, ví dụ **GV 0/1 · TG 1/3**.
+- Các nhãn riêng của bạn: **Bạn dạy** (Bài bạn đã được phân công), **Trùng lịch của bạn** (giao giờ với Bài bạn đã nhận — không đăng ký được), **Phù hợp với bạn** (bạn đủ điều kiện và Bài còn thiếu người).
+- Bấm **Phù hợp với tôi** để chỉ hiện các lớp bạn đủ điều kiện đăng ký. Các bộ lọc nhóm lớp, trạng thái… ở trên cũng áp dụng cho lịch.
+- Bấm tên Bài để vào trang chi tiết lớp. Lớp **Sắp mở** chưa đăng ký được — hãy giữ lịch trống, khi lớp mở đăng ký bạn sẽ nhận thông báo.
+
+![Ảnh 3.2b — Lịch các lớp: lưới tháng và các Bài của ngày đã chọn](3.2b)
+
+> **Mẹo:** "Lịch các lớp" khác với "Lịch dạy của tôi" (mục 3.6): lịch các lớp cho thấy **mọi lớp** để bạn lên kế hoạch, còn lịch dạy của tôi chỉ có các Bài **bạn đã được phân công**.
 
 ## 3.3 Xem chi tiết một lớp
 
@@ -179,7 +194,7 @@ Nếu bạn lỡ chọn "Chặn", hãy vào cài đặt của trình duyệt (bi
 
 ### Tắt bớt thông báo không cần thiết
 
-Trong **Cài đặt thông báo**, bạn bật hoặc tắt từng loại theo hai kênh: **trong web** và **đẩy**. Các loại có thể tắt: **Lớp / Bài mới phù hợp**, **Kết quả đăng ký**, **Lời mời bị từ chối / thu hồi**, **Công bố KPI**. Các loại **luôn được gửi**, không tắt được: **lời mời dạy**, **đổi lịch**, **hủy lớp hoặc phân công**, **nhắc check-in**, **sửa điểm danh**, thay đổi vai trò và Quyền Quản lý lớp.
+Trong **Cài đặt thông báo**, bạn bật hoặc tắt từng loại theo hai kênh: **trong web** và **đẩy**. Các loại có thể tắt: **Lớp / Bài mới phù hợp** (gồm cả thông báo **"Lớp sắp mở đăng ký"** khi có lớp Dự kiến phù hợp với bạn được công khai), **Kết quả đăng ký**, **Lời mời bị từ chối / thu hồi**, **Công bố KPI**. Các loại **luôn được gửi**, không tắt được: **lời mời dạy**, **đổi lịch**, **hủy lớp hoặc phân công**, **nhắc check-in**, **sửa điểm danh**, thay đổi vai trò và Quyền Quản lý lớp.
 
 ![Ảnh 3.8 — Trang Thông báo và mục Cài đặt thông báo](3.8)
 

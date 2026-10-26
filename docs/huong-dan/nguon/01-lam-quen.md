@@ -52,7 +52,7 @@ Bạn sẽ gặp các từ dưới đây trong suốt tài liệu và trên màn
 
 | Trạng thái | Ý nghĩa |
 |---|---|
-| **Dự kiến** | Lớp vừa tạo, chưa mở đăng ký. Thường chỉ quản lý thấy, trừ khi quản lý chọn "Công khai sớm". |
+| **Dự kiến** | Lớp vừa tạo, chưa mở đăng ký. Mặc định được "Công khai sớm" để mọi người thấy trước trên lịch (hiện nhãn **Sắp mở**); quản lý có thể tắt để chỉ quản lý thấy. |
 | **Đang mở đăng ký** | Giảng viên/trợ giảng đăng ký được. |
 | **Đã đủ đăng ký** | Tự động: mọi Bài trong lớp đã đủ người cho mọi vai trò cần. |
 | **Đang diễn ra** | Lớp đã bắt đầu. |
