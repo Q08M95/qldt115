@@ -3,12 +3,25 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 // Phân trang dạng ‹ 1 2 3 … › (mục 8.5): giữ nguyên các tham số lọc trong URL. Dùng chung cho mọi danh sách
-// có phân trang (Nhật ký hệ thống, Lớp học...).
-export function PhanTrang({ trang, tongTrang, hrefTrang }: { trang: number; tongTrang: number; hrefTrang: (t: number) => string }) {
+// có phân trang (Nhật ký hệ thống, Lớp học...). trenNenTrang: đặt thẳng trên nền trang (không trong card) — hover nền trắng.
+export function PhanTrang({
+  trang,
+  tongTrang,
+  hrefTrang,
+  trenNenTrang = false,
+}: {
+  trang: number;
+  tongTrang: number;
+  hrefTrang: (t: number) => string;
+  trenNenTrang?: boolean;
+}) {
   if (tongTrang <= 1) return null;
   const hien = new Set([1, tongTrang, trang - 1, trang, trang + 1]);
   const so = [...hien].filter((t) => t >= 1 && t <= tongTrang).sort((a, b) => a - b);
-  const o = "flex size-9 items-center justify-center rounded-lg text-sm tabular-nums transition-colors hover:bg-background";
+  const o = cn(
+    "flex size-9 items-center justify-center rounded-lg text-sm tabular-nums transition-colors",
+    trenNenTrang ? "hover:bg-card" : "hover:bg-background",
+  );
 
   return (
     <nav aria-label="Phân trang" className="flex items-center justify-center gap-1 px-5 pt-4">

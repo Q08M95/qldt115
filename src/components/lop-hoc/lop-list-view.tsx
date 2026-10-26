@@ -113,14 +113,15 @@ export function LopListView({
       )}
 
       {!xemLich && trang !== undefined && tongTrang !== undefined && hrefTrang && (
-        <Card className="gap-0 py-4">
-          <PhanTrang trang={trang} tongTrang={tongTrang} hrefTrang={hrefTrang} />
+        // Đặt thẳng trên nền trang (không bọc card): chỉ là vài nút số, khung trắng riêng làm rối mắt
+        <div className="py-1">
+          <PhanTrang trang={trang} tongTrang={tongTrang} hrefTrang={hrefTrang} trenNenTrang />
           {capTaiVe && (
             <p className="px-5 pt-2 text-center text-xs text-muted-foreground">
               Chỉ tìm/sắp xếp trong các lớp gần đây nhất — lớp rất cũ có thể chưa hiện ở đây.
             </p>
           )}
-        </Card>
+        </div>
       )}
     </div>
   );
