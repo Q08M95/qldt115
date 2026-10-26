@@ -97,16 +97,8 @@ async function main() {
   // ---------- Chương 3 ----------
   await chup("3.1", { as: HERO_GV, path: "/" });
   await chup("3.2", { as: HERO_GV, path: "/lop-hoc" });
-  // Lịch các lớp: chọn ngày có Bài còn thiếu người (ưu tiên), không có thì ngày bất kỳ có Bài
-  await chup("3.2b", {
-    as: HERO_GV,
-    path: "/lop-hoc?xem=lich",
-    before: async (page) => {
-      const thieu = page.locator('button[aria-label*="thiếu người"]');
-      const coBai = page.locator('button[aria-label*="Bài"]');      await ((await thieu.count()) ? thieu.first() : coBai.first()).click();
-      await page.waitForTimeout(300);
-    },
-  });
+  // Lịch các lớp (mỗi lớp 1 thanh, tháng hiện tại)
+  await chup("3.2b", { as: HERO_GV, path: "/lop-hoc?xem=lich" });
   await chup("3.3", { as: HERO_GV, path: "/lop-hoc/697b91d0-96bd-4d4c-98a1-c38a5aac5cce" }); // ACLS-126 đã hoàn thành
   await chup("3.4a", {
     as: HERO_TG,
@@ -118,7 +110,7 @@ async function main() {
     },
   });
   await chup("3.5", { as: HERO_TG, path: "/dang-ky" });
-  await chup("3.6", { as: HERO_GV, path: "/dang-ky#lich" });
+  await chup("3.6", { as: HERO_GV, path: "/lop-hoc?xem=lich&cua=toi", fullPage: true });
   await chup("3.7", { as: HERO_GV, path: "/" });
   await chup("3.8", { as: HERO_GV, path: "/thong-bao" });
   await chup("3.9", {

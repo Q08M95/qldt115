@@ -72,11 +72,11 @@ Toàn bộ ảnh dưới đây đã có trong `docs/huong-dan/anh/` (chụp bằ
 | 2.4 | Các bước thêm trang web vào màn hình chính iPhone | 2.4 Cài trang web lên điện thoại như một ứng dụng |
 | 3.1 | Trang Tổng quan của giảng viên/trợ giảng | 3.1 Trang Tổng quan (trang chủ) |
 | 3.2 | Danh sách lớp học và bộ lọc | 3.2 Xem danh sách lớp |
-| 3.2b | Lịch các lớp: lưới tháng và các Bài của ngày đã chọn | 3.2 Xem danh sách lớp (Xem lịch các lớp sắp tới) |
+| 3.2b | Lịch các lớp: mỗi lớp một thanh, màu theo trạng thái | 3.2 Xem danh sách lớp (Xem lịch các lớp) |
 | 3.3 | Trang chi tiết lớp: danh sách Bài và các slot | 3.3 Xem chi tiết một lớp |
 | 3.4a | Chọn nhiều Bài và bấm "Đăng ký các Bài đã chọn" | 3.4 Đăng ký dạy |
 | 3.5 | Lời mời cần bạn phản hồi, nút Đồng ý và Từ chối | 3.5 Nhận lời mời dạy |
-| 3.6 | Lịch dạy của tôi (lịch tháng) | 3.6 Trang "Đăng ký giảng dạy" và lịch dạy của bạn |
+| 3.6 | Lịch ở chế độ "Của tôi" và danh sách buổi dạy trong tháng | 3.6 Trang "Đăng ký giảng dạy" và lịch dạy của bạn |
 | 3.7 | Banner check-in trên trang Tổng quan | 3.7 Check-in khi đến buổi dạy |
 | 3.8 | Trang Thông báo và mục Cài đặt thông báo | 3.8 Thông báo |
 | 3.9 | Hồ sơ cá nhân và form Thêm chứng chỉ | 3.9 Hồ sơ cá nhân |

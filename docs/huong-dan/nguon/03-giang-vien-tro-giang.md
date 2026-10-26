@@ -8,7 +8,7 @@ Chương này dành cho người có hồ sơ giảng dạy. Người giữ Quy�
 
 1. **Banner "Check-in buổi dạy"** (chỉ hiện khi bạn có Bài sắp bắt đầu hoặc đang diễn ra). Xem mục 3.7.
 2. **Ba thẻ số:** **Nhân sự** (tổng số người trong hệ thống), **Lớp đang mở** và **Slot còn trống**. Mỗi thẻ có đường biểu đồ nhỏ thể hiện xu hướng gần đây. Các thẻ chỉ để xem, không bấm được.
-3. **Lịch dạy sắp tới:** tối đa 4 Bài chưa diễn ra của bạn, xếp theo mốc "Hôm nay", "Ngày mai", "Tuần này" hoặc theo ngày. Bấm **Xem lịch tháng** để sang lịch tháng đầy đủ (mục 3.6).
+3. **Lịch dạy sắp tới:** tối đa 4 Bài chưa diễn ra của bạn, xếp theo mốc "Hôm nay", "Ngày mai", "Tuần này" hoặc theo ngày. Bấm **Xem lịch tháng** để mở lịch ở chế độ **Của tôi** (mục 3.6).
 4. **KPI của tôi:** điểm KPI kỳ hiện tại kèm mức tăng giảm so với kỳ trước, giờ dạy, số Bài, xu hướng qua các kỳ, điểm theo nhóm tiêu chí, vị trí so với đồng nghiệp, số lớp không kinh phí. Nhãn **Tạm tính** nghĩa là kỳ chưa đóng, điểm còn có thể thay đổi. Chi tiết cách đọc ở mục 4.10.
 5. **Từng tiêu chí so với kỳ trước:** tiêu chí bạn mạnh nhất, tiêu chí cần cải thiện nhất, và mức tăng giảm của từng tiêu chí.
 6. **Lớp theo nhóm lớp** và **Lớp theo trạng thái:** hai biểu đồ tròn cho cả đơn vị.
@@ -34,20 +34,21 @@ Bạn thấy cả lớp **Dự kiến** (chưa mở đăng ký) khi quản lý �
 
 ![Ảnh 3.2 — Danh sách lớp học và bộ lọc](3.2)
 
-### Xem lịch các lớp sắp tới
+### Xem lịch các lớp
 
-Để biết trước lớp nào rơi vào ngày nào và **chủ động sắp xếp thời gian** trước khi đăng ký, bấm nút **Lịch** (cạnh nút **Danh sách**) ở đầu trang Lớp học:
+Mọi lịch trong hệ thống nằm ở **một chỗ duy nhất**: nút **Lịch** (cạnh nút **Danh sách**) ở đầu trang Lớp học. **Biểu tượng lịch** trên thanh trên cùng, nút **Lịch** ở đáy màn hình điện thoại và liên kết **Xem lịch tháng** ở trang Tổng quan đều mở thẳng tới đây. Lịch giúp bạn biết trước lớp nào diễn ra vào những ngày nào để **chủ động sắp xếp thời gian** trước khi đăng ký.
 
-- **Lưới tháng**: mỗi ngày có Bài hiện **chấm màu**, mỗi màu là một lớp. **Chấm rỗng** (chỉ có viền) là Bài của lớp **sắp mở** (còn Dự kiến). **Vạch đỏ** dưới ngày nghĩa là ngày đó có Bài **còn thiếu người**.
-- Bấm mũi tên **‹ ›** để sang tháng trước/sau, **Hôm nay** để quay lại tháng hiện tại.
-- **Bấm vào một ngày** để xem các Bài trong ngày: tên Bài, lớp, giờ, địa điểm, trạng thái lớp (**Sắp mở**, Đang mở đăng ký…) và số slot đã có người theo vai trò, ví dụ **GV 0/1 · TG 1/3**.
-- Các nhãn riêng của bạn: **Bạn dạy** (Bài bạn đã được phân công), **Trùng lịch của bạn** (giao giờ với Bài bạn đã nhận — không đăng ký được), **Phù hợp với bạn** (bạn đủ điều kiện và Bài còn thiếu người).
-- Bấm **Phù hợp với tôi** để chỉ hiện các lớp bạn đủ điều kiện đăng ký. Các bộ lọc nhóm lớp, trạng thái… ở trên cũng áp dụng cho lịch.
-- Bấm tên Bài để vào trang chi tiết lớp. Lớp **Sắp mở** chưa đăng ký được — hãy giữ lịch trống, khi lớp mở đăng ký bạn sẽ nhận thông báo.
+- Mỗi **lớp** là một **thanh ngang** kéo dài từ ngày bắt đầu đến ngày kết thúc. **Màu thanh cho biết trạng thái**: viền nét đứt là **Sắp mở** (lớp còn Dự kiến, chưa đăng ký được), xanh dương là **Đang mở đăng ký**, xanh lá là **Đã đủ đăng ký**, xanh ngọc là **Đang diễn ra**, xám là **Đã hoàn thành**.
+- **Chấm đỏ** trên thanh nghĩa là lớp **còn thiếu người**.
+- **Bấm vào thanh** để mở trang lớp (xem các Bài, đăng ký…).
+- Bấm **‹ ›** để sang tháng trước/sau, **Hôm nay** để quay lại tháng hiện tại. Có thể lọc theo **nhóm lớp**.
+- Trên điện thoại, lịch hiện dạng **danh sách lớp theo tuần** cho dễ đọc.
 
-![Ảnh 3.2b — Lịch các lớp: lưới tháng và các Bài của ngày đã chọn](3.2b)
+Lịch có hai chế độ: **Tất cả lớp** (mặc định) và **Của tôi** (chỉ các lớp bạn được phân công, kèm danh sách **Buổi dạy của tôi trong tháng** — xem mục 3.6).
 
-> **Mẹo:** "Lịch các lớp" khác với "Lịch dạy của tôi" (mục 3.6): lịch các lớp cho thấy **mọi lớp** để bạn lên kế hoạch, còn lịch dạy của tôi chỉ có các Bài **bạn đã được phân công**.
+![Ảnh 3.2b — Lịch các lớp: mỗi lớp một thanh, màu theo trạng thái](3.2b)
+
+> **Mẹo:** Lớp **Sắp mở** chưa đăng ký được — hãy giữ lịch trống, khi lớp mở đăng ký bạn sẽ nhận thông báo.
 
 ## 3.3 Xem chi tiết một lớp
 
@@ -122,24 +123,19 @@ Quản lý có thể **mời bạn** trực tiếp vào một Bài. Khi đó:
 
 ## 3.6 Trang "Đăng ký giảng dạy" và lịch dạy của bạn
 
-Trang này gom **việc của bạn** vào một nơi. Từ trên xuống:
+Trang **Đăng ký giảng dạy** gom **việc cần làm** của bạn vào một nơi:
 
 1. **Lời mời cần bạn phản hồi** (mục 3.5).
 2. **Đăng ký của tôi đang chờ duyệt** (mục 3.4.4).
-3. **Lịch dạy của tôi** (lưới lịch tháng) ở cuối trang.
 
 ### Lịch dạy của tôi
 
-Lịch chỉ hiển thị các Bài **đã được phân công cho bạn**. Các đăng ký chờ duyệt và slot trống **không** hiện trên lịch.
+Lịch dạy của bạn nằm ở **Lớp học → Lịch → Của tôi** (cùng chỗ với lịch các lớp, mục 3.2):
 
-- Ngày có Bài hiện **chấm màu** ở dưới số ngày. **Mỗi lớp một màu**, nên bạn nhìn màu biết ngay hai Bài có cùng lớp hay không.
-- **Hôm nay** có vòng tròn mảnh quanh số. **Ngày đang chọn** có vòng tròn tô màu.
-- Bấm vào một ngày để xem danh sách Bài ngày đó ngay bên dưới: giờ, tên Bài, tên lớp và vai trò. Bấm tên Bài để mở trang lớp.
-- Dùng nút **‹** và **›** để chuyển tháng, nút **Hôm nay** để về ngày hiện tại.
+- Lưới tháng chỉ còn các lớp **bạn đã được phân công**. Đăng ký chờ duyệt và slot trống **không** tính.
+- Bên dưới là **Buổi dạy của tôi trong tháng**: thứ, ngày, giờ, tên Bài, tên lớp và vai trò của từng buổi. Bấm tên Bài để mở trang lớp.
 
-Bạn cũng có thể vào nhanh lịch này bằng **biểu tượng lịch** trên thanh trên cùng (máy tính) hoặc nút **Lịch dạy** ở đáy màn hình (điện thoại).
-
-![Ảnh 3.6 — Lịch dạy của tôi (lịch tháng)](3.6)
+![Ảnh 3.6 — Lịch ở chế độ "Của tôi" và danh sách buổi dạy trong tháng](3.6)
 
 ## 3.7 Check-in khi đến buổi dạy
 

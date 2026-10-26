@@ -1,85 +1,112 @@
-"use client";
-
-import { useMemo, useState } from "react";
 import Link from "next/link";
 import { CalendarRange, ChevronLeft, ChevronRight } from "lucide-react";
-import { LuoiThang, type ChamLich } from "@/components/lich/luoi-thang";
+import { pill } from "@/components/bao-cao/thanh-dieu-khien";
+import { EmptyState } from "@/components/empty-state";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import type { BaiLich } from "@/lib/dang-ky/queries";
 import { fmtTime } from "@/lib/format";
-import { hueLop, ngayVN, type Thang } from "@/lib/lich";
-import { TRANG_THAI_LOP_LABEL, TRANG_THAI_LOP_VARIANT } from "@/lib/lop-hoc/labels";
+import { khoaThang, ngayVN, oLichThang, THU, type OLich, type Thang } from "@/lib/lich";
+import { TRANG_THAI_LOP_LABEL } from "@/lib/lop-hoc/labels";
 import type { LichLopRow } from "@/lib/lop-hoc/queries";
+import { VAI_TRO_LABEL } from "@/lib/nhan-su/labels";
 import { cn } from "@/lib/utils";
 import type { TrangThaiLopHienThi } from "@/types/database";
 
-const conThieu = (b: LichLopRow) => b.gv_da < b.gv_tong || b.tg_da < b.tg_tong;
+// Màu thanh = trạng thái lớp (thay cho màu theo từng lớp) — nhìn là hiểu, chỉ trong 4 màu gốc + xám trung tính (mục 8.1)
+const KIEU: Partial<Record<TrangThaiLopHienThi, string>> = {
+  nhap: "border border-dashed border-muted-foreground/50 bg-card text-muted-foreground",
+  dang_mo: "bg-grad-blue text-hue-blue-on",
+  da_du_dang_ky: "bg-grad-green text-hue-green-on",
+  dang_dien_ra: "bg-grad-teal text-hue-teal-on",
+  da_hoan_thanh: "bg-grad-neutral text-neutral",
+};
+const nhanTrangThai = (t: TrangThaiLopHienThi) => (t === "nhap" ? "Sắp mở" : TRANG_THAI_LOP_LABEL[t]);
+const CHU_GIAI: TrangThaiLopHienThi[] = ["nhap", "dang_mo", "da_du_dang_ky", "dang_dien_ra", "da_hoan_thanh"];
+const ddmm = (d: string) => `${d.slice(8, 10)}/${d.slice(5, 7)}`;
+const khoangNgay = (l: LichLopRow) => (l.ngay_bat_dau === l.ngay_ket_thuc ? ddmm(l.ngay_bat_dau) : `${ddmm(l.ngay_bat_dau)}–${ddmm(l.ngay_ket_thuc)}`);
+// Thứ của 1 ngày YYYY-MM-DD (T2..CN)
+const thuCua = (ngay: string) => THU[(new Date(`${ngay}T00:00:00Z`).getUTCDay() + 6) % 7];
 
-// Lịch lớp toàn đơn vị (mục 4.2/4.3): mọi Bài của lớp đang mở + lớp Dự kiến đã công khai sớm, để GV/TG biết trước và chủ động
-// sắp xếp thời gian. Chuyển tháng bằng liên kết (máy chủ tải lại đúng 1 tháng), chọn ngày ở phía trình duyệt.
+function ChamThieu() {
+  return <span className="size-1.5 shrink-0 rounded-full bg-grad-danger-solid" aria-label="còn thiếu người" />;
+}
+
+interface DoanTuan {
+  lop: LichLopRow;
+  tu: number; // cột bắt đầu 0..6
+  den: number; // cột kết thúc 0..6
+  lan: number; // hàng trong tuần
+  noiTruoc: boolean; // lớp bắt đầu từ tuần trước
+  noiSau: boolean; // lớp còn tiếp sang tuần sau
+}
+
+// Cắt từng lớp thành đoạn theo tuần rồi xếp hàng (lớp trùng ngày nằm hàng khác nhau)
+function xepTuan(ngay: OLich[], lops: LichLopRow[]): DoanTuan[] {
+  const dau = ngay[0].khoa;
+  const cuoi = ngay[6].khoa;
+  const doan = lops
+    .filter((l) => l.ngay_bat_dau <= cuoi && l.ngay_ket_thuc >= dau)
+    .map((l) => ({
+      lop: l,
+      tu: l.ngay_bat_dau < dau ? 0 : ngay.findIndex((o) => o.khoa === l.ngay_bat_dau),
+      den: l.ngay_ket_thuc > cuoi ? 6 : ngay.findIndex((o) => o.khoa === l.ngay_ket_thuc),
+      lan: 0,
+      noiTruoc: l.ngay_bat_dau < dau,
+      noiSau: l.ngay_ket_thuc > cuoi,
+    }))
+    .sort((a, b) => a.tu - b.tu || b.den - b.tu - (a.den - a.tu));
+  const cuoiLan: number[] = [];
+  for (const d of doan) {
+    let i = cuoiLan.findIndex((c) => c < d.tu);
+    if (i < 0) i = cuoiLan.length;
+    cuoiLan[i] = d.den;
+    d.lan = i;
+  }
+  return doan;
+}
+
+// Lịch các lớp (mục 4.3 — biết trước lịch để chủ động sắp xếp thời gian): ở mức LỚP, mỗi lớp 1 thanh ngang từ ngày bắt đầu đến
+// ngày kết thúc, màu theo trạng thái, chấm đỏ = còn thiếu người; bấm thanh -> trang lớp. Máy tính: lưới tháng; điện thoại: danh sách
+// theo tuần (lưới quá chật). "Của tôi": chỉ lớp mình được phân công + danh sách buổi dạy của mình trong tháng.
 export function LichLop({
-  items,
+  lops,
   thang,
   hrefTruoc,
   hrefSau,
   hrefHomNay,
-  laGvTg,
+  cuaToi,
+  baiCuaToi,
 }: {
-  items: LichLopRow[];
+  lops: LichLopRow[];
   thang: Thang;
   hrefTruoc: string;
   hrefSau: string;
   hrefHomNay: string;
-  // Người xem có hồ sơ GV/TG: hiện các nhãn riêng "Bạn dạy" / "Trùng lịch của bạn" / "Phù hợp với bạn"
-  laGvTg: boolean;
+  // Chỉ người có hồ sơ GV/TG: công tắc Tất cả lớp | Của tôi
+  cuaToi?: { bat: boolean; hrefTatCa: string; hrefCuaToi: string };
+  // Bài đã phân công của tôi trong tháng (chỉ dùng khi đang xem "Của tôi")
+  baiCuaToi?: BaiLich[];
 }) {
   const homNay = ngayVN(new Date());
-  // Mốc "bây giờ" chốt 1 lần khi dựng (render phải thuần — không gọi Date.now() mỗi lần vẽ lại)
-  const [now] = useState(() => Date.now());
-  const thangHienTai = homNay.slice(0, 7) === `${thang.nam}-${String(thang.thang).padStart(2, "0")}`;
-
-  const theoNgay = useMemo(() => {
-    const m = new Map<string, LichLopRow[]>();
-    for (const b of items) {
-      const k = ngayVN(b.bat_dau);
-      m.set(k, [...(m.get(k) ?? []), b]);
-    }
-    return m;
-  }, [items]);
-
-  const { cham, thieuNguoi } = useMemo(() => {
-    const cham = new Map<string, ChamLich[]>();
-    const thieuNguoi = new Set<string>();
-    for (const [k, ds] of theoNgay) {
-      cham.set(k, ds.map((b) => ({ key: b.bai_id, lopId: b.lop_id, mo: b.trang_thai_hien_thi === "nhap" })));
-      if (ds.some((b) => conThieu(b) && Date.parse(b.bat_dau) > now)) thieuNguoi.add(k);
-    }
-    return { cham, thieuNguoi };
-  }, [theoNgay, now]);
-
-  // Mặc định: hôm nay nếu đang xem tháng hiện tại, không thì ngày đầu tiên có Bài trong tháng
-  const [chon, setChon] = useState(() => {
-    if (thangHienTai) return homNay;
-    const tienTo = `${thang.nam}-${String(thang.thang).padStart(2, "0")}`;
-    return [...theoNgay.keys()].filter((k) => k.startsWith(tienTo)).sort()[0] ?? `${tienTo}-01`;
-  });
-
-  // Chỉ đếm Bài trong tháng đang xem (lưới còn hiện vài ngày mờ của tháng trước/sau)
-  const tienToThang = `${thang.nam}-${String(thang.thang).padStart(2, "0")}`;
-  const trongThang = items.filter((b) => ngayVN(b.bat_dau).startsWith(tienToThang));
-  const soLop = new Set(trongThang.map((b) => b.lop_id)).size;
-  const baiCuaNgay = theoNgay.get(chon) ?? [];
-  const [cy, cm, cd] = chon.split("-");
+  const tienTo = khoaThang(thang);
+  const o = oLichThang(thang);
+  const tuan = Array.from({ length: o.length / 7 }, (_, i) => o.slice(i * 7, i * 7 + 7));
+  const dauThang = `${tienTo}-01`;
+  const cuoiThang = o.filter((d) => d.trongThang).at(-1)!.khoa;
+  const dangXemCuaToi = !!cuaToi?.bat;
+  const hien = dangXemCuaToi ? lops.filter((l) => l.toi_day) : lops;
+  const trongThang = hien.filter((l) => l.ngay_bat_dau <= cuoiThang && l.ngay_ket_thuc >= dauThang);
 
   return (
     <Card className="gap-4 px-0">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <CalendarRange className="size-5 text-slate-500" strokeWidth={1.75} aria-hidden /> Lịch các lớp
+          <CalendarRange className="size-5 text-slate-500" strokeWidth={1.75} aria-hidden /> Tháng {thang.thang}/{thang.nam}
         </CardTitle>
         <CardAction className="flex items-center gap-1">
-          {!thangHienTai && (
+          {homNay.slice(0, 7) !== tienTo && (
             <Button asChild variant="ghost" size="sm">
               <Link href={hrefHomNay}>Hôm nay</Link>
             </Button>
@@ -96,96 +123,170 @@ export function LichLop({
           </Button>
         </CardAction>
       </CardHeader>
-      <CardContent className="grid gap-4 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:gap-6">
-        <div className="grid content-start gap-3">
-          <p className="text-center text-sm font-semibold tabular-nums" aria-live="polite">
-            Tháng {thang.thang}/{thang.nam}
-            <span className="ml-2 font-normal text-muted-foreground">
-              · {trongThang.length} Bài, {soLop} lớp
-            </span>
-          </p>
-          <LuoiThang thang={thang} theoNgay={cham} thieuNguoi={thieuNguoi} chon={chon} onChon={setChon} />
-          <ul className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
+
+      <CardContent className="grid gap-4">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          {cuaToi ? (
+            <nav aria-label="Phạm vi lịch" className="flex gap-1">
+              <Link href={cuaToi.hrefTatCa} className={pill(!cuaToi.bat)} aria-current={!cuaToi.bat ? "page" : undefined}>
+                Tất cả lớp
+              </Link>
+              <Link href={cuaToi.hrefCuaToi} className={pill(cuaToi.bat)} aria-current={cuaToi.bat ? "page" : undefined}>
+                Của tôi
+              </Link>
+            </nav>
+          ) : (
+            <span />
+          )}
+          <ul className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-muted-foreground" aria-label="Chú giải">
+            {CHU_GIAI.map((t) => (
+              <li key={t} className="flex items-center gap-1.5">
+                <span className={cn("h-3 w-5 rounded", KIEU[t])} aria-hidden /> {nhanTrangThai(t)}
+              </li>
+            ))}
             <li className="flex items-center gap-1.5">
-              <span className="size-2 rounded-full bg-grad-teal" aria-hidden /> Mỗi màu 1 lớp
-            </li>
-            <li className="flex items-center gap-1.5">
-              <span className="size-2 rounded-full border-[1.5px] border-[var(--hue-teal)]" aria-hidden /> Lớp sắp mở
-            </li>
-            <li className="flex items-center gap-1.5">
-              <span className="h-0.5 w-4 rounded-full bg-grad-danger-solid" aria-hidden /> Còn thiếu người
+              <ChamThieu /> Còn thiếu người
             </li>
           </ul>
         </div>
 
-        <div className="border-t pt-3 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-6">
-          <p className="mb-2 text-xs font-semibold text-muted-foreground">
-            {chon === homNay ? "Hôm nay, " : ""}
-            {cd}/{cm}/{cy}
-          </p>
-          {baiCuaNgay.length === 0 ? (
-            <p className="text-sm text-muted-foreground">Không có Bài nào trong ngày này. Chọn ngày có chấm màu để xem các Bài.</p>
-          ) : (
-            <ul className="grid gap-2">
-              {baiCuaNgay.map((b) => (
-                <BaiTrenLich key={b.bai_id} b={b} laGvTg={laGvTg} now={now} />
+        {trongThang.length === 0 ? (
+          <EmptyState
+            icon={CalendarRange}
+            title={dangXemCuaToi ? "Bạn chưa được phân công lớp nào trong tháng này." : "Không có lớp nào trong tháng này."}
+          />
+        ) : (
+          <>
+            {/* Máy tính: lưới tháng, mỗi lớp 1 thanh ngang */}
+            <div className="hidden overflow-hidden rounded-xl border md:block">
+              <div className="grid grid-cols-7 border-b bg-muted/40">
+                {THU.map((t) => (
+                  <span key={t} className="py-2 text-center text-xs font-medium text-muted-foreground">
+                    {t}
+                  </span>
+                ))}
+              </div>
+              {tuan.map((ngay) => (
+                <div key={ngay[0].khoa} className="relative min-h-24 border-b last:border-b-0">
+                  {/* Lớp nền: ô ngày (đường kẻ dọc + số ngày) */}
+                  <div className="absolute inset-0 grid grid-cols-7" aria-hidden>
+                    {ngay.map((d) => (
+                      <div
+                        key={d.khoa}
+                        className={cn("border-r pt-1.5 pr-2 text-right text-xs tabular-nums last:border-r-0", !d.trongThang && "bg-muted/30 text-muted-foreground/50")}
+                      >
+                        <span className={cn("inline-flex size-6 items-center justify-center rounded-full", d.khoa === homNay && "bg-brand-gradient font-semibold text-white")}>
+                          {d.ngay}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                  {/* Lớp trên: thanh lớp, chừa chỗ cho số ngày ở trên */}
+                  <div className="relative grid grid-cols-7 gap-y-1 pt-9 pb-2">
+                    {xepTuan(ngay, hien).map((d) => (
+                      <Link
+                        key={d.lop.lop_id}
+                        href={`/lop-hoc/${d.lop.lop_id}`}
+                        title={`${d.lop.ten} · ${nhanTrangThai(d.lop.trang_thai_hien_thi)} · ${khoangNgay(d.lop)}${d.lop.con_thieu ? " · còn thiếu người" : ""}`}
+                        className={cn(
+                          "mx-1 flex h-6 min-w-0 items-center gap-1.5 rounded-md px-2 text-xs font-medium transition-[filter] duration-150 hover:brightness-95",
+                          KIEU[d.lop.trang_thai_hien_thi],
+                          d.noiTruoc && "ml-0 rounded-l-none",
+                          d.noiSau && "mr-0 rounded-r-none",
+                        )}
+                        style={{ gridColumn: `${d.tu + 1} / ${d.den + 2}`, gridRow: d.lan + 1 }}
+                      >
+                        <span className="truncate">{d.lop.ten}</span>
+                        {d.lop.con_thieu && <ChamThieu />}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
               ))}
-            </ul>
-          )}
-        </div>
+            </div>
+
+            {/* Điện thoại: danh sách lớp theo tuần */}
+            <div className="grid gap-4 md:hidden">
+              {tuan.map((ngay) => {
+                const dau = ngay[0].khoa < dauThang ? dauThang : ngay[0].khoa;
+                // Mỗi lớp nằm ở tuần đầu tiên nó xuất hiện trong tháng (không lặp lại ở các tuần sau)
+                const ds = trongThang.filter((l) => {
+                  const batDau = l.ngay_bat_dau < dauThang ? dauThang : l.ngay_bat_dau;
+                  return batDau >= dau && batDau <= ngay[6].khoa;
+                });
+                if (ds.length === 0) return null;
+                return (
+                  <section key={ngay[0].khoa}>
+                    <h3 className="mb-1.5 text-xs font-semibold text-muted-foreground">
+                      Tuần {ddmm(ngay[0].khoa)} – {ddmm(ngay[6].khoa)}
+                    </h3>
+                    <ul className="grid gap-1.5">
+                      {ds.map((l) => (
+                        <li key={l.lop_id}>
+                          <Link href={`/lop-hoc/${l.lop_id}`} className="flex min-h-11 items-center gap-3 rounded-lg bg-muted/50 px-3 py-2">
+                            <span className={cn("h-8 w-1.5 shrink-0 rounded-full", KIEU[l.trang_thai_hien_thi])} aria-hidden />
+                            <span className="min-w-0 flex-1">
+                              <span className="block truncate text-sm font-medium">{l.ten}</span>
+                              <span className="block text-xs text-muted-foreground tabular-nums">
+                                {khoangNgay(l)} · {nhanTrangThai(l.trang_thai_hien_thi)}
+                              </span>
+                            </span>
+                            {l.con_thieu && (
+                              <span className="flex shrink-0 items-center gap-1 text-xs text-danger">
+                                <ChamThieu /> Thiếu người
+                              </span>
+                            )}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </section>
+                );
+              })}
+            </div>
+          </>
+        )}
+
+        {dangXemCuaToi && <BuoiDayCuaToi bai={baiCuaToi ?? []} />}
       </CardContent>
     </Card>
   );
 }
 
-function BaiTrenLich({ b, laGvTg, now }: { b: LichLopRow; laGvTg: boolean; now: number }) {
-  const tt = b.trang_thai_hien_thi as TrangThaiLopHienThi;
-  const daQua = Date.parse(b.bat_dau) <= now;
+// Buổi dạy của tôi trong tháng — giờ chính xác từng Bài (cần để đi dạy và check-in)
+function BuoiDayCuaToi({ bai }: { bai: BaiLich[] }) {
   return (
-    <li className={cn("grid gap-1.5 rounded-lg border-l-4 bg-muted/50 px-3 py-2", hueLop(b.lop_id).vien)}>
-      <div className="flex items-start justify-between gap-2">
-        <Link href={`/lop-hoc/${b.lop_id}`} className="min-w-0 text-sm font-medium hover:underline">
-          <span className="block truncate">{b.bai_ten}</span>
-          <span className="block truncate text-xs font-normal text-muted-foreground">{b.lop_ten}</span>
-        </Link>
-        <Badge variant={tt === "nhap" ? "outline" : TRANG_THAI_LOP_VARIANT[tt]} className="h-5 shrink-0">
-          {tt === "nhap" ? "Sắp mở" : TRANG_THAI_LOP_LABEL[tt]}
-        </Badge>
-      </div>
-      <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
-        <span className="tabular-nums">
-          {fmtTime(b.bat_dau)}–{fmtTime(b.ket_thuc)}
-        </span>
-        {b.dia_diem && <span className="truncate">{b.dia_diem}</span>}
-      </p>
-      <div className="flex flex-wrap items-center gap-1.5">
-        {b.gv_tong > 0 && <SlotChip nhan="GV" da={b.gv_da} tong={b.gv_tong} daQua={daQua} />}
-        {b.tg_tong > 0 && <SlotChip nhan="TG" da={b.tg_da} tong={b.tg_tong} daQua={daQua} />}
-        {laGvTg && b.toi_day && (
-          <Badge variant="success" className="h-5">
-            Bạn dạy
-          </Badge>
-        )}
-        {laGvTg && !daQua && b.toi_trung_lich && (
-          <Badge variant="danger" className="h-5">
-            Trùng lịch của bạn
-          </Badge>
-        )}
-        {laGvTg && !daQua && !b.toi_day && !b.toi_trung_lich && b.toi_du_dieu_kien && conThieu(b) && (
-          <Badge variant="teal" className="h-5">
-            Phù hợp với bạn
-          </Badge>
-        )}
-      </div>
-    </li>
-  );
-}
-
-// "GV 1/2": số slot đã phân công / cần — thiếu người (và Bài chưa diễn ra) thì tô cảnh báo
-function SlotChip({ nhan, da, tong, daQua }: { nhan: string; da: number; tong: number; daQua: boolean }) {
-  return (
-    <Badge variant={da >= tong ? "success" : daQua ? "neutral" : "warning"} className="h-5 tabular-nums">
-      {nhan} {da}/{tong}
-    </Badge>
+    <section className="border-t pt-4">
+      <h3 className="mb-2 text-sm font-semibold">Buổi dạy của tôi trong tháng</h3>
+      {bai.length === 0 ? (
+        <p className="text-sm text-muted-foreground">Không có buổi dạy nào.</p>
+      ) : (
+        <ul className="grid gap-1.5 md:grid-cols-2">
+          {bai.map((s) => {
+            const ngay = ngayVN(s.bai.bat_dau);
+            return (
+              <li key={s.slot_id} className="flex items-center gap-3 rounded-lg bg-muted/50 px-3 py-2 text-sm">
+                <span className="w-12 shrink-0 text-center">
+                  <span className="block text-xs text-muted-foreground">{thuCua(ngay)}</span>
+                  <span className="block font-semibold tabular-nums">{ddmm(ngay)}</span>
+                </span>
+                <Link href={`/lop-hoc/${s.bai.lop_id}`} className="min-w-0 flex-1 hover:underline">
+                  <span className="block truncate font-medium">{s.bai.ten}</span>
+                  <span className="block truncate text-xs text-muted-foreground">
+                    <span className="tabular-nums">
+                      {fmtTime(s.bai.bat_dau)}–{fmtTime(s.bai.ket_thuc)}
+                    </span>{" "}
+                    · {s.bai.lop_ten}
+                  </span>
+                </Link>
+                <Badge variant="success" className="h-5 shrink-0">
+                  {VAI_TRO_LABEL[s.vai_tro]}
+                </Badge>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </section>
   );
 }

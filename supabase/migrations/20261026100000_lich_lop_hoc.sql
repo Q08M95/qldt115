@@ -1,37 +1,32 @@
 -- Lịch lớp toàn đơn vị (mục 4.2/4.3 — "công khai cả lớp đang mở lẫn lớp sắp mở để GV/TG chủ động sắp xếp lịch")
 --
 --   1. "Công khai sớm" mặc định BẬT cho lớp mới (kể cả nhập CSV) — lớp Dự kiến hiện ngay trên lịch, Admin bỏ tick nếu chưa muốn lộ.
---   2. lich_lop_hoc(p_tu, p_den): mọi Bài (lớp chưa hủy, người xem nhìn thấy được) bắt đầu trong khoảng, kèm tiến độ slot
---      theo vai trò và 3 cờ riêng của người xem: đủ điều kiện lớp / đang dạy Bài này / trùng giờ với Bài mình đã phân công.
---      Cờ "đủ điều kiện" chỉ nói CÓ/KHÔNG cho chính người xem, không trả tên nhóm (ẩn nhãn nhóm, mục 4.7).
+--   2. lich_lop_hoc(p_tu, p_den): mọi LỚP (chưa hủy, người xem nhìn thấy được) có thời gian giao khoảng ngày [p_tu, p_den],
+--      kèm cờ "còn thiếu người" (có slot trống ở Bài chưa diễn ra) và cờ "tôi dạy" (người xem được phân công ít nhất 1 Bài).
+--      Lịch hiển thị ở mức LỚP (không theo Bài) cho gọn; buổi dạy của chính mình lấy riêng ở phía app.
 --   3. Thông báo "Lớp sắp mở đăng ký" (loại bai_trong_moi — người dùng tắt được như "Lớp/Bài mới") cho người đủ điều kiện
 --      khi lớp Dự kiến công khai sớm có Bài đầu tiên, hoặc khi lớp Dự kiến đã có Bài được bật công khai sớm. Mỗi lớp 1 lần/người.
+--
+-- Chạy lại được (drop/create or replace) — bản đầu của file này (trả về theo Bài) đã chạy trên project dev.
 
 -- ============ 1. Mặc định công khai sớm ============
 alter table public.lop_hoc alter column cong_khai_som set default true;
 
 -- ============ 2. Lịch lớp ============
-create function public.lich_lop_hoc(p_tu timestamptz, p_den timestamptz)
+drop function if exists public.lich_lop_hoc(timestamptz, timestamptz);
+drop function if exists public.lich_lop_hoc(date, date);
+create function public.lich_lop_hoc(p_tu date, p_den date)
 returns table (
-  bai_id uuid,
-  bai_ten text,
-  bat_dau timestamptz,
-  ket_thuc timestamptz,
   lop_id uuid,
-  lop_ten text,
+  ten text,
   nhom_lop_id uuid,
   nhom_lop_ten text,
-  doi_tuong public.doi_tuong_lop,
-  loai_kinh_phi public.loai_kinh_phi,
+  ngay_bat_dau date,
+  ngay_ket_thuc date,
   dia_diem text,
   trang_thai_hien_thi text,
-  gv_tong int,
-  gv_da int,
-  tg_tong int,
-  tg_da int,
-  toi_du_dieu_kien boolean,
-  toi_day boolean,
-  toi_trung_lich boolean
+  con_thieu boolean,
+  toi_day boolean
 )
 language plpgsql
 stable
@@ -45,65 +40,35 @@ begin
   if v_uid is null then
     raise exception 'Chưa đăng nhập' using errcode = '42501';
   end if;
-  if p_tu is null or p_den is null or p_den <= p_tu or p_den - p_tu > interval '62 days' then
+  if p_tu is null or p_den is null or p_den < p_tu or p_den - p_tu > 62 then
     raise exception 'Khoảng thời gian không hợp lệ (tối đa 62 ngày)' using errcode = '22023';
   end if;
 
   return query
-  with lop as (
-    -- Cùng quy tắc nhìn thấy với RLS lop_hoc: GV/TG không thấy lớp Dự kiến chưa công khai sớm
-    select v.* from public.lop_hoc_tong_hop v
-    where v.trang_thai <> 'da_huy'
-      and (v_quan_tri or v.trang_thai <> 'nhap' or v.cong_khai_som)
-  ),
-  toi as (
-    select p.trang_thai_tham_gia = 'dang_tham_gia' and p.vai_tro_giang_day is not null as dang_day
-    from public.profiles p where p.id = v_uid
-  )
   select
-    b.id, b.ten, b.bat_dau, b.ket_thuc,
-    l.id, l.ten, l.nhom_lop_id, l.nhom_lop_ten, l.doi_tuong, l.loai_kinh_phi, l.dia_diem, l.trang_thai_hien_thi,
-    s.gv_tong, s.gv_da, s.tg_tong, s.tg_da,
-    coalesce((select t.dang_day from toi t), false)
-      and exists (
-        select 1 from public.nhan_su_nhom n
-        join public.lop_hoc_nhom_du_dieu_kien d on d.nhom = n.nhom and d.lop_id = l.id
-        where n.user_id = v_uid
-      )
-      and not exists (
-        select 1 from public.lop_hoc_chung_chi_yeu_cau r
-        where r.lop_id = l.id
-          and not exists (select 1 from public.chung_chi c where c.user_id = v_uid and c.loai_id = r.loai_id)
-      ),
-    s.toi_day,
-    not s.toi_day and exists (
-      select 1 from public.slot_giang_day s2
-      join public.bai_hoc b2 on b2.id = s2.bai_id and b2.id <> b.id
-      join public.lop_hoc l2 on l2.id = b2.lop_id and l2.trang_thai <> 'da_huy'
-      where s2.nguoi_phan_cong = v_uid and s2.trang_thai = 'da_phan_cong'
-        and b2.bat_dau < b.ket_thuc and b2.ket_thuc > b.bat_dau
+    v.id, v.ten, v.nhom_lop_id, v.nhom_lop_ten, v.ngay_bat_dau, v.ngay_ket_thuc, v.dia_diem, v.trang_thai_hien_thi,
+    exists (
+      select 1 from public.slot_giang_day s join public.bai_hoc b on b.id = s.bai_id
+      where b.lop_id = v.id and s.nguoi_phan_cong is null and b.bat_dau > now()
+    ),
+    exists (
+      select 1 from public.slot_giang_day s join public.bai_hoc b on b.id = s.bai_id
+      where b.lop_id = v.id and s.nguoi_phan_cong = v_uid
     )
-  from public.bai_hoc b
-  join lop l on l.id = b.lop_id
-  cross join lateral (
-    select
-      count(*) filter (where x.vai_tro = 'giang_vien')::int as gv_tong,
-      count(*) filter (where x.vai_tro = 'giang_vien' and x.trang_thai = 'da_phan_cong')::int as gv_da,
-      count(*) filter (where x.vai_tro = 'tro_giang')::int as tg_tong,
-      count(*) filter (where x.vai_tro = 'tro_giang' and x.trang_thai = 'da_phan_cong')::int as tg_da,
-      coalesce(bool_or(x.nguoi_phan_cong = v_uid), false) as toi_day
-    from public.slot_giang_day x where x.bai_id = b.id
-  ) s
-  where b.bat_dau >= p_tu and b.bat_dau < p_den
-  order by b.bat_dau, l.ten;
+  from public.lop_hoc_tong_hop v
+  -- Cùng quy tắc nhìn thấy với RLS lop_hoc: GV/TG không thấy lớp Dự kiến chưa công khai sớm
+  where v.trang_thai <> 'da_huy'
+    and (v_quan_tri or v.trang_thai <> 'nhap' or v.cong_khai_som)
+    and v.ngay_bat_dau <= p_den and v.ngay_ket_thuc >= p_tu
+  order by v.ngay_bat_dau, v.ten;
 end;
 $$;
 
-revoke execute on function public.lich_lop_hoc(timestamptz, timestamptz) from public, anon;
-grant execute on function public.lich_lop_hoc(timestamptz, timestamptz) to authenticated;
+revoke execute on function public.lich_lop_hoc(date, date) from public, anon;
+grant execute on function public.lich_lop_hoc(date, date) to authenticated;
 
 -- ============ 3. Thông báo "Lớp sắp mở đăng ký" ============
-create function public.bao_lop_sap_mo(p_lop uuid)
+create or replace function public.bao_lop_sap_mo(p_lop uuid)
 returns void
 language plpgsql
 security definer
@@ -162,7 +127,7 @@ begin
 end;
 $$;
 
-create function public.tb_lop_cong_khai_som()
+create or replace function public.tb_lop_cong_khai_som()
 returns trigger
 language plpgsql
 security definer
@@ -173,6 +138,7 @@ begin
   return null;
 end;
 $$;
+drop trigger if exists lop_hoc_tb_cong_khai_som on public.lop_hoc;
 create trigger lop_hoc_tb_cong_khai_som
   after update of cong_khai_som on public.lop_hoc
   for each row

@@ -43,7 +43,7 @@ Trang web có hai cách hiển thị: **máy tính** (màn hình rộng) và **�
 
 ### Trên điện thoại
 
-- **Thanh 4 nút ở đáy màn hình**: **Trang chủ**, **Lịch dạy**, **Thông báo**, **Hồ sơ**.
+- **Thanh 4 nút ở đáy màn hình**: **Trang chủ**, **Lịch**, **Thông báo**, **Hồ sơ**.
 - **Nút ☰ (ba gạch)** ở góc trên bên trái mở toàn bộ menu, gồm Lớp học, Nhân sự, Đánh giá chất lượng, Báo cáo, Nhật ký hệ thống…
 - Trang con (ví dụ chi tiết một lớp) có **nút quay lại** bên cạnh tên trang.
 

@@ -33,7 +33,7 @@ export function LichSapToi({ items }: { items: SapToi }) {
           <CalendarClock className="size-5 text-slate-500" strokeWidth={1.75} aria-hidden /> Lịch dạy sắp tới
         </CardTitle>
         <CardAction>
-          <Link href="/dang-ky#lich" className="text-xs font-medium text-primary hover:underline">
+          <Link href="/lop-hoc?xem=lich&cua=toi" className="text-xs font-medium text-primary hover:underline">
             Xem lịch tháng
           </Link>
         </CardAction>

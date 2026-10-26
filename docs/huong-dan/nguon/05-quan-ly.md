@@ -49,7 +49,7 @@ Nếu đơn vị đã có sẵn kế hoạch đào tạo (biết trước tháng
 
 Lớp tạo từ CSV cũng ở trạng thái **Dự kiến** như tạo tay — hãy rà lại trước khi mở đăng ký. Cột **công khai sớm** để trống được hiểu là **có** (lớp hiện ngay trên lịch cho mọi người); ghi "không" nếu chưa muốn công bố lớp đó.
 
-> **Mẹo:** Nhập kế hoạch cả năm ngay từ đầu năm giúp giảng viên/trợ giảng thấy trước toàn bộ lịch lớp trên chế độ **Lịch** của trang Lớp học. Quản lý cũng dùng chế độ Lịch để rà nhanh những ngày có **vạch đỏ** (Bài còn thiếu người) mà mời thêm người. Người quản lý không có hồ sơ giảng dạy bấm **biểu tượng lịch** trên thanh trên cùng sẽ mở thẳng lịch các lớp.
+> **Mẹo:** Nhập kế hoạch cả năm ngay từ đầu năm giúp giảng viên/trợ giảng thấy trước toàn bộ lịch lớp trên chế độ **Lịch** của trang Lớp học. Quản lý cũng dùng chế độ Lịch để rà nhanh những lớp có **chấm đỏ** (còn thiếu người) mà mời thêm người.
 
 ## 5.3 Thêm các Bài vào lớp
 

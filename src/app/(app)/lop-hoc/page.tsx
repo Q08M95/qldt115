@@ -3,15 +3,17 @@ import { LopFormDrawer } from "@/components/lop-hoc/lop-form-drawer";
 import { LopListView } from "@/components/lop-hoc/lop-list-view";
 import { NhapCsvLopDrawer } from "@/components/lop-hoc/nhap-csv-lop-drawer";
 import { requireSession } from "@/lib/auth/session";
+import { getLichCuaToi } from "@/lib/dang-ky/queries";
 import { congThang, docThang, khoangLuoi, khoaThang, ngayVN, thangCua } from "@/lib/lich";
-import { getLichLop, getLopListTrang, getNhomLop, SO_DONG_LOP, type LichLopRow } from "@/lib/lop-hoc/queries";
-import { boDau } from "@/lib/nhan-su/labels";
+import { getLichLop, getLopListTrang, getNhomLop, SO_DONG_LOP } from "@/lib/lop-hoc/queries";
 import { getDanhMuc } from "@/lib/nhan-su/queries";
 
 function first(v: string | string[] | undefined) {
   return (Array.isArray(v) ? v[0] : v) ?? "";
 }
 
+// Lớp học: 2 chế độ xem Danh sách | Lịch. Lịch là nơi DUY NHẤT xem lịch (icon lịch topbar, tab "Lịch" mobile, link "Xem lịch tháng"
+// ở Tổng quan đều dẫn về đây): mặc định "Tất cả lớp"; người có hồ sơ GV/TG chuyển được sang "Của tôi" (?cua=toi).
 export default async function LopHocPage(props: PageProps<"/lop-hoc">) {
   const sp = await props.searchParams;
 
@@ -26,7 +28,11 @@ export default async function LopHocPage(props: PageProps<"/lop-hoc">) {
   const xemLich = first(sp.xem) === "lich";
   const homNay = ngayVN(new Date());
   const thang = docThang(first(sp.thang)) ?? thangCua(homNay);
-  const phuHop = first(sp.phu_hop) === "1";
+
+  const session = await requireSession();
+  const { isQuanTri, profile } = session;
+  const laGvTg = !!profile.vai_tro_giang_day;
+  const cuaToi = laGvTg && first(sp.cua) === "toi";
 
   // Tạo URL /lop-hoc giữ nguyên bộ lọc hiện tại, ghi đè vài tham số
   const href = (ghiDe: Record<string, string | undefined>) => {
@@ -35,34 +41,27 @@ export default async function LopHocPage(props: PageProps<"/lop-hoc">) {
     const s = p.toString();
     return s ? `/lop-hoc?${s}` : "/lop-hoc";
   };
-  const thamSoLich = (t = thang, ph = phuHop) => ({
-    xem: "lich",
-    thang: khoaThang(t) === homNay.slice(0, 7) ? undefined : khoaThang(t),
-    phu_hop: ph ? "1" : undefined,
-  });
+  // Ở chế độ Lịch chỉ giữ bộ lọc nhóm lớp
+  const hrefLich = (t = thang, toi = cuaToi) => {
+    const p = new URLSearchParams({ xem: "lich" });
+    if (khoaThang(t) !== homNay.slice(0, 7)) p.set("thang", khoaThang(t));
+    if (toi) p.set("cua", "toi");
+    if (values.nhom_lop) p.set("nhom_lop", values.nhom_lop);
+    return `/lop-hoc?${p}`;
+  };
 
   const { tu, den } = khoangLuoi(thang);
-  const [{ isQuanTri, profile }, danhSach, lichRows, nhomLop, loaiChungChi] = await Promise.all([
-    requireSession(),
+  const [danhSach, lichRows, baiCuaToi, nhomLop, loaiChungChi] = await Promise.all([
     xemLich ? null : getLopListTrang({ ...values, trang }),
     xemLich ? getLichLop(tu, den) : null,
+    xemLich && cuaToi ? getLichCuaToi(profile.id) : null,
     getNhomLop(),
     getDanhMuc("danh_muc_loai_chung_chi"),
   ]);
-  const laGvTg = !!profile.vai_tro_giang_day;
   const tongTrang = danhSach ? Math.max(1, Math.ceil(danhSach.tong / SO_DONG_LOP)) : 1;
-
-  // Bộ lọc của trang áp lên lịch ngay ở đây (dữ liệu chỉ 1 tháng nên lọc phía máy chủ app là đủ nhanh)
-  const tuKhoa = boDau(values.q);
-  const lich = (lichRows ?? []).filter(
-    (b: LichLopRow) =>
-      (!values.nhom_lop || b.nhom_lop_id === values.nhom_lop) &&
-      (!values.trang_thai || b.trang_thai_hien_thi === values.trang_thai) &&
-      (!values.doi_tuong || b.doi_tuong === values.doi_tuong) &&
-      (!values.kinh_phi || b.loai_kinh_phi === values.kinh_phi) &&
-      (!tuKhoa || boDau(b.lop_ten).includes(tuKhoa) || boDau(b.dia_diem ?? "").includes(tuKhoa) || boDau(b.bai_ten).includes(tuKhoa)) &&
-      (!phuHop || !laGvTg || b.toi_du_dieu_kien || b.toi_day),
-  );
+  const giuLich: Record<string, string> = { xem: "lich" };
+  if (khoaThang(thang) !== homNay.slice(0, 7)) giuLich.thang = khoaThang(thang);
+  if (cuaToi) giuLich.cua = "toi";
 
   return (
     <LopListView
@@ -78,22 +77,20 @@ export default async function LopHocPage(props: PageProps<"/lop-hoc">) {
       cheDo={{
         xem: xemLich ? "lich" : "danh-sach",
         hrefDanhSach: href({}),
-        hrefLich: href({ xem: "lich" }),
-        giu: Object.fromEntries(Object.entries(xemLich ? thamSoLich() : {}).filter(([, v]) => v)) as Record<string, string>,
-        xoaHref: xemLich ? `/lop-hoc?${new URLSearchParams(Object.entries(thamSoLich()).filter(([, v]) => v) as [string, string][])}` : "/lop-hoc",
-        phuHop: laGvTg ? { bat: phuHop, href: href(thamSoLich(thang, !phuHop)) } : undefined,
+        hrefLich: hrefLich(),
+        giu: xemLich ? giuLich : {},
+        xoaHref: xemLich ? `/lop-hoc?${new URLSearchParams(giuLich)}` : "/lop-hoc",
       }}
       lich={
         xemLich ? (
-          // key theo tháng để ngày đang chọn đặt lại khi chuyển tháng
           <LichLop
-            key={khoaThang(thang)}
-            items={lich}
+            lops={(lichRows ?? []).filter((l) => !values.nhom_lop || l.nhom_lop_id === values.nhom_lop)}
             thang={thang}
-            hrefTruoc={href(thamSoLich(congThang(thang, -1)))}
-            hrefSau={href(thamSoLich(congThang(thang, 1)))}
-            hrefHomNay={href(thamSoLich(thangCua(homNay)))}
-            laGvTg={laGvTg}
+            hrefTruoc={hrefLich(congThang(thang, -1))}
+            hrefSau={hrefLich(congThang(thang, 1))}
+            hrefHomNay={hrefLich(thangCua(homNay))}
+            cuaToi={laGvTg ? { bat: cuaToi, hrefTatCa: hrefLich(thang, false), hrefCuaToi: hrefLich(thang, true) } : undefined}
+            baiCuaToi={(baiCuaToi ?? []).filter((s) => ngayVN(s.bai.bat_dau).startsWith(khoaThang(thang)))}
           />
         ) : undefined
       }

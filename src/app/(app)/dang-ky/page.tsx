@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { LichThang } from "@/components/tong-quan/lich-thang";
 import { ClipboardCheck, Inbox, MailQuestion, Hourglass } from "lucide-react";
 import { NutDuyet, NutPhanHoiMoi, NutRut } from "@/components/dang-ky/dang-ky-controls";
 import { EmptyState } from "@/components/empty-state";
@@ -7,7 +6,7 @@ import { UserAvatar } from "@/components/user-avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { requireSession } from "@/lib/auth/session";
-import { getLichCuaToi, getViecCuaToi, type ViecCuaToi } from "@/lib/dang-ky/queries";
+import { getViecCuaToi, type ViecCuaToi } from "@/lib/dang-ky/queries";
 import { fmtDate, fmtTime } from "@/lib/format";
 import { VAI_TRO_LABEL } from "@/lib/nhan-su/labels";
 
@@ -40,10 +39,11 @@ function Khung({ icon: Icon, tieuDe, dem, children }: { icon: typeof Inbox; tieu
 }
 
 // Trang "Đăng ký giảng dạy": không có danh sách riêng — việc đăng ký/duyệt/mời nằm ngay trong trang chi tiết lớp (mục 8.8).
-// Đây là nơi tập trung "việc của tôi": lời mời cần phản hồi, đăng ký đang chờ, lịch được phân công; Admin thêm hàng đợi cần duyệt.
+// Đây là nơi tập trung "việc của tôi": lời mời cần phản hồi, đăng ký đang chờ; Admin thêm hàng đợi cần duyệt. Lịch dạy xem ở
+// chế độ Lịch của trang Lớp học ("Của tôi").
 export default async function DangKyPage() {
   const { profile, isQuanTri } = await requireSession();
-  const [v, lich] = await Promise.all([getViecCuaToi(profile.id, isQuanTri), profile.vai_tro_giang_day ? getLichCuaToi(profile.id) : null]);
+  const v = await getViecCuaToi(profile.id, isQuanTri);
   const loiMoi = v.dang_cho.filter((d) => d.loai === "duoc_moi");
   const dangKy = v.dang_cho.filter((d) => d.loai === "tu_dang_ky");
 
@@ -109,12 +109,6 @@ export default async function DangKyPage() {
           </ul>
         )}
       </Khung>
-
-      {lich && (
-        <div className="lg:col-span-2">
-          <LichThang items={lich} />
-        </div>
-      )}
     </div>
   );
 }

@@ -7,7 +7,7 @@ Chương này ghép các chức năng ở những chương trước thành các 
 **Trước ngày dạy**
 
 1. Bạn nhận thông báo (trong web hoặc đẩy) khi Bài của bạn được duyệt, hoặc khi có thay đổi giờ. Mở **Thông báo** để đọc.
-2. Kiểm tra **Lịch dạy của tôi** (mục 3.6) để biết giờ và địa điểm.
+2. Kiểm tra **Lớp học → Lịch → Của tôi** (mục 3.6) để biết giờ dạy, rồi bấm vào lớp để xem địa điểm.
 
 **Trong ngày dạy**
 
