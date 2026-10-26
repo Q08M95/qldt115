@@ -6,7 +6,7 @@
 --
 --   c1 Admin | c2 GV bác sĩ (có chứng chỉ) | c3 GV không bác sĩ | c4 TG bác sĩ | c5 GV bác sĩ (không có chứng chỉ)
 --   L1 Dự kiến, công khai sớm theo MẶC ĐỊNH | L2 Dự kiến chưa công khai, cần chứng chỉ (sau đó bật công khai) |
---   L3 Dự kiến không công khai | L4 Đã hủy
+--   L3 Dự kiến không công khai | L4 Đã hủy | L5 Dự kiến công khai sớm (tạo sau khi c2 đã đọc thông báo gộp)
 
 create or replace procedure pg_temp.don_dep()
 language plpgsql
@@ -70,10 +70,11 @@ declare
   c5 uuid := '00000000-0000-0000-0000-0000000000c5';
   res jsonb := '[]';
   n int;
+  n2 int;
   ok boolean;
   nl uuid; cc uuid;
-  l1 uuid; l2 uuid; l3 uuid; l4 uuid;
-  b1 uuid; b1b uuid; b2 uuid; b3 uuid; b4 uuid;
+  l1 uuid; l2 uuid; l3 uuid; l4 uuid; l5 uuid;
+  b1 uuid; b1b uuid; b2 uuid; b3 uuid; b4 uuid; b5 uuid;
   goc timestamptz := date_trunc('hour', now()) + interval '3 days';
   r record;
   lich jsonb;
@@ -101,8 +102,8 @@ begin
   insert into public.bai_hoc (lop_id, thu_tu, ten, bat_dau, ket_thuc)
   values (l1, 2, 'Bài 2', goc + interval '1 day', goc + interval '1 day 2 hours') returning id into b1b;
   insert into public.slot_giang_day (bai_id, vai_tro, vi_tri) values (b1b, 'giang_vien', 1);
-  select count(*) into n from public.thong_bao where user_id = c2 and khoa = 'sap_mo:' || l1;
-  res := res || jsonb_build_object('t', '04 Thêm Bài nữa vào lớp sắp mở không gửi lặp (mỗi lớp 1 lần/người)', 'ok', n = 1);
+  select count(*) into n from public.thong_bao where user_id = c2 and khoa = 'sap_mo' and tieu_de = 'Lớp sắp mở đăng ký';
+  res := res || jsonb_build_object('t', '04 Thêm Bài nữa vào lớp sắp mở không báo lặp (mỗi lớp 1 lần/người)', 'ok', n = 1);
 
   -- ===== L2: chưa công khai, cần chứng chỉ =====
   insert into public.lop_hoc (ten, nhom_lop_id, doi_tuong, loai_kinh_phi, ngay_bat_dau, ngay_ket_thuc, trang_thai, cong_khai_som)
@@ -119,10 +120,12 @@ begin
   perform set_config('request.jwt.claims', json_build_object('sub', c1)::text, true);
   update public.lop_hoc set cong_khai_som = true where id = l2;
   perform set_config('request.jwt.claims', '', true);
-  select count(*) into n from public.thong_bao where user_id = c2 and khoa = 'sap_mo:' || l2;
-  res := res || jsonb_build_object('t', '06 Bật công khai sớm cho lớp đã có Bài: người đủ điều kiện được báo', 'ok', n = 1);
-  select count(*) into n from public.thong_bao where user_id = c5 and khoa = 'sap_mo:' || l2;
-  res := res || jsonb_build_object('t', '07 Người cùng nhóm nhưng thiếu chứng chỉ yêu cầu không được báo', 'ok', n = 0);
+  select count(*) into n from public.thong_bao
+  where user_id = c2 and khoa = 'sap_mo' and not da_doc and tieu_de = '2 lớp sắp mở đăng ký' and lien_ket = '/lop-hoc?xem=lich';
+  select count(*) into n2 from public.thong_bao where user_id = c2 and khoa = 'sap_mo';
+  res := res || jsonb_build_object('t', '06 Bật công khai sớm cho lớp đã có Bài: người đủ điều kiện được báo, GỘP vào thông báo chưa đọc ("2 lớp", dẫn tới Lịch)', 'ok', n = 1 and n2 = 1);
+  select count(*) into n from public.thong_bao where user_id = c5 and khoa = 'sap_mo' and tieu_de = 'Lớp sắp mở đăng ký';
+  res := res || jsonb_build_object('t', '07 Người cùng nhóm nhưng thiếu chứng chỉ yêu cầu không được báo lớp đó (vẫn "1 lớp")', 'ok', n = 1);
 
   -- ===== L3 không công khai, L4 đã hủy =====
   insert into public.lop_hoc (ten, nhom_lop_id, doi_tuong, loai_kinh_phi, ngay_bat_dau, ngay_ket_thuc, trang_thai, cong_khai_som)
@@ -175,12 +178,24 @@ begin
   execute 'reset role';
   res := res || jsonb_build_object('t', '14 Người chưa đăng nhập không gọi được lich_lop_hoc', 'ok', ok);
 
+  -- ===== Đã đọc thông báo gộp rồi mà có lớp sắp mở mới -> tạo thông báo mới =====
+  update public.thong_bao set da_doc = true where user_id = c2 and khoa = 'sap_mo';
+  insert into public.lop_hoc (ten, nhom_lop_id, doi_tuong, loai_kinh_phi, ngay_bat_dau, ngay_ket_thuc, trang_thai)
+  values ('ZZ TestLich L5', nl, 'nhan_vien_y_te', 'co_kinh_phi', (goc + interval '10 days')::date, (goc + interval '10 days')::date, 'nhap') returning id into l5;
+  insert into public.lop_hoc_nhom_du_dieu_kien (lop_id, nhom) values (l5, 'gv_bac_si');
+  insert into public.bai_hoc (lop_id, thu_tu, ten, bat_dau, ket_thuc)
+  values (l5, 1, 'Bài 1', goc + interval '10 days', goc + interval '10 days 2 hours') returning id into b5;
+  insert into public.slot_giang_day (bai_id, vai_tro, vi_tri) values (b5, 'giang_vien', 1);
+  select count(*) into n from public.thong_bao where user_id = c2 and khoa = 'sap_mo';
+  select count(*) into n2 from public.thong_bao where user_id = c2 and khoa = 'sap_mo' and not da_doc and tieu_de = 'Lớp sắp mở đăng ký';
+  res := res || jsonb_build_object('t', '15 Thông báo gộp đã đọc + có lớp sắp mở mới -> tạo thông báo mới "1 lớp"', 'ok', n = 2 and n2 = 1);
+
   -- ===== Mở đăng ký vẫn gửi "Lớp mới mở đăng ký" như cũ =====
   perform pg_temp.vao(c1);
   perform public.doi_trang_thai_lop(l1, 'dang_mo');
   execute 'reset role';
   select count(*) into n from public.thong_bao where user_id = c4 and loai = 'bai_trong_moi' and lien_ket = '/lop-hoc/' || l1;
-  res := res || jsonb_build_object('t', '15 Khi lớp sắp mở chính thức mở đăng ký, người đủ điều kiện nhận thêm "Lớp mới mở đăng ký"', 'ok', n = 2);
+  res := res || jsonb_build_object('t', '16 Khi lớp sắp mở chính thức mở đăng ký, người đủ điều kiện nhận thêm "Lớp mới mở đăng ký"', 'ok', n = 2);
 
   insert into pg_temp.ket_qua (ten, dat)
   select e ->> 't', (e ->> 'ok')::boolean from jsonb_array_elements(res) e;
