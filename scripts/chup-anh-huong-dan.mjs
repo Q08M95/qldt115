@@ -110,7 +110,12 @@ async function main() {
     },
   });
   await chup("3.5", { as: HERO_TG, path: "/dang-ky" });
-  await chup("3.6", { as: HERO_GV, path: "/lop-hoc?xem=lich&cua=toi", fullPage: true });
+  // Lịch "Của tôi" ở THÁNG SAU: dữ liệu demo xếp buổi dạy sắp tới của Hero GV vào khoảng 2–7 tuần tới
+  const thangSau = new Date();
+  thangSau.setDate(1);
+  thangSau.setMonth(thangSau.getMonth() + 1);
+  const khoaThangSau = `${thangSau.getFullYear()}-${String(thangSau.getMonth() + 1).padStart(2, "0")}`;
+  await chup("3.6", { as: HERO_GV, path: `/lop-hoc?xem=lich&cua=toi&thang=${khoaThangSau}`, fullPage: true });
   await chup("3.7", { as: HERO_GV, path: "/" });
   await chup("3.8", { as: HERO_GV, path: "/thong-bao" });
   await chup("3.9", {
