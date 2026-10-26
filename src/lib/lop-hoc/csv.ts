@@ -212,7 +212,8 @@ export function resolveLopHocCsv(
         .map((s) => s.trim())
         .filter(Boolean)
         .map((s) => khopTen(s, chungChiOptions));
-      const congKhaiSom = /^(co|có|c|x|yes|y|true|1)$/i.test(boDau(r.congKhaiSom.trim()));
+      // Mặc định công khai sớm (để trống = có); chỉ tắt khi ghi rõ "không"
+      const congKhaiSom = !/^(khong|k|no|n|false|0)$/i.test(boDau(r.congKhaiSom.trim()));
 
       let loi: string | undefined;
       if (!ten) loi = "Thiếu tên lớp.";

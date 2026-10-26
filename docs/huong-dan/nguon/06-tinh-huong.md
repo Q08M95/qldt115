@@ -24,7 +24,7 @@ Chương này ghép các chức năng ở những chương trước thành các 
 
 | Bước | Quản lý | Giảng viên / Trợ giảng |
 |---|---|---|
-| 1. Chuẩn bị | Tạo lớp, chọn nhóm đủ điều kiện, thêm các Bài và số slot. | (Nếu quản lý bật "Công khai sớm" thì thấy lớp Dự kiến.) |
+| 1. Chuẩn bị | Tạo lớp, chọn nhóm đủ điều kiện, thêm các Bài và số slot. | Thấy trước lớp trên **Lịch** của trang Lớp học (nhãn **Sắp mở**), người phù hợp nhận thông báo "Lớp sắp mở đăng ký" — trừ khi quản lý tắt "Công khai sớm". |
 | 2. Mở | Bấm **Mở đăng ký**. Xem bảng gợi ý, mời người phù hợp, chú ý cảnh báo pool nhỏ. | Nhận thông báo lớp mới. Xem chi tiết lớp, **đăng ký** Bài phù hợp, hoặc **trả lời lời mời**. |
 | 3. Phân công | **Duyệt** đăng ký, lưu ý cảnh báo dồn tải. | Nhận thông báo được duyệt hoặc bị từ chối. |
 | 4. Trước buổi học | Có thể **đổi giờ** Bài nếu cần (hệ thống kiểm tra trùng lịch, báo người liên quan). | Nhận nhắc check-in. |

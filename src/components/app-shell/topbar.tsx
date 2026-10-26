@@ -27,6 +27,8 @@ export interface ShellUser {
   name: string;
   email: string;
   avatarUrl?: string | null;
+  // Có hồ sơ GV/TG: icon lịch mở "Lịch dạy của tôi"; không có (Admin thuần) thì mở lịch các lớp vì lịch cá nhân luôn trống
+  coLichCaNhan?: boolean;
 }
 
 const ID_SEGMENT = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -153,7 +155,10 @@ export function Topbar({
         <TimNhanh isQuanTri={isQuanTri} />
 
         <Button asChild variant="outline" size="icon" className="hidden rounded-full border-transparent shadow-card md:inline-flex">
-          <Link href="/dang-ky#lich" aria-label="Lịch dạy của tôi">
+          <Link
+            href={user.coLichCaNhan === false ? "/lop-hoc?xem=lich" : "/dang-ky#lich"}
+            aria-label={user.coLichCaNhan === false ? "Lịch các lớp" : "Lịch dạy của tôi"}
+          >
             <CalendarDays />
           </Link>
         </Button>

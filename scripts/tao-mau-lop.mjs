@@ -98,7 +98,7 @@ const HUONG_DAN = [
   ["địa điểm", "Không bắt buộc", "", "Hội trường A"],
   ["nhóm đủ điều kiện", "Chỉ dòng đầu", "Tên nhóm nhân sự (xem Danh mục hiện có), nhiều nhóm cách nhau bằng dấu ;", "Giảng viên là bác sĩ;Trợ giảng là bác sĩ"],
   ["chứng chỉ yêu cầu", "Không bắt buộc", "Tên chứng chỉ (xem Danh mục hiện có), cách nhau bằng ;. Để trống nếu không yêu cầu.", ""],
-  ["công khai sớm", "Không bắt buộc", '"có" hoặc "không" — cho GV/TG thấy lớp khi còn Dự kiến.', "không"],
+  ["công khai sớm", "Không bắt buộc", '"có" hoặc "không" — để trống = "có": GV/TG thấy lớp trên Lịch lớp học khi còn Dự kiến.', "có"],
   ["tên bài", "Có, mỗi dòng", "Nội dung của buổi học (Bài) đó.", "Lý thuyết hồi sinh tim phổi"],
   ["ngày", "Có, mỗi dòng", "Định dạng dd/mm/yyyy.", "15/03/2026"],
   ["giờ bắt đầu / giờ kết thúc", "Có, mỗi dòng", "Định dạng HH:mm (giờ Việt Nam).", "08:00 / 11:00"],

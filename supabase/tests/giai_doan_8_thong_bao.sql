@@ -91,8 +91,8 @@ begin
   select gia_tri into o_nhac from public.cau_hinh_he_thong where khoa = 'nhac_check_in_truoc_phut';
 
   -- ===== Dữ liệu thử =====
-  insert into public.lop_hoc (ten, nhom_lop_id, doi_tuong, loai_kinh_phi, ngay_bat_dau, ngay_ket_thuc, trang_thai)
-  values ('ZZ Test8 Lớp 1', nl, 'nhan_vien_y_te', 'co_kinh_phi', current_date + 2, current_date + 9, 'nhap') returning id into l1;
+  insert into public.lop_hoc (ten, nhom_lop_id, doi_tuong, loai_kinh_phi, ngay_bat_dau, ngay_ket_thuc, trang_thai, cong_khai_som)
+  values ('ZZ Test8 Lớp 1', nl, 'nhan_vien_y_te', 'co_kinh_phi', current_date + 2, current_date + 9, 'nhap', false) returning id into l1;
   insert into public.lop_hoc_nhom_du_dieu_kien (lop_id, nhom) values (l1, 'gv_bac_si'), (l1, 'tg_bac_si');
   insert into public.lop_hoc (ten, nhom_lop_id, doi_tuong, loai_kinh_phi, ngay_bat_dau, ngay_ket_thuc, trang_thai)
   values ('ZZ Test8 Lớp nhắc giờ', nl, 'nhan_vien_y_te', 'co_kinh_phi', current_date - 1, current_date + 1, 'dang_mo') returning id into l2;

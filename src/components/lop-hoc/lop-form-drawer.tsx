@@ -134,11 +134,11 @@ export function LopFormDrawer({
       )}
 
       <label className="flex cursor-pointer items-start gap-3 rounded-lg border p-3 text-sm">
-        <input type="checkbox" name="cong_khai_som" defaultChecked={lop?.cong_khai_som} className="mt-0.5 size-4 accent-primary" />
+        <input type="checkbox" name="cong_khai_som" defaultChecked={lop?.cong_khai_som ?? true} className="mt-0.5 size-4 accent-primary" />
         <span>
           <span className="block font-medium">Công khai sớm khi còn Dự kiến</span>
           <span className="block text-xs text-muted-foreground">
-            Cho GV/TG thấy lớp và các Bài dự kiến trước khi mở đăng ký chính thức, để sắp xếp lịch cá nhân.
+            Bật sẵn: GV/TG thấy lớp và các Bài dự kiến trên Lịch lớp học trước khi mở đăng ký, người phù hợp được báo “Lớp sắp mở”. Bỏ tick nếu chưa muốn công bố.
           </span>
         </span>
       </label>

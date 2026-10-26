@@ -3,33 +3,21 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
+import { LuoiThang, type ChamLich } from "@/components/lich/luoi-thang";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { fmtTime } from "@/lib/format";
 import { VAI_TRO_LABEL } from "@/lib/nhan-su/labels";
+import { congThang, hueLop, ngayVN, thangCua } from "@/lib/lich";
 import { cn } from "@/lib/utils";
 import type { BaiLich } from "@/lib/dang-ky/queries";
-
-const VN_TZ = "Asia/Ho_Chi_Minh";
-const THU = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
-
-const ngayVN = (d: Date | string) => new Date(d).toLocaleDateString("en-CA", { timeZone: VN_TZ }); // YYYY-MM-DD
-// Mỗi lớp 1 màu trong 4 màu gốc (theo mã lớp, ổn định giữa các lần xem) để nhìn lịch biết ngay Bài nào cùng lớp
-const HUE = [
-  { nen: "bg-grad-blue", vien: "border-[var(--hue-blue)]" },
-  { nen: "bg-grad-navy", vien: "border-[var(--hue-navy)]" },
-  { nen: "bg-grad-teal", vien: "border-[var(--hue-teal)]" },
-  { nen: "bg-grad-green", vien: "border-[var(--hue-green)]" },
-] as const;
-const hueLop = (lopId: string) => HUE[[...lopId].reduce((a, c) => a + c.charCodeAt(0), 0) % 4];
-const pad = (n: number) => String(n).padStart(2, "0");
 
 // Lịch tháng của tôi (mục 4.7b) — chỉ các Bài đã được phân công. Lưới tháng + danh sách Bài của ngày đang chọn ở dưới
 // (mobile không cần lưới lớn: ô chỉ có chấm, chi tiết nằm ở danh sách — mục 8.9).
 export function LichThang({ items }: { items: BaiLich[] }) {
   const homNay = ngayVN(new Date());
-  const [thang, setThang] = useState(() => ({ nam: Number(homNay.slice(0, 4)), thang: Number(homNay.slice(5, 7)) }));
+  const [thang, setThang] = useState(() => thangCua(homNay));
   const [chon, setChon] = useState(homNay);
 
   const theoNgay = useMemo(() => {
@@ -40,25 +28,14 @@ export function LichThang({ items }: { items: BaiLich[] }) {
     }
     return m;
   }, [items]);
+  const chamTheoNgay = useMemo(
+    () => new Map<string, ChamLich[]>([...theoNgay].map(([k, ds]) => [k, ds.map((s) => ({ key: s.slot_id, lopId: s.bai.lop_id }))])),
+    [theoNgay],
+  );
 
-  // Lưới bắt đầu từ Thứ Hai của tuần chứa ngày 1, dùng UTC thuần để không lệch múi giờ
-  const oLich = useMemo(() => {
-    const dauThang = new Date(Date.UTC(thang.nam, thang.thang - 1, 1));
-    const lui = (dauThang.getUTCDay() + 6) % 7;
-    const soNgay = new Date(Date.UTC(thang.nam, thang.thang, 0)).getUTCDate();
-    const soO = Math.ceil((lui + soNgay) / 7) * 7;
-    return Array.from({ length: soO }, (_, i) => {
-      const d = new Date(Date.UTC(thang.nam, thang.thang - 1, 1 - lui + i));
-      return { khoa: `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`, ngay: d.getUTCDate(), trongThang: d.getUTCMonth() === thang.thang - 1 };
-    });
-  }, [thang]);
-
-  const doiThang = (delta: number) => {
-    const d = new Date(Date.UTC(thang.nam, thang.thang - 1 + delta, 1));
-    setThang({ nam: d.getUTCFullYear(), thang: d.getUTCMonth() + 1 });
-  };
+  const doiThang = (delta: number) => setThang(congThang(thang, delta));
   const veHomNay = () => {
-    setThang({ nam: Number(homNay.slice(0, 4)), thang: Number(homNay.slice(5, 7)) });
+    setThang(thangCua(homNay));
     setChon(homNay);
   };
 
@@ -87,47 +64,7 @@ export function LichThang({ items }: { items: BaiLich[] }) {
         <p className="text-center text-sm font-semibold tabular-nums" aria-live="polite">
           Tháng {thang.thang}/{thang.nam}
         </p>
-        <div className="grid grid-cols-7 gap-1 text-center">
-          {THU.map((t) => (
-            <span key={t} className="pb-1 text-xs font-medium text-muted-foreground">
-              {t}
-            </span>
-          ))}
-          {oLich.map((o) => {
-            const ds = theoNgay.get(o.khoa) ?? [];
-            const laHomNay = o.khoa === homNay;
-            const dangChon = o.khoa === chon;
-            return (
-              <button
-                key={o.khoa}
-                type="button"
-                onClick={() => setChon(o.khoa)}
-                aria-pressed={dangChon}
-                aria-label={`${o.ngay}/${o.khoa.slice(5, 7)}${ds.length ? `, ${ds.length} Bài` : ""}`}
-                className={cn(
-                  "flex min-h-11 flex-col items-center justify-center gap-0.5 rounded-xl py-1 text-sm transition-all duration-150 sm:min-h-14",
-                  "hover:bg-muted",
-                  !o.trongThang && "text-muted-foreground/50",
-                                )}
-              >
-                <span
-                  className={cn(
-                    "flex size-7 items-center justify-center rounded-full tabular-nums",
-                    dangChon ? "bg-brand-gradient font-semibold text-white" : laHomNay && "font-bold text-primary ring-2 ring-primary/40",
-                  )}
-                >
-                  {o.ngay}
-                </span>
-                <span className="flex h-2 items-center gap-0.5" aria-hidden>
-                  {ds.slice(0, 3).map((s) => (
-                    <span key={s.slot_id} className={cn("size-2 rounded-full", hueLop(s.bai.lop_id).nen)} />
-                  ))}
-                  {ds.length > 3 && <span className="text-[10px] leading-none text-muted-foreground">+</span>}
-                </span>
-              </button>
-            );
-          })}
-        </div>
+        <LuoiThang thang={thang} theoNgay={chamTheoNgay} chon={chon} onChon={setChon} />
 
         <div className="border-t pt-3">
           <p className="mb-2 text-xs font-semibold text-muted-foreground">

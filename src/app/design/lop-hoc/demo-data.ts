@@ -1,5 +1,5 @@
 import type { DangKyLop } from "@/lib/dang-ky/queries";
-import type { LopChiTiet } from "@/lib/lop-hoc/queries";
+import type { LichLopRow, LopChiTiet } from "@/lib/lop-hoc/queries";
 import type { BaiHoc, LopHocTongHop, NhomLop, SlotGiangDay, UngVien } from "@/types/database";
 
 // Dữ liệu giả cho trang demo Lớp học — chỉ dùng khi dev
@@ -131,3 +131,42 @@ export const DANG_KY: DangKyLop = {
     { bai_id: "b3", ly_do: null, da_dang_ky: true },
   ],
 };
+
+// Lịch lớp giả: vài lớp rải trong tháng hiện tại (giờ VN) — đủ các trường hợp đã đủ người / còn thiếu / lớp sắp mở / Bạn dạy / trùng lịch
+export function lichDemo(nam: number, thang: number): LichLopRow[] {
+  const ngay = (d: number, gio: number) => `${nam}-${String(thang).padStart(2, "0")}-${String(d).padStart(2, "0")}T${String(gio).padStart(2, "0")}:00:00+07:00`;
+  const bai = (o: Partial<LichLopRow> & { d: number; gio: number; dai?: number }): LichLopRow => ({
+    bai_id: `${o.lop_id}-${o.d}-${o.gio}`,
+    bai_ten: "Bài",
+    bat_dau: ngay(o.d, o.gio),
+    ket_thuc: ngay(o.d, o.gio + (o.dai ?? 3)),
+    lop_id: "l1",
+    lop_ten: "ACLS-08",
+    nhom_lop_id: "n2",
+    nhom_lop_ten: "ACLS",
+    doi_tuong: "nhan_vien_y_te",
+    loai_kinh_phi: "co_kinh_phi",
+    dia_diem: "Phòng đào tạo tầng 3",
+    trang_thai_hien_thi: "dang_mo",
+    gv_tong: 1,
+    gv_da: 1,
+    tg_tong: 2,
+    tg_da: 2,
+    toi_du_dieu_kien: true,
+    toi_day: false,
+    toi_trung_lich: false,
+    ...o,
+  });
+  return [
+    bai({ d: 3, gio: 8, bai_ten: "Bài 1 — Lý thuyết ACLS", toi_day: true }),
+    bai({ d: 3, gio: 13, bai_ten: "Bài 2 — Thực hành nhóm", tg_da: 1 }),
+    bai({ d: 4, gio: 8, bai_ten: "Bài 3 — Ca lâm sàng", gv_da: 0, tg_da: 0 }),
+    bai({ d: 3, gio: 9, lop_id: "l2", lop_ten: "BLS-15 (Cộng đồng)", nhom_lop_id: "n3", nhom_lop_ten: "BLS", bai_ten: "Bài 1 — Hồi sinh tim phổi cơ bản", gv_da: 0, tg_tong: 3, tg_da: 1, toi_trung_lich: true, loai_kinh_phi: "khong_kinh_phi" }),
+    bai({ d: 12, gio: 8, lop_id: "l3", lop_ten: "ABCDE-21", nhom_lop_id: "n1", nhom_lop_ten: "ABCDE", bai_ten: "Bài 1 — Đánh giá ban đầu", trang_thai_hien_thi: "nhap", gv_da: 0, tg_da: 0 }),
+    bai({ d: 13, gio: 8, lop_id: "l3", lop_ten: "ABCDE-21", nhom_lop_id: "n1", nhom_lop_ten: "ABCDE", bai_ten: "Bài 2 — Thực hành ABCDE", trang_thai_hien_thi: "nhap", gv_da: 0, tg_da: 0, toi_du_dieu_kien: false }),
+    bai({ d: 20, gio: 7, lop_id: "l4", lop_ten: "SCC-LX-03", nhom_lop_id: "n4", nhom_lop_ten: "SCC-LX", bai_ten: "Bài 1 — Sơ cấp cứu lái xe", trang_thai_hien_thi: "da_du_dang_ky" }),
+    bai({ d: 20, gio: 13, lop_id: "l4", lop_ten: "SCC-LX-03", nhom_lop_id: "n4", nhom_lop_ten: "SCC-LX", bai_ten: "Bài 2 — Tình huống giao thông", trang_thai_hien_thi: "da_du_dang_ky" }),
+    bai({ d: 20, gio: 15, lop_id: "l1", bai_ten: "Bài 4 — Kiểm tra cuối khóa", tg_da: 0 }),
+    bai({ d: 27, gio: 8, lop_id: "l5", lop_ten: "ACLS-09", bai_ten: "Bài 1 — Lý thuyết ACLS", trang_thai_hien_thi: "nhap", gv_da: 0, tg_da: 0 }),
+  ];
+}

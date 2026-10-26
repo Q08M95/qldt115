@@ -30,6 +30,7 @@ Hai script trong `scripts/` dùng để tạo lại toàn bộ ảnh chụp màn
 node scripts/demo-huong-dan.mjs tao        # tạo 51 tài khoản + 12 tháng lớp/Bài/điểm danh trên project dev/staging
 node scripts/demo-huong-dan.mjs dong-ky    # đóng 3 kỳ đã qua bằng đúng engine KPI thật (chạy SAU "tao")
 node scripts/chup-anh-huong-dan.mjs        # đăng nhập thật + chụp toàn bộ ảnh vào docs/huong-dan/anh/
+node scripts/chup-anh-huong-dan.mjs 3.2 3.2b   # chỉ chụp lại vài mã ảnh (dev server khác cổng 3000: đặt BASE_URL)
 node scripts/demo-huong-dan.mjs xoa        # dọn sạch tài khoản/lớp/kỳ demo khi xong (không đụng dữ liệu thật)
 ```
 
@@ -71,6 +72,7 @@ Toàn bộ ảnh dưới đây đã có trong `docs/huong-dan/anh/` (chụp bằ
 | 2.4 | Các bước thêm trang web vào màn hình chính iPhone | 2.4 Cài trang web lên điện thoại như một ứng dụng |
 | 3.1 | Trang Tổng quan của giảng viên/trợ giảng | 3.1 Trang Tổng quan (trang chủ) |
 | 3.2 | Danh sách lớp học và bộ lọc | 3.2 Xem danh sách lớp |
+| 3.2b | Lịch các lớp: lưới tháng và các Bài của ngày đã chọn | 3.2 Xem danh sách lớp (Xem lịch các lớp sắp tới) |
 | 3.3 | Trang chi tiết lớp: danh sách Bài và các slot | 3.3 Xem chi tiết một lớp |
 | 3.4a | Chọn nhiều Bài và bấm "Đăng ký các Bài đã chọn" | 3.4 Đăng ký dạy |
 | 3.5 | Lời mời cần bạn phản hồi, nút Đồng ý và Từ chối | 3.5 Nhận lời mời dạy |
