@@ -4,13 +4,15 @@ import { LichLop } from "@/components/lop-hoc/lich-lop";
 import { LopFormDrawer } from "@/components/lop-hoc/lop-form-drawer";
 import { LopListView } from "@/components/lop-hoc/lop-list-view";
 import { ngayVN, thangCua } from "@/lib/lich";
-import { lichDemo, LOP_LIST, NHOM_LOP } from "./demo-data";
+import { baiCuaToiDemo, lichDemo, LOP_LIST, NHOM_LOP } from "./demo-data";
 
 // Trang demo danh sách lớp với dữ liệu giả — chỉ chạy khi dev, dùng để đối chiếu giao diện. Production trả 404.
-// ?xem=lich: chế độ Lịch với dữ liệu giả của tháng hiện tại.
+// ?xem=lich (&cua=toi): chế độ Lịch với dữ liệu giả của tháng hiện tại.
 export default async function DesignLopHocPage(props: PageProps<"/design/lop-hoc">) {
   if (process.env.NODE_ENV === "production") notFound();
-  const xemLich = (await props.searchParams).xem === "lich";
+  const sp = await props.searchParams;
+  const xemLich = sp.xem === "lich";
+  const cuaToi = sp.cua === "toi";
   const thang = thangCua(ngayVN(new Date()));
 
   return (
@@ -28,11 +30,18 @@ export default async function DesignLopHocPage(props: PageProps<"/design/lop-hoc
           hrefLich: "/design/lop-hoc?xem=lich",
           giu: xemLich ? { xem: "lich" } : {},
           xoaHref: xemLich ? "/design/lop-hoc?xem=lich" : "/design/lop-hoc",
-          phuHop: { bat: false, href: "/design/lop-hoc?xem=lich" },
         }}
         lich={
           xemLich ? (
-            <LichLop items={lichDemo(thang.nam, thang.thang)} thang={thang} hrefTruoc="#" hrefSau="#" hrefHomNay="#" laGvTg />
+            <LichLop
+              lops={lichDemo(thang.nam, thang.thang)}
+              thang={thang}
+              hrefTruoc="#"
+              hrefSau="#"
+              hrefHomNay="#"
+              cuaToi={{ bat: cuaToi, hrefTatCa: "/design/lop-hoc?xem=lich", hrefCuaToi: "/design/lop-hoc?xem=lich&cua=toi" }}
+              baiCuaToi={baiCuaToiDemo(thang.nam, thang.thang)}
+            />
           ) : undefined
         }
       />

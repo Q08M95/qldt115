@@ -19,21 +19,49 @@ export interface LopFilterValues {
 // Lọc bằng GET form (next/form), cùng cách với danh sách nhân sự: đổi ô chọn là tự gửi, URL giữ trạng thái lọc.
 // Lọc theo nhóm lớp giúp tìm các lớp cùng loại sắp mở (mục 4.3). Bộ lọc dùng chung cho cả chế độ Danh sách lẫn Lịch:
 // "giu" là các tham số URL cần giữ nguyên khi lọc (vd xem=lich, thang=...), "xoaHref" là đích của nút "Xóa lọc".
+// chiNhomLop: bản gọn cho chế độ Lịch — chỉ 1 ô chọn nhóm lớp (các bộ lọc khác dành cho chế độ Danh sách).
 export function LopFilters({
   values,
   nhomLop,
   action = "/lop-hoc",
   giu = {},
   xoaHref = action,
+  chiNhomLop = false,
 }: {
   values: LopFilterValues;
   nhomLop: { id: string; ten: string }[];
   action?: string;
   giu?: Record<string, string>;
   xoaHref?: string;
+  chiNhomLop?: boolean;
 }) {
   const submitOnChange = (e: React.ChangeEvent<HTMLSelectElement>) => e.currentTarget.form?.requestSubmit();
   const dangLoc = Object.values(values).some(Boolean);
+
+  if (chiNhomLop) {
+    return (
+      <Form action={action} className="flex items-center gap-2">
+        {Object.entries(giu).map(([k, v]) => (
+          <input key={k} type="hidden" name={k} value={v} />
+        ))}
+        <NativeSelect name="nhom_lop" defaultValue={values.nhom_lop} onChange={submitOnChange} aria-label="Nhóm lớp" className="w-40">
+          <option value="">Mọi nhóm lớp</option>
+          {nhomLop.map((n) => (
+            <option key={n.id} value={n.id}>
+              {n.ten}
+            </option>
+          ))}
+        </NativeSelect>
+        {values.nhom_lop && (
+          <Button asChild variant="ghost" size="icon" aria-label="Xóa lọc">
+            <Link href={xoaHref}>
+              <X />
+            </Link>
+          </Button>
+        )}
+      </Form>
+    );
+  }
 
   return (
     <Form action={action} className="flex flex-col gap-3 px-5 pb-1 md:flex-row md:flex-wrap md:items-center">

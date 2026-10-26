@@ -1,4 +1,4 @@
-// Tiện ích lưới lịch tháng dùng chung cho "Lịch dạy của tôi" (/dang-ky#lich) và "Lịch lớp" (/lop-hoc?xem=lich).
+// Tiện ích lưới lịch tháng cho "Lịch" của trang Lớp học (/lop-hoc?xem=lich).
 
 const VN_TZ = "Asia/Ho_Chi_Minh";
 export const THU = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
@@ -48,19 +48,8 @@ export function oLichThang(t: Thang): OLich[] {
   });
 }
 
-// Khoảng thời gian (ISO, giờ VN) phủ đúng các ô của lưới tháng — để lấy luôn Bài ở các ngày mờ đầu/cuối lưới
+// Khoảng ngày (YYYY-MM-DD, gồm cả 2 đầu) phủ đúng các ô của lưới tháng — để lấy luôn lớp ở các ngày mờ đầu/cuối lưới
 export function khoangLuoi(t: Thang): { tu: string; den: string } {
   const o = oLichThang(t);
-  const cuoi = new Date(`${o[o.length - 1].khoa}T00:00:00Z`);
-  cuoi.setUTCDate(cuoi.getUTCDate() + 1);
-  return { tu: `${o[0].khoa}T00:00:00+07:00`, den: `${cuoi.toISOString().slice(0, 10)}T00:00:00+07:00` };
+  return { tu: o[0].khoa, den: o[o.length - 1].khoa };
 }
-
-// Mỗi lớp 1 màu trong 4 màu gốc (theo mã lớp, ổn định giữa các lần xem) để nhìn lịch biết ngay Bài nào cùng lớp
-const HUE = [
-  { nen: "bg-grad-blue", vien: "border-[var(--hue-blue)]" },
-  { nen: "bg-grad-navy", vien: "border-[var(--hue-navy)]" },
-  { nen: "bg-grad-teal", vien: "border-[var(--hue-teal)]" },
-  { nen: "bg-grad-green", vien: "border-[var(--hue-green)]" },
-] as const;
-export const hueLop = (lopId: string) => HUE[[...lopId].reduce((a, c) => a + c.charCodeAt(0), 0) % 4];

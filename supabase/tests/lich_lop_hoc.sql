@@ -38,8 +38,7 @@ create temp table moc as select now() as tu;
 call pg_temp.don_dep();
 drop table if exists pg_temp.dong_lich;
 -- Kiểu bản ghi để đọc lại kết quả lich_lop_hoc đã gom thành jsonb (chỉ cần các cột được kiểm tra)
-create temp table dong_lich (bai_id uuid, gv_tong int, gv_da int, tg_tong int, tg_da int, trang_thai_hien_thi text,
-  toi_du_dieu_kien boolean, toi_day boolean, toi_trung_lich boolean);
+create temp table dong_lich (lop_id uuid, trang_thai_hien_thi text, con_thieu boolean, toi_day boolean);
 drop table if exists pg_temp.ket_qua;
 create temp table ket_qua (ts timestamptz default clock_timestamp(), ten text, dat boolean);
 
@@ -135,62 +134,53 @@ begin
   insert into public.bai_hoc (lop_id, thu_tu, ten, bat_dau, ket_thuc)
   values (l4, 1, 'Bài hủy', goc, goc + interval '1 hour') returning id into b4;
 
-  -- c2 được phân công GV Bài 1 của L1
+  -- c2 được phân công GV Bài 1 của L1; L2 (1 slot GV) được lấp đủ bởi c5 -> không còn thiếu người
   update public.slot_giang_day set nguoi_phan_cong = c2, trang_thai = 'da_phan_cong' where bai_id = b1 and vai_tro = 'giang_vien';
+  update public.slot_giang_day set nguoi_phan_cong = c5, trang_thai = 'da_phan_cong' where bai_id = b2;
 
-  -- ===== Lịch nhìn từ GV c2 =====
+  -- ===== Lịch nhìn từ GV c2 (theo LỚP) =====
   -- Gom kết quả vào biến jsonb (role authenticated không tạo được bảng tạm trong pg_temp)
   perform pg_temp.vao(c2);
   select coalesce(jsonb_agg(to_jsonb(x)), '[]') into lich
-  from public.lich_lop_hoc(now(), now() + interval '30 days') x where x.lop_ten like 'ZZ TestLich%';
+  from public.lich_lop_hoc(goc::date - 1, goc::date + 30) x where x.ten like 'ZZ TestLich%';
   execute 'reset role';
-  res := res || jsonb_build_object('t', '08 GV thấy Bài của lớp sắp mở (công khai sớm), không thấy lớp Dự kiến kín và lớp đã hủy', 'ok',
-    jsonb_array_length(lich) = 3
-    and not exists (select 1 from jsonb_array_elements(lich) e where (e ->> 'bai_id')::uuid in (b3, b4)));
-  select * into r from jsonb_populate_recordset(null::pg_temp.dong_lich, lich) x where x.bai_id = b1;
-  res := res || jsonb_build_object('t', '09 Tiến độ slot theo vai trò đúng (GV 1/1, TG 0/2) và trạng thái "nhap"', 'ok',
-    r.gv_tong = 1 and r.gv_da = 1 and r.tg_tong = 2 and r.tg_da = 0 and r.trang_thai_hien_thi = 'nhap');
-  res := res || jsonb_build_object('t', '10 Cờ của người xem: đủ điều kiện L1, đang dạy Bài 1, Bài mình dạy không tính là trùng', 'ok',
-    r.toi_du_dieu_kien and r.toi_day and not r.toi_trung_lich);
-  select * into r from jsonb_populate_recordset(null::pg_temp.dong_lich, lich) x where x.bai_id = b2;
-  res := res || jsonb_build_object('t', '11 Bài lớp khác giao giờ với Bài đã phân công -> "trùng lịch của bạn"; có chứng chỉ -> đủ điều kiện', 'ok',
-    r.toi_trung_lich and not r.toi_day and r.toi_du_dieu_kien);
-  select * into r from jsonb_populate_recordset(null::pg_temp.dong_lich, lich) x where x.bai_id = b1b;
-  res := res || jsonb_build_object('t', '12 Bài không giao giờ thì không trùng lịch', 'ok', not r.toi_trung_lich and not r.toi_day);
+  res := res || jsonb_build_object('t', '08 GV thấy lớp sắp mở (công khai sớm), không thấy lớp Dự kiến kín và lớp đã hủy; mỗi lớp 1 dòng', 'ok',
+    jsonb_array_length(lich) = 2
+    and not exists (select 1 from jsonb_array_elements(lich) e where (e ->> 'lop_id')::uuid in (l3, l4)));
+  select * into r from jsonb_populate_recordset(null::pg_temp.dong_lich, lich) x where x.lop_id = l1;
+  res := res || jsonb_build_object('t', '09 Lớp L1: trạng thái "nhap", còn thiếu người (slot TG trống), người xem có dạy trong lớp', 'ok',
+    r.trang_thai_hien_thi = 'nhap' and r.con_thieu and r.toi_day);
+  select * into r from jsonb_populate_recordset(null::pg_temp.dong_lich, lich) x where x.lop_id = l2;
+  res := res || jsonb_build_object('t', '10 Lớp L2 đã lấp đủ slot: không còn thiếu người; người xem không dạy lớp này', 'ok',
+    not r.con_thieu and not r.toi_day);
 
-  -- ===== Lịch nhìn từ người khác =====
-  perform pg_temp.vao(c3);
-  select bool_or(x.toi_du_dieu_kien) into ok from public.lich_lop_hoc(now(), now() + interval '30 days') x where x.lop_ten like 'ZZ TestLich%';
+  perform pg_temp.vao(c2);
+  select count(*) into n from public.lich_lop_hoc(goc::date - 40, goc::date - 10) x where x.ten like 'ZZ TestLich%';
   execute 'reset role';
-  res := res || jsonb_build_object('t', '13 Người sai nhóm: không lớp nào "đủ điều kiện"', 'ok', not ok);
-
-  perform pg_temp.vao(c5);
-  select x.toi_du_dieu_kien into ok from public.lich_lop_hoc(now(), now() + interval '30 days') x where x.bai_id = b2;
-  execute 'reset role';
-  res := res || jsonb_build_object('t', '14 Đúng nhóm nhưng thiếu chứng chỉ yêu cầu: không "đủ điều kiện"', 'ok', not ok);
+  res := res || jsonb_build_object('t', '11 Lớp nằm ngoài khoảng ngày không được trả về', 'ok', n = 0);
 
   perform pg_temp.vao(c1);
-  select count(*) into n from public.lich_lop_hoc(now(), now() + interval '30 days') x where x.lop_ten like 'ZZ TestLich%';
+  select count(*) into n from public.lich_lop_hoc(goc::date - 1, goc::date + 30) x where x.ten like 'ZZ TestLich%';
   execute 'reset role';
-  res := res || jsonb_build_object('t', '15 Admin thấy cả lớp Dự kiến chưa công khai, vẫn ẩn lớp đã hủy', 'ok', n = 4);
+  res := res || jsonb_build_object('t', '12 Admin thấy cả lớp Dự kiến chưa công khai, vẫn ẩn lớp đã hủy', 'ok', n = 3);
 
   -- ===== Ràng buộc tham số / quyền =====
   perform pg_temp.vao(c2);
-  ok := false; begin perform public.lich_lop_hoc(now(), now() + interval '90 days'); exception when invalid_parameter_value then ok := true; end;
+  ok := false; begin perform public.lich_lop_hoc(current_date, current_date + 90); exception when invalid_parameter_value then ok := true; end;
   execute 'reset role';
-  res := res || jsonb_build_object('t', '16 Khoảng thời gian quá 62 ngày bị từ chối', 'ok', ok);
+  res := res || jsonb_build_object('t', '13 Khoảng thời gian quá 62 ngày bị từ chối', 'ok', ok);
   perform set_config('request.jwt.claims', '', true);
   execute 'set local role anon';
-  ok := false; begin perform public.lich_lop_hoc(now(), now() + interval '1 day'); exception when insufficient_privilege then ok := true; end;
+  ok := false; begin perform public.lich_lop_hoc(current_date, current_date + 1); exception when insufficient_privilege then ok := true; end;
   execute 'reset role';
-  res := res || jsonb_build_object('t', '17 Người chưa đăng nhập không gọi được lich_lop_hoc', 'ok', ok);
+  res := res || jsonb_build_object('t', '14 Người chưa đăng nhập không gọi được lich_lop_hoc', 'ok', ok);
 
   -- ===== Mở đăng ký vẫn gửi "Lớp mới mở đăng ký" như cũ =====
   perform pg_temp.vao(c1);
   perform public.doi_trang_thai_lop(l1, 'dang_mo');
   execute 'reset role';
   select count(*) into n from public.thong_bao where user_id = c4 and loai = 'bai_trong_moi' and lien_ket = '/lop-hoc/' || l1;
-  res := res || jsonb_build_object('t', '18 Khi lớp sắp mở chính thức mở đăng ký, người đủ điều kiện nhận thêm "Lớp mới mở đăng ký"', 'ok', n = 2);
+  res := res || jsonb_build_object('t', '15 Khi lớp sắp mở chính thức mở đăng ký, người đủ điều kiện nhận thêm "Lớp mới mở đăng ký"', 'ok', n = 2);
 
   insert into pg_temp.ket_qua (ten, dat)
   select e ->> 't', (e ->> 'ok')::boolean from jsonb_array_elements(res) e;

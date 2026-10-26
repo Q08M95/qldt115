@@ -13,6 +13,7 @@ import type {
   NhomNhanSu,
   SlotGiangDay,
   VaiTroGiangDay,
+  TrangThaiLopHienThi,
   TrangThaiSlot,
 } from "@/types/database";
 
@@ -99,31 +100,23 @@ export async function getLopListTrang(loc: LocLop): Promise<{ rows: LopHocTongHo
   return { rows: rows.slice(tu, tu + SO_DONG_LOP), tong: rows.length, capTaiVe: (data ?? []).length === TRAN_LOP };
 }
 
-// 1 Bài trên "Lịch lớp" (/lop-hoc?xem=lich) — từ RPC lich_lop_hoc. 3 cờ toi_* là của chính người xem (không lộ nhãn nhóm).
+// 1 lớp trên "Lịch" của trang Lớp học (/lop-hoc?xem=lich) — từ RPC lich_lop_hoc. Lịch hiển thị ở mức LỚP, không theo Bài.
 export interface LichLopRow {
-  bai_id: string;
-  bai_ten: string;
-  bat_dau: string;
-  ket_thuc: string;
   lop_id: string;
-  lop_ten: string;
+  ten: string;
   nhom_lop_id: string;
   nhom_lop_ten: string;
-  doi_tuong: string;
-  loai_kinh_phi: string;
+  ngay_bat_dau: string;
+  ngay_ket_thuc: string;
   dia_diem: string | null;
-  trang_thai_hien_thi: string;
-  gv_tong: number;
-  gv_da: number;
-  tg_tong: number;
-  tg_da: number;
-  toi_du_dieu_kien: boolean;
+  trang_thai_hien_thi: TrangThaiLopHienThi;
+  // Còn slot trống ở Bài chưa diễn ra
+  con_thieu: boolean;
+  // Người xem được phân công ít nhất 1 Bài trong lớp
   toi_day: boolean;
-  toi_trung_lich: boolean;
 }
 
-// Mọi Bài (lớp chưa hủy, người xem nhìn thấy được) bắt đầu trong [tu, den) — 1 tháng lưới mỗi lần, không tải trước nhiều tháng
-// như lịch cá nhân vì toàn đơn vị có nhiều Bài hơn hẳn.
+// Mọi lớp (chưa hủy, người xem nhìn thấy được) có thời gian giao khoảng ngày [tu, den] (YYYY-MM-DD) — 1 tháng lưới mỗi lần
 export async function getLichLop(tu: string, den: string): Promise<LichLopRow[]> {
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("lich_lop_hoc", { p_tu: tu, p_den: den });
