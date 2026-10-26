@@ -190,7 +190,7 @@ Nếu bạn lỡ chọn "Chặn", hãy vào cài đặt của trình duyệt (bi
 
 ### Tắt bớt thông báo không cần thiết
 
-Trong **Cài đặt thông báo**, bạn bật hoặc tắt từng loại theo hai kênh: **trong web** và **đẩy**. Các loại có thể tắt: **Lớp / Bài mới phù hợp** (gồm cả thông báo **"Lớp sắp mở đăng ký"** khi có lớp Dự kiến phù hợp với bạn được công khai), **Kết quả đăng ký**, **Lời mời bị từ chối / thu hồi**, **Công bố KPI**. Các loại **luôn được gửi**, không tắt được: **lời mời dạy**, **đổi lịch**, **hủy lớp hoặc phân công**, **nhắc check-in**, **sửa điểm danh**, thay đổi vai trò và Quyền Quản lý lớp.
+Trong **Cài đặt thông báo**, bạn bật hoặc tắt từng loại theo hai kênh: **trong web** và **đẩy**. Các loại có thể tắt: **Lớp / Bài mới phù hợp** (gồm cả thông báo **"Lớp sắp mở đăng ký"** khi có lớp Dự kiến phù hợp với bạn được công khai — nhiều lớp cùng lúc được **gộp thành 1 thông báo** "N lớp sắp mở đăng ký", bấm vào mở Lịch), **Kết quả đăng ký**, **Lời mời bị từ chối / thu hồi**, **Công bố KPI**. Các loại **luôn được gửi**, không tắt được: **lời mời dạy**, **đổi lịch**, **hủy lớp hoặc phân công**, **nhắc check-in**, **sửa điểm danh**, thay đổi vai trò và Quyền Quản lý lớp.
 
 ![Ảnh 3.8 — Trang Thông báo và mục Cài đặt thông báo](3.8)
 
