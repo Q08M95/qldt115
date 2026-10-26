@@ -178,7 +178,7 @@ Check-in là hành động **quan trọng nhất** với điểm số của bạ
 
 ### Những việc sẽ có thông báo cho bạn
 
-Lớp hoặc Bài mới còn trống phù hợp với bạn; bạn được mời dạy; đăng ký của bạn được duyệt, bị từ chối hoặc bị đóng vì slot đã đủ người; lời mời bị thu hồi; lớp hoặc Bài đã phân công của bạn **đổi giờ hoặc bị hủy**; **nhắc check-in** trước giờ học; **KPI của kỳ được công bố**; kết quả đề xuất đổi nhóm của bạn (chỉ nói theo vai trò Giảng viên/Trợ giảng, không nêu tên nhóm); điểm danh của bạn bị chỉnh; bạn được giao hoặc bị thu hồi Quyền Quản lý lớp.
+Lớp hoặc Bài mới còn trống phù hợp với bạn; **lớp sắp mở đăng ký** phù hợp với bạn (nhiều lớp gộp thành 1 thông báo); bạn được mời dạy; đăng ký của bạn được duyệt, bị từ chối hoặc bị đóng vì slot đã đủ người; lời mời bị thu hồi; lớp hoặc Bài đã phân công của bạn **đổi giờ hoặc bị hủy**; **nhắc check-in** trước giờ học; **KPI của kỳ được công bố**; kết quả đề xuất đổi nhóm của bạn (chỉ nói theo vai trò Giảng viên/Trợ giảng, không nêu tên nhóm); điểm danh của bạn bị chỉnh; bạn được giao hoặc bị thu hồi Quyền Quản lý lớp.
 
 ### Thông báo đẩy (nhận thông báo ngay cả khi không mở web)
 
