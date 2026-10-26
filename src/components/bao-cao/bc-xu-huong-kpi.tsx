@@ -80,7 +80,7 @@ export function BaoCaoXuHuongKpi({ ky }: { ky: KpiTheoKyRow[] }) {
                     </tbody>
                   </table>
                 </div>
-                <ul className="grid gap-2 @[30rem]:hidden">
+                <ul className="grid grid-cols-1 gap-2 @[30rem]:hidden">
                   <ThuGonDanhSach soDau={5}>
 {[...ky].reverse().map((k) => (
                     <li key={k.ky_id} className="grid gap-2 rounded-xl border p-3 text-sm">

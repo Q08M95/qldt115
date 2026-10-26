@@ -96,7 +96,7 @@ export function KpiKyTable({ rows }: { rows: KpiKyRow[] }) {
         </Table>
       </div>
 
-      <ul className="grid gap-2 px-3 pb-4 md:hidden">
+      <ul className="grid grid-cols-1 gap-2 px-3 pb-4 md:hidden">
         <ThuGonDanhSach soDau={5}>
           {rows.map((r) => (
             <li key={r.user_id}>

@@ -25,7 +25,7 @@ export function LopCard({ lop, href }: { lop: LopHocTongHop; href: string }) {
 
           <div className="grid gap-2">
             <h3 className="line-clamp-2 text-[17px] leading-snug font-semibold">{lop.ten}</h3>
-            <ul className="grid gap-1.5 text-sm text-muted-foreground">
+            <ul className="grid grid-cols-1 gap-1.5 text-sm text-muted-foreground">
               <li className="flex items-center gap-2">
                 <CalendarDays className="size-4 shrink-0" aria-hidden />
                 <span className="tabular-nums">
@@ -36,7 +36,7 @@ export function LopCard({ lop, href }: { lop: LopHocTongHop; href: string }) {
               {lop.dia_diem && (
                 <li className="flex items-center gap-2">
                   <MapPin className="size-4 shrink-0" aria-hidden />
-                  <span className="truncate">{lop.dia_diem}</span>
+                  <span className="min-w-0 truncate">{lop.dia_diem}</span>
                 </li>
               )}
               <li className="flex items-center gap-2">

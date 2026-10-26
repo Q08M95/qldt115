@@ -102,7 +102,7 @@ export function LichLop({
   return (
     <Card className="gap-4 px-0">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
+        <CardTitle className="flex items-center gap-2 whitespace-nowrap">
           <CalendarRange className="size-5 text-slate-500" strokeWidth={1.75} aria-hidden /> Tháng {thang.thang}/{thang.nam}
         </CardTitle>
         <CardAction className="flex items-center gap-1">
@@ -220,7 +220,7 @@ export function LichLop({
                     <h3 className="mb-1.5 text-xs font-semibold text-muted-foreground">
                       Tuần {ddmm(ngay[0].khoa)} – {ddmm(ngay[6].khoa)}
                     </h3>
-                    <ul className="grid gap-1.5">
+                    <ul className="grid grid-cols-1 gap-1.5">
                       {ds.map((l) => (
                         <li key={l.lop_id}>
                           <Link href={`/lop-hoc/${l.lop_id}`} className="flex min-h-11 items-center gap-3 rounded-lg bg-muted/50 px-3 py-2">
@@ -261,7 +261,7 @@ function BuoiDayCuaToi({ bai }: { bai: BaiLich[] }) {
       {bai.length === 0 ? (
         <p className="text-sm text-muted-foreground">Không có buổi dạy nào.</p>
       ) : (
-        <ul className="grid gap-1.5 md:grid-cols-2">
+        <ul className="grid grid-cols-1 gap-1.5 md:grid-cols-2">
           {bai.map((s) => {
             const ngay = ngayVN(s.bai.bat_dau);
             return (

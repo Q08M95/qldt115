@@ -82,7 +82,7 @@ export function CauHinhDiemDanhForm({ cauHinh }: { cauHinh: CauHinhDiemDanh }) {
 
         <div className="grid gap-3">
           <p className="text-sm font-semibold">Rubric dự giờ</p>
-          <ul className="grid gap-3 sm:grid-cols-2">
+          <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {cauHinh.rubric.map((r) => {
               const k = String(r.muc);
               return (

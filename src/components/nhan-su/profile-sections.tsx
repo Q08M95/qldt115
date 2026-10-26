@@ -119,7 +119,7 @@ export function ChuyenMonCard({ chuyenMon }: { chuyenMon: ChuyenMonCuaNguoi[] })
         {chuyenMon.length === 0 ? (
           <p className="text-sm text-muted-foreground">Chưa cập nhật chuyên môn.</p>
         ) : (
-          <ul className="grid gap-2.5">
+          <ul className="grid grid-cols-1 gap-2.5">
             {chuyenMon.map((c) => (
               <li key={c.chuyen_mon_id} className="flex flex-wrap items-center gap-2 text-sm">
                 <Badge variant="navy">{c.ten}</Badge>

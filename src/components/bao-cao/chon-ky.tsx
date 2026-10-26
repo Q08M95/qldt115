@@ -32,19 +32,22 @@ export function BoLocKy({
   const router = useRouter();
   return (
     <div className="flex flex-wrap items-center gap-3">
-      <NativeSelect
-        aria-label="Chọn kỳ đánh giá"
-        className="w-auto min-w-52"
-        value={hienTai.id}
-        onChange={(e) => router.push(hrefBaoCao({ nhom: "ky", ky: e.target.value, kt, moc, vt }))}
-      >
-        {list.map((k) => (
-          <option key={k.id} value={k.id}>
-            {k.ten} ({fmtDate(k.tu)} – {fmtDate(k.den)})
-            {k.trang_thai === "cho_duyet" ? " · Chờ duyệt" : k.trang_thai === "dang_mo" ? " · Đang mở" : ""}
-          </option>
-        ))}
-      </NativeSelect>
+      {/* Điện thoại: ô chọn chiếm hết bề ngang (tên kỳ dài, không để tràn khung); máy tính: rộng theo nội dung */}
+      <div className="w-full min-w-0 sm:w-auto">
+        <NativeSelect
+          aria-label="Chọn kỳ đánh giá"
+          className="truncate sm:w-auto sm:min-w-52"
+          value={hienTai.id}
+          onChange={(e) => router.push(hrefBaoCao({ nhom: "ky", ky: e.target.value, kt, moc, vt }))}
+        >
+          {list.map((k) => (
+            <option key={k.id} value={k.id}>
+              {k.ten} ({fmtDate(k.tu)} – {fmtDate(k.den)})
+              {k.trang_thai === "cho_duyet" ? " · Chờ duyệt" : k.trang_thai === "dang_mo" ? " · Đang mở" : ""}
+            </option>
+          ))}
+        </NativeSelect>
+      </div>
       <div className="flex items-center gap-1.5">
         {truoc ? (
           <Link href={hrefBaoCao({ nhom: "ky", ky: truoc.id, kt, moc, vt })} aria-label={`Kỳ trước: ${truoc.ten}`} title={truoc.ten} className={nutTron}>

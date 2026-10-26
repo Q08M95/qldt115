@@ -75,7 +75,7 @@ export function NhanSuList({ rows, isQuanTri }: { rows: NhanSuRow[]; isQuanTri: 
         </Table>
       </div>
 
-      <ul className="grid gap-3 px-5 pb-5 md:hidden">
+      <ul className="grid grid-cols-1 gap-3 px-5 pb-5 md:hidden">
         <ThuGonDanhSach soDau={5}>
 {rows.map((r) => (
           <li key={r.id}>

@@ -59,7 +59,7 @@ export function ThanhNgang({ dong, toiDa, chuThichThem, thuGonMobile }: { dong: 
           </span>
         </p>
       )}
-      <ul className="grid gap-0.5">
+      <ul className="grid grid-cols-1 gap-0.5">
         <ThuGonDanhSach soDau={thuGonMobile ?? Number.MAX_SAFE_INTEGER}>
         {dong.map((d) => {
           const p1 = pct(d.gia_tri);
@@ -178,7 +178,7 @@ export function Donut({ lat, giua, phu, className }: { lat: LatDonut[]; giua: st
 export function ChuThichDonut({ lat }: { lat: LatDonut[] }) {
   const tong = lat.reduce((s, l) => s + l.so, 0);
   return (
-    <ul className="grid gap-1.5 text-sm">
+    <ul className="grid grid-cols-1 gap-1.5 text-sm">
       {lat.map((l) => (
         <li key={l.khoa} className="flex items-center gap-2">
           <span className="size-3 shrink-0 rounded-full" style={{ backgroundImage: gradientCss(l.mau) }} aria-hidden />

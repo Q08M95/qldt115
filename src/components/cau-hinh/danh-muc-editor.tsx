@@ -43,7 +43,7 @@ export function DanhMucEditor({
         </CardTitle>
         <p className="text-sm text-muted-foreground">{moTa}</p>
       </CardHeader>
-      <CardContent className="grid gap-4">
+      <CardContent className="grid grid-cols-1 gap-4">
         <ul className="divide-y rounded-xl border">
           {items.length === 0 && <li className="p-4 text-sm text-muted-foreground">Chưa có mục nào.</li>}
           {items.map((d) => (
@@ -70,7 +70,7 @@ export function DanhMucEditor({
                 </>
               ) : (
                 <>
-                  <span className={d.dang_dung ? "flex-1 text-sm font-medium" : "flex-1 text-sm text-muted-foreground line-through"}>
+                  <span className={d.dang_dung ? "min-w-0 flex-1 truncate text-sm font-medium" : "min-w-0 flex-1 truncate text-sm text-muted-foreground line-through"}>
                     {d.ten}
                   </span>
                   <label className="flex cursor-pointer items-center gap-2 text-xs text-muted-foreground">

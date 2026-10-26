@@ -106,7 +106,7 @@ export function BaoCaoTyLe({
                     ))}
                   </ul>
                   {/* Mobile: mỗi người 1 dòng (tên + A2 · A3), bấm mở thanh chi tiết; chỉ hiện 5 người đầu */}
-                  <ul className="grid gap-2 sm:hidden">
+                  <ul className="grid grid-cols-1 gap-2 sm:hidden">
                     <ThuGonDanhSach soDau={5}>
                       {dong.map((r) => (
                         <li key={r.user_id}>

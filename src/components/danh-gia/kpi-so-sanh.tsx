@@ -50,7 +50,7 @@ export function TieuChiSoSanh({ data }: { data: KpiCaNhan | null }) {
             )}
           </div>
         )}
-        <ul className="grid gap-2.5">
+        <ul className="grid grid-cols-1 gap-2.5">
           {dong.map((d) => (
             <li key={d.ma} className="grid grid-cols-[6.75rem_minmax(0,1fr)_2.25rem_3.25rem] items-center gap-2.5 text-sm">
               <span className="truncate">
