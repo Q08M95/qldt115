@@ -43,7 +43,7 @@ function Dong({ r }: { r: NhatKy }) {
   const ten = r.nguoi_thuc_hien_ten ?? "Hệ thống";
 
   return (
-    <li className="grid gap-2 border-b border-border/60 px-5 py-4 last:border-b-0 md:grid-cols-[9.5rem_12rem_9.5rem_minmax(0,1fr)] md:gap-4">
+    <li className="grid grid-cols-1 gap-2 border-b border-border/60 px-5 py-4 last:border-b-0 md:grid-cols-[9.5rem_12rem_9.5rem_minmax(0,1fr)] md:gap-4">
       <time dateTime={r.created_at} className="text-xs text-muted-foreground tabular-nums md:pt-1 md:text-[13px]">
         {fmtDateTime(r.created_at)}
       </time>

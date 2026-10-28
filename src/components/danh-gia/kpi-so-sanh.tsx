@@ -29,7 +29,7 @@ export function TieuChiSoSanh({ data }: { data: KpiCaNhan | null }) {
           <Scale className="size-5 text-slate-500" strokeWidth={1.75} aria-hidden /> Từng tiêu chí{truoc ? " so với kỳ trước" : ""}
         </CardTitle>
       </CardHeader>
-      <CardContent className="grid gap-4">
+      <CardContent className="grid grid-cols-1 gap-4">
         {manh && (
           <div className="grid grid-cols-2 gap-3">
             <div className="flex flex-col items-center gap-1 rounded-2xl bg-background p-3 text-center">
@@ -95,7 +95,7 @@ export function KpiSoSanhCards({ data }: { data: KpiCaNhan | null }) {
             <LineChart className="size-5 text-slate-500" strokeWidth={1.75} aria-hidden /> Sản lượng · Chuyên cần · Chất lượng
           </CardTitle>
         </CardHeader>
-        <CardContent className="grid gap-3">
+        <CardContent className="grid grid-cols-1 gap-3">
           {ky.length < 2 ? (
             <p className="py-6 text-center text-sm text-muted-foreground">Cần ít nhất 2 kỳ có KPI để so sánh xu hướng.</p>
           ) : (

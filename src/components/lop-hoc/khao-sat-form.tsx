@@ -13,7 +13,7 @@ const CAU_HOI = [
 
 function ChonDiem({ name, nhan }: { name: string; nhan: string }) {
   return (
-    <fieldset className="grid gap-2">
+    <fieldset className="grid grid-cols-1 gap-2">
       <legend className="mb-1 text-sm font-medium">{nhan}</legend>
       <div className="grid grid-cols-5 gap-2">
         {[1, 2, 3, 4, 5].map((n) => (
@@ -48,7 +48,7 @@ export function KhaoSatForm({ token }: { token: string }) {
   }
 
   return (
-    <form action={formAction} className="grid gap-6">
+    <form action={formAction} className="grid grid-cols-1 gap-6">
       <input type="hidden" name="token" value={token} />
       {/* Ô bẫy bot: người thật không thấy nên không điền */}
       <input type="text" name="hp_url" tabIndex={-1} autoComplete="off" aria-hidden className="absolute -left-[9999px] size-px opacity-0" />
@@ -57,7 +57,7 @@ export function KhaoSatForm({ token }: { token: string }) {
         <ChonDiem key={c.name} name={c.name} nhan={c.nhan} />
       ))}
 
-      <div className="grid gap-1.5">
+      <div className="grid grid-cols-1 gap-1.5">
         <label htmlFor="nhan_xet" className="text-sm font-medium">
           Góp ý thêm (không bắt buộc)
         </label>

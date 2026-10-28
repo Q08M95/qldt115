@@ -118,7 +118,7 @@ export function BaoCaoVanHanhDangKy({
             <CardHeader>
               <CardTitle>Lấp đầy slot</CardTitle>
             </CardHeader>
-            <CardContent className="grid gap-3">
+            <CardContent className="grid grid-cols-1 gap-3">
               {layDay === null ? (
                 <p className="py-6 text-center text-sm text-muted-foreground">Chưa có slot nào của Bài trong khoảng này.</p>
               ) : (
@@ -151,7 +151,7 @@ export function BaoCaoVanHanhDangKy({
             <CardHeader>
               <CardTitle>Việc đang chờ</CardTitle>
             </CardHeader>
-            <CardContent className="grid gap-2">
+            <CardContent className="grid grid-cols-1 gap-2">
               <Link href="/dang-ky" className="flex items-center gap-3 rounded-xl border px-3 py-2.5 transition-colors hover:bg-background">
                 <Inbox className="size-5 text-slate-500" strokeWidth={1.75} aria-hidden />
                 <span className="flex-1 text-sm">Đăng ký chờ duyệt</span>

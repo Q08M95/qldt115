@@ -76,7 +76,7 @@ export function BaoCaoA4({ ky, rows }: { ky: KyDanhGia; rows: A4Row[] }) {
           <CardHeader>
             <CardTitle>Cách đọc số liệu</CardTitle>
           </CardHeader>
-          <CardContent className="grid gap-2 text-sm text-muted-foreground">
+          <CardContent className="grid grid-cols-1 gap-2 text-sm text-muted-foreground">
             <p>Mỗi lớp không kinh phí chỉ tính <span className="font-medium text-foreground">1 lần</span> cho mỗi người, dù người đó dạy bao nhiêu Bài trong lớp (mục 4.2).</p>
             <p>
               <span className="font-medium text-foreground">Lũy kế</span> tính từ trước tới hiện tại, không đổi theo kỳ đang xem — dùng để xét vinh danh cuối năm và tie-break khi xét khen thưởng (KPI bằng nhau).

@@ -18,7 +18,7 @@ function ChiTiet({ r }: { r: KpiKyRow }) {
   const co = TIEU_CHI.filter((m) => r.gia_tri[m] !== undefined);
   const thieu = TIEU_CHI.filter((m) => r.gia_tri[m] === undefined);
   return (
-    <div className="mt-0.5 grid gap-0.5 text-xs text-muted-foreground">
+    <div className="mt-0.5 grid grid-cols-1 gap-0.5 text-xs text-muted-foreground">
       <span className="tabular-nums">{co.map((m) => `${m} ${so(r.gia_tri[m], 1)}`).join(" · ")}</span>
       <span>
         {thieu.length > 0 && <>Chưa có dữ liệu: {thieu.join(", ")} (trọng số đã chia lại). </>}
@@ -113,7 +113,7 @@ export function KpiKyTable({ rows }: { rows: KpiKyRow[] }) {
                   <span className="text-xl font-bold tabular-nums">{so(r.kpi)}</span>
                   <ChevronDown className="size-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden />
                 </summary>
-                <div className="grid gap-2 px-3 pb-3">
+                <div className="grid grid-cols-1 gap-2 px-3 pb-3">
                   <div className="flex flex-wrap gap-1.5">
                     <Badge variant="outline">A {so(r.diem_nhom.A, 1)}</Badge>
                     <Badge variant="outline">B {so(r.diem_nhom.B, 1)}</Badge>

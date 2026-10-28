@@ -16,7 +16,7 @@ export function TienDoVaiTroRow({
   if (h.kieu === "khong_can") return null;
 
   return (
-    <div className={cn("grid gap-1.5", className)}>
+    <div className={cn("grid grid-cols-1 gap-1.5", className)}>
       <div className="flex items-baseline justify-between gap-3 text-sm">
         <span className="font-medium">{label}</span>
         <span className={cn("tabular-nums", h.du ? "font-medium text-success" : "text-muted-foreground")}>
@@ -54,7 +54,7 @@ export function TienDoLop({
   className?: string;
 }) {
   return (
-    <div className={cn("grid gap-3", className)}>
+    <div className={cn("grid grid-cols-1 gap-3", className)}>
       <TienDoVaiTroRow label="Giảng viên" tien={{ tong: lop.gv_tong, da: lop.gv_da_phan_cong, nhanSu: lop.gv_nhan_su }} />
       <TienDoVaiTroRow label="Trợ giảng" tien={{ tong: lop.tg_tong, da: lop.tg_da_phan_cong, nhanSu: lop.tg_nhan_su }} />
     </div>

@@ -15,7 +15,7 @@ export function DashboardLayout({
   className?: string;
 }) {
   return (
-    <div className={cn("grid gap-5 lg:grid-cols-[minmax(0,1.75fr)_minmax(0,1fr)]", className)}>
+    <div className={cn("grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1.75fr)_minmax(0,1fr)]", className)}>
       <div className="flex min-w-0 flex-col gap-5">{main}</div>
       <div className="flex min-w-0 flex-col gap-5">{aside}</div>
     </div>

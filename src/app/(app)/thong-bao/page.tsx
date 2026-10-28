@@ -8,7 +8,7 @@ export default async function ThongBaoPage() {
   const [{ profile, isQuanTri }, banDau, tuyChon] = await Promise.all([requireSession(), getThongBao("tat-ca", 0), getTuyChonThongBao()]);
 
   return (
-    <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start">
+    <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start">
       <DanhSachThongBao userId={profile.id} banDau={banDau} />
       <div className="lg:sticky lg:top-24">
         <CaiDatThongBao tuyChon={tuyChon} isQuanTri={isQuanTri} />

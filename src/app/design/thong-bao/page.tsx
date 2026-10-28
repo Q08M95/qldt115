@@ -80,9 +80,9 @@ export default async function DesignThongBaoPage(props: { searchParams: Promise<
 
   return (
     <AppShell user={{ id: v === "chuong" ? "00000000-0000-0000-0000-000000000000" : undefined, name: "Nguyễn Hoàng Tú Minh", email: "minh@example.com" }} isQuanTri period={{ name: "Quý 3/2026", daysLeft: 11 }} unreadCount={chuaDoc} activeHref="/thong-bao">
-      <div className="grid max-w-5xl gap-5 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
+      <div className="grid grid-cols-1 max-w-5xl gap-5 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
         <Card>
-          <CardContent className="grid gap-4">
+          <CardContent className="grid grid-cols-1 gap-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div role="tablist" className="flex flex-wrap gap-1.5">
                 {["Tất cả", "Chưa đọc", "Cần hành động"].map((n, i) => (
@@ -109,7 +109,7 @@ export default async function DesignThongBaoPage(props: { searchParams: Promise<
           </CardContent>
         </Card>
 
-        <div className="grid h-fit gap-5">
+        <div className="grid grid-cols-1 h-fit gap-5">
         {/* Panel thả xuống của chuông (mô phỏng tĩnh — bản thật là Popover) */}
         <div className="h-fit w-full max-w-sm rounded-2xl bg-popover shadow-lg ring-1 ring-foreground/10">
           <div className="flex items-center justify-between gap-2 px-4 pt-4 pb-2">

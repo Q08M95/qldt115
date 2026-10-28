@@ -105,12 +105,12 @@ export default function DesignPage() {
                     <BookOpen />
                   </Button>
                 </div>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="grid gap-1.5">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div className="grid grid-cols-1 gap-1.5">
                     <Label htmlFor="ten-lop">Tên lớp</Label>
                     <Input id="ten-lop" placeholder="VD: ACLS-08" />
                   </div>
-                  <div className="grid gap-1.5">
+                  <div className="grid grid-cols-1 gap-1.5">
                     <Label htmlFor="loi">Ô nhập lỗi</Label>
                     <Input id="loi" aria-invalid defaultValue="abc" />
                     <p className="text-xs text-danger">Giá trị không hợp lệ</p>

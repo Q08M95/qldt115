@@ -16,7 +16,7 @@ export function Field({
   children: React.ReactNode;
 }) {
   return (
-    <div className={cn("grid gap-1.5", className)}>
+    <div className={cn("grid grid-cols-1 gap-1.5", className)}>
       <Label htmlFor={htmlFor} className="text-sm font-medium">
         {label}
       </Label>

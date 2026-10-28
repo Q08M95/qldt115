@@ -80,7 +80,7 @@ export function DuGioDrawer({
     >
       <input type="hidden" name="bai_id" value={baiId} />
       <input type="hidden" name="user_id" value={userId} />
-      <fieldset className="grid gap-2">
+      <fieldset className="grid grid-cols-1 gap-2">
         <legend className="mb-1 text-sm font-medium">Mức đánh giá</legend>
         {rubric.map((r) => (
           <label

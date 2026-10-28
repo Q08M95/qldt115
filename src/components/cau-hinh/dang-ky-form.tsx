@@ -13,7 +13,7 @@ const phanTram = (v: number) => String(Math.round(v * 1000) / 10);
 
 function O({ nhan, mota, value, onChange, sai, donVi }: { nhan: string; mota: string; value: string; onChange: (v: string) => void; sai: boolean; donVi: string }) {
   return (
-    <label className="grid gap-1.5 text-sm">
+    <label className="grid grid-cols-1 gap-1.5 text-sm">
       <span className="font-medium">{nhan}</span>
       <span className="inline-flex items-center gap-2">
         <Input value={value} onChange={(e) => onChange(e.target.value)} inputMode="decimal" aria-label={nhan} aria-invalid={sai || undefined} className="h-11 w-24 text-right text-lg font-semibold tabular-nums" />
@@ -62,7 +62,7 @@ export function CauHinhDangKyForm({ cauHinh }: { cauHinh: CauHinhDangKy }) {
         <CardHeader>
           <CardTitle>Cảnh báo khi tạo Bài và duyệt đăng ký</CardTitle>
         </CardHeader>
-        <CardContent className="grid gap-5 sm:grid-cols-2">
+        <CardContent className="grid grid-cols-1 gap-5 sm:grid-cols-2">
           <O nhan="Ngưỡng cảnh báo pool ứng viên nhỏ" mota="Bài có số người đủ điều kiện dưới mức này sẽ bị cảnh báo lúc tạo Bài." value={pool} onChange={setPool} sai={poolSai} donVi="người" />
           <O nhan="Ngưỡng cảnh báo dồn tải" mota="Cảnh báo mềm khi 1 người đảm nhiệm quá tỷ lệ này số slot của 1 vai trò trong cùng lớp." value={donTai} onChange={setDonTai} sai={donTaiSai} donVi="%" />
         </CardContent>
@@ -72,7 +72,7 @@ export function CauHinhDangKyForm({ cauHinh }: { cauHinh: CauHinhDangKy }) {
         <CardHeader>
           <CardTitle>Matching-score (gợi ý ứng viên)</CardTitle>
         </CardHeader>
-        <CardContent className="grid gap-5 sm:grid-cols-2">
+        <CardContent className="grid grid-cols-1 gap-5 sm:grid-cols-2">
           <O nhan="Tỷ trọng công bằng khối lượng" mota={`Phần còn lại (${kpiTieBreak}) là KPI tie-break khi khối lượng ngang nhau.`} value={congBang} onChange={setCongBang} sai={congBangSai} donVi="%" />
           <O nhan="Mức hạ điểm khi đã dạy Bài khác cùng lớp" mota="Hạ nhẹ điểm gợi ý (không loại trừ) để phân bổ đều nhân sự trong 1 lớp." value={phat} onChange={setPhat} sai={phatSai} donVi="%" />
         </CardContent>

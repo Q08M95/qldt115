@@ -98,7 +98,7 @@ export function LopChiTietView({
         </CardContent>
       </Card>
 
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
         <BaiList
           lopId={lop.id}
           ngayBatDau={lop.ngay_bat_dau}
@@ -120,10 +120,10 @@ export function LopChiTietView({
                   <ShieldCheck className="size-5 text-slate-500" strokeWidth={1.75} aria-hidden /> Điều kiện đăng ký
                 </CardTitle>
               </CardHeader>
-              <CardContent className="grid gap-4 text-sm">
+              <CardContent className="grid grid-cols-1 gap-4 text-sm">
                 {/* Nhãn nhóm chỉ Admin/Quản lý lớp thấy (mục 4.7); với GV/TG RLS trả rỗng và không render */}
                 {isQuanTri && (
-                  <div className="grid gap-2">
+                  <div className="grid grid-cols-1 gap-2">
                     <p className="text-xs font-medium text-muted-foreground">Nhóm đủ điều kiện</p>
                     <div className="flex flex-wrap gap-1.5">
                       {nhom_du_dieu_kien.map((n) => (
@@ -134,7 +134,7 @@ export function LopChiTietView({
                     </div>
                   </div>
                 )}
-                <div className="grid gap-2">
+                <div className="grid grid-cols-1 gap-2">
                   <p className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
                     <Award className="size-3.5" aria-hidden /> Chứng chỉ yêu cầu thêm
                   </p>

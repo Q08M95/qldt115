@@ -153,7 +153,7 @@ export function BaoCaoVanHanhLop({ rows }: { rows: DongLop[] }) {
                 </p>
               ) : (
                 <div className="@container">
-                  <div className="grid items-center gap-4 @[22rem]:grid-cols-[auto_1fr]">
+                  <div className="grid grid-cols-1 items-center gap-4 @[22rem]:grid-cols-[auto_1fr]">
                     <Donut
                       lat={lat}
                       giua={String(t.tong)}

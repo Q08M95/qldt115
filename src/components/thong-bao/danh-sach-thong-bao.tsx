@@ -89,7 +89,7 @@ export function DanhSachThongBao({ userId, banDau }: { userId: string; banDau: T
 
   return (
     <Card>
-      <CardContent className="grid gap-4">
+      <CardContent className="grid grid-cols-1 gap-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div role="tablist" aria-label="Lọc thông báo" className="flex flex-wrap gap-1.5">
             {LOC.map((o) => (
@@ -119,7 +119,7 @@ export function DanhSachThongBao({ userId, banDau }: { userId: string; banDau: T
             {dangTai ? "Đang tải..." : TRONG[loc]}
           </div>
         ) : (
-          <ul className={cn("grid gap-0.5 transition-opacity", dangTai && "opacity-60")}>
+          <ul className={cn("grid grid-cols-1 gap-0.5 transition-opacity", dangTai && "opacity-60")}>
             {ds.map((tb, i) => {
               // Tiêu đề nhóm thời gian khi sang nhóm mới — danh sách dài vẫn dễ lướt
               const nhom = nhomNgay(tb.created_at);

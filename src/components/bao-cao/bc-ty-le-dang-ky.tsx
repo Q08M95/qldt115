@@ -90,7 +90,7 @@ export function BaoCaoTyLe({
               {dong.length === 0 ? (
                 <EmptyState icon={HandHeart} title="Chưa có ai dạy xong Bài hoặc phản hồi lời mời trong khoảng thời gian này" />
               ) : (
-                <div className="grid gap-1">
+                <div className="grid grid-cols-1 gap-1">
                   <div className={`hidden gap-3 border-b px-2 pb-2 text-[13px] font-medium text-muted-foreground sm:flex`}>
                     <span className={COT_NGUOI}>Người dạy</span>
                     <span className="flex-1">Tự đăng ký (A2)</span>
@@ -125,7 +125,7 @@ export function BaoCaoTyLe({
                               </span>
                               <ChevronDown className="size-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden />
                             </summary>
-                            <div className="grid gap-3 px-3 pb-3">
+                            <div className="grid grid-cols-1 gap-3 px-3 pb-3">
                               <OTyLe nhan="Tự đăng ký (A2)" v={r.a2} chu={`${r.so_tu_dang_ky}/${r.so_bai_da_day} Bài đã dạy`} />
                               <OTyLe nhan="Nhận lời mời (A3)" v={r.a3} chu={`${r.so_moi_dong_y}/${r.soMoi} lời mời`} />
                             </div>
@@ -147,11 +147,11 @@ export function BaoCaoTyLe({
               <CardTitle>Toàn đơn vị</CardTitle>
             </CardHeader>
             <CardContent className="grid grid-cols-2 gap-2">
-              <div className="grid gap-1 text-center">
+              <div className="grid grid-cols-1 gap-1 text-center">
                 {t.a2 === null ? <Trong /> : <DongHoBanNguyet phanTram={t.a2} so={pt(t.a2)} nhan="Tự đăng ký" className="w-full" />}
                 <p className="text-xs text-muted-foreground">{t.tongTuDangKy} Bài tự đăng ký</p>
               </div>
-              <div className="grid gap-1 text-center">
+              <div className="grid grid-cols-1 gap-1 text-center">
                 {t.a3 === null ? <Trong /> : <DongHoBanNguyet phanTram={t.a3} so={pt(t.a3)} nhan="Nhận lời mời" className="w-full" />}
                 <p className="text-xs text-muted-foreground">{t.tongMoi} lời mời đã phản hồi</p>
               </div>
@@ -161,7 +161,7 @@ export function BaoCaoTyLe({
             <CardHeader>
               <CardTitle>Cách đọc số liệu</CardTitle>
             </CardHeader>
-            <CardContent className="grid gap-2 text-sm text-muted-foreground">
+            <CardContent className="grid grid-cols-1 gap-2 text-sm text-muted-foreground">
               <p>
                 <span className="font-medium text-foreground">Tự đăng ký (A2):</span> trong các Bài đã dạy xong, bao nhiêu % là do chính người đó đăng ký và được duyệt.
               </p>
@@ -178,5 +178,5 @@ export function BaoCaoTyLe({
 }
 
 function Trong() {
-  return <p className="grid h-24 place-items-center text-sm text-muted-foreground">Chưa có dữ liệu</p>;
+  return <p className="grid grid-cols-1 h-24 place-items-center text-sm text-muted-foreground">Chưa có dữ liệu</p>;
 }

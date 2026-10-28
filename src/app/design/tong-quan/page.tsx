@@ -57,7 +57,7 @@ function CardLopTheoTrangThai({ lat, tong }: { lat: { khoa: string; nhan: string
           <p className="py-6 text-center text-sm text-muted-foreground">Chưa có lớp nào.</p>
         ) : (
           <div className="@container">
-            <div className="grid items-center gap-4 @[22rem]:grid-cols-[auto_1fr]">
+            <div className="grid grid-cols-1 items-center gap-4 @[22rem]:grid-cols-[auto_1fr]">
               <Donut lat={lat} giua={String(tong)} phu="lớp" className="mx-auto size-32" />
               <ChuThichDonut lat={lat} />
             </div>
@@ -267,7 +267,7 @@ export default async function DesignTongQuanPage(props: { searchParams: Promise<
       unreadCount={3}
       activeHref="/"
     >
-      <div className="grid gap-6">
+      <div className="grid grid-cols-1 gap-6">
         {laAdmin && (
           <DashboardLayout
             main={
@@ -338,7 +338,7 @@ export default async function DesignTongQuanPage(props: { searchParams: Promise<
                       <p className="py-6 text-center text-sm text-muted-foreground">Chưa có lớp nào.</p>
                     ) : (
                       <div className="@container">
-                        <div className="grid items-center gap-4 @[22rem]:grid-cols-[auto_1fr]">
+                        <div className="grid grid-cols-1 items-center gap-4 @[22rem]:grid-cols-[auto_1fr]">
                           <Donut lat={latNhom} giua={String(chung.tongHop.tong)} phu="lớp" className="mx-auto size-32" />
                           <ChuThichDonut lat={latNhom} />
                         </div>
@@ -417,7 +417,7 @@ export default async function DesignTongQuanPage(props: { searchParams: Promise<
                         <Scale className="size-5 text-slate-500" strokeWidth={1.75} aria-hidden /> Độ đồng đều sản lượng
                       </CardTitle>
                     </CardHeader>
-                    <CardContent className="grid gap-3">
+                    <CardContent className="grid grid-cols-1 gap-3">
                       {chung.doDongDeu === null ? (
                         <p className="py-6 text-center text-sm text-muted-foreground">Cần ít nhất 2 người có giờ dạy trong kỳ.</p>
                       ) : (

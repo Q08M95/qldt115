@@ -45,7 +45,7 @@ export default async function NhanSuChiTietPage(props: PageProps<"/nhan-su/[id]"
   return (
     <div className="flex flex-col gap-5">
       <BreadcrumbLabel label={chiTiet.profile.ho_ten} />
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)]">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)]">
         <div className="flex min-w-0 flex-col gap-5">
           <ProfileInfoCard
             profile={chiTiet.profile}
@@ -65,7 +65,7 @@ export default async function NhanSuChiTietPage(props: PageProps<"/nhan-su/[id]"
         </div>
       </div>
       {session.isQuanTri ? (
-        <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)]">
+        <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)]">
           <div className="flex min-w-0 flex-col gap-5">
             <LichSuGiangDayCard items={lichSu} />
             <LichSuDoiNhomCard lichSu={chiTiet.lich_su_doi_nhom} />

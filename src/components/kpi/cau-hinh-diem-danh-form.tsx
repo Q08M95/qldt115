@@ -25,7 +25,7 @@ const MAU_MUC: Record<number, string> = {
 
 function OSo({ nhan, value, onChange, sai, aria }: { nhan: string; value: string; onChange: (v: string) => void; sai: boolean; aria: string }) {
   return (
-    <label className="grid gap-1.5 text-sm font-medium">
+    <label className="grid grid-cols-1 gap-1.5 text-sm font-medium">
       {nhan}
       <span className="inline-flex items-center gap-2">
         <Input
@@ -73,20 +73,20 @@ export function CauHinhDiemDanhForm({ cauHinh }: { cauHinh: CauHinhDiemDanh }) {
       <CardHeader>
         <CardTitle>Điểm danh (B1) và rubric dự giờ (C2)</CardTitle>
       </CardHeader>
-      <CardContent className="grid gap-6">
-        <div className="grid gap-4 sm:grid-cols-3">
+      <CardContent className="grid grid-cols-1 gap-6">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <OSo nhan="Check-in trước giờ học" value={truoc} onChange={setTruoc} sai={truocSai} aria="Số phút được check-in trước giờ học" />
           <OSo nhan="Ngưỡng trễ tối đa (B1 = 0%)" value={tre} onChange={setTre} sai={treSai} aria="Ngưỡng trễ tối đa của B1 (phút)" />
           <OSo nhan="Nhắc check-in trước giờ học" value={nhac} onChange={setNhac} sai={nhacSai} aria="Số phút gửi thông báo nhắc check-in trước giờ học" />
         </div>
 
-        <div className="grid gap-3">
+        <div className="grid grid-cols-1 gap-3">
           <p className="text-sm font-semibold">Rubric dự giờ</p>
           <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {cauHinh.rubric.map((r) => {
               const k = String(r.muc);
               return (
-                <li key={r.muc} className="grid gap-2.5 rounded-2xl bg-background p-3.5">
+                <li key={r.muc} className="grid grid-cols-1 gap-2.5 rounded-2xl bg-background p-3.5">
                   <div className="flex items-center gap-3">
                     <span className={cn("flex h-10 w-16 shrink-0 items-center justify-center rounded-xl text-base font-bold tabular-nums", MAU_MUC[r.muc])}>
                       {r.muc}%

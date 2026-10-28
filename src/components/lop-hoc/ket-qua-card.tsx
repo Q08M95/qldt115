@@ -40,14 +40,14 @@ export function KetQuaCard({
           <ClipboardCheck className="size-5 text-slate-500" strokeWidth={1.75} aria-hidden /> Kết quả lớp
         </CardTitle>
       </CardHeader>
-      <CardContent className="grid gap-5">
+      <CardContent className="grid grid-cols-1 gap-5">
         {!hoanThanh ? (
           <p className="text-sm text-muted-foreground">
             Kết quả khảo sát hài lòng học viên (C1) và tỷ lệ học viên đạt chuẩn đầu ra (C3) chỉ nhập được sau khi lớp chuyển sang “Đã hoàn thành”.
           </p>
         ) : (
           <>
-            <div className="grid gap-3 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <ChiSo
                 ma="C1"
                 nhan="Khảo sát hài lòng học viên"
@@ -64,7 +64,7 @@ export function KetQuaCard({
             </div>
 
             {isQuanTri && (
-              <div className="grid gap-5 border-t pt-5">
+              <div className="grid grid-cols-1 gap-5 border-t pt-5">
                 <KhaoSatControls lopId={lop.id} khaoSat={khaoSat} />
                 <PhanTramForm
                   action={datC1ThuCong}

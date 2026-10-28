@@ -10,11 +10,11 @@ export default function Loading() {
         <CardHeader>
           <Skeleton className="h-6 w-56" />
         </CardHeader>
-        <CardContent className="grid gap-3">
+        <CardContent className="grid grid-cols-1 gap-3">
           {Array.from({ length: 5 }).map((_, i) => (
             <div key={i} className="flex items-center gap-3">
               <Skeleton className="size-9 rounded-full" />
-              <div className="grid flex-1 gap-1.5">
+              <div className="grid grid-cols-1 flex-1 gap-1.5">
                 <Skeleton className="h-4 w-1/3" />
                 <Skeleton className="h-3 w-1/4" />
               </div>

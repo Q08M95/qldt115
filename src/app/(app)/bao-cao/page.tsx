@@ -69,7 +69,7 @@ export default async function BaoCaoPage(props: PageProps<"/bao-cao">) {
       boLoc = <BoLocKy list={kyList} hienTai={hienTai} truoc={truoc} sau={sau} kt={kt} moc={mocParam} vt={vtParam} />;
       mucLuc = <MucLuc key={nhom} items={BAO_CAO_KY} />;
       noiDung = (
-        <div className="grid gap-8">
+        <div className="grid grid-cols-1 gap-8">
           <MucBaoCao id="kpi-tong-hop" nhan="KPI tổng hợp">
             <BaoCaoKpiTongHop ky={hienTai} rows={kpiRows} isQuanTri={isQuanTri} />
           </MucBaoCao>
@@ -100,7 +100,7 @@ export default async function BaoCaoPage(props: PageProps<"/bao-cao">) {
     boLoc = <BoLocThoiGian khoang={khoang} ky={dieuKy?.hienTai.id} vt={vtParam} />;
     mucLuc = <MucLuc key={nhom} items={BAO_CAO_THOI_GIAN} />;
     noiDung = (
-      <div className="grid gap-8">
+      <div className="grid grid-cols-1 gap-8">
         <MucBaoCao id="san-luong" nhan="Sản lượng giảng dạy">
           <BaoCaoSanLuong rows={sl} rowsTruoc={slTruoc} loc={loc} khoang={khoang} ky={dieuKy?.hienTai.id} />
         </MucBaoCao>
@@ -118,7 +118,7 @@ export default async function BaoCaoPage(props: PageProps<"/bao-cao">) {
   }
 
   return (
-    <div className="grid gap-6">
+    <div className="grid grid-cols-1 gap-6">
       <Card className="gap-0 py-0">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-4 py-3.5 sm:px-5">
           <ChuyenNhomBaoCao nhom={nhom} ky={dieuKy?.hienTai.id} kt={kt} moc={mocParam} vt={vtParam} />

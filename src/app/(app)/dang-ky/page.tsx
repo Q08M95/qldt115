@@ -48,7 +48,7 @@ export default async function DangKyPage() {
   const dangKy = v.dang_cho.filter((d) => d.loai === "tu_dang_ky");
 
   return (
-    <div className="grid gap-5 lg:grid-cols-2">
+    <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
       {isQuanTri && (
         <div className="lg:col-span-2">
           <Khung icon={ClipboardCheck} tieuDe="Đăng ký chờ duyệt" dem={v.can_duyet.length}>

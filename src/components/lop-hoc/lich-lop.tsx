@@ -124,7 +124,7 @@ export function LichLop({
         </CardAction>
       </CardHeader>
 
-      <CardContent className="grid gap-4">
+      <CardContent className="grid grid-cols-1 gap-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           {cuaToi ? (
             <nav aria-label="Phạm vi lịch" className="flex gap-1">
@@ -206,7 +206,7 @@ export function LichLop({
             </div>
 
             {/* Điện thoại: danh sách lớp theo tuần */}
-            <div className="grid gap-4 md:hidden">
+            <div className="grid grid-cols-1 gap-4 md:hidden">
               {tuan.map((ngay) => {
                 const dau = ngay[0].khoa < dauThang ? dauThang : ngay[0].khoa;
                 // Mỗi lớp nằm ở tuần đầu tiên nó xuất hiện trong tháng (không lặp lại ở các tuần sau)

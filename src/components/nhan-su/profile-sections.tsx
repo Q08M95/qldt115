@@ -69,7 +69,7 @@ export function ProfileInfoCard({
           {isQuanTri && nhom && <Badge variant="outline">{NHOM_LABEL[nhom]}</Badge>}
         </div>
 
-        <dl className="grid gap-3 text-sm">
+        <dl className="grid grid-cols-1 gap-3 text-sm">
           <div className="flex items-center gap-3">
             <Mail className="size-4 shrink-0 text-muted-foreground" aria-hidden />
             <dt className="sr-only">Email</dt>
@@ -80,7 +80,7 @@ export function ProfileInfoCard({
             <dt className="sr-only">Số điện thoại</dt>
             <dd>{profile.so_dien_thoai || <span className="text-muted-foreground">Chưa cập nhật</span>}</dd>
           </div>
-          <div className="grid gap-1">
+          <div className="grid grid-cols-1 gap-1">
             <dt className="text-xs font-medium text-muted-foreground">Kinh nghiệm</dt>
             <dd className="whitespace-pre-line">
               {profile.kinh_nghiem || <span className="text-muted-foreground">Chưa cập nhật</span>}
@@ -307,7 +307,7 @@ export function LichSuDoiNhomCard({ lichSu }: { lichSu: LichSuDoiNhom[] }) {
         {lichSu.length === 0 ? (
           <EmptyState icon={History} title="Chưa có thay đổi nhóm nào." />
         ) : (
-          <ol className="grid gap-3">
+          <ol className="grid grid-cols-1 gap-3">
             {lichSu.map((l) => (
               <li key={l.id} className="flex flex-wrap items-center gap-2 text-sm">
                 <span className="w-24 shrink-0 text-xs text-muted-foreground tabular-nums">{fmtDate(l.ngay_hieu_luc)}</span>

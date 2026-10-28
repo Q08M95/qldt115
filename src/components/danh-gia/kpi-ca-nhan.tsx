@@ -87,7 +87,7 @@ const CHU_THICH = "mt-1.5 text-xs text-muted-foreground";
 
 function Muc({ tieuDe, children, className }: { tieuDe: string; children: React.ReactNode; className?: string }) {
   return (
-    <section className={cn("grid gap-3 border-t px-5 pt-5", className)}>
+    <section className={cn("grid grid-cols-1 gap-3 border-t px-5 pt-5", className)}>
       <h3 className="text-sm font-semibold">{tieuDe}</h3>
       {children}
     </section>
@@ -220,7 +220,7 @@ export function KpiCaNhanBoard({ data, tieuDe = "Bảng KPI cá nhân" }: { data
       </Muc>
 
       <Muc tieuDe={`Điểm theo nhóm và tiêu chí — ${tenNganKy(hienTai)}`}>
-        <div className="grid items-center gap-x-6 gap-y-4 @lg:grid-cols-2">
+        <div className="grid grid-cols-1 items-center gap-x-6 gap-y-4 @lg:grid-cols-2">
           <div className="flex justify-center">
             <RadarNhom truc={nhomDiem.map((n) => ({ nhan: n.nhan, gia_tri: n.gia_tri }))} className="h-auto w-full max-w-xs" />
           </div>
@@ -242,7 +242,7 @@ export function KpiCaNhanBoard({ data, tieuDe = "Bảng KPI cá nhân" }: { data
         </div>
       </Muc>
 
-      <div className={cn("grid gap-3 border-t px-5 pt-5", hienMucTieu ? "grid-cols-3" : "grid-cols-2")}>
+      <div className={cn("grid grid-cols-1 gap-3 border-t px-5 pt-5", hienMucTieu ? "grid-cols-3" : "grid-cols-2")}>
         <OViTri hienTai={hienTai} lichSu={coDuLieu.slice(0, -1)} soKy={data.so_ky_fallback} />
         <O icon={Award} nhan="Lớp không kinh phí">
           <So hue="green">{data.a4_tong}</So>

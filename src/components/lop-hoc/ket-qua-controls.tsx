@@ -28,7 +28,7 @@ export function PhanTramForm({
   const [state, formAction, pending] = useActionState(action, null);
   return (
     // key theo giá trị để ô nhập cập nhật lại sau khi lưu / khi khảo sát ghi đè
-    <form key={value ?? "trong"} action={formAction} className="grid gap-1.5">
+    <form key={value ?? "trong"} action={formAction} className="grid grid-cols-1 gap-1.5">
       <input type="hidden" name="lop_id" value={lopId} />
       <Label htmlFor={`${name}-${lopId}`} className="text-sm font-medium">
         {label}
@@ -80,7 +80,7 @@ export function KhaoSatControls({ lopId, khaoSat }: { lopId: string; khaoSat: Kh
   }
 
   return (
-    <div className="grid gap-2">
+    <div className="grid grid-cols-1 gap-2">
       <p className="text-sm font-medium">Link khảo sát học viên</p>
       {!khaoSat ? (
         <>

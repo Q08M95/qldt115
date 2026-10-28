@@ -42,7 +42,7 @@ export function LichSapToi({ items }: { items: SapToi }) {
         {items.length === 0 ? (
           <EmptyState icon={CalendarClock} title="Bạn chưa có Bài nào sắp diễn ra." />
         ) : (
-          <ol className="relative grid gap-0.5 border-l-2 border-border pl-4">
+          <ol className="relative grid grid-cols-1 gap-0.5 border-l-2 border-border pl-4">
             {rutGon.map((s, i) => {
               const moiNhom = i === 0 || nhanNhom[i] !== nhanNhom[i - 1];
               return (

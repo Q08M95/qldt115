@@ -157,7 +157,7 @@ export function CauHinhKpiForm({ cauHinh }: { cauHinh: CauHinhKpi }) {
   }
 
   return (
-    <div className="grid max-w-4xl gap-5">
+    <div className="grid grid-cols-1 max-w-4xl gap-5">
       <p className="text-sm text-muted-foreground">
         Thay đổi có hiệu lực với kỳ đang mở và các kỳ sau. Kỳ đã đóng giữ nguyên kết quả và bản chụp cấu hình lúc đóng (không hồi tố).
         Khi một tiêu chí chưa có dữ liệu, trọng số của nó được chia lại cho các tiêu chí còn dữ liệu trong cùng nhóm.
@@ -182,7 +182,7 @@ export function CauHinhKpiForm({ cauHinh }: { cauHinh: CauHinhKpi }) {
                 />
               </label>
             </CardHeader>
-            <CardContent className="grid gap-3">
+            <CardContent className="grid grid-cols-1 gap-3">
               <ul className="divide-y rounded-xl border">
                 {cauHinh.tieuChi
                   .filter((t) => t.nhom === n.ma)
@@ -248,10 +248,10 @@ export function CauHinhKpiForm({ cauHinh }: { cauHinh: CauHinhKpi }) {
             Không dùng cho tính lương.
           </p>
         </CardHeader>
-        <CardContent className="grid gap-5">
-          <div className="grid gap-3 sm:grid-cols-3">
+        <CardContent className="grid grid-cols-1 gap-5">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             {cauHinh.heSo.map((h) => (
-              <label key={h.ma} className="grid gap-1.5 text-sm">
+              <label key={h.ma} className="grid grid-cols-1 gap-1.5 text-sm">
                 <span className="font-medium">{h.ten}</span>
                 <NumberInput
                   value={he[h.ma]}
@@ -263,7 +263,7 @@ export function CauHinhKpiForm({ cauHinh }: { cauHinh: CauHinhKpi }) {
               </label>
             ))}
           </div>
-          <div className="grid gap-2">
+          <div className="grid grid-cols-1 gap-2">
             <p className="text-sm font-medium">D1 — theo nhóm lớp</p>
             <ul className="divide-y rounded-xl border">
               {cauHinh.nhomLop.map((n) => (
@@ -287,37 +287,37 @@ export function CauHinhKpiForm({ cauHinh }: { cauHinh: CauHinhKpi }) {
         <CardHeader>
           <CardTitle>Tham số khác</CardTitle>
         </CardHeader>
-        <CardContent className="grid gap-4 sm:grid-cols-2">
-          <label className="grid gap-1.5 text-sm">
+        <CardContent className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <label className="grid grid-cols-1 gap-1.5 text-sm">
             <span className="font-medium">Số người tối thiểu trong 1 nhóm để dùng percentile A1</span>
             <NumberInput value={ts.min_nhom} onChange={(v) => setTs({ ...ts, min_nhom: v })} label="Số người tối thiểu" suffix="người" />
             <span className="text-xs text-muted-foreground">Nhóm nhỏ hơn: so sánh với lịch sử của chính người đó.</span>
           </label>
-          <label className="grid gap-1.5 text-sm">
+          <label className="grid grid-cols-1 gap-1.5 text-sm">
             <span className="font-medium">Số kỳ trước dùng để so sánh lịch sử</span>
             <NumberInput value={ts.so_ky_fallback} onChange={(v) => setTs({ ...ts, so_ky_fallback: v })} label="Số kỳ so sánh lịch sử" suffix="kỳ" />
           </label>
-          <label className="grid gap-1.5 text-sm sm:col-span-2">
+          <label className="grid grid-cols-1 gap-1.5 text-sm sm:col-span-2">
             <span className="font-medium">Gộp khảo sát hài lòng (C1) và tỷ lệ đạt chuẩn đầu ra (C3) khi dạy nhiều lớp trong kỳ</span>
             <NativeSelect value={ts.gop_c} onChange={(e) => setTs({ ...ts, gop_c: e.target.value })} aria-label="Cách gộp C1 và C3">
               <option value="0">Trung bình đơn giản giữa các lớp</option>
               <option value="1">Trung bình có trọng số theo số Bài đã dạy mỗi lớp</option>
             </NativeSelect>
           </label>
-          <label className="grid gap-1.5 text-sm">
+          <label className="grid grid-cols-1 gap-1.5 text-sm">
             <span className="font-medium">Ngưỡng KPI đề xuất thăng nhóm</span>
             <NumberInput value={ts.doi_nhom_x} onChange={(v) => setTs({ ...ts, doi_nhom_x: v })} label="Ngưỡng KPI đổi nhóm" suffix="điểm" />
           </label>
-          <label className="grid gap-1.5 text-sm">
+          <label className="grid grid-cols-1 gap-1.5 text-sm">
             <span className="font-medium">Số kỳ đã đóng liên tiếp phải đạt ngưỡng</span>
             <NumberInput value={ts.doi_nhom_y} onChange={(v) => setTs({ ...ts, doi_nhom_y: v })} label="Số kỳ liên tiếp" suffix="kỳ" />
           </label>
-          <label className="grid gap-1.5 text-sm">
+          <label className="grid grid-cols-1 gap-1.5 text-sm">
             <span className="font-medium">Ngưỡng KPI đề xuất giáng nhóm (Giảng viên xuống Trợ giảng)</span>
             <NumberInput value={ts.giang_nhom_x} onChange={(v) => setTs({ ...ts, giang_nhom_x: v })} label="Ngưỡng KPI giáng nhóm" suffix="điểm" />
             <span className="text-xs text-muted-foreground">KPI dưới mức này. Người không dạy trong kỳ không bị tính là thấp.</span>
           </label>
-          <label className="grid gap-1.5 text-sm">
+          <label className="grid grid-cols-1 gap-1.5 text-sm">
             <span className="font-medium">Số kỳ đã đóng liên tiếp dưới ngưỡng để giáng</span>
             <NumberInput value={ts.giang_nhom_y} onChange={(v) => setTs({ ...ts, giang_nhom_y: v })} label="Số kỳ liên tiếp để giáng nhóm" suffix="kỳ" />
           </label>

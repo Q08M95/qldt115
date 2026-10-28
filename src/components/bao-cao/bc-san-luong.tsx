@@ -86,7 +86,7 @@ export function BaoCaoSanLuong({
                 <Scale className="size-5 text-slate-500" strokeWidth={1.75} aria-hidden /> Độ đồng đều
               </CardTitle>
             </CardHeader>
-            <CardContent className="grid gap-3">
+            <CardContent className="grid grid-cols-1 gap-3">
               {t.chiSoDongDeu === null ? (
                 <p className="py-6 text-center text-sm text-muted-foreground">Cần ít nhất 2 người và có giờ dạy để tính độ đồng đều.</p>
               ) : (

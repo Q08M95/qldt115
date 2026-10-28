@@ -19,7 +19,7 @@ export function BaoCaoKpiTongHop({ ky, rows, isQuanTri }: { ky: KyDanhGia; rows:
   const caoNhat = rows[0];
 
   return (
-    <div className="grid gap-5">
+    <div className="grid grid-cols-1 gap-5">
       <StatRow>
         <StatTile icon={Award} label="KPI trung bình" value={kpiTb === null ? "–" : so(kpiTb)} />
         <StatTile icon={Users} label="Số người có KPI" value={rows.length} />

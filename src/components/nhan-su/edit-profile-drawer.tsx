@@ -18,7 +18,7 @@ function ChuyenMonPicker({ danhMuc, current }: { danhMuc: DanhMuc[]; current: Ch
   const items = danhMuc.filter((d) => d.dang_dung || checked.has(d.id));
 
   return (
-    <fieldset className="grid gap-2">
+    <fieldset className="grid grid-cols-1 gap-2">
       <legend className="mb-1.5 text-sm font-medium">Chuyên môn (trình độ, bằng cấp)</legend>
       {items.length === 0 && <p className="text-sm text-muted-foreground">Chưa có danh mục chuyên môn.</p>}
       {items.map((d) => {

@@ -61,7 +61,7 @@ export function BaoCaoDeXuat({ ky, data }: { ky: KyDanhGia; data: DeXuatThongKe 
                 </div>
                 <ul className="grid grid-cols-1 gap-2 @[30rem]:hidden">
                   {t.theo_loai.map((l) => (
-                    <li key={l.loai} className="grid gap-2 rounded-xl border p-3 text-sm">
+                    <li key={l.loai} className="grid grid-cols-1 gap-2 rounded-xl border p-3 text-sm">
                       <div className="flex items-center justify-between">
                         <span className="font-medium">{LOAI_DE_XUAT_LABEL[l.loai]}</span>
                         <span className="text-base font-semibold tabular-nums">{l.cho_duyet + l.da_duyet + l.bo_qua || "–"}</span>
@@ -96,7 +96,7 @@ export function BaoCaoDeXuat({ ky, data }: { ky: KyDanhGia; data: DeXuatThongKe 
               {t.da_duyet + t.bo_qua === 0 ? (
                 <p className="py-6 text-center text-sm text-muted-foreground">Chưa có đề xuất nào được xử lý xong.</p>
               ) : (
-                <div className="grid items-center gap-4 sm:grid-cols-[auto_1fr]">
+                <div className="grid grid-cols-1 items-center gap-4 sm:grid-cols-[auto_1fr]">
                   <Donut lat={lat} giua={pt(t.tyLeDuyet)} phu="đã duyệt" className="mx-auto size-32" />
                   <ChuThichDonut lat={lat} />
                 </div>
@@ -107,7 +107,7 @@ export function BaoCaoDeXuat({ ky, data }: { ky: KyDanhGia; data: DeXuatThongKe 
             <CardHeader>
               <CardTitle>Về báo cáo này</CardTitle>
             </CardHeader>
-            <CardContent className="grid gap-2 text-sm text-muted-foreground">
+            <CardContent className="grid grid-cols-1 gap-2 text-sm text-muted-foreground">
               <p>Chỉ hiển thị số liệu thống kê theo loại và trạng thái — không nêu ai được đề xuất gì.</p>
               <p>Muốn xem chi tiết từng đề xuất, vào Nhật ký hệ thống (chỉ Admin/Quản lý lớp) hoặc mục Đề xuất nhân sự trong hồ sơ Nhân sự.</p>
             </CardContent>

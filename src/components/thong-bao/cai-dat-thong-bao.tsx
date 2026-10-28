@@ -28,7 +28,7 @@ export function CaiDatThongBao({ tuyChon, isQuanTri, moMacDinh = false }: { tuyC
         <ChevronDown className={cn("size-5 shrink-0 text-muted-foreground transition-transform duration-150", mo && "rotate-180")} aria-hidden />
       </button>
       {mo && (
-        <div className="grid gap-6 border-t px-5 py-5">
+        <div className="grid grid-cols-1 gap-6 border-t px-5 py-5">
           <BatPushCard />
           <TuyChonThongBao banDau={tuyChon} isQuanTri={isQuanTri} />
         </div>

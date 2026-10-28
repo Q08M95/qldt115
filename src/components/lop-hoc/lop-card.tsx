@@ -23,7 +23,7 @@ export function LopCard({ lop, href }: { lop: LopHocTongHop; href: string }) {
             <Badge variant={TRANG_THAI_LOP_VARIANT[lop.trang_thai_hien_thi]}>{TRANG_THAI_LOP_LABEL[lop.trang_thai_hien_thi]}</Badge>
           </div>
 
-          <div className="grid gap-2">
+          <div className="grid grid-cols-1 gap-2">
             <h3 className="line-clamp-2 text-[17px] leading-snug font-semibold">{lop.ten}</h3>
             <ul className="grid grid-cols-1 gap-1.5 text-sm text-muted-foreground">
               <li className="flex items-center gap-2">

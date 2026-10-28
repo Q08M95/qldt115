@@ -48,7 +48,7 @@ export function BaiFormDrawer({
         <Input id="ten" name="ten" defaultValue={bai?.ten} placeholder="Vd: Lý thuyết hồi sinh tim phổi" required />
       </Field>
 
-      <div className="grid gap-5 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
         <Field label="Bắt đầu" htmlFor="bat_dau">
           <Input
             id="bat_dau"
@@ -69,7 +69,7 @@ export function BaiFormDrawer({
         </Field>
       </div>
 
-      <div className="grid gap-5 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
         <Field label="Số slot Giảng viên" htmlFor="so_gv">
           <Input id="so_gv" name="so_gv" type="number" min={0} max={20} step={1} defaultValue={sua ? dem("giang_vien") : 1} required />
         </Field>

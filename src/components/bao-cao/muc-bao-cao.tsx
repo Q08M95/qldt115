@@ -4,7 +4,7 @@
 // không bị 2 lớp đó che khi nhảy neo.
 export function MucBaoCao({ id, nhan, children }: { id: string; nhan: string; children: React.ReactNode }) {
   return (
-    <section id={id} className="scroll-mt-28 grid gap-4 md:scroll-mt-36">
+    <section id={id} className="scroll-mt-28 grid grid-cols-1 gap-4 md:scroll-mt-36">
       <h2 className="flex items-center gap-2.5 text-xl font-semibold tracking-tight text-foreground">
         <span aria-hidden className="h-5 w-1 shrink-0 rounded-full bg-brand-gradient" />
         {nhan}

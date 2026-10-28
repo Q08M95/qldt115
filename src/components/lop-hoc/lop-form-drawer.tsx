@@ -70,7 +70,7 @@ export function LopFormDrawer({
         </NativeSelect>
       </Field>
 
-      <div className="grid gap-5 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
         <Field label="Đối tượng" htmlFor="doi_tuong">
           <NativeSelect id="doi_tuong" name="doi_tuong" defaultValue={lop?.doi_tuong ?? "nhan_vien_y_te"}>
             {Object.entries(DOI_TUONG_LABEL).map(([v, l]) => (
@@ -94,7 +94,7 @@ export function LopFormDrawer({
         Đối tượng và loại kinh phí độc lập nhau. Lớp không kinh phí được tính vào A4 (đóng góp cộng đồng).
       </p>
 
-      <div className="grid gap-5 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
         <Field label="Ngày bắt đầu" htmlFor="ngay_bat_dau">
           <Input id="ngay_bat_dau" name="ngay_bat_dau" type="date" defaultValue={lop?.ngay_bat_dau} required />
         </Field>
@@ -107,7 +107,7 @@ export function LopFormDrawer({
         <Input id="dia_diem" name="dia_diem" defaultValue={lop?.dia_diem ?? ""} />
       </Field>
 
-      <fieldset className="grid gap-2">
+      <fieldset className="grid grid-cols-1 gap-2">
         <legend className="mb-1 text-sm font-medium">Nhóm đủ điều kiện đăng ký</legend>
         {NHOM_OPTIONS.map(([v, l]) => (
           <label key={v} className="flex cursor-pointer items-center gap-3 rounded-lg border p-2.5 text-sm">
@@ -121,7 +121,7 @@ export function LopFormDrawer({
       </fieldset>
 
       {ccChon.length > 0 && (
-        <fieldset className="grid gap-2">
+        <fieldset className="grid grid-cols-1 gap-2">
           <legend className="mb-1 text-sm font-medium">Chứng chỉ yêu cầu thêm (nếu cần)</legend>
           {ccChon.map((c) => (
             <label key={c.id} className="flex cursor-pointer items-center gap-3 rounded-lg border p-2.5 text-sm">

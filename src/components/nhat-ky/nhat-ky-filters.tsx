@@ -35,11 +35,11 @@ export function NhatKyFilters({ values }: { values: NhatKyFilterValues }) {
         ))}
       </NativeSelect>
       <div className="grid grid-cols-2 gap-3 md:flex">
-        <label className="grid gap-1 text-xs font-medium text-muted-foreground">
+        <label className="grid grid-cols-1 gap-1 text-xs font-medium text-muted-foreground">
           Từ ngày
           <Input type="date" name="tu" defaultValue={values.tu} className="md:w-40" />
         </label>
-        <label className="grid gap-1 text-xs font-medium text-muted-foreground">
+        <label className="grid grid-cols-1 gap-1 text-xs font-medium text-muted-foreground">
           Đến ngày
           <Input type="date" name="den" defaultValue={values.den} className="md:w-40" />
         </label>

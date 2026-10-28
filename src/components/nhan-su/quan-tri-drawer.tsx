@@ -62,7 +62,7 @@ export function QuanTriDrawer({
         </NativeSelect>
       </Field>
 
-      <div className="grid gap-1.5">
+      <div className="grid grid-cols-1 gap-1.5">
         <label className="flex cursor-pointer items-start gap-3 rounded-lg border p-3 text-sm has-disabled:cursor-not-allowed has-disabled:opacity-60">
           <input
             type="checkbox"

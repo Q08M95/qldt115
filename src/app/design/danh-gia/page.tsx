@@ -129,7 +129,7 @@ export default async function DesignDanhGiaPage(props: { searchParams: Promise<{
       unreadCount={3}
       activeHref="/danh-gia"
     >
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] lg:items-start">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] lg:items-start">
         <div className="flex flex-col gap-5">
           <KpiCaNhanBoard data={data} tieuDe="KPI của tôi" />
           <DuGioCard userId="u" hoTen="Nguyễn Văn An" bai={BAI} rubric={RUBRIC} laChinhMinh={false} />

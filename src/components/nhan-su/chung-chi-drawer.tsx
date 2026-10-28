@@ -53,7 +53,7 @@ function ImageUploader({
   }
 
   return (
-    <div className="grid gap-2">
+    <div className="grid grid-cols-1 gap-2">
       <input type="hidden" name="hinh_anh_path" value={path ?? ""} />
       <input type="hidden" name="hinh_anh_path_cu" value={initialPath ?? ""} />
       {preview ? (
@@ -138,7 +138,7 @@ export function ChungChiDrawer({
       <Field label="Nội dung" htmlFor="noi_dung">
         <Textarea id="noi_dung" name="noi_dung" defaultValue={chungChi?.noi_dung ?? ""} rows={3} />
       </Field>
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Field label="Ngày cấp" htmlFor="ngay_cap">
           <Input id="ngay_cap" name="ngay_cap" type="date" defaultValue={chungChi?.ngay_cap ?? ""} />
         </Field>

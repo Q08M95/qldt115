@@ -48,7 +48,7 @@ export function ThanhNgang({ dong, toiDa, chuThichThem, thuGonMobile }: { dong: 
   const max = Math.max(toiDa ?? 0, ...dong.map((d) => d.gia_tri + (d.gia_tri_them ?? 0)), 0.0001);
   const pct = (v: number) => Math.min(100, (v / max) * 100);
   return (
-    <div className="grid gap-1">
+    <div className="grid grid-cols-1 gap-1">
       {chuThichThem && (
         <p className="flex items-center gap-3 pb-1 text-xs text-muted-foreground">
           <span className="flex items-center gap-1.5">

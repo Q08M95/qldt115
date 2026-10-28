@@ -169,7 +169,7 @@ export default async function DesignBaoCaoPage(props: { searchParams: Promise<{ 
   const mucLuc = <MucLuc key={nhom} items={nhom === "ky" ? BAO_CAO_KY : BAO_CAO_THOI_GIAN} />;
   const noiDung =
     nhom === "ky" ? (
-      <div className="grid gap-8">
+      <div className="grid grid-cols-1 gap-8">
         <MucBaoCao id="kpi-tong-hop" nhan="KPI tổng hợp">
           <BaoCaoKpiTongHop
             ky={dieu.hienTai}
@@ -188,7 +188,7 @@ export default async function DesignBaoCaoPage(props: { searchParams: Promise<{ 
         </MucBaoCao>
       </div>
     ) : (
-      <div className="grid gap-8">
+      <div className="grid grid-cols-1 gap-8">
         <MucBaoCao id="san-luong" nhan="Sản lượng giảng dạy">
           <BaoCaoSanLuong rows={trong ? [] : SAN_LUONG} rowsTruoc={SAN_LUONG_TRUOC} loc={loc} khoang={khoang} ky={dieu.hienTai.id} />
         </MucBaoCao>
@@ -211,7 +211,7 @@ export default async function DesignBaoCaoPage(props: { searchParams: Promise<{ 
 
   return (
     <AppShell user={{ name: "Nguyễn Hoàng Tú Minh", email: "minh@example.com" }} isQuanTri period={{ name: "Quý 3/2026", daysLeft: 11 }} unreadCount={3} activeHref="/bao-cao">
-      <div className="grid gap-6">
+      <div className="grid grid-cols-1 gap-6">
         <Card className="gap-0 py-0">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-4 py-3.5 sm:px-5">
             <ChuyenNhomBaoCao nhom={nhom} ky={dieu.hienTai.id} kt={kt} vt={vtParam} />

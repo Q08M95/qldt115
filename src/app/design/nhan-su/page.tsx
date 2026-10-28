@@ -73,7 +73,7 @@ export default function DesignNhanSuPage() {
           <NhanSuList rows={ROWS} isQuanTri />
         </Card>
 
-        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)]">
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)]">
           <div className="flex min-w-0 flex-col gap-5">
             <ProfileInfoCard profile={PROFILE} nhom="gv_bac_si" chuyenMon={[{ chuyen_mon_id: "a", chi_tiet: "Nội khoa", ten: "Bác sĩ" }, { chuyen_mon_id: "b", chi_tiet: null, ten: "Thạc sĩ" }]} danhMucChuyenMon={DM} canEdit isQuanTri laAdmin laChuHoSo={false} />
             <ChuyenMonCard chuyenMon={[{ chuyen_mon_id: "a", chi_tiet: "Nội khoa", ten: "Bác sĩ" }, { chuyen_mon_id: "b", chi_tiet: null, ten: "Thạc sĩ" }]} />

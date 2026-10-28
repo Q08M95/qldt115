@@ -42,7 +42,7 @@ export function BatPushCard() {
   }
 
   return (
-    <section className="grid gap-2.5">
+    <section className="grid grid-cols-1 gap-2.5">
       <h3 className="flex items-center gap-2 text-sm font-semibold">
         <Smartphone className="size-4 text-muted-foreground" aria-hidden /> Thông báo đẩy trên thiết bị này
         {tt === "da-bat" && <Badge variant="success">Đang bật</Badge>}

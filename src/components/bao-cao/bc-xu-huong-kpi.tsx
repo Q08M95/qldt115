@@ -83,7 +83,7 @@ export function BaoCaoXuHuongKpi({ ky }: { ky: KpiTheoKyRow[] }) {
                 <ul className="grid grid-cols-1 gap-2 @[30rem]:hidden">
                   <ThuGonDanhSach soDau={5}>
 {[...ky].reverse().map((k) => (
-                    <li key={k.ky_id} className="grid gap-2 rounded-xl border p-3 text-sm">
+                    <li key={k.ky_id} className="grid grid-cols-1 gap-2 rounded-xl border p-3 text-sm">
                       <div className="flex items-center justify-between">
                         <span className="font-medium">{k.ten}</span>
                         <span className="text-base font-semibold tabular-nums">{so(k.kpi_tb)}</span>
@@ -114,10 +114,10 @@ export function BaoCaoXuHuongKpi({ ky }: { ky: KpiTheoKyRow[] }) {
             <CardTitle>So sánh vai trò · {hienTai ? tenNgan(hienTai.ten) : ""}</CardTitle>
           </CardHeader>
           <CardContent className="grid grid-cols-2 gap-2">
-            <div className="grid gap-1 text-center">
+            <div className="grid grid-cols-1 gap-1 text-center">
               {hienTai?.kpi_tb_gv != null ? <DongHoBanNguyet phanTram={hienTai.kpi_tb_gv} so={so(hienTai.kpi_tb_gv)} nhan="Giảng viên" className="w-full" /> : <Trong />}
             </div>
-            <div className="grid gap-1 text-center">
+            <div className="grid grid-cols-1 gap-1 text-center">
               {hienTai?.kpi_tb_tg != null ? <DongHoBanNguyet phanTram={hienTai.kpi_tb_tg} so={so(hienTai.kpi_tb_tg)} nhan="Trợ giảng" className="w-full" /> : <Trong />}
             </div>
             <p className="col-span-2 border-t pt-3 text-xs text-muted-foreground">KPI trung bình theo vai trò của kỳ gần nhất có dữ liệu — không tách theo nhóm (mục 4.7).</p>
@@ -129,5 +129,5 @@ export function BaoCaoXuHuongKpi({ ky }: { ky: KpiTheoKyRow[] }) {
 }
 
 function Trong() {
-  return <p className="grid h-24 place-items-center text-xs text-muted-foreground">Chưa có dữ liệu</p>;
+  return <p className="grid grid-cols-1 h-24 place-items-center text-xs text-muted-foreground">Chưa có dữ liệu</p>;
 }

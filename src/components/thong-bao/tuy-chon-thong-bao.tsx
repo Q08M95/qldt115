@@ -56,7 +56,7 @@ export function TuyChonThongBao({ banDau, isQuanTri }: { banDau: TuyChon; isQuan
   }
 
   return (
-    <section className="grid gap-3">
+    <section className="grid grid-cols-1 gap-3">
       <h3 className="flex items-center gap-2 text-sm font-semibold">
         <SlidersHorizontal className="size-4 text-muted-foreground" aria-hidden /> Tùy chọn thông báo
       </h3>
