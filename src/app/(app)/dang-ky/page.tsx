@@ -12,18 +12,27 @@ import { VAI_TRO_LABEL } from "@/lib/nhan-su/labels";
 
 type Bai = ViecCuaToi["dang_cho"][number]["bai"];
 
+// Trên điện thoại tên Bài được xuống tối đa 2 dòng (không cắt cụt), lớp và giờ tách dòng riêng — đây là thông tin cần
+// đọc được trước khi bấm Duyệt/Rút; máy tính giữ 1 dòng như cũ
 function BaiInfo({ bai }: { bai: Bai }) {
   return (
-    <div className="min-w-0 flex-1">
-      <Link href={`/lop-hoc/${bai.lop_id}`} className="block truncate font-semibold hover:underline">
+    <div className="min-w-0 sm:flex-1">
+      <Link href={`/lop-hoc/${bai.lop_id}`} className="line-clamp-2 font-semibold hover:underline sm:block sm:truncate">
         {bai.ten}
       </Link>
-      <p className="truncate text-xs text-muted-foreground">
-        {bai.lop_ten} · <span className="tabular-nums">{fmtDate(bai.bat_dau)} {fmtTime(bai.bat_dau)}–{fmtTime(bai.ket_thuc)}</span>
+      <p className="mt-0.5 flex flex-wrap gap-x-1 text-xs text-muted-foreground sm:mt-0 sm:flex-nowrap">
+        <span className="min-w-0 truncate">{bai.lop_ten}</span>
+        <span className="shrink-0 tabular-nums">
+          · 
+          {fmtDate(bai.bat_dau)} {fmtTime(bai.bat_dau)}–{fmtTime(bai.ket_thuc)}
+        </span>
       </p>
     </div>
   );
 }
+
+// 1 mục trong danh sách: điện thoại xếp dọc (mỗi phần 1 dòng, dùng hết chiều ngang), máy tính 1 hàng ngang
+const DONG = "flex flex-col gap-2 py-3 text-sm sm:flex-row sm:flex-wrap sm:items-center sm:gap-3";
 
 function Khung({ icon: Icon, tieuDe, dem, children }: { icon: typeof Inbox; tieuDe: string; dem: number; children: React.ReactNode }) {
   return (
@@ -57,16 +66,18 @@ export default async function DangKyPage() {
             ) : (
               <ul className="divide-y">
                 {v.can_duyet.map((d) => (
-                  <li key={d.id} className="flex flex-wrap items-center gap-3 py-3 text-sm">
-                    <UserAvatar name={d.ho_ten} src={d.avatar_url} className="size-9" />
-                    <div className="min-w-40 flex-1">
-                      <Link href={`/nhan-su/${d.user_id}`} className="font-semibold hover:underline">
+                  <li key={d.id} className={DONG}>
+                    <div className="flex min-w-0 items-center gap-2 sm:min-w-56 sm:flex-1">
+                      <UserAvatar name={d.ho_ten} src={d.avatar_url} className="size-8 shrink-0 sm:size-9" />
+                      <Link href={`/nhan-su/${d.user_id}`} className="min-w-0 truncate font-semibold hover:underline">
                         {d.ho_ten}
                       </Link>
-                      <span className="ml-2 text-xs text-muted-foreground">{VAI_TRO_LABEL[d.vai_tro]}</span>
+                      <span className="shrink-0 text-xs text-muted-foreground">{VAI_TRO_LABEL[d.vai_tro]}</span>
                     </div>
                     <BaiInfo bai={d.bai} />
-                    <NutDuyet id={d.id} />
+                    <div className="flex">
+                      <NutDuyet id={d.id} />
+                    </div>
                   </li>
                 ))}
               </ul>
@@ -84,10 +95,12 @@ export default async function DangKyPage() {
         ) : (
           <ul className="divide-y">
             {loiMoi.map((d) => (
-              <li key={d.id} className="flex flex-wrap items-center gap-3 py-3 text-sm">
+              <li key={d.id} className={DONG}>
                 <BaiInfo bai={d.bai} />
-                <Badge variant="blue">{VAI_TRO_LABEL[d.vai_tro]}</Badge>
-                <NutPhanHoiMoi id={d.id} />
+                <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                  <Badge variant="blue">{VAI_TRO_LABEL[d.vai_tro]}</Badge>
+                  <NutPhanHoiMoi id={d.id} />
+                </div>
               </li>
             ))}
           </ul>
@@ -100,10 +113,12 @@ export default async function DangKyPage() {
         ) : (
           <ul className="divide-y">
             {dangKy.map((d) => (
-              <li key={d.id} className="flex flex-wrap items-center gap-3 py-3 text-sm">
+              <li key={d.id} className={DONG}>
                 <BaiInfo bai={d.bai} />
-                <Badge variant="warning">Chờ duyệt</Badge>
-                <NutRut id={d.id} />
+                <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                  <Badge variant="warning">Chờ duyệt</Badge>
+                  <NutRut id={d.id} />
+                </div>
               </li>
             ))}
           </ul>

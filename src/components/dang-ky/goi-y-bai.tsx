@@ -60,7 +60,7 @@ function DongUngVien({
                 {u.gio_ky} giờ<span className="max-sm:hidden"> trong kỳ</span>
               </>
             )}</span>
-          <span className="sm:hidden" title="Điểm gợi ý (0–1)">· điểm {diem}</span>
+          <span className="sm:hidden" title="Điểm gợi ý (0–1)">· {diem}</span>
           {u.cung_lop > 0 && <span>· đã có {u.cung_lop} Bài khác trong lớp</span>}
           {laToi && <Badge variant="default">Bạn</Badge>}
           {u.trang_thai_hien_co === "dang_ky" && <Badge variant="warning">Đã đăng ký</Badge>}
