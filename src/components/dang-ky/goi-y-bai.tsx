@@ -25,6 +25,7 @@ function TenNguoi({ id, ten, avatar }: { id: string; ten: string; avatar: string
   );
 }
 
+// Trên điện thoại tên được ưu tiên chỗ: giờ/điểm/nhãn trạng thái dồn xuống dòng phụ, nút Mời chỉ còn biểu tượng
 function DongUngVien({
   u,
   baiId,
@@ -40,23 +41,34 @@ function DongUngVien({
   laToi: boolean;
   khongKinhPhi: boolean;
 }) {
+  const diem = u.diem.toFixed(2).replace(".", ",");
   return (
-    <li className={cn("flex flex-wrap items-center gap-x-3 gap-y-1 py-2 text-sm", laToi && "rounded-lg bg-grad-primary-soft px-2")}>
-      <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-semibold tabular-nums">
-        {u.hang}
-      </span>
+    <li className={cn("flex items-center gap-2 py-2 text-sm sm:gap-3", laToi && "rounded-lg bg-grad-primary-soft px-2")}>
+      <span className="w-4 shrink-0 text-center text-xs font-semibold text-muted-foreground tabular-nums">{u.hang}</span>
+      <Link href={`/nhan-su/${u.user_id}`} className="shrink-0" tabIndex={-1} aria-hidden>
+        <UserAvatar name={u.ho_ten} src={u.avatar_url} className="size-8" />
+      </Link>
       <div className="min-w-0 flex-1">
-        <TenNguoi id={u.user_id} ten={u.ho_ten} avatar={u.avatar_url} />
-        <p className="mt-0.5 pl-9 text-xs text-muted-foreground tabular-nums">
-          {khongKinhPhi ? `${u.so_lop_khong_kinh_phi} lớp không kinh phí đã nhận` : `${u.gio_ky} giờ trong kỳ`}
-          {u.cung_lop > 0 && ` · đã có ${u.cung_lop} Bài khác trong lớp`}
+        <Link href={`/nhan-su/${u.user_id}`} className="block truncate font-medium hover:underline">
+          {u.ho_ten}
+        </Link>
+        <p className="mt-0.5 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-xs text-muted-foreground tabular-nums">
+          <span>{khongKinhPhi ? (
+              `${u.so_lop_khong_kinh_phi} lớp không kinh phí`
+            ) : (
+              <>
+                {u.gio_ky} giờ<span className="max-sm:hidden"> trong kỳ</span>
+              </>
+            )}</span>
+          <span className="sm:hidden" title="Điểm gợi ý (0–1)">· điểm {diem}</span>
+          {u.cung_lop > 0 && <span>· đã có {u.cung_lop} Bài khác trong lớp</span>}
+          {laToi && <Badge variant="default">Bạn</Badge>}
+          {u.trang_thai_hien_co === "dang_ky" && <Badge variant="warning">Đã đăng ký</Badge>}
+          {u.trang_thai_hien_co === "duoc_moi" && <Badge variant="teal">Đã mời</Badge>}
         </p>
       </div>
-      {laToi && <Badge variant="default">Bạn</Badge>}
-      {u.trang_thai_hien_co === "dang_ky" && <Badge variant="warning">Đã đăng ký</Badge>}
-      {u.trang_thai_hien_co === "duoc_moi" && <Badge variant="teal">Đã mời</Badge>}
-      <span className="w-10 shrink-0 text-right text-xs text-muted-foreground tabular-nums" title="Điểm gợi ý (0–1)">
-        {u.diem.toFixed(2)}
+      <span className="hidden w-10 shrink-0 text-right text-xs text-muted-foreground tabular-nums sm:block" title="Điểm gợi ý (0–1)">
+        {diem}
       </span>
       {isQuanTri && !u.trang_thai_hien_co && <NutMoi baiId={baiId} vaiTro={vaiTro} userId={u.user_id} />}
     </li>

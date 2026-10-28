@@ -51,8 +51,16 @@ export function NutMoi({ baiId, vaiTro, userId }: { baiId: string; vaiTro: VaiTr
   const { pending, error, chay } = useChay();
   return (
     <span className="flex flex-col items-end">
-      <Button type="button" size="sm" variant="outline" disabled={pending} onClick={() => chay(() => moiGiangDay(baiId, vaiTro, userId))}>
-        <Send /> {pending ? "Đang mời..." : "Mời"}
+      <Button
+        type="button"
+        size="sm"
+        variant="outline"
+        disabled={pending}
+        aria-label="Mời"
+        className="max-sm:size-9 max-sm:px-0"
+        onClick={() => chay(() => moiGiangDay(baiId, vaiTro, userId))}
+      >
+        <Send /> <span className="max-sm:sr-only">{pending ? "Đang mời..." : "Mời"}</span>
       </Button>
       <Loi error={error} />
     </span>

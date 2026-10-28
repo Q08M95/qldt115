@@ -16,6 +16,7 @@ import { daBatDau } from "@/lib/danh-gia/thoi-gian";
 import { fmtDate, fmtTime } from "@/lib/format";
 import { TRANG_THAI_SLOT_LABEL, TRANG_THAI_SLOT_VARIANT } from "@/lib/lop-hoc/labels";
 import { VAI_TRO_LABEL } from "@/lib/nhan-su/labels";
+import { cn } from "@/lib/utils";
 import type { BaiHoc, DiemDanh, SlotGiangDay, TrangThaiLop, VaiTroGiangDay } from "@/types/database";
 
 export interface NguoiXem {
@@ -92,7 +93,11 @@ function SlotRow({
 }) {
   return (
     <li className="flex flex-wrap items-center gap-x-3 gap-y-1 py-2 text-sm">
-      <span className="w-14 shrink-0 text-xs text-muted-foreground">Vị trí {slot.vi_tri}</span>
+      <span className="shrink-0 text-xs text-muted-foreground sm:w-14">
+        <span className="max-sm:hidden">Vị trí </span>
+        <span className="sm:hidden">#</span>
+        {slot.vi_tri}
+      </span>
       {slot.nguoi ? (
         <Link href={`/nhan-su/${slot.nguoi.id}`} className="flex min-w-0 flex-1 items-center gap-2 font-medium hover:underline">
           <UserAvatar name={slot.nguoi.ho_ten} src={slot.nguoi.avatar_url} className="size-7" />
@@ -201,7 +206,8 @@ export function BaiList({
                 <ChevronDown className="size-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden />
               </summary>
 
-              <div className="grid grid-cols-1 gap-4 px-3 pb-5 sm:px-5">
+              {/* Có cột ô tick bên trái: trên điện thoại nội dung Bài tràn sang cả phần dưới ô tick cho đỡ chật */}
+              <div className={cn("grid grid-cols-1 gap-4 px-3 pb-5 sm:px-5", choDangKy && "max-sm:-ml-8")}>
                 {(["giang_vien", "tro_giang"] as const).map((vai) => {
                   const slots = b.slots.filter((s) => s.vai_tro === vai);
                   if (slots.length === 0) return null;
