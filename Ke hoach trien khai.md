@@ -141,7 +141,7 @@ Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / 
 - [x] Cảnh báo dồn tải khi duyệt vượt ngưỡng tỷ lệ đảm nhiệm (ngưỡng cấu hình), không chặn cứng
 - [x] Kiểm tra trùng lịch (không phân biệt cùng/khác lớp)
 - [x] Ràng buộc 1 người không duyệt trùng đúng 1 slot, nhưng hợp lệ nếu khác Bài
-- [ ] Sửa/hủy lớp đã có người được phân công → bắt buộc trigger thông báo (liên kết giai đoạn 8) — chưa làm được vì chưa có module Thông báo; các hàm SQL đã để sẵn dòng TODO tại đúng vị trí cần gọi
+- [x] Sửa/hủy lớp đã có người được phân công → bắt buộc trigger thông báo — đã làm ở Giai đoạn 8 (trigger `tb_bai_doi_lich` thông báo `doi_lich`, thông báo `huy_lop` khi hủy lớp)
 - [x] Log lời mời bị từ chối (không chỉ lời mời được duyệt)
 - [x] Hiển thị công khai matching-score + progress bar cho mọi GV/TG, áp dụng cả lớp cùng nhóm lớp sắp mở tiếp theo
 - [x] Đã chạy migration `20260921100000` + bản vá `20260921100100` + test `supabase/tests/giai_doan_5_rls.sql` (61 kiểm tra đạt)
@@ -250,7 +250,7 @@ Trạng thái dùng 1 trong 4 mức: ⬜ Chưa bắt đầu / 🟡 Đang làm / 
 - [x] Trang Tổng quan Admin/Quản lý lớp: KPI stat card + sparkline, bảng việc cần duyệt, area/bar/donut/gauge theo spec 4.7b
 - [x] Trang Tổng quan GV/TG: tổng quan toàn đơn vị, lịch dạy sắp tới (timeline gọn 4 Bài, lịch tháng ở `/dang-ky#lich`), KPI cá nhân đầy đủ, biểu đồ phân tích (đã bỏ thông báo mới nhất/thẻ gợi ý lớp/bảng việc cần duyệt vì trùng module khác)
 - [x] Người giữ Quyền Quản lý lớp thấy cả 2 bộ widget cùng lúc
-- [ ] Bổ sung Tổng quan vào bản PDF xuất báo cáo (đã ghi rõ "chưa có" trong Phụ lục PDF, làm sau khi Tổng quan được xác nhận ổn định)
+- [x] ~~Bổ sung Tổng quan vào bản PDF xuất báo cáo~~ — không còn áp dụng: đã gỡ hẳn Xuất PDF ở Giai đoạn 11e
 
 > **Tiến độ (chia 3 lượt):** lượt 1 = báo cáo #3, #4, #5, #8 (khung tuần/tháng/quý/năm) — đã viết xong migration `20260929100000_giai_doan_10a_bao_cao.sql` + test `supabase/tests/giai_doan_10a_bao_cao.sql` (26 kiểm tra, PGlite cục bộ 26/26; hồi quy Giai đoạn 3-8, 9 vẫn pass) + trang `/bao-cao` (4 báo cáo, có demo dev `/design/bao-cao`); **đã xác nhận trên Supabase thật: migration + test 26/26 true, đã push**. Lượt 2 = báo cáo #1, #2, #6, #7 (theo kỳ) — migration `20260930100000_giai_doan_10b_bao_cao_theo_ky.sql` + test (20 kiểm tra) **đã xác nhận true trên Supabase thật, đã push**. Sau đó theo phản hồi người dùng (8 tab cuộn ngang bất tiện, xuất file rời rạc) đã **tái cấu trúc `/bao-cao` thành 2 nhóm xếp dọc** (Theo kỳ đánh giá | Theo hoạt động) và gộp "Xuất báo cáo" thành 1 nút duy nhất — Excel nhiều sheet + **PDF thiết kế đầy đủ** (biểu đồ, bảng, trang Phụ lục giải thích chỉ số) cho báo cáo #1+#3+#6+#7, dùng `@react-pdf/renderer` (không cần migration, đã push thẳng). **Lượt 3 (trang Tổng quan Admin + GV/TG) đã xong** — không cần migration (chỉ truy vấn bảng/view/RPC đã có sẵn), đã kiểm tra cấu trúc truy vấn bằng script chỉ-đọc service-role trên Supabase thật (không kiểm tra được RLS theo vai trò vì service role bỏ qua RLS — cần người dùng tự đăng nhập xác nhận), đã push. Còn lại: bổ sung Tổng quan vào PDF.
 
