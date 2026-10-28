@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { AlertTriangle, Sparkles } from "lucide-react";
+import { AlertTriangle, ChevronDown, Sparkles } from "lucide-react";
 import {
   NutDuyet,
   NutMoi,
@@ -14,7 +14,7 @@ import { VAI_TRO_LABEL } from "@/lib/nhan-su/labels";
 import { cn } from "@/lib/utils";
 import type { DangKyCho, UngVien, VaiTroGiangDay } from "@/types/database";
 
-const HIEN_TRUOC = 5;
+const HIEN_TRUOC = 3;
 
 function TenNguoi({ id, ten, avatar }: { id: string; ten: string; avatar: string | null }) {
   return (
@@ -45,7 +45,7 @@ function DongUngVien({
       <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-semibold tabular-nums">
         {u.hang}
       </span>
-      <div className="min-w-40 flex-1">
+      <div className="min-w-0 flex-1">
         <TenNguoi id={u.user_id} ten={u.ho_ten} avatar={u.avatar_url} />
         <p className="mt-0.5 pl-9 text-xs text-muted-foreground tabular-nums">
           {khongKinhPhi ? `${u.so_lop_khong_kinh_phi} lớp không kinh phí đã nhận` : `${u.gio_ky} giờ trong kỳ`}
@@ -55,7 +55,7 @@ function DongUngVien({
       {laToi && <Badge variant="default">Bạn</Badge>}
       {u.trang_thai_hien_co === "dang_ky" && <Badge variant="warning">Đã đăng ký</Badge>}
       {u.trang_thai_hien_co === "duoc_moi" && <Badge variant="teal">Đã mời</Badge>}
-      <span className="w-12 shrink-0 text-right text-xs text-muted-foreground tabular-nums" title="Điểm gợi ý (0–1)">
+      <span className="w-10 shrink-0 text-right text-xs text-muted-foreground tabular-nums" title="Điểm gợi ý (0–1)">
         {u.diem.toFixed(2)}
       </span>
       {isQuanTri && !u.trang_thai_hien_co && <NutMoi baiId={baiId} vaiTro={vaiTro} userId={u.user_id} />}
@@ -65,6 +65,8 @@ function DongUngVien({
 
 // Gợi ý nhân sự (matching-score) + việc chờ xử lý của 1 vai trò trong 1 Bài còn slot trống.
 // Danh sách xếp hạng công khai cho mọi người xem lớp (mục 4.3); nút Mời/Duyệt chỉ cho người quản trị.
+// Danh sách gợi ý thu gọn sẵn (bấm mới mở, hiện 3 người đầu) cho gọn lớp nhiều Bài; cảnh báo pool nhỏ và việc chờ xử lý
+// luôn hiện vì cần hành động.
 export function GoiYBai({
   baiId,
   vaiTro,
@@ -89,9 +91,6 @@ export function GoiYBai({
 
   return (
     <div className="grid grid-cols-1 gap-3 rounded-xl border bg-background p-3">
-      <p className="flex items-center gap-1.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-        <Sparkles className="size-3.5" aria-hidden /> Gợi ý nhân sự · {nhan}
-      </p>
 
       {/* Cảnh báo pool ứng viên nhỏ — chỉ người quản trị, để chủ động mời sớm (mục 4.3) */}
       {isQuanTri && soUngVien === 0 && (
@@ -144,40 +143,52 @@ export function GoiYBai({
         </ul>
       )}
 
-      {isQuanTri && (
-        <div className="-mx-1">
-          <MoiNgoaiLe baiId={baiId} vaiTro={vaiTro} />
-        </div>
-      )}
+      <details className="group/goiy">
+        <summary className="flex cursor-pointer list-none items-center gap-1.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase marker:hidden [&::-webkit-details-marker]:hidden">
+          <Sparkles className="size-3.5 shrink-0" aria-hidden />
+          <span className="min-w-0 flex-1 truncate">
+            Gợi ý<span className="hidden sm:inline"> nhân sự</span> · {nhan}
+          </span>
+          {soUngVien > 0 && <span className="shrink-0 font-normal tracking-normal normal-case tabular-nums">{soUngVien} người</span>}
+          <ChevronDown className="size-4 shrink-0 transition-transform group-open/goiy:rotate-180" aria-hidden />
+        </summary>
+        <div className="mt-3 grid grid-cols-1 gap-3">
+          {isQuanTri && (
+            <div className="-mx-1">
+              <MoiNgoaiLe baiId={baiId} vaiTro={vaiTro} />
+            </div>
+          )}
 
-      {soUngVien === 0 ? (
-        !isQuanTri && <p className="text-sm text-muted-foreground">Chưa có ứng viên phù hợp.</p>
-      ) : (
-        <>
-          <ul className="divide-y">
-            {ungVien.slice(0, HIEN_TRUOC).map((u) => (
-              <DongUngVien key={u.user_id} u={u} baiId={baiId} vaiTro={vaiTro} isQuanTri={isQuanTri} laToi={u.user_id === viewerId} khongKinhPhi={khongKinhPhi} />
-            ))}
-          </ul>
-          {soUngVien > HIEN_TRUOC && (
-            <details className="group/more">
-              <summary className="cursor-pointer list-none text-sm font-medium text-primary marker:hidden [&::-webkit-details-marker]:hidden">
-                <span className="group-open/more:hidden">Xem thêm {soUngVien - HIEN_TRUOC} người</span>
-                <span className="hidden group-open/more:inline">Thu gọn</span>
-              </summary>
+          {soUngVien === 0 ? (
+            !isQuanTri && <p className="text-sm text-muted-foreground">Chưa có ứng viên phù hợp.</p>
+          ) : (
+            <>
               <ul className="divide-y">
-                {ungVien.slice(HIEN_TRUOC).map((u) => (
+                {ungVien.slice(0, HIEN_TRUOC).map((u) => (
                   <DongUngVien key={u.user_id} u={u} baiId={baiId} vaiTro={vaiTro} isQuanTri={isQuanTri} laToi={u.user_id === viewerId} khongKinhPhi={khongKinhPhi} />
                 ))}
               </ul>
-            </details>
+              {soUngVien > HIEN_TRUOC && (
+                <details className="group/more">
+                  <summary className="cursor-pointer list-none text-sm font-medium text-primary marker:hidden [&::-webkit-details-marker]:hidden">
+                    <span className="group-open/more:hidden">Xem thêm {soUngVien - HIEN_TRUOC} người</span>
+                    <span className="hidden group-open/more:inline">Thu gọn</span>
+                  </summary>
+                  <ul className="divide-y">
+                    {ungVien.slice(HIEN_TRUOC).map((u) => (
+                      <DongUngVien key={u.user_id} u={u} baiId={baiId} vaiTro={vaiTro} isQuanTri={isQuanTri} laToi={u.user_id === viewerId} khongKinhPhi={khongKinhPhi} />
+                    ))}
+                  </ul>
+                </details>
+              )}
+              <p className="text-xs text-muted-foreground">
+                Xếp theo công bằng khối lượng giảng dạy: người{" "}
+                {khongKinhPhi ? "nhận ít lớp không kinh phí hơn" : "dạy ít giờ hơn trong kỳ"} được xếp trước.
+              </p>
+            </>
           )}
-          <p className="text-xs text-muted-foreground">
-            Xếp theo công bằng khối lượng giảng dạy: người{" "}
-            {khongKinhPhi ? "nhận ít lớp không kinh phí hơn" : "dạy ít giờ hơn trong kỳ"} được xếp trước.
-          </p>
-        </>
-      )}
+        </div>
+      </details>
     </div>
   );
 }

@@ -70,7 +70,7 @@ Sửa hoặc xóa một Bài bằng các nút ở dòng Bài đó. Lưu ý:
 
 ## 5.4 Mời người dạy (gợi ý và xếp hạng)
 
-Ngay khi một Bài được tạo, hệ thống **tự xếp hạng** những người đủ điều kiện. Bảng **Gợi ý nhân sự** hiện ngay dưới Bài.
+Ngay khi một Bài được tạo, hệ thống **tự xếp hạng** những người đủ điều kiện. Bảng **Gợi ý nhân sự** nằm ngay dưới Bài, **thu gọn sẵn** (bấm để mở; hiện 3 người đầu, bấm **Xem thêm** để thấy hết). Cảnh báo pool nhỏ và các đăng ký/lời mời đang chờ xử lý thì **luôn hiện**, không bị thu gọn.
 
 **Bộ lọc cứng** (người không thỏa thì không xuất hiện): thuộc nhóm đủ điều kiện của lớp, đủ chứng chỉ yêu cầu, trạng thái **Đang tham gia**, không trùng lịch với Bài khác đã được duyệt.
 

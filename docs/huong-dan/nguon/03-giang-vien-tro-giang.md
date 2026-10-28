@@ -96,7 +96,7 @@ Bài không đăng ký được sẽ bị **làm mờ**, kèm **lý do ngắn** 
 
 ### 3.4.3 Bảng gợi ý (xếp hạng) công khai
 
-Với mỗi Bài đang cần người, hệ thống xếp hạng những người đủ điều kiện và **hiển thị công khai cho mọi người** (không chỉ quản lý), để ai cũng biết cách chia việc hoạt động ra sao. Bạn tìm dòng có chữ **Bạn** để biết vị trí của mình.
+Với mỗi Bài đang cần người, hệ thống xếp hạng những người đủ điều kiện và **hiển thị công khai cho mọi người** (không chỉ quản lý), để ai cũng biết cách chia việc hoạt động ra sao. Để trang gọn với lớp nhiều Bài, bảng **thu gọn sẵn**: dòng **Gợi ý nhân sự · Giảng viên/Trợ giảng** cho biết có bao nhiêu người, bấm vào để mở. Khi mở, bảng hiện **3 người đầu**, bấm **Xem thêm** để thấy hết. Bạn tìm dòng có chữ **Bạn** để biết vị trí của mình.
 
 Cách xếp hạng dựa trên nguyên tắc **công bằng khối lượng dạy**: người **dạy ít giờ hơn trong kỳ** được xếp trước. Với lớp không kinh phí, người **nhận ít lớp không kinh phí hơn** được xếp trước. Khi khối lượng ngang nhau, người có **KPI kỳ gần nhất cao hơn** xếp trước. Người đã dạy Bài khác trong **cùng lớp** bị hạ nhẹ điểm để việc được chia đều, và **không bị loại**.
 

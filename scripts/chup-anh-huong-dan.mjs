@@ -40,6 +40,12 @@ async function main() {
     return rec;
   }
 
+  // Bảng "Gợi ý nhân sự" thu gọn sẵn — mở hết trước khi chụp
+  async function moGoiY(page) {
+    await page.$$eval("details", (ds) => ds.filter((d) => d.querySelector(":scope > summary")?.textContent?.includes("Gợi ý")).forEach((d) => (d.open = true)));
+    await page.waitForTimeout(300);
+  }
+
   async function toggleDark(page, on) {
     // Menu avatar là nút cuối topbar chứa ảnh đại diện.
     const avatarBtn = page.locator("header").getByRole("button").last();
@@ -99,11 +105,12 @@ async function main() {
   await chup("3.2", { as: HERO_GV, path: "/lop-hoc" });
   // Lịch các lớp (mỗi lớp 1 thanh, tháng hiện tại)
   await chup("3.2b", { as: HERO_GV, path: "/lop-hoc?xem=lich" });
-  await chup("3.3", { as: HERO_GV, path: "/lop-hoc/697b91d0-96bd-4d4c-98a1-c38a5aac5cce" }); // ACLS-126 đã hoàn thành
+  await chup("3.3", { as: HERO_GV, path: "/lop-hoc/197b4254-3f46-4c19-a558-acdb04f4879e" }); // ACLS-126 đã hoàn thành
   await chup("3.4a", {
     as: HERO_TG,
-    path: "/lop-hoc/09a28f1b-a830-4f39-a92d-0a12a8e78fc5", // ACLS-135 (lPool) — TG có slot trống
+    path: "/lop-hoc/5ba31c08-b440-4450-bb5e-bcc46d213ca9", // ACLS-135 (lPool) — TG có slot trống
     before: async (page) => {
+      await moGoiY(page);
       const boxes = page.getByRole("checkbox");
       const n = await boxes.count();
       for (let i = 0; i < Math.min(n, 2); i++) await boxes.nth(i).check({ force: true }).catch(() => {});
@@ -142,16 +149,16 @@ async function main() {
   });
   await chup("5.3", {
     as: ADMIN,
-    path: "/lop-hoc/09a28f1b-a830-4f39-a92d-0a12a8e78fc5",
+    path: "/lop-hoc/5ba31c08-b440-4450-bb5e-bcc46d213ca9",
     before: async (page) => {
       await page.getByRole("button", { name: "Thêm Bài" }).first().click();
       await page.waitForTimeout(500);
     },
   });
-  await chup("5.4", { as: ADMIN, path: "/lop-hoc/09a28f1b-a830-4f39-a92d-0a12a8e78fc5" }); // lPool: cảnh báo pool nhỏ + gợi ý
+  await chup("5.4", { as: ADMIN, path: "/lop-hoc/5ba31c08-b440-4450-bb5e-bcc46d213ca9", before: moGoiY }); // lPool: cảnh báo pool nhỏ + gợi ý
   await chup("5.5", { as: ADMIN, path: "/dang-ky" });
-  await chup("5.7", { as: ADMIN, path: "/lop-hoc/697b91d0-96bd-4d4c-98a1-c38a5aac5cce" });
-  await chup("5.9", { as: ADMIN, path: `/nhan-su/974d066f-ac25-4454-9cbf-19d439307292` }); // HERO_TG
+  await chup("5.7", { as: ADMIN, path: "/lop-hoc/197b4254-3f46-4c19-a558-acdb04f4879e" });
+  await chup("5.9", { as: ADMIN, path: `/nhan-su/384a2a0d-735b-44ad-ae20-3bac8debc898` }); // HERO_TG
   await chup("5.13", { as: ADMIN, path: "/cau-hinh" });
 
   // ---------- Bổ sung ngoài danh sách 25 ảnh gốc ----------

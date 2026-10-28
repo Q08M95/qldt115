@@ -94,12 +94,12 @@ function SlotRow({
     <li className="flex flex-wrap items-center gap-x-3 gap-y-1 py-2 text-sm">
       <span className="w-14 shrink-0 text-xs text-muted-foreground">Vị trí {slot.vi_tri}</span>
       {slot.nguoi ? (
-        <Link href={`/nhan-su/${slot.nguoi.id}`} className="flex min-w-32 flex-1 items-center gap-2 font-medium hover:underline">
+        <Link href={`/nhan-su/${slot.nguoi.id}`} className="flex min-w-0 flex-1 items-center gap-2 font-medium hover:underline">
           <UserAvatar name={slot.nguoi.ho_ten} src={slot.nguoi.avatar_url} className="size-7" />
           <span className="truncate">{slot.nguoi.ho_ten}</span>
         </Link>
       ) : (
-        <span className="flex-1 text-muted-foreground">Chưa có người</span>
+        <span className="min-w-0 flex-1 truncate text-muted-foreground">Chưa có người</span>
       )}
       <Badge variant={TRANG_THAI_SLOT_VARIANT[slot.trang_thai]}>{TRANG_THAI_SLOT_LABEL[slot.trang_thai]}</Badge>
       {diemDanhProps && <DiemDanhSlot {...diemDanhProps} />}
@@ -263,7 +263,9 @@ export function BaiList({
   );
 
   return (
-    <Card className="gap-0 px-0">
+    // overflow-clip thay overflow-hidden của Card: hidden biến thẻ thành vùng cuộn khiến thanh "Đăng ký các Bài đã chọn"
+    // (sticky) dính theo thẻ thay vì theo màn hình và đè lên Bài trên điện thoại
+    <Card className="gap-0 overflow-clip px-0">
       <CardHeader className="pb-4">
         <CardTitle className="flex items-center gap-2">
           <Layers className="size-5 text-slate-500" strokeWidth={1.75} aria-hidden /> Các Bài trong lớp
