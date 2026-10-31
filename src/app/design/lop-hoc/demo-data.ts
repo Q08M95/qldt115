@@ -96,7 +96,7 @@ export function chiTiet(o: Partial<LopHocTongHop> = {}): LopChiTiet {
     lop: { ...LOP_LIST[0], gv_tong: 3, gv_da_phan_cong: 2, gv_nhan_su: 1, gv_ten_duy_nhat: null, tg_tong: 5, tg_da_phan_cong: 3, tg_nhan_su: 2, ...o },
     bai: BAI,
     nhom_du_dieu_kien: ["gv_bac_si", "tg_bac_si"],
-    chung_chi_yeu_cau: [{ id: "c1", ten: "ACLS" }],
+    chung_chi_yeu_cau: [{ id: "c1", ten: "ACLS", vai_tro: "giang_vien" }],
     khao_sat: null,
   };
 }

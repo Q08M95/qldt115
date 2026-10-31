@@ -208,7 +208,8 @@ begin
   res := res || jsonb_build_object('t', '20 GV KHÔNG đọc được nhóm đủ điều kiện (ẩn nhãn nhóm)', 'ok', n = 0);
 
   select count(*) into n from public.lop_hoc_chung_chi_yeu_cau where lop_id = lop1;
-  res := res || jsonb_build_object('t', '21 GV đọc được chứng chỉ yêu cầu của lớp', 'ok', n = 1);
+  -- luu_lop_hoc bản 1 mảng chứng chỉ áp cho cả 2 vai trò -> 2 dòng
+  res := res || jsonb_build_object('t', '21 GV đọc được chứng chỉ yêu cầu của lớp', 'ok', n = 2);
 
   select count(*) into n from public.bai_hoc where lop_id = lop1;
   res := res || jsonb_build_object('t', '22 GV thấy Bài của lớp đã mở', 'ok', n = 1);

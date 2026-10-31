@@ -6,11 +6,23 @@
 import { boDau } from "@/lib/nhan-su/labels";
 import type { DoiTuongLop, LoaiKinhPhi, NhomNhanSu } from "@/types/database";
 
+// Chứng chỉ yêu cầu tách theo vai trò (GV / TG). File theo mẫu cũ chỉ có 1 cột "chứng chỉ yêu cầu" (15 cột) vẫn đọc được:
+// khi đó chứng chỉ áp cho cả 2 vai trò như trước.
 export const CSV_HEADER =
-  "mã lớp,tên lớp,nhóm lớp,đối tượng,loại kinh phí,địa điểm,nhóm đủ điều kiện,chứng chỉ yêu cầu,công khai sớm,tên bài,ngày,giờ bắt đầu,giờ kết thúc,số giảng viên,số trợ giảng";
+  "mã lớp,tên lớp,nhóm lớp,đối tượng,loại kinh phí,địa điểm,nhóm đủ điều kiện,chứng chỉ yêu cầu GV,chứng chỉ yêu cầu TG,công khai sớm,tên bài,ngày,giờ bắt đầu,giờ kết thúc,số giảng viên,số trợ giảng";
+const SO_COT = 16;
 
 // Các cột "cấp lớp" — kế thừa từ dòng trước cùng mã lớp khi để trống
-type LopColKey = "tenLop" | "nhomLop" | "doiTuong" | "loaiKinhPhi" | "diaDiem" | "nhomDuDieuKien" | "chungChiYeuCau" | "congKhaiSom";
+type LopColKey =
+  | "tenLop"
+  | "nhomLop"
+  | "doiTuong"
+  | "loaiKinhPhi"
+  | "diaDiem"
+  | "nhomDuDieuKien"
+  | "chungChiGv"
+  | "chungChiTg"
+  | "congKhaiSom";
 
 export interface BaiCsvRow {
   dong: number; // số dòng trong văn bản gốc (từ 1), để báo lỗi chính xác
@@ -21,7 +33,8 @@ export interface BaiCsvRow {
   loaiKinhPhi: string;
   diaDiem: string;
   nhomDuDieuKien: string;
-  chungChiYeuCau: string;
+  chungChiGv: string;
+  chungChiTg: string;
   congKhaiSom: string;
   tenBai: string;
   ngay: string;
@@ -69,12 +82,20 @@ export function parseLopHocCsv(raw: string): BaiCsvRow[] {
   const rows: BaiCsvRow[] = [];
   // Giá trị cấp lớp gần nhất theo từng mã lớp, để kế thừa khi ô để trống
   const gioiHan = new Map<string, Partial<Record<LopColKey, string>>>();
+  // Bố cục cũ (1 cột chứng chỉ) nhận ra qua dòng tiêu đề; không có tiêu đề thì qua số cột của dòng dữ liệu đầu tiên
+  let banCu: boolean | null = null;
 
   for (let i = 0; i < lines.length; i++) {
     if (!lines[i].trim()) continue;
-    const c = splitLine(lines[i], sep);
+    let c = splitLine(lines[i], sep);
     // Dòng tiêu đề: ô đầu là chữ "mã lớp" (không phân biệt dấu)
-    if (rows.length === 0 && boDau(c[0] ?? "").replace(/\s+/g, " ") === "ma lop") continue;
+    if (rows.length === 0 && boDau(c[0] ?? "").replace(/\s+/g, " ") === "ma lop") {
+      banCu = c.filter(Boolean).length < SO_COT;
+      continue;
+    }
+    if (banCu === null) banCu = c.length < SO_COT;
+    // Bố cục cũ: nhân cột chứng chỉ thành 2 cột GV/TG để đọc chung 1 kiểu
+    if (banCu) c = [...c.slice(0, 8), c[7] ?? "", ...c.slice(8)];
 
     const maLop = (c[0] ?? "").trim();
     if (!maLop) continue; // dòng trống hẳn (chỉ có dấu phẩy) thì bỏ qua thay vì báo lỗi khó hiểu
@@ -94,14 +115,15 @@ export function parseLopHocCsv(raw: string): BaiCsvRow[] {
       loaiKinhPhi: lay(4, "loaiKinhPhi"),
       diaDiem: lay(5, "diaDiem"),
       nhomDuDieuKien: lay(6, "nhomDuDieuKien"),
-      chungChiYeuCau: lay(7, "chungChiYeuCau"),
-      congKhaiSom: lay(8, "congKhaiSom"),
-      tenBai: (c[9] ?? "").trim(),
-      ngay: (c[10] ?? "").trim(),
-      gioBatDau: (c[11] ?? "").trim(),
-      gioKetThuc: (c[12] ?? "").trim(),
-      soGv: (c[13] ?? "").trim(),
-      soTg: (c[14] ?? "").trim(),
+      chungChiGv: lay(7, "chungChiGv"),
+      chungChiTg: lay(8, "chungChiTg"),
+      congKhaiSom: lay(9, "congKhaiSom"),
+      tenBai: (c[10] ?? "").trim(),
+      ngay: (c[11] ?? "").trim(),
+      gioBatDau: (c[12] ?? "").trim(),
+      gioKetThuc: (c[13] ?? "").trim(),
+      soGv: (c[14] ?? "").trim(),
+      soTg: (c[15] ?? "").trim(),
     };
     gioiHan.set(maLop, {
       tenLop: row.tenLop,
@@ -110,7 +132,8 @@ export function parseLopHocCsv(raw: string): BaiCsvRow[] {
       loaiKinhPhi: row.loaiKinhPhi,
       diaDiem: row.diaDiem,
       nhomDuDieuKien: row.nhomDuDieuKien,
-      chungChiYeuCau: row.chungChiYeuCau,
+      chungChiGv: row.chungChiGv,
+      chungChiTg: row.chungChiTg,
       congKhaiSom: row.congKhaiSom,
     });
     rows.push(row);
@@ -156,7 +179,8 @@ export interface LopCsvNhom {
   loaiKinhPhi: LoaiKinhPhi | null;
   diaDiem: string;
   nhomDuDieuKien: NhomNhanSu[];
-  chungChiIds: string[];
+  chungChiGv: string[];
+  chungChiTg: string[];
   congKhaiSom: boolean;
   bai: BaiCsvDaXuLy[];
   // Lỗi ở cấp lớp (thiếu tên, không khớp danh mục...) — có thì cả lớp không tạo, dù các Bài đều hợp lệ
@@ -207,11 +231,14 @@ export function resolveLopHocCsv(
         .map((s) => s.trim())
         .filter(Boolean)
         .map((s) => khopTen<NhomNhanSu>(s, nhomNhanSuOptions));
-      const chungChiIds = r.chungChiYeuCau
-        .split(";")
-        .map((s) => s.trim())
-        .filter(Boolean)
-        .map((s) => khopTen(s, chungChiOptions));
+      const docChungChi = (raw: string) =>
+        raw
+          .split(";")
+          .map((s) => s.trim())
+          .filter(Boolean)
+          .map((s) => khopTen(s, chungChiOptions));
+      const chungChiGv = docChungChi(r.chungChiGv);
+      const chungChiTg = docChungChi(r.chungChiTg);
       // Mặc định công khai sớm (để trống = có); chỉ tắt khi ghi rõ "không"
       const congKhaiSom = !/^(khong|k|no|n|false|0)$/i.test(boDau(r.congKhaiSom.trim()));
 
@@ -222,7 +249,8 @@ export function resolveLopHocCsv(
       else if (!loaiKinhPhi) loi = `Loại kinh phí không hợp lệ: "${r.loaiKinhPhi}" (cần "Có kinh phí" hoặc "Không kinh phí").`;
       else if (nhomDuDieuKien.length === 0) loi = "Thiếu nhóm đủ điều kiện đăng ký.";
       else if (nhomDuDieuKien.includes(null)) loi = `Nhóm đủ điều kiện không khớp danh mục: "${r.nhomDuDieuKien}".`;
-      else if (chungChiIds.includes(null)) loi = `Chứng chỉ yêu cầu không khớp danh mục: "${r.chungChiYeuCau}".`;
+      else if (chungChiGv.includes(null)) loi = `Chứng chỉ yêu cầu GV không khớp danh mục: "${r.chungChiGv}".`;
+      else if (chungChiTg.includes(null)) loi = `Chứng chỉ yêu cầu TG không khớp danh mục: "${r.chungChiTg}".`;
 
       nhoms.set(r.maLop, {
         maLop: r.maLop,
@@ -233,7 +261,8 @@ export function resolveLopHocCsv(
         loaiKinhPhi,
         diaDiem: r.diaDiem.trim(),
         nhomDuDieuKien: nhomDuDieuKien.filter((x): x is NhomNhanSu => !!x),
-        chungChiIds: chungChiIds.filter((x): x is string => !!x),
+        chungChiGv: chungChiGv.filter((x): x is string => !!x),
+        chungChiTg: chungChiTg.filter((x): x is string => !!x),
         congKhaiSom,
         bai: [],
         loi,

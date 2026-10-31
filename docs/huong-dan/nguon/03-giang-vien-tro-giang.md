@@ -54,7 +54,7 @@ Lịch có hai chế độ: **Tất cả lớp** (mặc định) và **Của tô
 
 Bấm vào một lớp để xem trang chi tiết. Trang này là nơi bạn đăng ký dạy. Nội dung gồm:
 
-- **Thông tin chung:** thời gian, địa điểm, đối tượng, loại kinh phí, **nhóm đủ điều kiện đăng ký**, chứng chỉ yêu cầu thêm (nếu có).
+- **Thông tin chung:** thời gian, địa điểm, đối tượng, loại kinh phí, **nhóm đủ điều kiện đăng ký**, chứng chỉ yêu cầu thêm (nếu có, ghi riêng cho **Giảng viên** và **Trợ giảng**, ví dụ lớp chỉ yêu cầu Giảng viên có BLS).
 - **Tiến độ phân công** theo vai trò (như mục 3.2, đầy đủ hơn).
 - **Danh sách Bài:** mỗi Bài có tên, ngày giờ, và các slot **Giảng viên** và **Trợ giảng**. Mỗi slot có tên người đảm nhiệm (nếu đã có) hoặc hiện **Trống / Chưa có người**.
 - Ở mỗi Bài đang cần người, một **bảng gợi ý** cho biết những ai đủ điều kiện và được xếp hạng ra sao (mục 3.4.3).
@@ -88,7 +88,7 @@ Bài không đăng ký được sẽ bị **làm mờ**, kèm **lý do ngắn** 
 | **Trùng lịch với Bài "…" (lớp …)** | Bạn đã có Bài khác cùng giờ, hệ thống nêu rõ tên Bài và lớp bị trùng. |
 | **Chưa được xếp nhóm** | Hồ sơ của bạn chưa có nhóm. Hãy nhờ Admin xếp nhóm. |
 | **Chưa đủ điều kiện đăng ký lớp này** | Nhóm của bạn không nằm trong các nhóm được đăng ký của lớp. |
-| **Thiếu chứng chỉ yêu cầu: …** | Lớp yêu cầu chứng chỉ mà hồ sơ của bạn chưa có. Xem mục 3.9 để thêm chứng chỉ. |
+| **Thiếu chứng chỉ yêu cầu: …** | Lớp yêu cầu chứng chỉ **cho vai trò của bạn** (Giảng viên hoặc Trợ giảng) mà hồ sơ của bạn chưa có. Xem mục 3.9 để thêm chứng chỉ. |
 | **Không ở trạng thái "Đang tham gia giảng dạy"** | Bạn đang Tạm ngừng hoặc Không còn tham gia. Nhờ Admin đổi lại nếu cần. |
 | **Vai trò không phù hợp với slot này** | Slot dành cho vai trò khác (ví dụ slot Giảng viên nhưng bạn là Trợ giảng). |
 

@@ -14,7 +14,7 @@ import {
 } from "@/lib/lop-hoc/labels";
 import type { LopChiTiet } from "@/lib/lop-hoc/queries";
 import type { DiemDanh } from "@/types/database";
-import { NHOM_LABEL } from "@/lib/nhan-su/labels";
+import { NHOM_LABEL, VAI_TRO_LABEL } from "@/lib/nhan-su/labels";
 
 function Fact({ icon: Icon, nhan, children }: { icon?: typeof Users; nhan: string; children: React.ReactNode }) {
   return (
@@ -141,13 +141,24 @@ export function LopChiTietView({
                   {chung_chi_yeu_cau.length === 0 ? (
                     <p className="text-muted-foreground">Không yêu cầu.</p>
                   ) : (
-                    <div className="flex flex-wrap gap-1.5">
-                      {chung_chi_yeu_cau.map((c) => (
-                        <Badge key={c.id} variant="navy">
-                          {c.ten}
-                        </Badge>
-                      ))}
-                    </div>
+                    // Theo vai trò; vai trò không có dòng nào là không yêu cầu
+                    (["giang_vien", "tro_giang"] as const).map((vai) => {
+                      const ds = chung_chi_yeu_cau.filter((c) => c.vai_tro === vai);
+                      return (
+                        <div key={vai} className="flex flex-wrap items-center gap-1.5">
+                          <span className="w-20 shrink-0 text-xs text-muted-foreground">{VAI_TRO_LABEL[vai]}</span>
+                          {ds.length === 0 ? (
+                            <span className="text-xs text-muted-foreground">Không yêu cầu</span>
+                          ) : (
+                            ds.map((c) => (
+                              <Badge key={c.id} variant="navy">
+                                {c.ten}
+                              </Badge>
+                            ))
+                          )}
+                        </div>
+                      );
+                    })
                   )}
                 </div>
               </CardContent>

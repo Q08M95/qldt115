@@ -10,9 +10,9 @@ import { CSV_HEADER } from "@/lib/lop-hoc/csv";
 import { nhapNhieuLopHoc, type KetQuaLopCsv } from "@/lib/lop-hoc/actions";
 
 const MAU = `${CSV_HEADER}
-ACLS-Q1-01,ACLS khóa 12,ACLS,Nhân viên y tế,Có kinh phí,Hội trường A,Giảng viên là bác sĩ;Trợ giảng là bác sĩ,,không,Lý thuyết hồi sinh tim phổi,15/03/2026,08:00,11:00,1,0
-ACLS-Q1-01,,,,,,,,,Thực hành cấp cứu,15/03/2026,13:00,16:00,1,3
-ACLS-Q1-01,,,,,,,,,Thi thực hành,16/03/2026,08:00,11:00,1,3` satisfies string;
+ACLS-Q1-01,ACLS khóa 12,ACLS,Nhân viên y tế,Có kinh phí,Hội trường A,Giảng viên là bác sĩ;Trợ giảng là bác sĩ,,,không,Lý thuyết hồi sinh tim phổi,15/03/2026,08:00,11:00,1,0
+ACLS-Q1-01,,,,,,,,,,Thực hành cấp cứu,15/03/2026,13:00,16:00,1,3
+ACLS-Q1-01,,,,,,,,,,Thi thực hành,16/03/2026,08:00,11:00,1,3` satisfies string;
 
 function KetQuaBang({ ketQua }: { ketQua: KetQuaLopCsv[] }) {
   const thanhCong = ketQua.filter((k) => k.ok).length;
@@ -72,6 +72,10 @@ function NhapForm({ onClose }: { onClose: () => void }) {
                 </li>
                 <li>Các dòng Bài sau, cùng mã lớp, để trống cột lớp là tự lấy lại giá trị dòng trước — không cần gõ lại.</li>
                 <li>Nhóm lớp, đối tượng, loại kinh phí, nhóm đủ điều kiện, chứng chỉ phải đúng tên đã có trong danh mục.</li>
+                <li>
+                  Chứng chỉ yêu cầu ghi riêng cho <strong>Giảng viên</strong> (cột GV) và <strong>Trợ giảng</strong> (cột TG), nhiều loại
+                  ngăn bằng dấu &quot;;&quot;, để trống là không yêu cầu.
+                </li>
                 <li>Dán trực tiếp từ Excel hoặc chọn file .csv. Tải file &quot;mau tao lop.xlsx&quot; ở gốc dự án để xem đầy đủ và có danh mục hiện có kèm theo.</li>
                 <li>
                   Tối đa 500 dòng Bài / 50 lớp mỗi lần. Lớp mới ở trạng thái <strong>Dự kiến</strong>, hãy rà lại rồi tự mở đăng ký.

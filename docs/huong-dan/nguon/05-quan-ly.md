@@ -28,7 +28,7 @@ Nếu bạn vừa là quản lý vừa có hồ sơ giảng dạy, trang Tổng 
 | **Đối tượng** | Nhân viên y tế hoặc Cộng đồng. |
 | **Loại kinh phí** | Có kinh phí hoặc Không kinh phí. Lớp không kinh phí được ghi nhận vào chỉ số A4. |
 | **Nhóm đủ điều kiện đăng ký** | Tick một hoặc nhiều trong 5 nhóm nhân sự. **Chỉ người thuộc các nhóm này mới đăng ký hay được gợi ý.** Ví dụ lớp ACLS chỉ mở cho "Giảng viên là bác sĩ" và "Trợ giảng là bác sĩ". |
-| **Chứng chỉ yêu cầu thêm** (nếu cần) | Lọc thêm bên trong các nhóm đã chọn. |
+| **Chứng chỉ yêu cầu thêm** (nếu cần) | Lọc thêm bên trong các nhóm đã chọn, **chọn riêng cho từng vai trò**: cột **Giảng viên** và cột **Trợ giảng**. Ví dụ lớp BLS chỉ cần Giảng viên có chứng chỉ BLS thì tick BLS ở cột Giảng viên, để trống cột Trợ giảng. Cần cho cả hai thì tick ở cả hai cột. Người có nhiều chứng chỉ được yêu cầu phải có **đủ tất cả**. |
 | **Ngày bắt đầu, Ngày kết thúc**, **Địa điểm** | |
 | **Công khai sớm khi còn Dự kiến** | **Bật sẵn.** Giảng viên/trợ giảng thấy lớp và các Bài trên **Lịch** của trang Lớp học trước khi mở đăng ký; người đủ điều kiện nhận thông báo **"Lớp sắp mở đăng ký"** khi lớp có Bài đầu tiên. Bỏ tick nếu chưa muốn công bố lớp. |
 
@@ -72,7 +72,7 @@ Sửa hoặc xóa một Bài bằng các nút ở dòng Bài đó. Lưu ý:
 
 Ngay khi một Bài được tạo, hệ thống **tự xếp hạng** những người đủ điều kiện. Bảng **Gợi ý nhân sự** nằm ngay dưới Bài, **thu gọn sẵn** (bấm để mở; hiện 3 người đầu, bấm **Xem thêm** để thấy hết). Cảnh báo pool nhỏ và các đăng ký/lời mời đang chờ xử lý thì **luôn hiện**, không bị thu gọn.
 
-**Bộ lọc cứng** (người không thỏa thì không xuất hiện): thuộc nhóm đủ điều kiện của lớp, đủ chứng chỉ yêu cầu, trạng thái **Đang tham gia**, không trùng lịch với Bài khác đã được duyệt.
+**Bộ lọc cứng** (người không thỏa thì không xuất hiện): thuộc nhóm đủ điều kiện của lớp, đủ chứng chỉ yêu cầu **của đúng vai trò** (slot Giảng viên chỉ xét chứng chỉ yêu cầu Giảng viên, tương tự Trợ giảng), trạng thái **Đang tham gia**, không trùng lịch với Bài khác đã được duyệt.
 
 **Xếp hạng** trong số người còn lại: người **dạy ít giờ hơn trong kỳ** lên trước (khoảng 80% ảnh hưởng), khi ngang nhau thì **KPI kỳ gần nhất cao hơn** lên trước (khoảng 20%). Với lớp không kinh phí, **A4 thấp hơn** lên trước. Người đã dạy Bài khác trong cùng lớp bị hạ nhẹ để việc được chia đều. Tỷ lệ 80/20 có thể chỉnh (mục 5.13).
 

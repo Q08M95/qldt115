@@ -109,7 +109,7 @@ begin
   insert into public.lop_hoc (ten, nhom_lop_id, doi_tuong, loai_kinh_phi, ngay_bat_dau, ngay_ket_thuc, trang_thai, cong_khai_som)
   values ('ZZ TestLich L2', nl, 'nhan_vien_y_te', 'co_kinh_phi', (goc)::date, (goc)::date, 'nhap', false) returning id into l2;
   insert into public.lop_hoc_nhom_du_dieu_kien (lop_id, nhom) values (l2, 'gv_bac_si');
-  insert into public.lop_hoc_chung_chi_yeu_cau (lop_id, loai_id) values (l2, cc);
+  insert into public.lop_hoc_chung_chi_yeu_cau (lop_id, vai_tro, loai_id) values (l2, 'giang_vien', cc);
   insert into public.bai_hoc (lop_id, thu_tu, ten, bat_dau, ket_thuc)
   values (l2, 1, 'Bài trùng giờ', goc + interval '30 minutes', goc + interval '90 minutes') returning id into b2;
   insert into public.slot_giang_day (bai_id, vai_tro, vi_tri) values (b2, 'giang_vien', 1);

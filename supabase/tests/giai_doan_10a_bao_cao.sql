@@ -161,7 +161,8 @@ begin
   insert into public.lop_hoc (ten, nhom_lop_id, doi_tuong, loai_kinh_phi, ngay_bat_dau, ngay_ket_thuc, trang_thai)
   values ('ZZ Test10a Pool2', nl, 'nhan_vien_y_te', 'co_kinh_phi', v_hom_nay + 22, v_hom_nay + 23, 'dang_mo') returning id into lp2;
   insert into public.lop_hoc_nhom_du_dieu_kien (lop_id, nhom) values (lp1, 'gv_bac_si'), (lp1, 'tg_bac_si'), (lp2, 'gv_bac_si');
-  insert into public.lop_hoc_chung_chi_yeu_cau (lop_id, loai_id) values (lp1, cc1), (lp2, cc2);
+  insert into public.lop_hoc_chung_chi_yeu_cau (lop_id, vai_tro, loai_id)
+  values (lp1, 'giang_vien', cc1), (lp1, 'tro_giang', cc1), (lp2, 'giang_vien', cc2), (lp2, 'tro_giang', cc2);
   insert into public.chung_chi (user_id, loai_id) values (a2, cc1), (a4, cc1);
   insert into public.bai_hoc (lop_id, thu_tu, ten, bat_dau, ket_thuc) values (lp1, 1, 'P1', now() + interval '20 days', now() + interval '20 days 2 hours') returning id into bp1;
   insert into public.bai_hoc (lop_id, thu_tu, ten, bat_dau, ket_thuc) values (lp2, 1, 'P2', now() + interval '22 days', now() + interval '22 days 2 hours') returning id into bp2;

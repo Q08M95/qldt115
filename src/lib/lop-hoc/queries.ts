@@ -129,7 +129,8 @@ export interface LopChiTiet {
   bai: BaiHoc[];
   // Chỉ có khi người xem là Admin/Quản lý lớp (RLS trả rỗng với GV/TG — ẩn nhãn nhóm)
   nhom_du_dieu_kien: NhomNhanSu[];
-  chung_chi_yeu_cau: { id: string; ten: string }[];
+  // Chứng chỉ yêu cầu thêm, theo vai trò (lớp BLS có thể chỉ đòi Giảng viên có BLS)
+  chung_chi_yeu_cau: { id: string; ten: string; vai_tro: VaiTroGiangDay }[];
   // Chỉ người quản trị đọc được
   khao_sat: KhaoSatLop | null;
 }
@@ -148,7 +149,7 @@ export async function getLopChiTiet(id: string): Promise<LopChiTiet | null> {
       .order("bat_dau")
       .order("thu_tu"),
     supabase.from("lop_hoc_nhom_du_dieu_kien").select("nhom").eq("lop_id", id),
-    supabase.from("lop_hoc_chung_chi_yeu_cau").select("loai_id, danh_muc_loai_chung_chi(ten)").eq("lop_id", id),
+    supabase.from("lop_hoc_chung_chi_yeu_cau").select("loai_id, vai_tro, danh_muc_loai_chung_chi(ten)").eq("lop_id", id),
     supabase.from("lop_hoc_khao_sat").select("token, mo").eq("lop_id", id).maybeSingle(),
     supabase.from("khao_sat_phan_hoi").select("id", { count: "exact", head: true }).eq("lop_id", id),
   ]);
@@ -184,6 +185,7 @@ export async function getLopChiTiet(id: string): Promise<LopChiTiet | null> {
     nhom_du_dieu_kien: (nhomRes.data ?? []).map((r) => r.nhom as NhomNhanSu),
     chung_chi_yeu_cau: (ccRes.data ?? []).map((r) => ({
       id: r.loai_id,
+      vai_tro: r.vai_tro as VaiTroGiangDay,
       ten: one(r.danh_muc_loai_chung_chi as unknown as { ten: string } | { ten: string }[] | null)?.ten ?? "",
     })),
     khao_sat: ksRes.data ? { token: ksRes.data.token, mo: ksRes.data.mo, so_phan_hoi: phRes.count ?? 0 } : null,

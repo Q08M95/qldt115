@@ -103,7 +103,7 @@ async function tao() {
   async function taoLop(lop, nhom, ccIds, baiList) {
     const [row] = await rest("lop_hoc", { method: "POST", body: lop, prefer: "return=representation" });
     await rest("lop_hoc_nhom_du_dieu_kien", { method: "POST", body: nhom.map((g) => ({ lop_id: row.id, nhom: g })) });
-    if (ccIds.length) await rest("lop_hoc_chung_chi_yeu_cau", { method: "POST", body: ccIds.map((c) => ({ lop_id: row.id, loai_id: c })) });
+    if (ccIds.length) await rest("lop_hoc_chung_chi_yeu_cau", { method: "POST", body: ccIds.flatMap((c) => ["giang_vien", "tro_giang"].map((vai_tro) => ({ lop_id: row.id, loai_id: c, vai_tro }))) });
     const baiRows = [];
     for (const [i, b] of baiList.entries()) {
       const [bai] = await rest("bai_hoc", {

@@ -48,7 +48,8 @@ export default async function LopHocChiTietPage(props: PageProps<"/lop-hoc/[id]"
                 loaiChungChi={loaiChungChi}
                 lop={lop}
                 nhomDuDieuKien={data.nhom_du_dieu_kien}
-                chungChiIds={data.chung_chi_yeu_cau.map((c) => c.id)}
+                chungChiGv={data.chung_chi_yeu_cau.filter((c) => c.vai_tro === "giang_vien").map((c) => c.id)}
+                chungChiTg={data.chung_chi_yeu_cau.filter((c) => c.vai_tro === "tro_giang").map((c) => c.id)}
               />
               <LopHanhDong lopId={lop.id} trangThai={lop.trang_thai} />
             </>

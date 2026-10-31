@@ -175,7 +175,8 @@ export interface LopHocXuatRow {
   dia_diem: string | null;
   cong_khai_som: string;
   nhom_du_dieu_kien: string;
-  chung_chi_yeu_cau: string;
+  chung_chi_yeu_cau_gv: string;
+  chung_chi_yeu_cau_tg: string;
   c1_phan_tram: number | null;
   c3_phan_tram: number | null;
   so_bai: number;
@@ -198,7 +199,7 @@ export async function getLopHocXuat(tu: string, den: string): Promise<LopHocXuat
 
   const [nhomRes, ccRes] = await Promise.all([
     supabase.from("lop_hoc_nhom_du_dieu_kien").select("lop_id, nhom").in("lop_id", ids),
-    supabase.from("lop_hoc_chung_chi_yeu_cau").select("lop_id, danh_muc_loai_chung_chi(ten)").in("lop_id", ids),
+    supabase.from("lop_hoc_chung_chi_yeu_cau").select("lop_id, vai_tro, danh_muc_loai_chung_chi(ten)").in("lop_id", ids),
   ]);
   if (nhomRes.error) throw new Error(`Không đọc được nhóm đủ điều kiện: ${nhomRes.error.message}`);
   if (ccRes.error) throw new Error(`Không đọc được chứng chỉ yêu cầu: ${ccRes.error.message}`);
@@ -213,9 +214,11 @@ export async function getLopHocXuat(tu: string, den: string): Promise<LopHocXuat
   for (const r of ccRes.data ?? []) {
     const d = Array.isArray(r.danh_muc_loai_chung_chi) ? r.danh_muc_loai_chung_chi[0] : r.danh_muc_loai_chung_chi;
     if (!d?.ten) continue;
-    const arr = ccTheoLop.get(r.lop_id) ?? [];
+    // Khóa theo lớp + vai trò (chứng chỉ yêu cầu tách riêng Giảng viên / Trợ giảng)
+    const k = `${r.lop_id}:${r.vai_tro}`;
+    const arr = ccTheoLop.get(k) ?? [];
     arr.push(d.ten);
-    ccTheoLop.set(r.lop_id, arr);
+    ccTheoLop.set(k, arr);
   }
 
   return lop.map((l) => ({
@@ -230,7 +233,8 @@ export async function getLopHocXuat(tu: string, den: string): Promise<LopHocXuat
     dia_diem: l.dia_diem,
     cong_khai_som: l.cong_khai_som ? "Có" : "",
     nhom_du_dieu_kien: (nhomTheoLop.get(l.id) ?? []).join(", "),
-    chung_chi_yeu_cau: (ccTheoLop.get(l.id) ?? []).join(", "),
+    chung_chi_yeu_cau_gv: (ccTheoLop.get(`${l.id}:giang_vien`) ?? []).join(", "),
+    chung_chi_yeu_cau_tg: (ccTheoLop.get(`${l.id}:tro_giang`) ?? []).join(", "),
     c1_phan_tram: l.c1_phan_tram === null ? null : Number(l.c1_phan_tram),
     c3_phan_tram: l.c3_phan_tram === null ? null : Number(l.c3_phan_tram),
     so_bai: Number(l.so_bai),

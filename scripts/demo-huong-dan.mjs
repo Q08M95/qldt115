@@ -292,7 +292,7 @@ async function tao() {
     });
     const dsNhom = opt.nhom ?? TAT_CA_NHOM;
     await rest("lop_hoc_nhom_du_dieu_kien", { method: "POST", body: dsNhom.map((nh) => ({ lop_id: lop.id, nhom: nh })) });
-    if (opt.cc) await rest("lop_hoc_chung_chi_yeu_cau", { method: "POST", body: [{ lop_id: lop.id, loai_id: ccId[opt.cc] }] });
+    if (opt.cc) await rest("lop_hoc_chung_chi_yeu_cau", { method: "POST", body: ["giang_vien", "tro_giang"].map((vai_tro) => ({ lop_id: lop.id, loai_id: ccId[opt.cc], vai_tro })) });
     return { lop, dsNhom };
   };
 

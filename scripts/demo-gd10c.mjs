@@ -154,7 +154,7 @@ async function tao() {
       body: { ten: `${TIEN_TO_LOP}${ten}`, nhom_lop_id: nhomLop[nhomIdx % nhomLop.length].id, doi_tuong: "nhan_vien_y_te", loai_kinh_phi: "co_kinh_phi", ngay_bat_dau: cong(hom, tu), ngay_ket_thuc: cong(hom, den), dia_diem: "Demo GD10c", trang_thai: trangThai },
     });
     if (opt.nhom) await rest("lop_hoc_nhom_du_dieu_kien", { method: "POST", body: opt.nhom.map((nh) => ({ lop_id: lop.id, nhom: nh })) });
-    if (opt.cc) await rest("lop_hoc_chung_chi_yeu_cau", { method: "POST", body: [{ lop_id: lop.id, loai_id: opt.cc }] });
+    if (opt.cc) await rest("lop_hoc_chung_chi_yeu_cau", { method: "POST", body: ["giang_vien", "tro_giang"].map((vai_tro) => ({ lop_id: lop.id, loai_id: opt.cc, vai_tro })) });
     return lop;
   };
   const TAT_CA_NHOM = ["gv_bac_si", "gv_khong_bac_si", "tg_bac_si", "tg_khong_bac_si"];

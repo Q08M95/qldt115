@@ -54,7 +54,8 @@ export async function luuLopHoc(_prev: ActionState, fd: FormData): Promise<Actio
 
   const nhom = fd.getAll("nhom_du_dieu_kien").filter((v): v is NhomNhanSu => typeof v === "string" && NHOM.includes(v as NhomNhanSu));
   if (nhom.length === 0) return { error: "Hãy chọn ít nhất 1 nhóm đủ điều kiện đăng ký." };
-  const chungChi = fd.getAll("chung_chi").filter((v): v is string => typeof v === "string" && UUID.test(v));
+  // Chứng chỉ yêu cầu theo vai trò (Giảng viên / Trợ giảng)
+  const chungChi = (ten: string) => fd.getAll(ten).filter((v): v is string => typeof v === "string" && UUID.test(v));
 
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("luu_lop_hoc", {
@@ -68,7 +69,8 @@ export async function luuLopHoc(_prev: ActionState, fd: FormData): Promise<Actio
     p_dia_diem: str(fd, "dia_diem") || null,
     p_cong_khai_som: fd.get("cong_khai_som") === "on",
     p_nhom_du_dieu_kien: nhom,
-    p_chung_chi: chungChi,
+    p_chung_chi_gv: chungChi("chung_chi_gv"),
+    p_chung_chi_tg: chungChi("chung_chi_tg"),
   });
   if (error) return fail(error);
 
@@ -209,7 +211,8 @@ export async function nhapNhieuLopHoc(_prev: NhapNhieuLopState, fd: FormData): P
       p_dia_diem: n.diaDiem || null,
       p_cong_khai_som: n.congKhaiSom,
       p_nhom_du_dieu_kien: n.nhomDuDieuKien,
-      p_chung_chi: n.chungChiIds,
+      p_chung_chi_gv: n.chungChiGv,
+      p_chung_chi_tg: n.chungChiTg,
     });
     if (eLop) {
       ketQua.push({ ...base, ok: false, soBai: 0, thongBao: fail(eLop)?.error ?? "Không tạo được lớp." });

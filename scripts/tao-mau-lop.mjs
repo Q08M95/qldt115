@@ -39,7 +39,8 @@ const CSV_HEADER = [
   "loại kinh phí",
   "địa điểm",
   "nhóm đủ điều kiện",
-  "chứng chỉ yêu cầu",
+  "chứng chỉ yêu cầu GV",
+  "chứng chỉ yêu cầu TG",
   "công khai sớm",
   "tên bài",
   "ngày",
@@ -48,6 +49,9 @@ const CSV_HEADER = [
   "số giảng viên",
   "số trợ giảng",
 ];
+
+// Ví dụ lớp đầu: chỉ Giảng viên cần chứng chỉ (lấy loại đầu tiên đang dùng trong danh mục để tên luôn khớp)
+const CC_VI_DU = chungChi[0]?.ten ?? "";
 
 const VI_DU = [
   [
@@ -58,6 +62,7 @@ const VI_DU = [
     "Có kinh phí",
     "Hội trường A",
     "Giảng viên là bác sĩ;Trợ giảng là bác sĩ",
+    CC_VI_DU,
     "",
     "không",
     "Lý thuyết hồi sinh tim phổi",
@@ -67,8 +72,8 @@ const VI_DU = [
     1,
     0,
   ],
-  ["ACLS-Q1-01", "", "", "", "", "", "", "", "", "Thực hành cấp cứu", "15/03/2026", "13:00", "16:00", 1, 3],
-  ["ACLS-Q1-01", "", "", "", "", "", "", "", "", "Thi thực hành", "16/03/2026", "08:00", "11:00", 1, 3],
+  ["ACLS-Q1-01", "", "", "", "", "", "", "", "", "", "Thực hành cấp cứu", "15/03/2026", "13:00", "16:00", 1, 3],
+  ["ACLS-Q1-01", "", "", "", "", "", "", "", "", "", "Thi thực hành", "16/03/2026", "08:00", "11:00", 1, 3],
   [
     "BLS-Q1-05",
     "BLS khóa 5",
@@ -77,6 +82,7 @@ const VI_DU = [
     "Không kinh phí",
     "Trạm y tế phường 3",
     "Giảng viên không là bác sĩ;Trợ giảng không là bác sĩ",
+    "",
     "",
     "có",
     "Buổi duy nhất",
@@ -97,7 +103,18 @@ const HUONG_DAN = [
   ["loại kinh phí", "Chỉ dòng đầu", '"Có kinh phí" hoặc "Không kinh phí".', "Có kinh phí"],
   ["địa điểm", "Không bắt buộc", "", "Hội trường A"],
   ["nhóm đủ điều kiện", "Chỉ dòng đầu", "Tên nhóm nhân sự (xem Danh mục hiện có), nhiều nhóm cách nhau bằng dấu ;", "Giảng viên là bác sĩ;Trợ giảng là bác sĩ"],
-  ["chứng chỉ yêu cầu", "Không bắt buộc", "Tên chứng chỉ (xem Danh mục hiện có), cách nhau bằng ;. Để trống nếu không yêu cầu.", ""],
+  [
+    "chứng chỉ yêu cầu GV",
+    "Không bắt buộc",
+    "Chứng chỉ Giảng viên của lớp phải có. Tên chứng chỉ (xem Danh mục hiện có), cách nhau bằng ;. Để trống nếu không yêu cầu.",
+    CC_VI_DU,
+  ],
+  [
+    "chứng chỉ yêu cầu TG",
+    "Không bắt buộc",
+    "Chứng chỉ Trợ giảng của lớp phải có — ghi riêng, có thể khác cột GV. Để trống nếu Trợ giảng không cần chứng chỉ.",
+    "",
+  ],
   ["công khai sớm", "Không bắt buộc", '"có" hoặc "không" — để trống = "có": GV/TG thấy lớp trên Lịch lớp học khi còn Dự kiến.', "có"],
   ["tên bài", "Có, mỗi dòng", "Nội dung của buổi học (Bài) đó.", "Lý thuyết hồi sinh tim phổi"],
   ["ngày", "Có, mỗi dòng", "Định dạng dd/mm/yyyy.", "15/03/2026"],
@@ -131,7 +148,7 @@ wsHD.getRow(2).fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF1
 
 // ---------- Sheet 2: Mẫu tạo lớp (điền vào đây) ----------
 const wsMau = wb.addWorksheet("Mẫu tạo lớp", { views: [{ state: "frozen", ySplit: 1 }] });
-wsMau.columns = CSV_HEADER.map((h, i) => ({ header: h, key: `c${i}`, width: [12, 20, 12, 16, 16, 20, 34, 24, 12, 26, 12, 11, 11, 12, 12][i] }));
+wsMau.columns = CSV_HEADER.map((h, i) => ({ header: h, key: `c${i}`, width: [12, 20, 12, 16, 16, 20, 34, 22, 22, 12, 26, 12, 11, 11, 12, 12][i] }));
 VI_DU.forEach((r) => wsMau.addRow(r));
 wsMau.getRow(1).font = { bold: true, color: { argb: "FFFFFFFF" } };
 wsMau.getRow(1).fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF14468A" } };

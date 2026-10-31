@@ -17,19 +17,22 @@ export function LopFormDrawer({
   loaiChungChi,
   lop,
   nhomDuDieuKien = [],
-  chungChiIds = [],
+  chungChiGv = [],
+  chungChiTg = [],
 }: {
   nhomLop: NhomLop[];
   loaiChungChi: DanhMuc[];
   // Có lớp = chế độ sửa
   lop?: LopHocTongHop;
   nhomDuDieuKien?: NhomNhanSu[];
-  chungChiIds?: string[];
+  // Chứng chỉ yêu cầu thêm theo vai trò
+  chungChiGv?: string[];
+  chungChiTg?: string[];
 }) {
   const sua = !!lop;
   // Giữ lại nhóm lớp/loại chứng chỉ đang dùng dù đã bị tắt, để form sửa không làm mất giá trị hiện tại
   const nhomLopChon = nhomLop.filter((n) => n.dang_dung || n.id === lop?.nhom_lop_id);
-  const ccChon = loaiChungChi.filter((c) => c.dang_dung || chungChiIds.includes(c.id));
+  const ccChon = loaiChungChi.filter((c) => c.dang_dung || chungChiGv.includes(c.id) || chungChiTg.includes(c.id));
 
   return (
     <FormDrawer
@@ -123,13 +126,28 @@ export function LopFormDrawer({
       {ccChon.length > 0 && (
         <fieldset className="grid grid-cols-1 gap-2">
           <legend className="mb-1 text-sm font-medium">Chứng chỉ yêu cầu thêm (nếu cần)</legend>
-          {ccChon.map((c) => (
-            <label key={c.id} className="flex cursor-pointer items-center gap-3 rounded-lg border p-2.5 text-sm">
-              <input type="checkbox" name="chung_chi" value={c.id} defaultChecked={chungChiIds.includes(c.id)} className="size-4 accent-primary" />
-              {c.ten}
-            </label>
-          ))}
-          <p className="text-xs text-muted-foreground">Điều kiện lọc thêm bên trong nhóm đã đủ điều kiện.</p>
+          {/* Theo vai trò: vd Giảng viên cần BLS, Trợ giảng không cần */}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            {(
+              [
+                ["chung_chi_gv", "Giảng viên", chungChiGv],
+                ["chung_chi_tg", "Trợ giảng", chungChiTg],
+              ] as const
+            ).map(([ten, nhan, daChon]) => (
+              <div key={ten} className="grid grid-cols-1 content-start gap-2">
+                <p className="text-xs font-medium text-muted-foreground">{nhan}</p>
+                {ccChon.map((c) => (
+                  <label key={c.id} className="flex cursor-pointer items-center gap-3 rounded-lg border p-2.5 text-sm">
+                    <input type="checkbox" name={ten} value={c.id} defaultChecked={daChon.includes(c.id)} className="size-4 accent-primary" />
+                    <span className="min-w-0">{c.ten}</span>
+                  </label>
+                ))}
+              </div>
+            ))}
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Điều kiện lọc thêm bên trong nhóm đã đủ điều kiện, áp riêng cho từng vai trò. Cần cho cả hai thì tick ở cả hai bên.
+          </p>
         </fieldset>
       )}
 
