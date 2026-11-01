@@ -23,16 +23,21 @@ function NguoiTheoVaiTro({ slots, vai }: { slots: SlotPhanCong[]; vai: VaiTroGia
       {cua.length === 0 ? (
         <span className="text-muted-foreground">—</span>
       ) : (
-        <span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+        // Mỗi người 1 hàng; nhãn còn trống / chờ duyệt chung 1 hàng cuối
+        <span className="flex min-w-0 flex-col items-start gap-1">
           {cua
             .filter((s) => s.nguoi)
             .map((s) => (
-              <Link key={s.vi_tri} href={`/nhan-su/${s.nguoi!.id}`} className="hover:underline">
+              <Link key={s.vi_tri} href={`/nhan-su/${s.nguoi!.id}`} className="max-w-full truncate hover:underline">
                 {s.nguoi!.ho_ten}
               </Link>
             ))}
-          {choDuyet > 0 && <Badge variant="warning">{choDuyet} chờ duyệt</Badge>}
-          {conTrong > 0 && <Badge variant="neutral">{conTrong} còn trống</Badge>}
+          {(choDuyet > 0 || conTrong > 0) && (
+            <span className="flex flex-wrap gap-1.5">
+              {choDuyet > 0 && <Badge variant="warning">{choDuyet} chờ duyệt</Badge>}
+              {conTrong > 0 && <Badge variant="neutral">{conTrong} còn trống</Badge>}
+            </span>
+          )}
         </span>
       )}
     </div>
