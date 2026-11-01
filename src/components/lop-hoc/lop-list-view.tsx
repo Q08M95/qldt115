@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CalendarRange, GraduationCap, LayoutGrid } from "lucide-react";
+import { CalendarRange, ClipboardList, GraduationCap, LayoutGrid } from "lucide-react";
 import { pill } from "@/components/bao-cao/thanh-dieu-khien";
 import { EmptyState } from "@/components/empty-state";
 import { LopCard } from "@/components/lop-hoc/lop-card";
@@ -9,11 +9,12 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardAction, CardHeader, CardTitle } from "@/components/ui/card";
 import type { LopHocTongHop } from "@/types/database";
 
-// Chế độ xem Danh sách | Lịch (trang thật; trang demo không truyền thì chỉ có Danh sách)
+// Chế độ xem Danh sách | Lịch | Phân công (trang thật; trang demo không truyền thì chỉ có Danh sách)
 export interface CheDoXemLop {
-  xem: "danh-sach" | "lich";
+  xem: "danh-sach" | "lich" | "phan-cong";
   hrefDanhSach: string;
   hrefLich: string;
+  hrefPhanCong: string;
   // Tham số URL bộ lọc phải giữ lại khi lọc (vd xem=lich, thang=...) + đích nút "Xóa lọc"
   giu: Record<string, string>;
   xoaHref: string;
@@ -34,6 +35,7 @@ export function LopListView({
   capTaiVe,
   cheDo,
   lich,
+  phanCong,
 }: {
   rows: LopHocTongHop[];
   // Tổng số lớp khớp bộ lọc (có thể khác rows.length vì đã phân trang); mặc định = rows.length cho trang demo
@@ -53,8 +55,11 @@ export function LopListView({
   cheDo?: CheDoXemLop;
   // Nội dung chế độ Lịch (thay cho lưới thẻ + phân trang)
   lich?: React.ReactNode;
+  // Nội dung chế độ Phân công (bảng phân công các lớp đang lọc, thay cho lưới thẻ; vẫn phân trang theo lớp)
+  phanCong?: React.ReactNode;
 }) {
   const xemLich = cheDo?.xem === "lich";
+  const xemPhanCong = cheDo?.xem === "phan-cong";
   return (
     <div className="flex flex-col gap-5">
       <Card className="gap-4">
@@ -64,7 +69,7 @@ export function LopListView({
               "Lịch các lớp"
             ) : (
               <>
-                Danh sách lớp học <Badge variant="teal">{tong ?? rows.length}</Badge>
+                {xemPhanCong ? "Phân công giảng dạy" : "Danh sách lớp học"} <Badge variant="teal">{tong ?? rows.length}</Badge>
               </>
             )}
           </CardTitle>
@@ -73,12 +78,17 @@ export function LopListView({
         {cheDo && (
           <div className="flex flex-wrap items-center justify-between gap-3 px-5">
             <nav aria-label="Chế độ xem" className="flex gap-1">
-              <Link href={cheDo.hrefDanhSach} className={pill(!xemLich)} aria-current={!xemLich ? "page" : undefined}>
-                <LayoutGrid className="mr-1.5 size-4" aria-hidden /> Danh sách
-              </Link>
-              <Link href={cheDo.hrefLich} className={pill(xemLich)} aria-current={xemLich ? "page" : undefined}>
-                <CalendarRange className="mr-1.5 size-4" aria-hidden /> Lịch
-              </Link>
+              {(
+                [
+                  ["danh-sach", cheDo.hrefDanhSach, LayoutGrid, "Danh sách"],
+                  ["lich", cheDo.hrefLich, CalendarRange, "Lịch"],
+                  ["phan-cong", cheDo.hrefPhanCong, ClipboardList, "Phân công"],
+                ] as const
+              ).map(([xem, href, Icon, nhan]) => (
+                <Link key={xem} href={href} className={`${pill(cheDo.xem === xem)} max-sm:px-2.5`} aria-current={cheDo.xem === xem ? "page" : undefined}>
+                  <Icon className="mr-1.5 size-4 max-sm:hidden" aria-hidden /> {nhan}
+                </Link>
+              ))}
             </nav>
             {xemLich && <LopFilters values={values} nhomLop={nhomLop} action={filterAction} giu={cheDo.giu} xoaHref={cheDo.xoaHref} chiNhomLop />}
           </div>
@@ -88,6 +98,8 @@ export function LopListView({
 
       {xemLich ? (
         lich
+      ) : xemPhanCong ? (
+        phanCong
       ) : rows.length === 0 ? (
         <Card>
           <EmptyState icon={GraduationCap} title="Không có lớp nào phù hợp với bộ lọc." />

@@ -76,8 +76,9 @@ export interface LocLop {
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-// Danh sách lớp có phân trang, cho trang /lop-hoc duyệt qua — khác getLopList() ở trên (lấy hết, dùng để gộp số liệu).
-export async function getLopListTrang(loc: LocLop): Promise<{ rows: LopHocTongHop[]; tong: number; capTaiVe: boolean }> {
+// Mọi lớp khớp bộ lọc (tối đa TRAN_LOP lớp gần nhất), đã sắp theo thứ tự hiển thị — dùng chung cho danh sách có phân trang
+// và xuất Excel danh sách phân công (xuất hết các lớp đang lọc, không chỉ trang đang xem).
+export async function getLopTheoLoc(loc: Omit<LocLop, "trang">): Promise<{ rows: LopHocTongHop[]; capTaiVe: boolean }> {
   const supabase = await createClient();
   let query = supabase.from("lop_hoc_tong_hop").select("*");
   // .eq() trên cột uuid/enum ném lỗi nếu giá trị không hợp lệ (vd URL bị sửa tay) thay vì trả 0 dòng như so
@@ -94,10 +95,62 @@ export async function getLopListTrang(loc: LocLop): Promise<{ rows: LopHocTongHo
     const tuKhoa = boDau(loc.q);
     rows = rows.filter((l) => boDau(l.ten).includes(tuKhoa) || boDau(l.dia_diem ?? "").includes(tuKhoa));
   }
-  rows = sapXepLop(rows);
+  return { rows: sapXepLop(rows), capTaiVe: (data ?? []).length === TRAN_LOP };
+}
 
+// Danh sách lớp có phân trang, cho trang /lop-hoc duyệt qua — khác getLopList() ở trên (lấy hết, dùng để gộp số liệu).
+export async function getLopListTrang(loc: LocLop): Promise<{ rows: LopHocTongHop[]; tong: number; capTaiVe: boolean }> {
+  const { rows, capTaiVe } = await getLopTheoLoc(loc);
   const tu = (Math.max(1, loc.trang) - 1) * SO_DONG_LOP;
-  return { rows: rows.slice(tu, tu + SO_DONG_LOP), tong: rows.length, capTaiVe: (data ?? []).length === TRAN_LOP };
+  return { rows: rows.slice(tu, tu + SO_DONG_LOP), tong: rows.length, capTaiVe };
+}
+
+// ---------- Danh sách phân công (chế độ "Phân công" của trang Lớp học + xuất Excel) ----------
+export interface SlotPhanCong {
+  vai_tro: VaiTroGiangDay;
+  vi_tri: number;
+  trang_thai: TrangThaiSlot;
+  // Email/SĐT chỉ đưa vào file Excel (chỉ người quản trị xuất được); trên web chỉ hiện tên
+  nguoi: { id: string; ho_ten: string; email: string; so_dien_thoai: string | null } | null;
+}
+export interface BaiPhanCong {
+  id: string;
+  lop_id: string;
+  ten: string;
+  bat_dau: string;
+  ket_thuc: string;
+  slots: SlotPhanCong[];
+}
+
+// Bài + slot (kèm người được phân công) của các lớp, nhóm theo lớp; Bài theo giờ bắt đầu, slot Giảng viên trước rồi theo vị trí.
+// Chia nhỏ danh sách id để URL truy vấn không quá dài khi xuất nhiều lớp.
+export async function getPhanCongTheoLop(lopIds: string[]): Promise<Map<string, BaiPhanCong[]>> {
+  const supabase = await createClient();
+  const ketQua = new Map<string, BaiPhanCong[]>();
+  type SlotRow = {
+    vai_tro: VaiTroGiangDay;
+    vi_tri: number;
+    trang_thai: TrangThaiSlot;
+    profiles: SlotPhanCong["nguoi"] | NonNullable<SlotPhanCong["nguoi"]>[] | null;
+  };
+  for (let i = 0; i < lopIds.length; i += 100) {
+    const { data, error } = await supabase
+      .from("bai_hoc")
+      .select("id, lop_id, ten, bat_dau, ket_thuc, slot_giang_day(vai_tro, vi_tri, trang_thai, profiles(id, ho_ten, email, so_dien_thoai))")
+      .in("lop_id", lopIds.slice(i, i + 100))
+      .order("bat_dau")
+      .order("thu_tu");
+    if (error) throw new Error(`Không đọc được danh sách phân công: ${error.message}`);
+    for (const b of data ?? []) {
+      const slots = ((b.slot_giang_day ?? []) as unknown as SlotRow[])
+        .map<SlotPhanCong>((s) => ({ vai_tro: s.vai_tro, vi_tri: s.vi_tri, trang_thai: s.trang_thai, nguoi: one(s.profiles) }))
+        .sort((x, y) => (x.vai_tro === y.vai_tro ? x.vi_tri - y.vi_tri : x.vai_tro === "giang_vien" ? -1 : 1));
+      const arr = ketQua.get(b.lop_id) ?? [];
+      arr.push({ id: b.id, lop_id: b.lop_id, ten: b.ten, bat_dau: b.bat_dau, ket_thuc: b.ket_thuc, slots });
+      ketQua.set(b.lop_id, arr);
+    }
+  }
+  return ketQua;
 }
 
 // 1 lớp trên "Lịch" của trang Lớp học (/lop-hoc?xem=lich) — từ RPC lich_lop_hoc. Lịch hiển thị ở mức LỚP, không theo Bài.

@@ -28,6 +28,7 @@ export default async function DesignLopHocPage(props: PageProps<"/design/lop-hoc
           xem: xemLich ? "lich" : "danh-sach",
           hrefDanhSach: "/design/lop-hoc",
           hrefLich: "/design/lop-hoc?xem=lich",
+          hrefPhanCong: "/design/lop-hoc",
           giu: xemLich ? { xem: "lich" } : {},
           xoaHref: xemLich ? "/design/lop-hoc?xem=lich" : "/design/lop-hoc",
         }}

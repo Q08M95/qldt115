@@ -120,6 +120,12 @@ Các nút có hộp **xác nhận** để tránh bấm nhầm. Mọi thay đổi
 
 Trạng thái **Đã đủ đăng ký** và **Đang diễn ra** do hệ thống tự cập nhật, không có nút để bấm.
 
+### Danh sách phân công nhiều lớp
+
+Ở trang **Lớp học**, bấm **Phân công** (cạnh Danh sách và Lịch) để xem bảng phân công gộp của **các lớp đang lọc**: mỗi Bài một dòng, kèm Giảng viên và Trợ giảng đã được phân công, vị trí còn trống hoặc đang chờ duyệt. Lọc trước theo nhóm lớp, trạng thái, đối tượng, kinh phí hoặc gõ tên lớp/địa điểm để thu hẹp.
+
+Bấm **Xuất Excel** (chỉ quản lý thấy) để tải **toàn bộ các lớp đang lọc** (không chỉ trang đang xem) thành **một bảng**: mỗi dòng là một vị trí của một Bài, gồm lớp, nhóm lớp, địa điểm, Bài, ngày, giờ, vai trò, người được phân công kèm **email** và **số điện thoại**, trạng thái vị trí. Dùng để gửi lịch cho từng người hoặc in danh sách cho lớp.
+
 ## 5.7 Sau khi lớp hoàn thành: nhập kết quả C1 và C3
 
 Khi lớp **Đã hoàn thành**, trang chi tiết lớp hiện khối kết quả gồm hai chỉ số dùng cho KPI của **mọi người đã dạy lớp đó**.

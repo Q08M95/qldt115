@@ -48,6 +48,8 @@ Lịch có hai chế độ: **Tất cả lớp** (mặc định) và **Của tô
 
 ![Ảnh 3.2b — Lịch các lớp: mỗi lớp một thanh, màu theo trạng thái](3.2b)
 
+**Xem ai dạy Bài nào (chế độ Phân công).** Bấm nút **Phân công** cạnh **Danh sách** và **Lịch** để xem một bảng gộp các lớp đang lọc: mỗi dòng là một Bài, kèm thời gian và tên **Giảng viên**, **Trợ giảng** đã được phân công. Vị trí chưa có người hiện nhãn **"còn trống"** hoặc **"chờ duyệt"**. Bộ lọc (nhóm lớp, trạng thái…) dùng chung với chế độ Danh sách, ví dụ lọc **Đang mở đăng ký** để xem các lớp còn thiếu người.
+
 > **Mẹo:** Lớp **Sắp mở** chưa đăng ký được — hãy giữ lịch trống, khi lớp mở đăng ký bạn sẽ nhận thông báo.
 
 ## 3.3 Xem chi tiết một lớp
