@@ -40,8 +40,10 @@ export default async function LopHocChiTietPage(props: PageProps<"/lop-hoc/[id]"
         diemDanh={diemDanh}
         baiCheckIn={new Set(baiCheckIn.map((b) => b.bai_id))}
         headerActions={
-          // Lớp đã hoàn thành/hủy không còn thao tác sửa hay chuyển trạng thái -> không dựng khung nút
-          isQuanTri && conSua ? (
+          // Lớp đã hoàn thành không còn thao tác nào -> không dựng khung nút; lớp đã hủy chỉ còn nút Xóa lớp
+          isQuanTri && lop.trang_thai === "da_huy" ? (
+            <LopHanhDong lopId={lop.id} trangThai={lop.trang_thai} />
+          ) : isQuanTri && conSua ? (
             <>
               <LopFormDrawer
                 nhomLop={nhomLop}

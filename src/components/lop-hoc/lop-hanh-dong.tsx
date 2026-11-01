@@ -7,9 +7,37 @@ import { doiTrangThaiLop, xoaLopHoc } from "@/lib/lop-hoc/actions";
 import type { TrangThaiLop } from "@/types/database";
 
 // Nút chuyển trạng thái lớp theo vòng đời: Dự kiến → Đang mở đăng ký → Đã hoàn thành, hoặc Hủy (mục 4.2).
-// Chỉ render cho Admin/Quản lý lớp; hàm SQL doi_trang_thai_lop kiểm tra lại quyền và điều kiện chuyển.
+// Xóa được lớp Dự kiến và lớp Đã hủy (lớp đã hủy không ảnh hưởng KPI); lớp Đã hoàn thành không có thao tác nào.
+// Chỉ render cho Admin/Quản lý lớp; hàm SQL doi_trang_thai_lop / xoa_lop_hoc kiểm tra lại quyền và điều kiện.
+function NutXoaLop({ lopId, moTa }: { lopId: string; moTa: string }) {
+  return (
+    <XacNhanDialog
+      trigger={
+        <Button variant="outline" size="sm" className="hover:text-danger">
+          <Trash2 /> Xóa lớp
+        </Button>
+      }
+      title="Xóa lớp này?"
+      description={moTa}
+      confirmLabel="Xác nhận xóa"
+      pendingLabel="Đang xóa..."
+      destructive
+      onConfirm={() => xoaLopHoc(lopId)}
+      redirectTo="/lop-hoc"
+    />
+  );
+}
+
 export function LopHanhDong({ lopId, trangThai }: { lopId: string; trangThai: TrangThaiLop }) {
-  if (trangThai === "da_hoan_thanh" || trangThai === "da_huy") return null;
+  if (trangThai === "da_hoan_thanh") return null;
+  if (trangThai === "da_huy") {
+    return (
+      <NutXoaLop
+        lopId={lopId}
+        moTa="Lớp đã hủy cùng toàn bộ Bài, đăng ký và phân công sẽ bị xóa vĩnh viễn, không còn trong báo cáo. Nhật ký hệ thống vẫn giữ lịch sử hủy và xóa lớp."
+      />
+    );
+  }
 
   const huy = (
     <XacNhanDialog
@@ -41,19 +69,9 @@ export function LopHanhDong({ lopId, trangThai }: { lopId: string; trangThai: Tr
           onConfirm={() => doiTrangThaiLop(lopId, "dang_mo")}
         />
         {huy}
-        <XacNhanDialog
-          trigger={
-            <Button variant="outline" size="sm" className="hover:text-danger">
-              <Trash2 /> Xóa lớp
-            </Button>
-          }
-          title="Xóa lớp này?"
-          description="Lớp Dự kiến cùng các Bài và slot của lớp sẽ bị xóa vĩnh viễn."
-          confirmLabel="Xác nhận xóa"
-          pendingLabel="Đang xóa..."
-          destructive
-          onConfirm={() => xoaLopHoc(lopId)}
-          redirectTo="/lop-hoc"
+        <NutXoaLop
+          lopId={lopId}
+          moTa="Lớp Dự kiến cùng các Bài và slot của lớp sẽ bị xóa vĩnh viễn. Ai đã được mời hoặc phân công trong lớp sẽ nhận thông báo “Lớp đã bị hủy”."
         />
       </>
     );

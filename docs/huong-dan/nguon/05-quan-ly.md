@@ -114,7 +114,7 @@ Mỗi đăng ký có hai nút: **Duyệt** và **Từ chối**.
 | **Đưa về Dự kiến** | Đưa lớp về lại trạng thái chưa mở đăng ký khi cần chỉnh sửa. |
 | **Hoàn thành lớp** | Khi lớp đã kết thúc. Lớp chuyển **Đã hoàn thành**, và **mở khóa** phần nhập kết quả C1 và C3 (mục 5.7). |
 | **Hủy lớp** | Lớp chuyển **Đã hủy** và **không thể mở lại**. Lịch sử phân công vẫn được giữ. Những người đã phân công hoặc đang chờ nhận thông báo tự động. |
-| **Xóa lớp** | **Chỉ dùng cho lớp Dự kiến.** Xóa vĩnh viễn lớp cùng các Bài và slot của lớp. |
+| **Xóa lớp** | Dùng cho lớp **Dự kiến** hoặc lớp **Đã hủy** (lớp Đang mở phải hủy trước; lớp Đã hoàn thành không xóa được). Xóa **vĩnh viễn** lớp cùng các Bài, slot, đăng ký và phân công; lớp không còn trong báo cáo. Nếu lớp Dự kiến đã có người được mời hoặc phân công (lớp công khai sớm), những người đó nhận thông báo **"Lớp đã bị hủy"**. Lớp đã hủy thì người liên quan đã được báo lúc hủy nên không báo lại. Nhật ký hệ thống vẫn giữ lịch sử hủy và xóa lớp. |
 
 Các nút có hộp **xác nhận** để tránh bấm nhầm. Mọi thay đổi trạng thái lớp đã mở đều được ghi vào **Nhật ký hệ thống**.
 
